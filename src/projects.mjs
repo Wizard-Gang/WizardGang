@@ -1,8 +1,37 @@
 export const projects = [
   {
+    name: "Shark Tank",
+    slug: "sharktank",
+    number: "01",
+    eyebrow: "Security & AI governance",
+    description: "A live production systems laboratory for ISO/IEC 27001:2022 and ISO/IEC 42001:2023 readiness, connecting risk, controls, operations, and AI-system governance to evidence from the running service.",
+    tags: ["ISO/IEC 27001", "ISO/IEC 42001", "Risk management", "AI governance", "Cloudflare", "Operations"],
+    liveUrl: "https://sharktank.wizardgang.ai/play/",
+    operationsUrl: "https://sharktank.wizardgang.ai/trust/",
+    sourceUrl: null,
+    sourcePublic: false,
+    problem: "Compliance claims are easy to write and difficult to prove. Shark Tank asks whether security and AI governance can be made inspectable from the same production system they describe, without confusing a readiness exercise with certification.",
+    built: [
+      "A public 184-row readiness register spanning ISO/IEC 27001:2022 and ISO/IEC 42001:2023",
+      "Policies, risk treatment, control positions, objectives, and AI impact assessment published as inspectable routes",
+      "Evidence links that resolve from register rows into the running system rather than screenshots or slideware",
+      "Public operational records for availability, incidents, changes, spend controls, backups, and restore drills",
+      "Deterministic rule-based agent behavior with explicit purpose, limits, monitoring, and change control",
+      "Honest partial, supplier-inherited, excluded, and gap states instead of overstating readiness"
+    ],
+    architecture: [
+      ["Browser", "Game surface and public trust routes"],
+      ["Worker", "Routing, validation, policy, and evidence surfaces"],
+      ["Durable Objects", "Rooms, state, sockets, logs, and receipts"],
+      ["R2", "Daily state copies and restore evidence"]
+    ],
+    engineering: "The management-system layer is part of the product. A control is not treated as evidenced merely because it is described; the register points to a live route that demonstrates the implementation or records the remaining limitation.",
+    result: "A live ISO-aligned readiness exercise, not a certification claim: visitors can inspect the control register, policies, risks, operational history, recovery evidence, AI-system boundaries, and known gaps before they ever play the game."
+  },
+  {
     name: "Hexframe",
     slug: "hexframe",
-    number: "01",
+    number: "02",
     eyebrow: "Deterministic systems",
     description: "A deterministic 2D fighting-game simulator and training laboratory built around fixed-step simulation, rollback, authored combat, and SVG rendering.",
     tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
@@ -30,10 +59,10 @@ export const projects = [
   {
     name: "YarReader",
     slug: "yarreader",
-    number: "02",
+    number: "03",
     eyebrow: "Portable media pipeline",
-    description: "A crash-recoverable ingestion and archival pipeline that converts mixed publication formats into a portable static HTML library.",
-    tags: ["TypeScript", "CLI", "Content addressing", "Archive recovery", "Static HTML", "Offline"],
+    description: "A crash-recoverable pipeline that turns mixed publication formats into a verified static HTML library designed for offline and removable storage.",
+    tags: ["TypeScript", "CLI", "Content addressing", "Recovery", "Static HTML", "Offline"],
     liveUrl: null,
     sourceUrl: null,
     sourcePublic: false,
@@ -50,40 +79,10 @@ export const projects = [
       ["Inspect", "Stable sources and explicit adapters"],
       ["Classify", "Deterministic, AI, then human review"],
       ["Normalize", "Versioned pages with content hashes"],
-      ["Archive", "Prepared transaction and recovery"],
       ["Export", "Validate, rename, activate"]
     ],
     engineering: "Complexity stays in the workstation pipeline. The activated reader is ordinary relative HTML and image files, so it remains portable across removable storage and offline environments.",
     result: "Interrupted work resumes from durable journals, alternate releases retain explicit identity, and every activated generation is immutable and verified. Derived output can be rebuilt from the archive and catalog."
-  },
-  {
-    name: "Shark Tank",
-    slug: "sharktank",
-    number: "03",
-    eyebrow: "Realtime edge systems",
-    description: "A real-time Cloudflare systems project combining multiplayer simulation with Durable Objects, WebSockets, observability, cost controls, incident handling, and security evidence.",
-    tags: ["Cloudflare Workers", "Durable Objects", "WebSockets", "REST APIs", "Security", "Operations"],
-    liveUrl: "https://sharktank.wizardgang.ai/play/",
-    operationsUrl: "https://sharktank.wizardgang.ai/trust/",
-    sourceUrl: null,
-    sourcePublic: false,
-    problem: "Realtime play is only the visible layer. The useful engineering problem is operating it: authoritative rooms, reconnectable sockets, durable profiles, bounded writes, recovery, incident history, and a hard ceiling on variable spend.",
-    built: [
-      "Authoritative room objects with hibernatable WebSockets",
-      "Durable profiles, leaderboard state, and bounded public writes",
-      "Public status, incident, evidence, API, and governance surfaces",
-      "Authenticated maintenance, billing, backup, and recovery controls",
-      "Daily object-storage state copies and digest-based restore drills",
-      "Measured usage and a hard spend gate that closes game traffic"
-    ],
-    architecture: [
-      ["Browser", "Input, prediction, Three.js view"],
-      ["Worker", "Routes, validation, policy, assets"],
-      ["Durable Objects", "Rooms, sockets, state, receipts"],
-      ["R2", "Daily state copies and restore drills"]
-    ],
-    engineering: "The operations layer is evidence, not decoration. Availability, receipts, incidents, spend, controls, and open gaps are inspectable without exposing the operator console.",
-    result: "A small multiplayer game that doubles as a legible production system: visitors can play in seconds, while engineers can follow the networking, recovery, cost, and security evidence as far as they want."
   }
 ];
 
