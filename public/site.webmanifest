@@ -1,0 +1,12 @@
+{
+  "name": "WizardGang Software Portfolio",
+  "short_name": "WizardGang",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08080b",
+  "theme_color": "#08080b",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
+

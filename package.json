@@ -1,0 +1,20 @@
+{
+  "name": "wizardgang-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Lean static software portfolio for wizardgang.ai",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/verify.mjs",
+    "dev": "npm run build && wrangler dev --port 8790",
+    "deploy:staging": "npm run build && wrangler deploy --env staging",
+    "deploy:production": "npm run build && wrangler deploy --env production",
+    "deploy:staging:dry-run": "npm run build && wrangler deploy --dry-run --env staging",
+    "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production"
+  },
+  "devDependencies": {
+    "wrangler": "^4.127.1"
+  }
+}
+

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="WizardGang">
+  <rect width="64" height="64" rx="10" fill="#08080b"/>
+  <path d="M9 15h10l5 25 8-18h7l7 18 5-25h8L51 51H40l-5-16-7 16H17z" fill="#f5f2e9"/>
+  <rect x="45" y="7" width="10" height="10" fill="#d9ff43"/>
+  <rect x="52" y="2" width="8" height="8" fill="#a489ff"/>
+</svg>
+
