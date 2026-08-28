@@ -7,8 +7,8 @@ Inventory date: 2026-08-28 (America/New_York)
 Completed 2026-08-28 in the planned staged order:
 
 - `wizardgang.ai` now belongs to the standalone `wizardgang-portfolio` Worker. Production version
-  `bcf09b97-5e4c-4d28-8f3c-4b0a5f005333` serves the static portfolio build from commit
-  `a6072dfcedb1`; the source repository is `SouthernGentlemen/WizardGang`.
+  `a6013b4c-e4cf-4f11-89dd-74649ea18f0a` serves the static portfolio build from commit
+  `1d2188a32056`; the source repository is `SouthernGentlemen/WizardGang`.
 - `sharktank.wizardgang.ai` is the only Custom Domain on `wizardgangprod`. Production version
   `fe0c3f61-c512-49b5-a49a-13776395803e` retains the existing Durable Objects, R2 bucket,
   secrets, static assets, and daily cron. Its 46 evidence routes, protected admin boundary, API,
