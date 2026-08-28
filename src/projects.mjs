@@ -6,7 +6,7 @@ export const projects = [
     eyebrow: "Deterministic systems",
     description: "A deterministic 2D fighting-game simulator and training laboratory built around fixed-step simulation, rollback, authored combat, and SVG rendering.",
     tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
-    liveUrl: null,
+    liveUrl: "https://hexframe.wizardgang.ai/play/",
     sourceUrl: null,
     sourcePublic: false,
     problem: "Combat has to mean the same thing to play, training, AI, replay, saves, and eventual network rollback. Browser timing, presentation state, and ambient randomness cannot be allowed to define the result.",
@@ -88,4 +88,3 @@ export const projects = [
 ];
 
 export const projectBySlug = new Map(projects.map((project) => [project.slug, project]));
-
