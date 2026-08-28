@@ -2,6 +2,29 @@
 
 Inventory date: 2026-08-28 (America/New_York)
 
+## IMPLEMENTATION RESULT
+
+Completed 2026-08-28 in the planned staged order:
+
+- `wizardgang.ai` now belongs to the standalone `wizardgang-portfolio` Worker. Production version
+  `bcf09b97-5e4c-4d28-8f3c-4b0a5f005333` serves the static portfolio build from commit
+  `a6072dfcedb1`; the source repository is `SouthernGentlemen/WizardGang`.
+- `sharktank.wizardgang.ai` is the only Custom Domain on `wizardgangprod`. Production version
+  `fe0c3f61-c512-49b5-a49a-13776395803e` retains the existing Durable Objects, R2 bucket,
+  secrets, static assets, and daily cron. Its 46 evidence routes, protected admin boundary, API,
+  game, and WebSocket were verified externally.
+- The portfolio migration Worker permanently redirects human-facing legacy Shark Tank URLs and
+  temporarily proxies machine-facing API, JSON, and WebSocket routes so existing consumers retain
+  their response behavior.
+- `hexframe.wizardgang.ai` runs immutable release `v0.7.1` at commit
+  `40ab986ef35205d72aeff23438097d5d64910392` (Worker version
+  `30adbc22-499e-4e2c-a04c-38dfa6d01721`). Public routes, saves, release identity, login security
+  policy, and unauthenticated developer-API refusal were verified externally.
+- `shadowmoney.wizardgang.ai` is retired through Worker version
+  `2ee85efc-469c-4387-a4a1-7aeb66949072`. Every path and query is permanently redirected to the
+  equivalent Hexframe URL. The historical Durable Object class remains exported for data and
+  rollback continuity, but the old namespace is not bound to retirement traffic.
+
 ## CURRENT ROUTE MAP
 
 ### Ownership and deployment
@@ -222,4 +245,3 @@ Review `/play/`, `/training/`, `/lab/`, `/codex/`, and `/loadouts/` individually
   not bypass that repository contract.
 - **Redirect permanence:** 308 responses are cached. ShadowMoney retirement is activated only after
   Hexframe destinations are confirmed working.
-
