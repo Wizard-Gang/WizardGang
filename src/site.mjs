@@ -3,7 +3,7 @@ import { professionalEducation, professionalProjects, professionalRoles, profess
 import { deployments, integrationGroups, systemGroups } from "./professional-systems.mjs";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
-const GITHUB = "https://github.com/Wizard-Gang/WizardGang";
+const GITHUB = "https://github.com/Wizard-Gang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacobyongue@outlook.com";
 
@@ -18,8 +18,7 @@ function header(current = "") {
   const nav = [
     ["projects", "/projects/", "Projects"],
     ["work", "/work/", "Work"],
-    ["about", "/about/", "About"],
-    ["resume", "/resume/", "Resume"]
+    ["about", "/about/", "About"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
   const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
   return `<a class="skip-link" href="#main">Skip to main content</a>
@@ -74,15 +73,17 @@ const tags = (items, label = "Technologies") => `<ul class="tags" aria-label="${
 
 function actions(project, compact = false) {
   const className = compact ? "text-link" : "button";
-  const links = [`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`];
+  const links = [];
 
   if (project.slug === "sharktank") {
-    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Governance system <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Live evidence <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Evidence <span aria-hidden="true">↗</span></a>`);
   } else {
-    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>`);
     if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Operations <span aria-hidden="true">↗</span></a>`);
   }
+
+  links.push(`<a class="${className}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`);
 
   return `<div class="${compact ? "text-links" : "button-row"}">${links.join("")}</div>`;
 }
@@ -366,17 +367,17 @@ function yarReaderVisual() {
 }
 
 function projectVisual(project) {
-  if (project.slug === "sharktank") return sharkTankVisual();
-  if (project.slug === "hexframe") return hexframeVisual();
+  if (project.slug === "sharktank") return `<div class="project-visual atmospheric-art atmospheric-sharktank"><img src="/sharktank-project.jpg" alt="SharkTank main menu with the shark mascot and Play, Customize, and Settings controls" decoding="async"><span>Realtime workload · governed in production</span></div>`;
+  if (project.slug === "hexframe") return `<div class="project-visual atmospheric-art atmospheric-hexframe"><img src="/hexframe-project.jpg" alt="Hexframe main menu with campaign, fight, training, loadout, and codex navigation" decoding="async"><span>Deterministic combat · accessible training</span></div>`;
   return yarReaderVisual();
 }
 
 function projectProof(project) {
   if (project.slug === "sharktank") {
-    return `<div class="proof-snippet governance-snippet" aria-label="SharkTank governance evidence chain"><span>Running system</span><i>→</i><span>Evidence</span><i>→</i><span>Controls</span><i>→</i><span>Management system</span><div><b>ISO 27001</b><b>ISO 42001</b></div></div>`;
+    return `<div class="proof-snippet atmospheric-card atmospheric-sharktank"><img src="/sharktank-project.jpg" alt="SharkTank main menu with its shark mascot and primary controls" loading="lazy" decoding="async"><span>Governed realtime workload</span></div>`;
   }
   if (project.slug === "hexframe") {
-    return `<div class="proof-snippet frame-snippet" aria-label="Hexframe deterministic move timeline"><header><span>standing_light</span><b>18 frames</b></header><div class="frame-track"><i class="startup"></i><i class="startup"></i><i class="startup"></i><i class="startup"></i><i class="active"></i><i class="active"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i></div><footer><span>Startup 4f</span><span>Active 2f</span><span>Recovery 12f</span></footer></div>`;
+    return `<div class="proof-snippet atmospheric-card atmospheric-hexframe"><img src="/hexframe-project.jpg" alt="Hexframe menu showing campaign, fight, training, loadouts, and codex" loading="lazy" decoding="async"><span>Deterministic systems · accessible controls</span></div>`;
   }
   return `<div class="proof-snippet library-snippet" aria-label="YarReader populated fictional library"><img src="/yarreader-library-art.jpg" alt="Six original fictional comic scenes shown as subdued library thumbnails" loading="lazy" decoding="async"><div><strong>6 series</strong><span>66 chapters · Offline library</span></div></div>`;
 }
@@ -384,7 +385,7 @@ function projectProof(project) {
 function projectCard(project) {
   return `<article class="project-card">
     ${projectProof(project)}
-    <div class="project-card-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="/projects/${project.slug}/">${escapeHtml(project.name)}</a></h3><p>${escapeHtml(project.description)}</p><a class="text-link" href="/projects/${project.slug}/">View project <span aria-hidden="true">→</span></a></div>
+    <div class="project-card-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="/projects/${project.slug}/">${escapeHtml(project.name)}</a></h3><p>${escapeHtml(project.description)}</p>${tags(project.capabilities, "Engineering capabilities")}<a class="text-link" href="/projects/${project.slug}/">View project <span aria-hidden="true">→</span></a></div>
   </article>`;
 }
 
@@ -406,12 +407,12 @@ function capabilityGrid() {
 
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div><p class="kicker">Software engineer · Systems integration · Implementation · Project delivery</p><h1>Jacob <span>Yongue.</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><p class="hero-meta">Engineering depth · Operational context · Inspectable proof</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">View work</a><a class="button" href="/resume/">Resume</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="hero jacob-hero"><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue.</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><p class="hero-meta">Engineering depth · Operational context · Inspectable proof</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
-    <section class="contact-band" aria-label="Contact and resume"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/resume/">Resume</a></div></section>
+    <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
   </main>`;
   return document({ title: "Jacob Yongue — Software Engineer | WizardGang", description: "Jacob Yongue designs, builds, integrates, and delivers software systems from requirements through production. Explore projects, professional work, and technical case studies.", path: "/", body, build, social: true });
 }
@@ -466,16 +467,16 @@ function architecture(items) {
 
 const projectNarrative = {
   sharktank: {
-    tagline: "Governance implemented against a running software system.",
-    what: "A production software project exploring how security and AI governance requirements map to controls, operational behavior, and verifiable evidence.",
-    why: "I wanted to test whether an ISO-aligned management system could remain concrete and inspectable when attached to a real workload instead of a hypothetical company or slide deck.",
-    highlights: ["ISO/IEC 27001 information-security management", "ISO/IEC 42001 AI-system governance", "Live control and operational evidence", "A realtime application as the governed workload"]
+    tagline: "A running workload where governance can be inspected, not merely claimed.",
+    what: "A realtime multiplayer production workload used to demonstrate ISO/IEC 27001- and ISO/IEC 42001-aligned controls through live operational evidence, accessible interfaces, spend boundaries, controlled degradation, and maintained availability.",
+    why: "Compliance claims are easy to write and difficult to prove. SharkTank tests whether security, AI, reliability, accessibility, cost, and continuity requirements can stay concrete when attached to a real workload instead of a hypothetical company or slide deck.",
+    highlights: ["ISO/IEC 27001 and ISO/IEC 42001 alignment", "Live uptime, incident, change, recovery, and receipt evidence", "WCAG 2.0 AA support across the public and game interfaces", "Spend governance with a hard gate and safe degradation"]
   },
   hexframe: {
     tagline: "Fighting-game systems made deterministic and inspectable.",
-    what: "A browser-based 2D fighting-game simulator and engineering laboratory built around fixed-step combat, authored frame data, hitboxes, replayable state, and rollback-ready boundaries.",
-    why: "Fighting games compress hard engineering problems into a visible system: timing, input, simulation authority, animation, collision, debugging, and tools all have to agree on what happened.",
-    highlights: ["Fixed 60 Hz integer simulation", "Authored frame, hitbox, and hurtbox data", "Replay and rollback contracts", "Training and debugging tools built on the same state model"]
+    what: "A browser-based fighting-game system and engineering laboratory built around fixed-step combat, authored frame data, replayable state, rollback-ready boundaries, keyboard and gamepad parity, semantic menus, and accessible training tools.",
+    why: "Fighting games compress hard engineering problems into a visible system: timing, input, simulation authority, animation, collision, debugging, accessibility, and tools all have to agree on what happened.",
+    highlights: ["Fixed 60 Hz integer simulation", "Replay and rollback contracts", "Training and debugging tools on the authoritative state model", "WCAG 2.0 AA support for menus, navigation, settings, and training interfaces"]
   },
   yarreader: {
     tagline: "A portable media library that works without a server.",
@@ -487,10 +488,13 @@ const projectNarrative = {
 
 function projectShowcase(project, build) {
   const copy = projectNarrative[project.slug];
-  const liveLabel = project.slug === "sharktank" ? "Open governance system" : project.liveUrl ? "Launch application" : "Inspect source";
+  const liveLabel = project.slug === "sharktank" ? "Play" : project.liveUrl ? "Launch application" : "Inspect source";
   const liveHref = project.liveUrl || project.sourceUrl;
+  const primaryActions = project.slug === "sharktank"
+    ? `<a class="button button-primary" href="/projects/sharktank/case-study/">Case Study <span aria-hidden="true">→</span></a><a class="button" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a><a class="button" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Evidence <span aria-hidden="true">↗</span></a><a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`
+    : `<a class="button button-primary" href="${liveHref}" target="_blank" rel="noopener noreferrer">${liveLabel} <span aria-hidden="true">↗</span></a><a class="button" href="/projects/${project.slug}/case-study/">Case Study <span aria-hidden="true">→</span></a><a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
   const body = `<main class="case-main showcase-main" id="main" tabindex="-1"><a class="crumb" href="/projects/">← Projects</a>
-    <section class="showcase-hero"><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1><p>${escapeHtml(copy.tagline)}</p><div class="button-row"><a class="button button-primary" href="${liveHref}" target="_blank" rel="noopener noreferrer">${liveLabel} <span aria-hidden="true">↗</span></a><a class="button" href="/projects/${project.slug}/case-study/">Technical case study <span aria-hidden="true">→</span></a><a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></section>
+    <section class="showcase-hero"><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1><p>${escapeHtml(copy.tagline)}</p><div class="button-row">${primaryActions}</div></section>
     <div class="case-visual showcase-visual">${projectVisual(project)}</div>
     <section class="showcase-overview"><article><p class="kicker">What it is</p><h2>A complete working system.</h2><p>${escapeHtml(copy.what)}</p></article><article><p class="kicker">Why I built it</p><h2>The engineering question.</h2><p>${escapeHtml(copy.why)}</p></article></section>
     <section class="case-section"><div class="case-label">Engineering highlights</div><div><h2>What the project demonstrates.</h2><ul class="built-list">${copy.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
@@ -516,26 +520,36 @@ function sharkTankCaseStudy(project, build) {
     "Monitoring through replayable, inspectable system state",
     "Documented limitations and retained operator authority"
   ];
+  const accessibilityControls = [
+    "Complete keyboard operation for the public evidence surfaces and supported game controls",
+    "Visible focus, semantic landmarks, ordered headings, labelled controls, and skip navigation",
+    "Screen-reader status and error messages that update without stealing focus",
+    "Readable contrast, scalable presentation, and responsive layouts at browser zoom",
+    "Reduced-motion, high-contrast, font-scale, colour-label, caption, and steering-assist preferences"
+  ];
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/sharktank/">← SharkTank overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
-    <section class="case-section"><div class="case-label">01 — Objective</div><div><h2>Can governance be observable?</h2><p>${escapeHtml(project.problem)}</p><p>The game is the workload. The case study is the management system around it: how risk is decided, how controls are implemented, how AI-system boundaries are stated, and how evidence survives contact with the running service.</p></div></section>
-    <section class="case-section"><div class="case-label">02 — ISO management system</div><div><h2>ISO/IEC 27001 and ISO/IEC 42001 are design constraints.</h2><p>The public register spans both standards and keeps management-system requirements, Annex controls, inherited supplier responsibilities, exclusions, partial implementations, and open gaps visible rather than flattening them into a compliance badge.</p>${architecture([
-      ["ISO/IEC 27001", "Information security, risk, access, operations, incidents, continuity, suppliers, and secure change"],
-      ["ISO/IEC 42001", "AI purpose, responsibility, impact, lifecycle, operation, monitoring, change, and transparency"],
-      ["184 mapped rows", "A single readiness register links clauses and controls to the service position and available evidence"],
-      ["Readiness, not certification", "The portfolio does not claim ISO certification or full conformity beyond what the evidence supports"]
+    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>Compliance claims are easy to write and difficult to prove.</h2><p>${escapeHtml(project.problem)}</p></div></section>
+    <section class="case-section"><div class="case-label">02 — Approach</div><div><h2>Use a real application as the governed workload.</h2><p>The game exercises identity, realtime state, change, incidents, continuity, resource consumption, accessibility, and deterministic agents. The management system around it defines how risk is decided, how controls operate, and how evidence survives contact with production.</p></div></section>
+    <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Security governance maps to production controls.</h2><p>Scope, risk treatment, access, suppliers, secure development, operations, incident response, recovery, and change management are mapped to the running service. Supplier, excluded, partial, and gap positions remain visible. This is an aligned readiness exercise, not certification.</p></div></section>
+    <section class="case-section"><div class="case-label">04 — ISO/IEC 42001</div><div><h2>AI purpose and limits are explicit.</h2><p>The computer-controlled sharks are deterministic and rule-based. Their intended use, impact boundary, operator authority, lifecycle, monitoring, transparency, and change control are governed without implying a model or inference dependency that does not exist.</p><ul class="built-list">${aiControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">05 — Reliability</div><div><h2>Uptime is evidence, not a frozen marketing number.</h2><p>The live dashboard derives availability from the complete incident record since project start. When that source supports 100%, the interface says <strong>100% uptime maintained</strong>; if the evidence changes, the displayed value changes with it.</p><ul class="built-list">${operatingControls.slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">06 — Accessibility</div><div><h2>Accessibility is part of production governance.</h2><p>The validated public, menu, settings, and supported gameplay interfaces target <strong>WCAG 2.0 AA</strong>. The claim is scoped to those implemented interfaces and controls; it does not imply that every spatial visual interaction has an equivalent nonvisual experience.</p><ul class="built-list">${accessibilityControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">07 — Cost governance</div><div><h2>The workload has an explicit operating boundary.</h2><p>Resource use is metered against current limits and history. At the implemented hard threshold, variable-cost gameplay and public writes close while read-only evidence, status, security intake, and protected recovery paths remain available. Core accountability is preserved before normal operation resumes.</p>${architecture([
+      ["Normal", "Gameplay, writes, and evidence operate normally"],
+      ["Threshold reached", "The hard spend gate closes variable-cost traffic"],
+      ["Core protected", "Status, evidence, security intake, and recovery remain available"],
+      ["Recover", "An authenticated operator resets the measurement boundary and restores normal operation"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">03 — Evidence model</div><div><h2>A control is only useful if the implementation can be inspected.</h2><p>Policies and control descriptions are not treated as proof by themselves. Register rows resolve into live routes, operational records, or explicit limitations so the evidence path remains part of the system.</p>${architecture([
-      ["Policy", "State the requirement, purpose, role, and boundary"],
-      ["Risk", "Assess what can fail and decide treatment"],
-      ["Control", "Implement the technical or operational response"],
-      ["Live evidence", "Expose the running record, result, or remaining gap"]
+    <section class="case-section"><div class="case-label">08 — Evidence architecture</div><div><h2>Requirement → control → implementation → live evidence → operational record.</h2><p>Policies and control descriptions are not treated as proof by themselves. Each supported position resolves into a running route, operational record, or explicit limitation.</p>${architecture([
+      ["Requirement", "State the governed outcome and boundary"],
+      ["Control", "Choose the technical or operational response"],
+      ["Implementation", "Make the response part of the workload"],
+      ["Live evidence", "Expose the current result and retained operational record"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">04 — Operational controls</div><div><h2>Production behavior is part of the evidence.</h2><ul class="built-list">${operatingControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">05 — AI governance</div><div><h2>Govern the AI system before adding model complexity.</h2><p>The computer-controlled sharks are intentionally rule-based. That keeps the system testable while still exercising the governance questions ISO/IEC 42001 puts in front of an AI system: purpose, accountability, impact, change, monitoring, transparency, and limitation.</p><ul class="built-list">${aiControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">06 — Production architecture</div><div><h2>Cloudflare is the implementation layer, not the headline.</h2>${architecture(project.architecture)}<p>Workers own routing, validation, policy, and public evidence surfaces; Durable Objects own realtime state and receipts; R2 holds independent state copies used by recovery drills.</p></div></section>
-    <section class="case-section"><div class="case-label">07 — Current state</div><div><h2>Say what is proven—and what is not.</h2><p>${escapeHtml(project.result)}</p><p>The useful outcome is not an ISO logo. It is an inspectable chain from management intent to running behavior, plus enough honesty to leave partial controls and gaps visible when evidence is not sufficient.</p>${actions(project)}</div></section>
+    <section class="case-section"><div class="case-label">09 — Architecture</div><div><h2>Clear boundaries keep the evidence trustworthy.</h2>${architecture(project.architecture)}<p>Workers own routing, validation, policy, and public evidence; Durable Objects own realtime state and receipts; R2 holds independent state copies read by recovery drills.</p></div></section>
+    <section class="case-section"><div class="case-label">10 — Result</div><div><h2>A running system whose governance can be inspected.</h2><p>${escapeHtml(project.result)}</p><p>The result is a production workload where security governance, AI governance, reliability, accessibility, cost, continuity, and operational evidence can be checked rather than merely claimed.</p>${actions(project)}</div></section>
   </main>`;
   return document({
     title: "SharkTank — ISO 27001 & ISO 42001 Governance Case Study | WizardGang",
@@ -553,6 +567,8 @@ function projectCaseStudy(project, build) {
   const title = project.slug === "hexframe"
     ? "Hexframe — Deterministic Fighting Game Systems | WizardGang"
     : "YarReader — Portable Media Pipeline | WizardGang";
+  const accessibility = project.slug === "hexframe" ? `<section class="case-section"><div class="case-label">05 — Accessibility</div><div><h2>Accessibility shapes the application architecture.</h2><p>Hexframe’s menus, navigation, settings, lab, and supported game controls target <strong>WCAG 2.0 AA</strong>. Keyboard and gamepad input share the same action model; modal focus is trapped and restored; tab interfaces use managed focus; status and combat feedback have semantic output; and pointer-only actions have keyboard alternatives.</p><ul class="built-list"><li>Complete keyboard operation across menus, training, loadouts, settings, and supported combat controls</li><li>Visible and optional stronger focus states, semantic tabs and dialogs, and predictable focus restoration</li><li>Scalable text, high-contrast and colour-vision modes, status patterns, captions, and screen-reader combat output</li><li>System-aware and explicit reduced-motion settings that remove nonessential motion</li><li>Accessible training and lab controls with labelled frame, move, loadout, and status feedback</li></ul><p>The claim is precise: the implemented interface and control surfaces are covered. It does not claim that every spatial visual fighting-game interaction has a fully equivalent nonvisual experience.</p></div></section>` : "";
+  const resultNumber = project.slug === "hexframe" ? "06" : "05";
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/${project.slug}/">← ${escapeHtml(project.name)} overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
@@ -560,13 +576,14 @@ function projectCaseStudy(project, build) {
     <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>A complete path, not an isolated component.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
     <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Explicit ownership at every boundary.</h2>${architecture(project.architecture)}</div></section>
     <section class="case-section"><div class="case-label">04 — Interesting engineering</div><div><h2>The part worth looking at twice.</h2><p>${escapeHtml(project.engineering)}</p></div></section>
-    <section class="case-section"><div class="case-label">05 — Result / current state</div><div><h2>What exists now.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
+    ${accessibility}
+    <section class="case-section"><div class="case-label">${resultNumber} — Result / current state</div><div><h2>What exists now.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
   return document({ title, description: project.description, path: `/projects/${project.slug}/case-study/`, current: "projects", body, build });
 }
 
 function about(build) {
-  const body = `<main class="case-main about-main" id="main" tabindex="-1"><section class="page-hero about-hero"><p class="kicker">About Jacob Yongue</p><h1>Build the whole path.<br><span>Own the outcome.</span></h1><div class="prose"><p>I’m a software engineer with an implementation background and a systems view of delivery. My work spans requirements, architecture, application development, integrations, QA, deployment, training, operational handoff, and production support.</p><p>I’m most useful when the problem crosses boundaries: code and workflow, product and operations, technical design and project delivery. I make those boundaries explicit, learn the unfamiliar parts quickly, and keep evidence close enough that another person can understand what the system actually does.</p></div><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Professional work</a><a class="button" href="/resume/">Resume</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></section>
+  const body = `<main class="case-main about-main" id="main" tabindex="-1"><section class="page-hero about-hero"><p class="kicker">About Jacob Yongue</p><h1>Build the whole path.<br><span>Own the outcome.</span></h1><div class="prose"><p>I’m a software engineer with an implementation background and a systems view of delivery. My work spans requirements, architecture, application development, integrations, QA, deployment, training, operational handoff, and production support.</p><p>I’m most useful when the problem crosses boundaries: code and workflow, product and operations, technical design and project delivery. I make those boundaries explicit, learn the unfamiliar parts quickly, and keep evidence close enough that another person can understand what the system actually does.</p></div><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Professional work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></section>
     <section class="about-principles" aria-labelledby="approach-heading"><div><p class="kicker">Approach</p><h2 id="approach-heading">Practical systems over isolated artifacts.</h2></div><div class="principle-grid"><article><span>01</span><h3>Systems thinking</h3><p>Model the workflow, failure modes, ownership, and operating environment before optimizing an isolated component.</p></article><article><span>02</span><h3>Implementation depth</h3><p>Stay hands-on through the code, integration, testing, deployment, adoption, and the edge cases production reveals.</p></article><article><span>03</span><h3>Project ownership</h3><p>Make scope, risk, decisions, and handoff legible so progress survives team and technology boundaries.</p></article><article><span>04</span><h3>Learning velocity</h3><p>Reduce unfamiliar technology to explicit contracts, inspectable behavior, and small verifiable steps.</p></article></div></section>
     <section class="wizardgang-note"><p class="kicker">WizardGang.ai</p><p>WizardGang.ai is my personal engineering portfolio and the home for the software projects I build outside of professional work.</p></section>
     <section class="contact-band"><p>Let’s talk about the system you need to build, connect, or deliver.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a class="button" href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></div></section></main>`;
@@ -586,27 +603,9 @@ function capabilityList(items) {
   return `<ul class="capability-cloud">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
-function resume(build) {
-  const integrations = integrationGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(group.items)}</article>`).join("");
-  const systems = systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("");
-  const body = `<main class="case-main systems-resume" id="main" tabindex="-1">
-    <section class="systems-resume-hero"><div><p class="kicker">Jacob Yongue / professional history</p><h1>Professional<br><span>History.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p><p class="employment-boundary"><strong>Employment record—not WizardGang client work.</strong> These systems, integrations, and client deployments are part of Jacob Yongue’s professional history from roles at FastFetch Corp, Spartan Technology Solutions, and Supply Chain Technologies. They were not delivered under the WizardGang brand.</p></div></section>
-    <section class="systems-resume-section" aria-labelledby="resume-systems"><header><div><p class="kicker">01</p><h2 id="resume-systems">Systems</h2></div></header><div class="systems-resume-grid">${systems}</div></section>
-    <section class="systems-resume-section" aria-labelledby="resume-integrations"><header><div><p class="kicker">02</p><h2 id="resume-integrations">Integrations</h2></div></header><div class="systems-resume-grid">${integrations}</div></section>
-    <section class="systems-resume-section" aria-labelledby="resume-deployments"><header><div><p class="kicker">03</p><h2 id="resume-deployments">Client Deployments</h2></div></header>${referenceList(deployments)}</section>
-  </main>`;
-  return document({ title: "Professional History — Jacob Yongue", description: "Jacob Yongue’s professional employment history across warehouse, fulfillment, logistics, justice, public-sector, and enterprise systems—not WizardGang client work.", path: "/resume/", current: "resume", body, build });
-}
-
 function notFound(build) {
   const body = `<main class="site-main" id="main" tabindex="-1"><section class="not-found"><p class="kicker">404 / Route not found</p><h1>Nothing here.</h1><p>Return to Jacob Yongue’s portfolio or inspect the project index.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects <span aria-hidden="true">→</span></a><a class="button" href="/">Home</a></div></section></main>`;
   return document({ title: "Not Found — WizardGang", description: "That WizardGang portfolio page does not exist.", path: "/404/", body, build, noindex: true });
-}
-
-function moved(build, { from, to, title, description }) {
-  const body = `<main class="case-main moved-page" id="main" tabindex="-1"><section><p class="kicker">Route moved</p><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p><div class="button-row"><a class="button button-primary" href="${to}">Continue <span aria-hidden="true">→</span></a></div></section></main>`;
-  const html = document({ title: `${title} — Jacob Yongue`, description, path: from, body, build, noindex: true });
-  return html.replace("</head>", `    <meta http-equiv="refresh" content="0;url=${to}">\n  </head>`);
 }
 
 export function createPages(build) {
@@ -616,10 +615,7 @@ export function createPages(build) {
     ...projects.map((project) => [`projects/${project.slug}/index.html`, projectShowcase(project, build)]),
     ...projects.map((project) => [`projects/${project.slug}/case-study/index.html`, projectCaseStudy(project, build)]),
     ["work/index.html", work(build)],
-    ["professional/index.html", moved(build, { from: "/professional/", to: "/work/", title: "Professional work moved.", description: "Jacob Yongue’s career history, systems, deployments, and integrations now live under Work." })],
-    ...projects.map((project) => [`work/${project.slug}/index.html`, moved(build, { from: `/work/${project.slug}/`, to: `/projects/${project.slug}/`, title: `${project.name} moved.`, description: `The ${project.name} overview and technical case study now live under Projects.` })]),
     ["about/index.html", about(build)],
-    ["resume/index.html", resume(build)],
     ["404.html", notFound(build)]
   ]);
 }

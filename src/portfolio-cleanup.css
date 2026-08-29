@@ -375,6 +375,16 @@
   font-size: .94rem;
 }
 
+.project-card-copy .tags {
+  margin: 0 0 1.5rem;
+}
+
+.project-card-copy .tags li {
+  border-color: #4d4857;
+  color: #c7c2cd;
+  font-size: .58rem;
+}
+
 .project-card-copy .text-link {
   margin-top: auto;
 }
@@ -385,6 +395,61 @@
   overflow: hidden;
   border-bottom: 1px solid var(--line);
   background: #0b0b0f;
+}
+
+.atmospheric-card,
+.atmospheric-art {
+  position: relative;
+  overflow: hidden;
+  background: #08080b;
+}
+
+.atmospheric-card::after,
+.atmospheric-art::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(5 5 8 / 15%), rgb(5 5 8 / 78%));
+  content: "";
+  pointer-events: none;
+}
+
+.atmospheric-card img,
+.atmospheric-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(5px) brightness(.7) saturate(.82);
+  transform: scale(1.045);
+}
+
+.atmospheric-card > span,
+.atmospheric-art > span {
+  position: absolute;
+  z-index: 1;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  color: #f5f2f8;
+  font: 800 .65rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.atmospheric-art {
+  min-height: 470px;
+  padding: 0;
+}
+
+.atmospheric-art::before {
+  display: none;
+}
+
+.atmospheric-art > span {
+  right: clamp(1.2rem, 3vw, 2.2rem);
+  bottom: clamp(1.2rem, 3vw, 2.2rem);
+  left: clamp(1.2rem, 3vw, 2.2rem);
+  font-size: .72rem;
 }
 
 .governance-snippet {
