@@ -64,8 +64,8 @@ export const projects = [
     description: "A crash-recoverable pipeline that turns mixed publication formats into a verified static HTML library designed for offline and removable storage.",
     tags: ["TypeScript", "CLI", "Content addressing", "Recovery", "Static HTML", "Offline"],
     liveUrl: null,
-    sourceUrl: null,
-    sourcePublic: false,
+    sourceUrl: "https://github.com/SouthernGentlemen/YarReader",
+    sourcePublic: true,
     problem: "CBZ, CBR, EPUB, PDF, loose images, duplicate releases, interrupted copies, and incomplete downloads all enter through one inbox. The system must preserve originals and never activate an export it has not completely verified.",
     built: [
       "Explicit adapters for six source families",
