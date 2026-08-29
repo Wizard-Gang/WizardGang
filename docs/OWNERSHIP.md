@@ -8,9 +8,9 @@ reconstruction evidence, and releases belong to their canonical public repositor
 | Surface | Canonical source | Public release at verification | Ownership |
 | --- | --- | --- | --- |
 | `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | `main` | Static portfolio, project metadata, presentation assets, and temporary stateless compatibility routes |
-| `sharktank.wizardgang.ai` | [`SouthernGentlemen/SharkTank`](https://github.com/SouthernGentlemen/SharkTank) | `v1.0.2` | Runtime, Cloudflare infrastructure, Durable Objects, WebSockets, APIs, security, operations, governance, evidence, tests, and deployment |
-| `hexframe.wizardgang.ai` | [`SouthernGentlemen/Hexframe`](https://github.com/SouthernGentlemen/Hexframe) | `v0.7.2` | Deterministic combat runtime, authored content, rollback, training lab, tests, and deployment |
-| YarReader offline workspace | [`SouthernGentlemen/YarReader`](https://github.com/SouthernGentlemen/YarReader) | `v1.0.1` | Ingestion, inspection, classification, review, normalization, crash-recoverable archive, static export, portable reader, tests, and reconstruction record |
+| `sharktank.wizardgang.ai` | [`Wizard-Gang/SharkTank`](https://github.com/Wizard-Gang/SharkTank) | `v1.2.0` | Runtime, Cloudflare infrastructure, Durable Objects, WebSockets, APIs, security, operations, governance, evidence, tests, and deployment |
+| `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | `v0.7.2` | Deterministic combat runtime, authored content, rollback, training lab, tests, and deployment |
+| YarReader offline workspace | [`Wizard-Gang/YarReader`](https://github.com/Wizard-Gang/YarReader) | `v1.0.1` | Ingestion, inspection, classification, review, normalization, crash-recoverable archive, static export, portable reader, tests, and reconstruction record |
 
 ## Retired sources
 

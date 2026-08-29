@@ -105,6 +105,7 @@ for (const file of required) {
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 for (const requiredText of [
   "Jacob <span>Yongue.</span>",
+  "I build systems that hold up.",
   "Software engineer · Systems · Project delivery",
   "I design, build, integrate, and deliver software systems from requirements through production.",
   "Selected projects", "Selected work", "Capabilities", "About"
@@ -116,7 +117,7 @@ for (const retired of ["Two bodies of work", "Different contexts. Clear boundari
 }
 if (!home.includes('content="https://wizardgang.ai/og-jacob-yongue.jpg"')) fail("homepage missing Jacob-first social preview");
 if (!home.includes('href="https://github.com/Wizard-Gang"')) fail("homepage generic GitHub action must target the Wizard-Gang organization");
-if (!home.includes("WCAG") || !home.includes("Cost Governance")) fail("homepage project summaries are missing shared accessibility or governance capabilities");
+if (!home.includes("accessible interfaces") || !home.includes("accessible controls")) fail("homepage project summaries are missing shared accessibility capability");
 
 for (const slug of projectSlugs) {
   const overview = await readFile(resolve(dist, `projects/${slug}/index.html`), "utf8");
@@ -157,8 +158,11 @@ for (const requiredText of ["Career history", "Systems delivered", "Integrations
 }
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
-for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "WizardGang.ai is my personal engineering portfolio"]) {
+for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]) {
   if (!about.includes(requiredText)) fail(`about page missing ${requiredText}`);
+}
+for (const removedText of ["WizardGang.ai is my personal engineering portfolio", "Let’s talk about the system", "Professional work</a>"]) {
+  if (about.includes(removedText)) fail(`about page still contains removed content: ${removedText}`);
 }
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");

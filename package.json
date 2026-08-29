@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Lean static software portfolio for wizardgang.ai",
+  "description": "Static software engineering portfolio for Jacob Yongue at wizardgang.ai.",
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/verify.mjs",

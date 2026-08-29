@@ -3,28 +3,34 @@
 // Ordered most-recent-first.
 export const professionalRoles = [
   {
+    organization: "University of Georgia",
+    role: "AI Engineer",
+    dates: "May 2026 - Current",
+    summary: "Building applied AI systems at the University of Georgia."
+  },
+  {
     organization: "Supply Chain Technologies",
     role: "Consultant / Technical Lead",
     dates: "Oct 2024 - Apr 2026",
-    summary: "Led 20+ distributed developers and technical delivery across 20+ enterprise implementations, owning Git/GitHub release delivery, REST API and EDI integrations connecting CIMS WMS to 3PL, ERP, and carrier platforms, and monitoring that surfaced and resolved $10M+ in inventory and financial variances."
+    summary: "Led distributed delivery across enterprise WMS implementations, integrations, releases, and production support."
   },
   {
     organization: "Spartan Technology Solutions",
     role: "Lead Developer",
     dates: "Nov 2023 - Sep 2024",
-    summary: "Led 8 .NET developers and 12 support staff delivering multi-state case-management applications, owning CI/CD, release cadence, and production stability, plus workflow analysis and historical data migration for a $1M-$5M Florida State Attorney implementation under CJIS controls."
+    summary: "Led .NET case-management delivery, CI/CD, production support, and migration planning for public-sector systems."
   },
   {
     organization: "Independent venture",
     role: "Founder / operator",
     dates: "Aug 2023 - Nov 2024",
-    summary: "Operated a seasonal short-term rental across two cycles, from licensing and market research through guest operations, property readiness, compliance, and closeout."
+    summary: "Operated two seasonal rental cycles across licensing, bookings, guest service, compliance, and closeout."
   },
   {
     organization: "FastFetch Corp",
     role: "Senior Software Engineer",
     dates: "Jul 2019 - May 2023",
-    summary: "Owned end-to-end development and support for C#/.NET order fulfillment solutions and high-volume ETL pipelines, led zero-downtime platform migrations with impact analysis and hypercare, and integrated WMS-connected applications across 12+ North American locations."
+    summary: "Built and supported .NET fulfillment systems, ETL pipelines, WMS integrations, and zero-downtime migrations."
   }
 ];
 
