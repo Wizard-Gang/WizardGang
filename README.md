@@ -1,12 +1,42 @@
-# Jacob Yongue — WizardGang.ai
+# WizardGang
 
-Jacob Yongue's static software-engineering portfolio at [wizardgang.ai](https://wizardgang.ai).
+WizardGang is Jacob Yongue's software engineering portfolio. It publishes project overviews, case studies, professional work, and portfolio assets at [wizardgang.ai](https://wizardgang.ai).
 
-This repository owns portfolio pages, project metadata, presentation assets, search metadata,
-and temporary compatibility routing for URLs that historically belonged to Shark Tank. It does
-not own any product runtime, authentication, database, Durable Object, WebSocket implementation,
-or product source code.
+**[Live site](https://wizardgang.ai)** · **[Projects](https://wizardgang.ai/projects/)** · **[Professional work](https://wizardgang.ai/work/)**
 
-Current product ownership and recovery boundaries are in
-[`docs/OWNERSHIP.md`](docs/OWNERSHIP.md). The completed migration inventory and cutover contract
-remain in [`docs/BOUNDARY-MIGRATION.md`](docs/BOUNDARY-MIGRATION.md) as a historical record.
+## Run locally
+
+```bash
+npm ci
+npm run dev
+```
+
+The local Worker serves the generated static site on port 8790.
+
+## Verify
+
+```bash
+npm run build
+npm run check
+```
+
+## Structure
+
+- `src/site.mjs` builds the site pages.
+- `src/projects.mjs` contains project metadata.
+- `src/professional.mjs` contains professional history.
+- `src/worker.mjs` handles static delivery and compatibility redirects.
+- `scripts/` contains build and verification commands.
+
+## Documentation
+
+- [Ownership boundaries](docs/OWNERSHIP.md)
+- [Boundary migration record](docs/BOUNDARY-MIGRATION.md)
+
+## Deployment
+
+Cloudflare configuration lives in `wrangler.jsonc`. Use the production dry run before a release:
+
+```bash
+npm run deploy:production:dry-run
+```
