@@ -1,22 +1,22 @@
-const WIZARDGANG_REPO = "https://github.com/Wizard-Gang/WizardGang";
-
 export const projects = [
   {
     name: "SharkTank",
     slug: "sharktank",
     number: "01",
     eyebrow: "Security & AI governance",
-    description: "A production software system demonstrating how ISO/IEC 27001 and ISO/IEC 42001 governance requirements map to technical controls, operations, and live evidence.",
-    tags: ["ISO/IEC 27001", "ISO/IEC 42001", "Risk management", "AI governance", "Cloudflare", "Operations"],
-    liveUrl: "https://sharktank.wizardgang.ai/",
+    description: "A realtime production workload demonstrating ISO/IEC 27001- and ISO/IEC 42001-aligned governance through live controls, operational evidence, accessible interfaces, controlled spend, and defined degradation.",
+    tags: ["ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "WCAG 2.0 AA interfaces", "Live evidence", "Cost governance"],
+    capabilities: ["ISO 27001", "ISO 42001", "WCAG", "Live Uptime", "Cost Governance"],
+    liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
-    sourceUrl: WIZARDGANG_REPO,
+    sourceUrl: "https://github.com/Wizard-Gang/SharkTank",
     problem: "Compliance claims are easy to write and difficult to prove. Shark Tank asks whether security and AI governance can be made inspectable from the same production system they describe, without confusing a readiness exercise with certification.",
     built: [
       "A public 184-row readiness register spanning ISO/IEC 27001:2022 and ISO/IEC 42001:2023",
       "Policies, risk treatment, control positions, objectives, and AI impact assessment published as inspectable routes",
       "Evidence links that resolve from register rows into the running system rather than screenshots or slideware",
       "Public operational records for availability, incidents, changes, spend controls, backups, and restore drills",
+      "Keyboard-operable public and game interfaces with visible focus, semantic status output, adaptable presentation, and reduced-motion support",
       "Deterministic rule-based agent behavior with explicit purpose, limits, monitoring, and change control",
       "Honest partial, supplier-inherited, excluded, and gap states instead of overstating readiness"
     ],
@@ -27,17 +27,18 @@ export const projects = [
       ["R2", "Daily state copies and restore evidence"]
     ],
     engineering: "The management-system layer is part of the product. A control is not treated as evidenced merely because it is described; the register points to a live route that demonstrates the implementation or records the remaining limitation.",
-    result: "A live ISO-aligned readiness exercise, not a certification claim: visitors can inspect the control register, policies, risks, operational history, recovery evidence, AI-system boundaries, and known gaps before they ever play the game."
+    result: "A live ISO-aligned readiness exercise, not a certification claim: visitors can inspect security governance, AI governance, reliability, accessibility, cost boundaries, recovery evidence, and known gaps before they play the governed workload."
   },
   {
     name: "Hexframe",
     slug: "hexframe",
     number: "02",
     eyebrow: "Deterministic systems",
-    description: "Browser fighting-game engineering through deterministic simulation, frame data, hitboxes, input systems, debugging tools, and rollback-ready architecture.",
-    tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
+    description: "An interactive fighting-game system combining deterministic simulation and rollback-ready state with accessible controls, semantic menus, adaptable presentation, and first-class training tools.",
+    tags: ["Deterministic simulation", "Rollback architecture", "WCAG 2.0 AA interfaces", "Training tools", "Accessible controls"],
+    capabilities: ["Deterministic Simulation", "Rollback Architecture", "WCAG", "Training Tools", "Accessible Controls"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
-    sourceUrl: WIZARDGANG_REPO,
+    sourceUrl: "https://github.com/Wizard-Gang/Hexframe",
     problem: "Combat has to mean the same thing to play, training, AI, replay, saves, and eventual network rollback. Browser timing, presentation state, and ambient randomness cannot be allowed to define the result.",
     built: [
       "A fixed 60 Hz integer simulation with explicit snapshots and hashes",
@@ -45,7 +46,8 @@ export const projects = [
       "Replay and rollback contracts shared by training and future networking",
       "Party AI that uses the same authored loadouts as the player",
       "Independent SVG rigs with presentation kept outside combat authority",
-      "A protected engineering lab for deterministic inspection"
+      "A protected engineering lab for deterministic inspection",
+      "Keyboard and gamepad operation, semantic menus, strong focus handling, scalable text, reduced-motion, contrast and color-vision controls"
     ],
     architecture: [
       ["Input", "Player and deterministic AI decisions"],
@@ -54,7 +56,7 @@ export const projects = [
       ["Renderer", "SVG rigs, VFX, interpolation"]
     ],
     engineering: "One authoritative model supports every downstream consumer. Rendering observes combat; it never decides it. That boundary makes training tools and rollback infrastructure part of the product architecture rather than later patches.",
-    result: "A playable systems slice with authored combat, first-class training, persistent progression, party behavior, and rollback-ready state boundaries that can grow without replacing the combat core."
+    result: "A playable systems slice with authored combat, accessible menus and training workflows, persistent progression, party behavior, and rollback-ready state boundaries that can grow without replacing the combat core."
   },
   {
     name: "YarReader",
@@ -63,8 +65,9 @@ export const projects = [
     eyebrow: "Portable media pipeline",
     description: "A portable offline media library with a browser-based reading interface and a crash-recoverable pipeline for verified, self-contained deployment.",
     tags: ["TypeScript", "CLI", "Content addressing", "Recovery", "Static HTML", "Offline"],
+    capabilities: ["Offline-first", "Content Addressing", "Crash Recovery", "Verified Exports"],
     liveUrl: null,
-    sourceUrl: WIZARDGANG_REPO,
+    sourceUrl: "https://github.com/Wizard-Gang/YarReader",
     problem: "CBZ, CBR, EPUB, PDF, loose images, duplicate releases, interrupted copies, and incomplete downloads all enter through one inbox. The system must preserve originals and never activate an export it has not completely verified.",
     built: [
       "Explicit adapters for six source families",

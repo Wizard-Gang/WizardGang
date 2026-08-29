@@ -1,4 +1,26 @@
 const SHARK_ORIGIN = "https://sharktank.wizardgang.ai";
+const GITHUB_ORG = "https://github.com/Wizard-Gang";
+
+export const PERMANENT_REDIRECTS = new Map([
+  ["/github", GITHUB_ORG],
+  ["/github/", GITHUB_ORG],
+  ["/resume", "/work/"],
+  ["/resume/", "/work/"],
+  ["/professional", "/work/"],
+  ["/professional/", "/work/"],
+  ["/work/shadowmoney", "/projects/hexframe/"],
+  ["/work/shadowmoney/", "/projects/hexframe/"],
+  ["/work/hexframe", "/projects/hexframe/"],
+  ["/work/hexframe/", "/projects/hexframe/"],
+  ["/work/shark-tank", "/projects/sharktank/"],
+  ["/work/shark-tank/", "/projects/sharktank/"],
+  ["/work/sharktank", "/projects/sharktank/"],
+  ["/work/sharktank/", "/projects/sharktank/"],
+  ["/projects/shark-tank", "/projects/sharktank/"],
+  ["/projects/shark-tank/", "/projects/sharktank/"],
+  ["/work/yarreader", "/projects/yarreader/"],
+  ["/work/yarreader/", "/projects/yarreader/"]
+]);
 
 const SECURITY_HEADERS = {
   "strict-transport-security": "max-age=31536000; includeSubDomains",
@@ -85,11 +107,12 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    if (path === "/work/shadowmoney" || path === "/work/shadowmoney/") {
-      return redirect(`${url.origin}/projects/hexframe/`);
-    }
-    if (path === "/work/shark-tank" || path === "/work/shark-tank/") {
-      return redirect(`${url.origin}/projects/sharktank/`);
+    if (PERMANENT_REDIRECTS.has(path)) {
+      const destination = PERMANENT_REDIRECTS.get(path);
+      if (destination.startsWith("https://")) return redirect(destination);
+      const target = new URL(destination, url.origin);
+      target.search = url.search;
+      return redirect(target.toString());
     }
     if (/^\/(?:arena|uno|x4|21|game|checkers|battleship|3d|shark-?run)(?:\/.*)?$/i.test(path)) {
       return redirect(`${url.origin}/`);
