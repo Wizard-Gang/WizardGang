@@ -99,6 +99,9 @@ for (const [slug, source] of [["sharktank", "SharkTank"], ["hexframe", "Hexframe
   const caseStudy = await readFile(resolve(dist, `work/${slug}/index.html`), "utf8");
   const expected = `href="https://github.com/SouthernGentlemen/${source}"`;
   if (!caseStudy.includes(expected)) fail(`${source} case study is missing its canonical public source link`);
+  if (slug === "yarreader" && (!caseStudy.includes('data-fixture="synthetic"') || !caseStudy.includes("Synthetic catalog"))) {
+    fail("YarReader case study must identify its preview catalog as synthetic");
+  }
 }
 
 const worker = await readFile(resolve(root, "src/worker.mjs"), "utf8");

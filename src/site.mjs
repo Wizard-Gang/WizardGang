@@ -161,49 +161,140 @@ function sharkTankVisual() {
   </div>`;
 }
 
+// Frame data copied from Hexframe's authored content so this preview cannot quietly
+// drift from the game: moves/*.json supplies the windows, animations/*.json the poses,
+// character.json the hurtboxes. Rotations are negated because the renderer flips the
+// authored sign once, in rig.ts, when it builds the bone transform.
+const LAB_TAKES = [
+  {
+    id: "a",
+    key: "standing_light",
+    duration: 18,
+    startup: 4,
+    active: 2,
+    recovery: 12,
+    hit: [4, 5],
+    cancel: [5, 15],
+    hitbox: { x: 26, y: 62, w: 44, h: 20 },
+    hurtboxes: [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]],
+    keyTimes: "0;0.167;0.222;0.278;0.556;0.94;1",
+    pelvis: null,
+    bones: {
+      torso: "0;6;-9;-10;-4;-0.8;0",
+      head: "0;2.25;3;2.81;1.88;0.38;0",
+      arm_upper_r: "20;-20;-76;-78;-34;9.2;20",
+      arm_lower_r: "46;70;4;0;40;44.8;46"
+    },
+    still: {}
+  },
+  {
+    id: "b",
+    key: "crouching_light",
+    duration: 16,
+    startup: 4,
+    active: 3,
+    recovery: 9,
+    hit: [4, 6],
+    cancel: [6, 13],
+    hitbox: { x: 22, y: 12, w: 42, h: 18 },
+    hurtboxes: [[-18, 0, 36, 34], [-18, 34, 36, 22], [-14, 56, 28, 20]],
+    keyTimes: "0;0.25;0.375;1",
+    pelvis: "0 -32;0 -30;0 -30.33;0 -32",
+    bones: {
+      torso: "-12;-18;-19;-12",
+      arm_upper_r: "34;-54;-58;34",
+      arm_lower_r: "60;16;12;60"
+    },
+    // The crouch is authored on frame 0 only, and the sampler holds a property until the
+    // next keyframe that names it, so these legs stay folded for the whole clip.
+    still: { leg_upper_l: -62, leg_lower_l: 78, leg_upper_r: 54, leg_lower_r: -70 }
+  }
+];
+
+const LAB_LOOP = "4.5s";
+
+function labBone(take, name, pivot, parts) {
+  const values = take.bones[name];
+  const still = take.still[name];
+  const spin = values
+    ? `<animateTransform attributeName="transform" type="rotate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${values}" keyTimes="${take.keyTimes}"/>`
+    : "";
+  const held = !values && still !== undefined ? ` transform="rotate(${still})"` : "";
+  return `<g transform="translate(${pivot})"><g${held}>${spin}${parts}</g></g>`;
+}
+
+function labFighter(take) {
+  const footL = labBone(take, "foot_l", "0 22", `<rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--far-dark)"/>`);
+  const legLowerL = labBone(take, "leg_lower_l", "0 24", `<rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--far)"/>${footL}`);
+  const legL = labBone(take, "leg_upper_l", "-1 0", `<rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--far)"/>${legLowerL}`);
+
+  const footR = labBone(take, "foot_r", "0 22", `<rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--near-dark)"/>`);
+  const legLowerR = labBone(take, "leg_lower_r", "0 24", `<rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--near)"/>${footR}`);
+  const legR = labBone(take, "leg_upper_r", "1 0", `<rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--near)"/>${legLowerR}`);
+
+  const handL = labBone(take, "hand_l", "0 14", `<circle cx="0" cy="3" r="4.5" fill="var(--far-dark)"/>`);
+  const armLowerL = labBone(take, "arm_lower_l", "0 16", `<rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--far)"/>${handL}`);
+  const armL = labBone(take, "arm_upper_l", "-2 -26", `<rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--far)"/>${armLowerL}`);
+
+  const handR = labBone(take, "hand_r", "0 14", `<circle cx="0" cy="3" r="5" fill="var(--near-dark)"/>`);
+  const armLowerR = labBone(take, "arm_lower_r", "0 16", `<rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--near)"/>${handR}`);
+  const armR = labBone(take, "arm_upper_r", "2 -26", `<rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--near)"/>${armLowerR}`);
+
+  const head = labBone(take, "head", "0 -30", `<circle cx="1" cy="-11" r="11" fill="var(--body)"/><path d="M 8 -15 L 14 -12 L 8 -9 Z" fill="var(--accent)"/>`);
+  const torso = labBone(take, "torso", "0 0", `<rect x="-11" y="-30" width="22" height="30" rx="6" fill="var(--body)"/><rect x="-11" y="-18" width="22" height="3" fill="var(--accent)" opacity=".65"/>${armL}${head}${armR}`);
+
+  const spine = `<rect x="-9" y="-6" width="18" height="12" rx="4" fill="var(--body)"/>${legL}${torso}${legR}`;
+  if (!take.pelvis) return `<g transform="translate(0 -46)">${spine}</g>`;
+  return `<g><animateTransform attributeName="transform" type="translate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${take.pelvis}" keyTimes="${take.keyTimes}"/>${spine}</g>`;
+}
+
+// Boxes are authored with y measured up from the feet; the stage draws y downward.
+function labBox(x, y, w, h, className) {
+  return `<rect class="${className}" x="${x}" y="${-(y + h)}" width="${w}" height="${h}"/>`;
+}
+
+function labTake(take) {
+  const hurt = take.hurtboxes.map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
+  const { x, y, w, h } = take.hitbox;
+  const open = take.hit[0] / take.duration;
+  const close = (take.hit[1] + 1) / take.duration;
+  const hit = `<g opacity="0"><animate attributeName="opacity" dur="${LAB_LOOP}" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;${open.toFixed(3)};${close.toFixed(3)}"/>${labBox(x, y, w, h, "lab-hitbox")}</g>`;
+  return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}</g>`;
+}
+
+function labTimeline(take) {
+  const cells = { frame: "", phase: "", hit: "", cancel: "" };
+  for (let i = 0; i < take.duration; i += 1) {
+    const phase = i < take.startup ? "startup" : i < take.startup + take.active ? "active" : "recovery";
+    cells.frame += `<span class="lab-cell lab-cell-number">${String(i + 1).padStart(2, "0")}</span>`;
+    cells.phase += `<span class="lab-cell lab-on lab-phase-${phase}"></span>`;
+    cells.hit += `<span class="lab-cell${i >= take.hit[0] && i <= take.hit[1] ? " lab-cell-hit" : ""}"></span>`;
+    cells.cancel += `<span class="lab-cell${i >= take.cancel[0] && i <= take.cancel[1] ? " lab-cell-cancel" : ""}"></span>`;
+  }
+  const row = (label, body) => `<div class="lab-row"><strong>${label}</strong><div>${body}</div></div>`;
+  return `<div class="lab-take lab-take-${take.id} lab-tl lab-tl-${take.duration}">
+      <header>
+        <div><p>Move timeline / event-derived</p><h4>${take.key}</h4></div>
+        <dl>
+          <div><dt>Startup</dt><dd>${take.startup}f</dd></div>
+          <div><dt>Active</dt><dd>${take.active}f</dd></div>
+          <div><dt>Recovery</dt><dd>${take.recovery}f</dd></div>
+          <div><dt>Total</dt><dd>${take.duration}f</dd></div>
+        </dl>
+      </header>
+      <div class="lab-rows">
+        ${row("Frame", cells.frame)}${row("Phase", cells.phase)}${row("Hit", cells.hit)}${row("Cancel", cells.cancel)}
+        <div class="lab-track"><i class="lab-playhead"></i></div>
+      </div>
+    </div>`;
+}
+
 function hexframeVisual() {
-  const fighter = `<g id="hfRig">
-    <g transform="translate(0 -46)">
-      <rect x="-9" y="-6" width="18" height="12" rx="4" fill="var(--body, #7f8fd0)"/>
-      <g transform="translate(-1 0) rotate(-6)">
-        <rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--far, #4a5a86)"/>
-        <g transform="translate(0 24) rotate(8)">
-          <rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--far, #4a5a86)"/>
-          <g transform="translate(0 22)"><rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--far-dark, #3b4a70)"/></g>
-        </g>
-      </g>
-      <g>
-        <rect x="-11" y="-30" width="22" height="30" rx="6" fill="var(--body, #7f8fd0)"/>
-        <rect x="-11" y="-18" width="22" height="3" fill="var(--accent, #c9d4ff)" opacity=".65"/>
-        <g transform="translate(-2 -26) rotate(-12)">
-          <rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--far, #4a5a86)"/>
-          <g transform="translate(0 16) rotate(-28)">
-            <rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--far, #4a5a86)"/>
-            <g transform="translate(0 14)"><circle cx="0" cy="3" r="4.5" fill="var(--far-dark, #3b4a70)"/></g>
-          </g>
-        </g>
-        <g transform="translate(0 -30)">
-          <circle cx="1" cy="-11" r="11" fill="var(--body, #7f8fd0)"/>
-          <path d="M 8 -15 L 14 -12 L 8 -9 Z" fill="var(--accent, #c9d4ff)"/>
-        </g>
-        <g transform="translate(2 -26) rotate(-18)">
-          <rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--near, #9aa9e8)"/>
-          <g transform="translate(0 16) rotate(-34)">
-            <rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--near, #9aa9e8)"/>
-            <g transform="translate(0 14)"><circle cx="0" cy="3" r="5" fill="var(--near-dark, #7686c4)"/></g>
-          </g>
-        </g>
-      </g>
-      <g transform="translate(1 0) rotate(8)">
-        <rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--near, #9aa9e8)"/>
-        <g transform="translate(0 24) rotate(-6)">
-          <rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--near, #9aa9e8)"/>
-          <g transform="translate(0 22)"><rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--near-dark, #7686c4)"/></g>
-        </g>
-      </g>
-    </g>
-  </g>`;
-  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: the player fighter facing the training dummy on the deterministic stage, with health and stamina meters and the active route readout">
+  const idle = { bones: {}, still: {}, pelvis: null, keyTimes: "" };
+  const dummyHurt = [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]]
+    .map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
+  const dummy = `<g transform="translate(34 0)">${dummyHurt}<g transform="scale(-1 1)"><g class="fighter-p2">${labFighter(idle)}</g></g></g>`;
+  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode cycling two authored attacks against the dummy, showing live hitboxes and hurtboxes over the stage and the startup, active, recovery and cancel windows on the move timeline">
     <header class="lab-brand">
       <p class="lab-eyebrow">Hexframe / Training</p>
       <strong>Prime. Link. Cash out.</strong>
@@ -214,24 +305,66 @@ function hexframeVisual() {
         <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 STA</small></strong></div>
         <div class="lab-player lab-player-right"><strong><b>1000</b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
       </div>
-      <svg viewBox="-150 -125 300 165" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-        <defs>${fighter}</defs>
-        <rect x="-150" y="-125" width="300" height="165" fill="#080a0f"/>
-        <rect x="-150" y="0" width="300" height="40" fill="#121219"/>
-        <line x1="0" y1="-125" x2="0" y2="40" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
-        <line x1="-150" y1="0" x2="150" y2="0" stroke="#484f58" stroke-width="2"/>
-        <g transform="translate(-40 0)"><g class="lab-idle"><use href="#hfRig" class="fighter-p1"/></g></g>
-        <g transform="translate(40 0) scale(-1 1)"><g class="lab-idle lab-idle-b"><use href="#hfRig" class="fighter-p2"/></g></g>
+      <svg viewBox="-150 -125 300 158" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+        <rect x="-400" y="-125" width="800" height="158" fill="#080a0f"/>
+        <rect x="-400" y="0" width="800" height="33" fill="#121219"/>
+        <line x1="0" y1="-125" x2="0" y2="33" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
+        <line x1="-400" y1="0" x2="400" y2="0" stroke="#484f58" stroke-width="2"/>
+        ${dummy}
+        ${LAB_TAKES.map(labTake).join("")}
       </svg>
-      <div class="lab-route"><span>Active</span><strong>Ready</strong><em>Choose any 16 of 29 moves</em></div>
+      <div class="lab-legend"><span class="lab-key lab-key-hurt">Hurtbox</span><span class="lab-key lab-key-hit">Hitbox</span></div>
+      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Active</span><strong>${take.key}</strong><em>${take.startup}f startup · ${take.active}f active · ${take.recovery}f recovery</em></div>`).join("")}
     </div>
+    ${LAB_TAKES.map(labTimeline).join("")}
+  </div>`;
+}
+
+// The library shelf as YarReader draws it, down to its own missing-cover treatment: a
+// single letter on the sunken surface. Every title and count below is a synthetic fixture;
+// runtime catalog data and publisher-owned cover art never enter the portfolio repository.
+const YAR_SERIES = [
+  { letter: "A", name: "Aster Archive", units: 12, meta: "Sample comic · 0001 – 0012" },
+  { letter: "A", name: "Amber Circuit", units: 8, meta: "Sample manga · 0001 – 0008" },
+  { letter: "A", name: "Analog Knights", units: 16, meta: "Sample comic · 0001 – 0016" },
+  { letter: "A", name: "Astral Harbor", units: 6, meta: "Sample webtoon · 0001 – 0006" },
+  { letter: "A", name: "Aurora Relay", units: 10, meta: "Sample manga · 0001 – 0010" },
+  { letter: "A", name: "Axiom Chronicle", units: 14, meta: "Sample webtoon · 0001 – 0014" }
+];
+
+function yarReaderVisual() {
+  const cards = YAR_SERIES.map((series) => `<article class="yar-card">
+      <div class="yar-art"><b>${series.letter}</b><i>${series.units}</i></div>
+      <div class="yar-body"><span>${series.name}</span><strong>${series.units} units</strong><em>${series.meta}</em></div>
+    </article>`).join("");
+  return `<div class="project-visual yar-preview" data-fixture="synthetic" role="img" aria-label="YarReader sample library with synthetic comics, manga and webtoons, a search field, filters, and per-series unit counts and chapter ranges">
+    <div class="yar-head">
+      <div class="yar-id"><strong>YarReader</strong><span>6 sample series · 66 sample chapters · Synthetic catalog</span></div>
+      <div class="yar-search">Search series, title, year</div>
+      <div class="yar-select">Alphabetical</div>
+    </div>
+    <div class="yar-filters">
+      <span class="yar-label">Format</span>
+      <span class="yar-pill yar-pill-on">All formats</span>
+      <span class="yar-pill">Manga (RTL)</span>
+      <span class="yar-pill">Comics (LTR)</span>
+      <span class="yar-pill">Webtoons (Scroll)</span>
+      <span class="yar-label yar-label-genre">Genre</span>
+      <span class="yar-select yar-select-small">All genres</span>
+    </div>
+    <div class="yar-scope">
+      <span class="yar-pill yar-pill-on">Series</span>
+      <span class="yar-pill">Chapters</span>
+      <em>6 sample series</em>
+    </div>
+    <div class="yar-grid">${cards}</div>
   </div>`;
 }
 
 function projectVisual(project) {
   if (project.slug === "sharktank") return sharkTankVisual();
   if (project.slug === "hexframe") return hexframeVisual();
-  return `<div class="project-visual archive-visual" role="img" aria-label="YarReader source to portable HTML flow"><header><strong>YAR / EXPORT</strong><span>OFFLINE BY DESIGN</span></header><div class="archive-files"><span><b>SOURCE</b><em>mixed publication formats</em><code>VERIFY</code></span><span><b>NORMALIZE</b><em>deterministic pages</em><code>HASH</code></span><span><b>HTML</b><em>relative static export</em><code>NO SERVER</code></span></div><footer><span>Recoverable</span><span>Portable</span><span>Verified</span></footer></div>`;
+  return yarReaderVisual();
 }
 
 function projectCard(project, index) {
