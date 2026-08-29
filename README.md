@@ -1,6 +1,6 @@
-# WizardGang
+# Jacob Yongue — WizardGang.ai
 
-The independent static portfolio for [wizardgang.ai](https://wizardgang.ai).
+Jacob Yongue's static software-engineering portfolio at [wizardgang.ai](https://wizardgang.ai).
 
 This repository owns portfolio pages, project metadata, presentation assets, search metadata,
 and temporary compatibility routing for URLs that historically belonged to Shark Tank. It does

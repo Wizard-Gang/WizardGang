@@ -2,14 +2,14 @@ const WIZARDGANG_REPO = "https://github.com/Wizard-Gang/WizardGang";
 
 export const projects = [
   {
-    name: "Shark Tank",
+    name: "SharkTank",
     slug: "sharktank",
     number: "01",
     eyebrow: "Security & AI governance",
-    description: "A live production systems laboratory for ISO/IEC 27001:2022 and ISO/IEC 42001:2023 readiness, connecting risk, controls, operations, and AI-system governance to evidence from the running service.",
+    description: "A production software system demonstrating how ISO/IEC 27001 and ISO/IEC 42001 governance requirements map to technical controls, operations, and live evidence.",
     tags: ["ISO/IEC 27001", "ISO/IEC 42001", "Risk management", "AI governance", "Cloudflare", "Operations"],
-    liveUrl: "https://sharktank.wizardgang.ai/play/",
-    operationsUrl: "https://sharktank.wizardgang.ai/trust/",
+    liveUrl: "https://sharktank.wizardgang.ai/",
+    operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
     sourceUrl: WIZARDGANG_REPO,
     problem: "Compliance claims are easy to write and difficult to prove. Shark Tank asks whether security and AI governance can be made inspectable from the same production system they describe, without confusing a readiness exercise with certification.",
     built: [
@@ -34,7 +34,7 @@ export const projects = [
     slug: "hexframe",
     number: "02",
     eyebrow: "Deterministic systems",
-    description: "A deterministic 2D fighting-game simulator and training laboratory built around fixed-step simulation, rollback, authored combat, and SVG rendering.",
+    description: "Browser fighting-game engineering through deterministic simulation, frame data, hitboxes, input systems, debugging tools, and rollback-ready architecture.",
     tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
     sourceUrl: WIZARDGANG_REPO,
@@ -61,7 +61,7 @@ export const projects = [
     slug: "yarreader",
     number: "03",
     eyebrow: "Portable media pipeline",
-    description: "A crash-recoverable pipeline that turns mixed publication formats into a verified static HTML library designed for offline and removable storage.",
+    description: "A portable offline media library with a browser-based reading interface and a crash-recoverable pipeline for verified, self-contained deployment.",
     tags: ["TypeScript", "CLI", "Content addressing", "Recovery", "Static HTML", "Offline"],
     liveUrl: null,
     sourceUrl: WIZARDGANG_REPO,

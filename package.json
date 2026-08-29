@@ -6,7 +6,7 @@
   "description": "Lean static software portfolio for wizardgang.ai",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/verify.mjs && node scripts/verify-portfolio-cleanup.mjs",
+    "check": "node scripts/verify.mjs",
     "dev": "npm run build && wrangler dev --port 8790",
     "deploy:staging": "npm run build && wrangler deploy --env staging",
     "deploy:production": "npm run build && wrangler deploy --env production",

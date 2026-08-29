@@ -1,6 +1,6 @@
 {
-  "name": "WizardGang Software Portfolio",
-  "short_name": "WizardGang",
+  "name": "Jacob Yongue — Software Engineering Portfolio",
+  "short_name": "Jacob Yongue",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#08080b",
@@ -9,4 +9,3 @@
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
   ]
 }
-

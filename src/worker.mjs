@@ -86,10 +86,10 @@ export default {
     const path = url.pathname;
 
     if (path === "/work/shadowmoney" || path === "/work/shadowmoney/") {
-      return redirect(`${url.origin}/work/hexframe/`);
+      return redirect(`${url.origin}/projects/hexframe/`);
     }
     if (path === "/work/shark-tank" || path === "/work/shark-tank/") {
-      return redirect(`${url.origin}/work/sharktank/`);
+      return redirect(`${url.origin}/projects/sharktank/`);
     }
     if (/^\/(?:arena|uno|x4|21|game|checkers|battleship|3d|shark-?run)(?:\/.*)?$/i.test(path)) {
       return redirect(`${url.origin}/`);
@@ -102,4 +102,3 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
-

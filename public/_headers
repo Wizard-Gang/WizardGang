@@ -14,6 +14,12 @@
 /og.jpg
   Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
 
+/og-jacob-yongue.jpg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
+/yarreader-library-art.jpg
+  Cache-Control: public, max-age=604800, stale-while-revalidate=2592000
+
 /favicon.svg
   Cache-Control: public, max-age=604800
 
