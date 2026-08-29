@@ -7,6 +7,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "dist");
 const failures = [];
 const fail = (message) => failures.push(message);
+const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (character) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  "\"": "&quot;"
+})[character]);
 
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 
@@ -30,22 +36,27 @@ for (const project of ["Shark Tank", "Hexframe", "YarReader"]) {
 }
 
 for (const item of deployments) {
-  if (!home.includes(`>${item.name}`)) fail(`homepage missing deployment ${item.name}`);
+  const name = escapeHtml(item.name);
+  if (!home.includes(`>${name}`)) fail(`homepage missing deployment ${item.name}`);
   if (item.url && !home.includes(`href="${item.url}"`)) fail(`homepage missing official deployment link for ${item.name}`);
 }
 
 for (const group of integrationGroups) {
-  if (!home.includes(`>${group.title}<`)) fail(`homepage missing integration group ${group.title}`);
+  const title = escapeHtml(group.title);
+  if (!home.includes(`>${title}<`)) fail(`homepage missing integration group ${group.title}`);
   for (const item of group.items) {
-    if (!home.includes(`>${item.name}`) && !home.includes(`>${item.name}<`)) fail(`homepage missing integration ${item.name}`);
+    const name = escapeHtml(item.name);
+    if (!home.includes(`>${name}`)) fail(`homepage missing integration ${item.name}`);
     if (item.url && !home.includes(`href="${item.url}"`)) fail(`homepage missing official integration link for ${item.name}`);
   }
 }
 
 for (const group of systemGroups) {
-  if (!home.includes(`>${group.title}<`)) fail(`homepage missing system group ${group.title}`);
+  const title = escapeHtml(group.title);
+  if (!home.includes(`>${title}<`)) fail(`homepage missing system group ${group.title}`);
   for (const item of group.items) {
-    if (!home.includes(`>${item}<`)) fail(`homepage missing system capability ${item}`);
+    const name = escapeHtml(item);
+    if (!home.includes(`>${name}<`)) fail(`homepage missing system capability ${item}`);
   }
 }
 
