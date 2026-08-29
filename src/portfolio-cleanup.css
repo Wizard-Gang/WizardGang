@@ -206,8 +206,6 @@
   font-size: clamp(1.05rem, 2vw, 1.35rem);
 }
 
-.systems-resume-hero .button-row { margin-top: 1.7rem; }
-
 .systems-resume-section {
   padding: clamp(4rem, 8vw, 7rem) 0;
   border-top: 1px solid var(--line);

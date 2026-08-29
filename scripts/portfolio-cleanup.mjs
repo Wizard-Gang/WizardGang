@@ -61,10 +61,11 @@ function aboutSection() {
 
 function globalChrome(html, relative) {
   const resumeCurrent = relative === "resume/index.html" ? ' aria-current="page"' : "";
+  const repository = relative === "resume/index.html" ? "" : `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
   html = replaceRequired(
     html,
     /<nav class="site-nav" aria-label="Primary">[\s\S]*?<\/nav>/,
-    `<nav class="site-nav" aria-label="Primary"><a href="/#projects">Projects</a><a href="/resume/"${resumeCurrent}>Resume</a><a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>`,
+    `<nav class="site-nav" aria-label="Primary"><a href="/#projects">Projects</a><a href="/resume/"${resumeCurrent}>Resume</a>${repository}</nav>`,
     `${relative} primary navigation`
   );
   html = html.replace("WizardGang · independent builds + professional delivery", "WizardGang · software engineering portfolio");

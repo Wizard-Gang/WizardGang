@@ -119,7 +119,8 @@ if (!resumePage.includes("Professional<br><span>Systems.</span>")) fail("resume 
 if (/Download resume|JacobYongue_Resume\.pdf|Systems builder|Delivery owner/.test(resumePage)) fail("resume page still contains the retired resume surface");
 for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
-  if (!/href="mailto:jacobyongue@outlook\.com"/.test(html)) fail(`${file.slice(dist.length + 1)}: missing a contact route`);
+  const relative = file.slice(dist.length + 1);
+  if (relative !== "resume/index.html" && !/href="mailto:jacobyongue@outlook\.com"/.test(html)) fail(`${relative}: missing a contact route`);
 }
 
 if (failures.length) {

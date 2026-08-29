@@ -83,6 +83,7 @@ const resume = await readFile(resolve(dist, "resume/index.html"), "utf8");
 for (const required of [
   "Professional<br><span>Systems.</span>",
   "Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.",
+  ">Client Deployments<",
   'id="resume-deployments"',
   'id="resume-integrations"',
   'id="resume-systems"'
@@ -107,7 +108,19 @@ for (const group of systemGroups) {
     if (!resume.includes(`>${escapeHtml(item)}<`)) fail(`rebuilt resume missing system capability ${item}`);
   }
 }
-if (!resume.includes(`href="${wizardGangRepo}"`)) fail("rebuilt resume missing WizardGang repository link");
+const systemsIndex = resume.indexOf('id="resume-systems"');
+const integrationsIndex = resume.indexOf('id="resume-integrations"');
+const deploymentsIndex = resume.indexOf('id="resume-deployments"');
+if (!(systemsIndex < integrationsIndex && integrationsIndex < deploymentsIndex)) fail("professional record must be ordered Systems, Integrations, Client Deployments");
+for (const omitted of [
+  "Each deployment name links to the organization’s official website.",
+  "Each product or vendor name links to its official website.",
+  `href="${wizardGangRepo}"`,
+  'href="mailto:',
+  "linkedin.com"
+]) {
+  if (resume.includes(omitted)) fail(`rebuilt professional record must omit ${omitted}`);
+}
 if (/Download resume|JacobYongue_Resume\.pdf|Systems builder|Delivery owner/.test(resume)) fail("rebuilt resume still contains retired resume content");
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");

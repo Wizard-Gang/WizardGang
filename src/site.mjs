@@ -21,15 +21,17 @@ function header(current = "") {
     ["about", "/about/", "About"],
     ["resume", "/resume/", "Resume"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
+  const repository = current === "resume" ? "" : `<a href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a>`;
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="WizardGang home"><span class="wordmark-mark" aria-hidden="true"></span>WIZARDGANG</a>
-      <nav class="site-nav" aria-label="Primary">${nav}<a href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></nav>
+      <nav class="site-nav" aria-label="Primary">${nav}${repository}</nav>
     </header>`;
 }
 
-function footer(build) {
-  return `<footer class="site-footer"><span>WizardGang · independent builds + professional delivery</span><span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a></span><span>Build <a href="/version.json">${escapeHtml(build.commit)}</a> · 2026</span></footer>`;
+function footer(build, current = "") {
+  const contact = current === "resume" ? "" : `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a></span>`;
+  return `<footer class="site-footer"><span>WizardGang · independent builds + professional delivery</span>${contact}<span>Build <a href="/version.json">${escapeHtml(build.commit)}</a> · 2026</span></footer>`;
 }
 
 function document({ title, description, path, current, body, build, social = false, noindex = false }) {
@@ -63,7 +65,7 @@ function document({ title, description, path, current, body, build, social = fal
   <body>
     ${header(current)}
     ${body}
-    ${footer(build)}
+    ${footer(build, current)}
   </body>
 </html>`;
 }
@@ -525,10 +527,10 @@ function resume(build) {
   const integrations = integrationGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(group.items)}</article>`).join("");
   const systems = systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("");
   const body = `<main class="case-main systems-resume" id="main" tabindex="-1">
-    <section class="systems-resume-hero"><div><p class="kicker">Resume / professional record</p><h1>Professional<br><span>Systems.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Email <span aria-hidden="true">→</span></a><a class="button" href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">WizardGang repo <span aria-hidden="true">↗</span></a></div></div></section>
-    <section class="systems-resume-section" aria-labelledby="resume-deployments"><header><div><p class="kicker">01</p><h2 id="resume-deployments">Deployments</h2></div><p>Each deployment name links to the organization’s official website.</p></header>${referenceList(deployments)}</section>
-    <section class="systems-resume-section" aria-labelledby="resume-integrations"><header><div><p class="kicker">02</p><h2 id="resume-integrations">Integrations</h2></div><p>Each product or vendor name links to its official website.</p></header><div class="systems-resume-grid">${integrations}</div></section>
-    <section class="systems-resume-section" aria-labelledby="resume-systems"><header><div><p class="kicker">03</p><h2 id="resume-systems">Systems</h2></div></header><div class="systems-resume-grid">${systems}</div></section>
+    <section class="systems-resume-hero"><div><p class="kicker">Resume / professional record</p><h1>Professional<br><span>Systems.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p></div></section>
+    <section class="systems-resume-section" aria-labelledby="resume-systems"><header><div><p class="kicker">01</p><h2 id="resume-systems">Systems</h2></div></header><div class="systems-resume-grid">${systems}</div></section>
+    <section class="systems-resume-section" aria-labelledby="resume-integrations"><header><div><p class="kicker">02</p><h2 id="resume-integrations">Integrations</h2></div></header><div class="systems-resume-grid">${integrations}</div></section>
+    <section class="systems-resume-section" aria-labelledby="resume-deployments"><header><div><p class="kicker">03</p><h2 id="resume-deployments">Client Deployments</h2></div></header>${referenceList(deployments)}</section>
   </main>`;
   return document({ title: "Professional Systems — WizardGang", description: "Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.", path: "/resume/", current: "resume", body, build });
 }
