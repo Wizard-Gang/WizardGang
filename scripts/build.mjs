@@ -3,6 +3,7 @@ import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createPages } from "../src/site.mjs";
+import { applyPortfolioCleanup } from "./portfolio-cleanup.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "dist");
@@ -34,6 +35,6 @@ for (const [relative, contents] of createPages(build)) {
   await writeFile(target, contents);
 }
 
+await applyPortfolioCleanup({ root, dist });
 await writeFile(resolve(dist, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
 console.log(`Built ${createPages(build).size} HTML pages at ${build.commit}.`);
-
