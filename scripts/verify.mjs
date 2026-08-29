@@ -71,6 +71,8 @@ const required = [
   "version.json",
   "logos/airbnb.svg",
   "logos/amware.png",
+  "logos/brixton.png",
+  "logos/hybrid-apparel.png",
   "logos/plexus.svg",
   "logos/rocky-brands.png",
   "logos/spartan.png",
