@@ -32,7 +32,7 @@ function internalTarget(href) {
 
 const files = await walk(dist);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
-if (htmlFiles.length !== 8) fail(`expected 8 HTML pages, found ${htmlFiles.length}`);
+if (htmlFiles.length !== 9) fail(`expected 9 HTML pages, found ${htmlFiles.length}`);
 
 for (const file of htmlFiles) {
   const relative = file.slice(dist.length + 1);
@@ -46,6 +46,7 @@ for (const file of htmlFiles) {
   if (!html.includes('name="twitter:title"') || !html.includes('name="twitter:description"')) fail(`${relative}: incomplete Twitter metadata`);
   if (/<script(?:\s|>)/i.test(html)) fail(`${relative}: portfolio HTML must not ship client JavaScript`);
   if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/(?:Hexframe|YarReader|WizardGangLocal)/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
+  if (/Evergreen Dr|29631|jacobyongue@outlook\.com|865[ -]?9031/i.test(html)) fail(`${relative}: exposes private contact information from a source document`);
   if (/coming soon|disabled/i.test(html)) fail(`${relative}: contains a disabled/coming-soon action`);
   if (relative !== "404.html" && !html.includes('<link rel="canonical" href="https://wizardgang.ai/')) fail(`${relative}: missing canonical URL`);
   if (relative === "404.html" && !html.includes('name="robots" content="noindex"')) fail(`${relative}: 404 must be noindex`);
@@ -59,7 +60,23 @@ for (const file of htmlFiles) {
   }
 }
 
-const required = ["_headers", "assets/styles.css", "favicon.svg", "og.jpg", "robots.txt", "sitemap.xml", "site.webmanifest", "version.json"];
+const required = [
+  "_headers",
+  "assets/styles.css",
+  "favicon.svg",
+  "og.jpg",
+  "robots.txt",
+  "sitemap.xml",
+  "site.webmanifest",
+  "version.json",
+  "logos/airbnb.svg",
+  "logos/amware.png",
+  "logos/plexus.svg",
+  "logos/rocky-brands.png",
+  "logos/spartan.png",
+  "logos/supply-chain-technologies.png",
+  "logos/torque-king.png"
+];
 for (const file of required) {
   try { await access(resolve(dist, file)); }
   catch { fail(`missing build artifact ${file}`); }

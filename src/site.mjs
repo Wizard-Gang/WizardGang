@@ -1,4 +1,5 @@
 import { projects } from "./projects.mjs";
+import { professionalEducation, professionalProjects, professionalRoles } from "./professional.mjs";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
 const GITHUB = "https://github.com/SouthernGentlemen";
@@ -12,7 +13,8 @@ const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (character) => (
 
 function header(current = "") {
   const nav = [
-    ["work", "/work/", "Work"],
+    ["work", "/work/", "Independent"],
+    ["professional", "/professional/", "Professional"],
     ["about", "/about/", "About"],
     ["resume", "/resume/", "Resume"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
@@ -24,7 +26,7 @@ function header(current = "") {
 }
 
 function footer(build) {
-  return `<footer class="site-footer"><span>WizardGang · software systems</span><span>Build <a href="/version.json">${escapeHtml(build.commit)}</a> · 2026</span></footer>`;
+  return `<footer class="site-footer"><span>WizardGang · independent builds + professional delivery</span><span>Build <a href="/version.json">${escapeHtml(build.commit)}</a> · 2026</span></footer>`;
 }
 
 function document({ title, description, path, current, body, build, social = false, noindex = false }) {
@@ -63,7 +65,7 @@ function document({ title, description, path, current, body, build, social = fal
 </html>`;
 }
 
-const tags = (items) => `<ul class="tags" aria-label="Technologies">${items.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>`;
+const tags = (items, label = "Technologies") => `<ul class="tags" aria-label="${escapeHtml(label)}">${items.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>`;
 
 function actions(project, compact = false) {
   const className = compact ? "text-link" : "button";
@@ -172,8 +174,9 @@ function projectCard(project, index) {
 
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero"><div><p class="kicker">Independent software engineering</p><h1>Software systems <span>built to hold up.</span></h1></div><div class="hero-side"><p>I design and build software across application, platform, security, and operations—from architecture through deployment and production evidence.</p><p class="hero-meta">TypeScript · Cloudflare · Security · APIs · Automation · Simulation</p><div class="button-row"><a class="button button-primary" href="/work/">View work <span aria-hidden="true">→</span></a><a class="button" href="/resume/">Resume</a></div></div></section>
-    <section class="work-preview" aria-labelledby="selected-work"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work">Three focused case studies.</h2></div><span>03 PROJECTS</span></div>${projects.map(projectCard).join("")}</section>
+    <section class="hero"><div><p class="kicker">Software engineering + project delivery</p><h1>Software systems <span>built to hold up.</span></h1></div><div class="hero-side"><p>I take products and operational change from a clear model through implementation, deployment, adoption, and the evidence that makes results understandable.</p><p class="hero-meta">TypeScript · Cloudflare · APIs · Warehouse systems · Integrations · Delivery</p><div class="button-row"><a class="button button-primary" href="/professional/">Professional portfolio <span aria-hidden="true">→</span></a><a class="button" href="/work/">Independent lab</a><a class="button" href="/resume/">Resume</a></div></div></section>
+    <section class="work-tracks" aria-labelledby="work-tracks-heading"><div class="section-heading"><div><p class="kicker">Two bodies of work</p><h2 id="work-tracks-heading">Different contexts. Clear boundaries.</h2></div></div><div class="track-grid"><article><span>01 / Professional</span><h3>Delivery in operating businesses.</h3><p>Warehouse systems, WMS and carrier integrations, public-sector CMS migration, QA leadership, training, and production change.</p><a class="text-link" href="/professional/">View professional portfolio <span aria-hidden="true">→</span></a></article><article><span>02 / Independent</span><h3>The build lab.</h3><p>Games, realtime edge systems, archival tools, and the experiments I choose to take from idea through production.</p><a class="text-link" href="/work/">Explore independent work <span aria-hidden="true">→</span></a></article></div></section>
+    <section class="work-preview" aria-labelledby="selected-work"><div class="section-heading"><div><p class="kicker">Independent build lab</p><h2 id="selected-work">Three focused case studies.</h2></div><span>03 PROJECTS</span></div>${projects.map(projectCard).join("")}</section>
     <section class="capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Core engineering scope.</h2></div></div><div class="capability-grid">
       <article><small>01</small><h3>Software engineering</h3><p>TypeScript, browser applications, APIs, SQL, CLIs, protocols, and automation.</p></article>
       <article><small>02</small><h3>Platform &amp; web services</h3><p>Cloudflare, distributed state, REST, realtime systems, deployment, and recovery.</p></article>
@@ -186,8 +189,43 @@ function home(build) {
 }
 
 function work(build) {
-  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero"><p class="kicker">Selected work</p><h1>Governance.<br><span>Simulation. Portability.</span></h1><p>Three case studies with different jobs: Shark Tank demonstrates governed production operations, Hexframe demonstrates deterministic software architecture, and YarReader demonstrates reliable offline tooling.</p></section><section class="work-list" aria-label="Projects">${projects.map(projectCard).join("")}</section></main>`;
-  return document({ title: "Work — WizardGang Software Portfolio", description: "Selected WizardGang work: Shark Tank, Hexframe, and YarReader.", path: "/work/", current: "work", body, build });
+  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero"><p class="kicker">Independent build lab</p><h1>Governance.<br><span>Simulation. Portability.</span></h1><p>This is the independent side of WizardGang: products, games, and experiments I build because the engineering problem is worth exploring. Professional client and employer work lives in its own portfolio.</p><div class="button-row page-hero-actions"><a class="button" href="/professional/">Professional portfolio <span aria-hidden="true">→</span></a></div></section><section class="work-list" aria-label="Independent projects">${projects.map(projectCard).join("")}</section></main>`;
+  return document({ title: "Independent Work — WizardGang", description: "Independent WizardGang builds: Shark Tank, Hexframe, and YarReader.", path: "/work/", current: "work", body, build });
+}
+
+function companyMark(project) {
+  if (project.logo) {
+    return `<img class="${escapeHtml(project.logoClass || "")}" src="${escapeHtml(project.logo)}" alt="${escapeHtml(project.logoAlt)}" loading="lazy" decoding="async">`;
+  }
+  return `<span class="company-wordmark" role="img" aria-label="${escapeHtml(project.company)}">${escapeHtml(project.logoText || project.company)}</span>`;
+}
+
+function professionalProjectCard(project, index) {
+  return `<article class="professional-card">
+    <header><div class="company-mark">${companyMark(project)}</div><span>${String(index + 1).padStart(2, "0")}</span></header>
+    <div class="professional-card-copy"><p class="professional-category">${escapeHtml(project.category)}</p><h3>${escapeHtml(project.name)}</h3><p class="company-context">${escapeHtml(project.company)} · Delivered at ${escapeHtml(project.organization)}</p><p class="professional-outcome">${escapeHtml(project.outcome)}</p></div>
+    <dl class="professional-facts"><div><dt>Role</dt><dd>${escapeHtml(project.role)}</dd></div><div><dt>Dates</dt><dd>${escapeHtml(project.dates)}</dd></div><div><dt>Method</dt><dd>${escapeHtml(project.method)}</dd></div><div><dt>Scale</dt><dd>${escapeHtml(project.team)} people · ${escapeHtml(project.budget)}</dd></div></dl>
+  </article>`;
+}
+
+function professionalProjectSection({ id, kicker, title, intro, items }) {
+  return `<section class="professional-projects" aria-labelledby="${id}"><div class="professional-section-heading"><div><p class="kicker">${escapeHtml(kicker)}</p><h2 id="${id}">${escapeHtml(title)}</h2></div><p>${escapeHtml(intro)}</p></div><div class="professional-grid">${items.map((project) => professionalProjectCard(project, professionalProjects.indexOf(project))).join("")}</div></section>`;
+}
+
+function professional(build) {
+  const fulfillment = professionalProjects.slice(0, 9);
+  const business = [professionalProjects[9], professionalProjects[11]];
+  const enterprise = [professionalProjects[10], ...professionalProjects.slice(12)];
+  const body = `<main class="case-main professional-main" id="main" tabindex="-1">
+    <section class="professional-hero"><div><p class="kicker">Professional delivery portfolio</p><h1>Production work.<br><span>Operational stakes.</span></h1></div><div class="professional-hero-copy"><p>Fifteen projects across warehouse fulfillment, enterprise integration, public-sector case management, and business ownership. This record is intentionally separate from the independent build lab.</p><div class="professional-stats" aria-label="Professional portfolio summary"><div><strong>15</strong><span>Projects</span></div><div><strong>2019-25</strong><span>Delivery record</span></div><div><strong>38.5</strong><span>PM education hours</span></div></div></div></section>
+    <section class="professional-experience" aria-labelledby="experience-heading"><div class="professional-section-heading"><div><p class="kicker">Experience</p><h2 id="experience-heading">Roles across the delivery path.</h2></div><p>Hands-on work from requirements and technical planning through implementation, QA, launch, training, stabilization, and support.</p></div><div class="experience-grid">${professionalRoles.map((item) => `<article><span>${escapeHtml(item.dates)}</span><h3>${escapeHtml(item.organization)}</h3><strong>${escapeHtml(item.role)}</strong><p>${escapeHtml(item.summary)}</p></article>`).join("")}</div></section>
+    ${professionalProjectSection({ id: "fulfillment-projects", kicker: "01 / Warehouse & fulfillment", title: "Systems on the warehouse floor.", intro: "Light-directed picking, WMS integration, inventory traceability, carrier workflows, QA, training, and onsite adoption across nine delivery engagements.", items: fulfillment })}
+    ${professionalProjectSection({ id: "enterprise-projects", kicker: "02 / Enterprise platforms", title: "Change without losing the operation.", intro: "Public-sector migration planning, WMS modernization, post-acquisition integration, and returns processing with data integrity and continuity at the center.", items: enterprise })}
+    ${professionalProjectSection({ id: "business-projects", kicker: "03 / Business ownership", title: "Accountable from permit to closeout.", intro: "Two seasonal operating cycles with direct responsibility for compliance, positioning, bookings, service, property readiness, and financial outcomes.", items: business })}
+    <section class="professional-education" aria-labelledby="education-heading"><div><p class="kicker">Project management education</p><h2 id="education-heading">${escapeHtml(professionalEducation.hours)} completed.</h2><p>Completed with ${escapeHtml(professionalEducation.provider)} in ${escapeHtml(professionalEducation.completed)}. This is a record of education completed; it is not presented as a certification claim.</p></div><div>${tags(professionalEducation.topics, "Education topics")}</div></section>
+    <p class="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
+  </main>`;
+  return document({ title: "Professional Portfolio — Jacob Yongue | WizardGang", description: "Jacob Yongue's professional delivery portfolio across warehouse systems, WMS integration, public-sector case management, QA, implementation, and business operations.", path: "/professional/", current: "professional", body, build });
 }
 
 function architecture(items) {
@@ -261,17 +299,21 @@ function projectPage(project, build) {
 }
 
 function about(build) {
-  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero about-hero"><p class="kicker">About WizardGang</p><h1>Build the whole path.<br><span>Explain the hard parts.</span></h1><div class="prose"><p>WizardGang is an independent software engineering practice focused on useful products with rigorous foundations. The work spans governed production systems, deterministic simulation, portable data pipelines, APIs, identity boundaries, automation, and operations.</p><p>I work hands-on from requirements and domain models through implementation, deployment, and production evidence. The aim is the smallest sound architecture with explicit ownership, failure behavior, security boundaries, and enough evidence for another person to understand what the system actually does.</p></div><div class="button-row"><a class="button button-primary" href="/work/">View work <span aria-hidden="true">→</span></a><a class="button" href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></div></section></main>`;
-  return document({ title: "About — WizardGang Software Engineering", description: "About WizardGang, an independent software engineering practice working across product, application, security, platform, and operations.", path: "/about/", current: "about", body, build });
+  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero about-hero"><p class="kicker">About WizardGang</p><h1>Build the whole path.<br><span>Explain the hard parts.</span></h1><div class="prose"><p>WizardGang brings two bodies of work together without blending their contexts: independent products built to explore difficult engineering problems, and professional delivery completed inside operating businesses.</p><p>I work hands-on from requirements and domain models through implementation, QA, deployment, adoption, and production evidence. The aim is the smallest sound architecture and delivery plan with explicit ownership, failure behavior, security boundaries, and enough evidence for another person to understand what the system actually does.</p></div><div class="button-row"><a class="button button-primary" href="/professional/">Professional portfolio <span aria-hidden="true">→</span></a><a class="button" href="/work/">Independent lab</a><a class="button" href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></div></section></main>`;
+  return document({ title: "About — WizardGang Software Engineering", description: "About WizardGang: independent software systems and professional delivery work kept in clear, distinct portfolios.", path: "/about/", current: "about", body, build });
 }
 
 function resume(build) {
-  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero resume-hero"><p class="kicker">Resume / selected experience</p><h1>Systems builder.</h1><p>Product-minded engineering across security and AI governance, deterministic simulation, realtime edge services, durable data pipelines, identity boundaries, automation, and production operations.</p></section>
-    <section class="resume-section" aria-labelledby="resume-projects"><p class="kicker">Selected project experience</p><h2 id="resume-projects">Built end to end.</h2>
+  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero resume-hero"><p class="kicker">Resume / selected experience</p><h1>Systems builder.<br><span>Delivery owner.</span></h1><p>Product-minded engineering and project delivery across warehouse systems, enterprise integration, public-sector platforms, security and AI governance, deterministic simulation, realtime services, and production operations.</p></section>
+    <section class="resume-section" aria-labelledby="resume-professional"><p class="kicker">Professional experience</p><h2 id="resume-professional">Delivery across the lifecycle.</h2>
+      ${professionalRoles.map((item) => `<article class="resume-entry"><div><strong>${escapeHtml(item.organization)}</strong><span>${escapeHtml(item.dates)}</span></div><div><h3>${escapeHtml(item.role)}</h3><p>${escapeHtml(item.summary)}</p></div></article>`).join("")}
+      <a class="text-link" href="/professional/">View all 15 professional projects <span aria-hidden="true">→</span></a>
+    </section>
+    <section class="resume-section" aria-labelledby="resume-projects"><p class="kicker">Independent project experience</p><h2 id="resume-projects">Built end to end.</h2>
       ${projects.map((project) => `<article class="resume-entry"><div><strong>${escapeHtml(project.name)}</strong><span>${escapeHtml(project.eyebrow)}</span></div><div><h3>${escapeHtml(project.description)}</h3><ul>${project.built.slice(0, 2).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul><a class="text-link" href="/work/${project.slug}/">Case study <span aria-hidden="true">→</span></a></div></article>`).join("")}
     </section>
     <section class="resume-section" aria-labelledby="resume-strengths"><p class="kicker">Core strengths</p><h2 id="resume-strengths">Architecture with a product surface.</h2><div class="strength-grid"><div><strong>System design</strong><span>Domain models, invariants, ownership, and failure recovery.</span></div><div><strong>TypeScript</strong><span>Browser apps, Workers, APIs, protocols, CLIs, and tooling.</span></div><div><strong>Cloudflare</strong><span>Workers, Durable Objects, R2, routing, deployment, and operations.</span></div><div><strong>Security &amp; governance</strong><span>Risk, controls, evidence, identity, incident response, and AI governance.</span></div><div><strong>Automation</strong><span>Durable workflows, integrations, AI proposals, and human review.</span></div><div><strong>Operations</strong><span>Observability, cost limits, changes, incidents, backups, and drills.</span></div></div></section>
-    <section class="explore"><p class="kicker">Project record</p><h2>The work is designed to be inspectable.</h2><div class="button-row"><a class="button button-primary" href="/work/">View selected work <span aria-hidden="true">→</span></a><a class="button" href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></div></section>
+    <section class="explore"><p class="kicker">Project record</p><h2>Two contexts, both inspectable.</h2><div class="button-row"><a class="button button-primary" href="/professional/">Professional portfolio <span aria-hidden="true">→</span></a><a class="button" href="/work/">Independent lab</a><a class="button" href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></div></section>
   </main>`;
   return document({ title: "Resume — WizardGang Software Engineering", description: "WizardGang project experience across security and AI governance, TypeScript, Cloudflare, APIs, identity, automation, deterministic systems, and production operations.", path: "/resume/", current: "resume", body, build });
 }
@@ -286,6 +328,7 @@ export function createPages(build) {
     ["index.html", home(build)],
     ["work/index.html", work(build)],
     ...projects.map((project) => [`work/${project.slug}/index.html`, projectPage(project, build)]),
+    ["professional/index.html", professional(build)],
     ["about/index.html", about(build)],
     ["resume/index.html", resume(build)],
     ["404.html", notFound(build)]
