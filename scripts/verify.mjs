@@ -1,4 +1,5 @@
 import { access, readFile, readdir } from "node:fs/promises";
+import { inflateSync } from "node:zlib";
 import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -6,6 +7,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "dist");
 const failures = [];
 const fail = (message) => failures.push(message);
+const RESUME_PDF = "JacobYongue_Resume.pdf";
 const canonicalSources = new Set([
   "https://github.com/SouthernGentlemen/SharkTank",
   "https://github.com/SouthernGentlemen/Hexframe",
@@ -57,7 +59,7 @@ for (const file of htmlFiles) {
   if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/WizardGangLocal/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
   const sourceLinks = [...html.matchAll(/href="(https:\/\/github\.com\/SouthernGentlemen\/[^"/]+[^"]*)"/g)].map((match) => match[1]);
   if (sourceLinks.some((href) => !canonicalSources.has(href))) fail(`${relative}: contains a non-canonical product source URL`);
-  if (/Evergreen Dr|29631|jacobyongue@outlook\.com|865[ -]?9031/i.test(html)) fail(`${relative}: exposes private contact information from a source document`);
+  if (/Evergreen Dr|29631|865[ -]?9031/i.test(html)) fail(`${relative}: exposes a private street address, ZIP, or phone number from a source document`);
   if (/coming soon|disabled/i.test(html)) fail(`${relative}: contains a disabled/coming-soon action`);
   if (relative !== "404.html" && !html.includes('<link rel="canonical" href="https://wizardgang.ai/')) fail(`${relative}: missing canonical URL`);
   if (relative === "404.html" && !html.includes('name="robots" content="noindex"')) fail(`${relative}: 404 must be noindex`);
@@ -80,6 +82,7 @@ const required = [
   "sitemap.xml",
   "site.webmanifest",
   "version.json",
+  RESUME_PDF,
   "logos/airbnb.svg",
   "logos/amware.png",
   "logos/brixton.png",
@@ -113,6 +116,85 @@ for (const source of canonicalSources) {
   if (!ownership.includes(source)) fail(`ownership record is missing ${source}`);
 }
 if (!/`WizardGangLocal` is retired\./.test(ownership)) fail("ownership record does not retire WizardGangLocal");
+
+// The published resume is a Google Docs export: its text is stored as CID glyph ids, so a
+// byte-level grep cannot see the contact block. Inflate the content streams, rebuild the
+// ToUnicode mapping, and read the actual characters before trusting the file.
+function pdfText(buffer) {
+  const streams = [];
+  for (let i = buffer.indexOf("stream"); i !== -1; i = buffer.indexOf("stream", i + 6)) {
+    let start = i + 6;
+    if (buffer[start] === 0x0d) start += 1;
+    if (buffer[start] === 0x0a) start += 1;
+    const end = buffer.indexOf("endstream", start);
+    if (end === -1) break;
+    try { streams.push(inflateSync(buffer.subarray(start, end)).toString("latin1")); }
+    catch { /* not a flate stream; nothing to read */ }
+  }
+
+  const cmap = new Map();
+  for (const stream of streams) {
+    for (const [, block] of stream.matchAll(/beginbfchar([\s\S]*?)endbfchar/g)) {
+      for (const [, from, to] of block.matchAll(/<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g)) {
+        cmap.set(parseInt(from, 16), Buffer.from(to, "hex").swap16().toString("utf16le"));
+      }
+    }
+    for (const [, block] of stream.matchAll(/beginbfrange([\s\S]*?)endbfrange/g)) {
+      for (const [, lo, hi, dst] of block.matchAll(/<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g)) {
+        const low = parseInt(lo, 16);
+        const high = Math.min(parseInt(hi, 16), low + 4096);
+        const base = parseInt(dst, 16);
+        for (let code = low; code <= high; code += 1) cmap.set(code, String.fromCodePoint(base + (code - low)));
+      }
+    }
+  }
+
+  const decodeHex = (hex) => {
+    const padded = hex.length % 4 ? hex.padEnd(hex.length + (4 - (hex.length % 4)), "0") : hex;
+    let out = "";
+    for (let i = 0; i < padded.length; i += 4) out += cmap.get(parseInt(padded.slice(i, i + 4), 16)) ?? "";
+    return out;
+  };
+
+  let text = "";
+  for (const stream of streams) {
+    if (!stream.includes("Tj") && !stream.includes("TJ")) continue;
+    for (const [, hexSingle, arr, literal] of stream.matchAll(
+      /<([0-9A-Fa-f\s]+)>\s*Tj|\[([\s\S]*?)\]\s*TJ|\(((?:[^()\\]|\\.)*)\)\s*Tj/g
+    )) {
+      if (hexSingle !== undefined) text += decodeHex(hexSingle.replace(/\s/g, ""));
+      else if (arr !== undefined) {
+        for (const [, hex, lit] of arr.matchAll(/<([0-9A-Fa-f\s]+)>|\(((?:[^()\\]|\\.)*)\)/g)) {
+          text += hex !== undefined ? decodeHex(hex.replace(/\s/g, "")) : lit;
+        }
+      } else text += literal;
+    }
+  }
+  return text;
+}
+
+try {
+  const pdf = await readFile(resolve(dist, RESUME_PDF));
+  if (pdf.subarray(0, 5).toString("latin1") !== "%PDF-") fail(`${RESUME_PDF}: not a PDF`);
+  const compact = pdfText(pdf).replace(/\s+/g, "");
+  const digits = compact.replace(/\D/g, "");
+  if (/864[^0-9]{0,3}865[^0-9]{0,3}9031/.test(compact) || digits.includes("8648659031")) {
+    fail(`${RESUME_PDF}: contains the private phone number — re-export the resume without the phone line`);
+  }
+  if (/EvergreenDr/i.test(compact)) fail(`${RESUME_PDF}: contains the private street address`);
+  if (/Clemson,?SC29631|29631/i.test(compact)) fail(`${RESUME_PDF}: contains the private ZIP code`);
+  if (!/jacobyongue@outlook\.com/i.test(compact)) fail(`${RESUME_PDF}: no contact email found — verify the export is the intended public resume`);
+} catch (error) {
+  if (error?.code === "ENOENT") fail(`${RESUME_PDF}: missing — save the phone-free resume export to public/${RESUME_PDF}`);
+  else fail(`${RESUME_PDF}: unreadable (${error.message})`);
+}
+
+const resumePage = await readFile(resolve(dist, "resume/index.html"), "utf8");
+if (!resumePage.includes(`href="/${RESUME_PDF}"`)) fail("resume page does not link the downloadable resume");
+for (const file of htmlFiles) {
+  const html = await readFile(file, "utf8");
+  if (!/href="mailto:jacobyongue@outlook\.com"/.test(html)) fail(`${file.slice(dist.length + 1)}: missing a contact route`);
+}
 
 if (failures.length) {
   for (const failure of failures) console.error(`FAIL ${failure}`);

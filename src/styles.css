@@ -474,7 +474,7 @@ h1 span { color: var(--muted); }
 .page-hero h1 { font-size: clamp(3.6rem, 9vw, 7.8rem); }
 
 .page-hero > p:last-child,
-.resume-hero > p:last-child {
+.resume-hero > p:last-of-type {
   max-width: 720px;
   margin: 2rem 0 0 auto;
   color: #c9c5ce;
@@ -640,6 +640,7 @@ h1 span { color: var(--muted); }
 
 .professional-experience,
 .professional-projects,
+.professional-skills,
 .professional-education {
   padding: 5.5rem 0 6.5rem;
   border-top: 1px solid var(--professional-line);
@@ -654,6 +655,7 @@ h1 span { color: var(--muted); }
 }
 
 .professional-section-heading h2,
+.professional-skills h2,
 .professional-education h2 {
   margin: 0;
   font-size: clamp(2.35rem, 5vw, 4.5rem);
@@ -662,6 +664,7 @@ h1 span { color: var(--muted); }
 }
 
 .professional-section-heading > p,
+.professional-skills > .professional-section-heading > p,
 .professional-education p {
   max-width: 640px;
   margin: 0;
@@ -802,6 +805,34 @@ h1 span { color: var(--muted); }
 .professional-education .tags { margin: 0; justify-content: flex-end; }
 .professional-education .tags li { border-color: var(--professional-line); color: #b9c8c9; }
 
+.skill-columns {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem 2.5rem;
+}
+
+.skill-columns > div > strong {
+  display: block;
+  margin-bottom: .9rem;
+  padding-bottom: .7rem;
+  border-bottom: 1px solid var(--professional-line);
+  color: var(--professional-accent);
+  font: 700 .62rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.skill-columns .tags { margin: 0; }
+.skill-columns .tags li { border-color: var(--professional-line); color: #b9c8c9; }
+
+@media (max-width: 960px) {
+  .skill-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .skill-columns { grid-template-columns: 1fr; }
+}
+
 .logo-disclaimer {
   margin: 0 0 6rem;
   padding-top: 1.3rem;
@@ -857,6 +888,16 @@ h1 span { color: var(--muted); }
 
 .site-footer a { color: var(--paper); }
 
+.footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+}
+
+.footer-contact a { text-transform: none; text-underline-offset: .35em; }
+
+.contact-block { border-top: 1px solid var(--line); }
+
 @media (max-width: 960px) {
   .capability-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .case-section { grid-template-columns: 1fr; gap: 1.4rem; }
@@ -884,6 +925,10 @@ h1 span { color: var(--muted); }
   .professional-grid { grid-template-columns: 1fr; }
   .professional-card { min-height: 540px; }
   .professional-education .tags { justify-content: flex-start; }
+}
+
+@media (max-width: 760px) {
+  .site-footer { flex-direction: column; gap: .9rem; }
 }
 
 @media (max-width: 620px) {

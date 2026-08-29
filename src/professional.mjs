@@ -1,27 +1,30 @@
+// Titles, dates, and figures below are reconciled against the published resume PDF
+// (public/JacobYongue_Resume.pdf). Keep them in sync when that document changes.
+// Ordered most-recent-first.
 export const professionalRoles = [
   {
-    organization: "FastFetch Corp",
-    role: "Software Engineer",
-    dates: "2019 - 2023",
-    summary: "Delivered light-directed warehouse systems, WMS integrations, fulfillment cells, putwalls, lot tracking, carrier workflows, and deployment support across client facilities."
+    organization: "Supply Chain Technologies",
+    role: "Consultant / Technical Lead",
+    dates: "Oct 2024 - Apr 2026",
+    summary: "Led 20+ distributed developers and technical delivery across 20+ enterprise implementations, owning Git/GitHub release delivery, REST API and EDI integrations connecting CIMS WMS to 3PL, ERP, and carrier platforms, and monitoring that surfaced and resolved $10M+ in inventory and financial variances."
   },
   {
     organization: "Spartan Technology Solutions",
-    role: ".NET Lead Developer",
-    dates: "2024",
-    summary: "Led business analysis and migration planning for a public-sector case management implementation, including workflow mapping, data planning, QA preparation, and delivery handoff."
-  },
-  {
-    organization: "Supply Chain Technologies",
-    role: "Implementation Specialist",
-    dates: "2024 - 2025",
-    summary: "Coordinated WMS upgrades, post-acquisition system integration, RF application changes, QA, production releases, training, and operational support."
+    role: "Lead Developer",
+    dates: "Nov 2023 - Sep 2024",
+    summary: "Led 8 .NET developers and 12 support staff delivering multi-state case-management applications, owning CI/CD, release cadence, and production stability, plus workflow analysis and historical data migration for a $1M-$5M Florida State Attorney implementation under CJIS controls."
   },
   {
     organization: "Independent venture",
     role: "Founder / operator",
-    dates: "2023 - 2024",
-    summary: "Operated a seasonal short-term rental from licensing and market research through guest operations, property readiness, compliance, and closeout."
+    dates: "Aug 2023 - Nov 2024",
+    summary: "Operated a seasonal short-term rental across two cycles, from licensing and market research through guest operations, property readiness, compliance, and closeout."
+  },
+  {
+    organization: "FastFetch Corp",
+    role: "Senior Software Engineer",
+    dates: "Jul 2019 - May 2023",
+    summary: "Owned end-to-end development and support for C#/.NET order fulfillment solutions and high-volume ETL pipelines, led zero-downtime platform migrations with impact analysis and hypercare, and integrated WMS-connected applications across 12+ North American locations."
   }
 ];
 
@@ -252,6 +255,17 @@ export const professionalProjects = [
 ];
 
 export const professionalEducation = {
+  degree: {
+    institution: "Clemson University",
+    credential: "Bachelor of Arts, Computer Science",
+    completed: "2018"
+  },
+  certification: {
+    name: "PMP, Project Management Institute",
+    // Stated exactly as the resume states it. Not a certification claim.
+    status: "Application approved, exam pending",
+    year: "2026"
+  },
   provider: "Project Management Institute",
   completed: "Apr 2025",
   hours: "38.5 hours",
@@ -265,3 +279,24 @@ export const professionalEducation = {
     "Prompt engineering"
   ]
 };
+
+// Straight from the resume's core-skills block: this is the billable, paid-work stack,
+// distinct from the TypeScript/Cloudflare surface the independent lab runs on.
+export const professionalSkills = [
+  {
+    label: "Development & data",
+    items: ["C#/.NET", "Python", "SQL/T-SQL", "SQL Server", "SSRS/BI reporting", "ETL & data pipelines"]
+  },
+  {
+    label: "Systems & integrations",
+    items: ["REST/JSON APIs", "OAuth 2.0", "SAML/SSO", "SOAP", "EDI", "Interface & data mapping"]
+  },
+  {
+    label: "DevOps & operations",
+    items: ["Git/GitHub", "CI/CD", "PowerShell", "Monitoring & logging", "Incident response", "Production support"]
+  },
+  {
+    label: "Delivery & support",
+    items: ["Jira", "QA/UAT", "Regression testing", "Upgrades, migrations & cutovers", "Technical documentation", "End-user training"]
+  }
+];
