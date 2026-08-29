@@ -8,7 +8,7 @@ export const deployments = [
   ["Brixton", "https://www.brixton.com/"],
   ["Bulk Reef Supply", "https://www.bulkreefsupply.com/"],
   ["BuySeasons", "https://www.buyseasons.com/"],
-  ["Custom Integrated Designs", "https://b2b.cidresources.com/"],
+  ["Custom Integrated Designs", "https://www.cidresources.com/"],
   ["Dot Foods", "https://www.dotfoods.com/"],
   ["FamBrands", "https://www.fambrands.com/"],
   ["GNC", "https://www.gnc.com/"],
@@ -38,7 +38,11 @@ export const integrationGroups = [
       ["QuickBooks POS", "https://quickbooks.intuit.com/pos/"],
       ["RedPrairie", "https://blueyonder.com/"],
       ["Blue Yonder", "https://blueyonder.com/"],
-      ["Canbar", "https://www.rtscompaniesinc.com/what-we-do"]
+      // The exact public vendor identity for the historical Canbar integration is not
+      // reliably resolvable today. Keep the experience visible rather than attaching
+      // an unrelated modern company to it; add a URL only when the canonical identity
+      // can be verified.
+      "Canbar"
     ]
   },
   {
