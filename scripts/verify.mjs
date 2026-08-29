@@ -108,6 +108,12 @@ const worker = await readFile(resolve(root, "src/worker.mjs"), "utf8");
 if (/DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/.test(worker)) fail("portfolio Worker gained a product binding or authentication concern");
 if (!worker.includes("sharktank.wizardgang.ai")) fail("compatibility Worker is missing the Shark Tank boundary");
 
+const ownership = await readFile(resolve(root, "docs/OWNERSHIP.md"), "utf8");
+for (const source of canonicalSources) {
+  if (!ownership.includes(source)) fail(`ownership record is missing ${source}`);
+}
+if (!/`WizardGangLocal` is retired\./.test(ownership)) fail("ownership record does not retire WizardGangLocal");
+
 if (failures.length) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
   process.exit(1);

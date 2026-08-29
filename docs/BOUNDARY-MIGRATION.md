@@ -2,13 +2,15 @@
 
 Inventory date: 2026-08-28 (America/New_York)
 
+Status: completed historical cutover record. Current canonical source ownership is documented in
+[`OWNERSHIP.md`](OWNERSHIP.md).
+
 ## IMPLEMENTATION RESULT
 
 Completed 2026-08-28 in the planned staged order:
 
-- `wizardgang.ai` now belongs to the standalone `wizardgang-portfolio` Worker. Production version
-  `a6013b4c-e4cf-4f11-89dd-74649ea18f0a` serves the static portfolio build from commit
-  `1d2188a32056`; the source repository is `SouthernGentlemen/WizardGang`.
+- `wizardgang.ai` now belongs to the standalone `wizardgang-portfolio` Worker. The source
+  repository is [`SouthernGentlemen/WizardGang`](https://github.com/SouthernGentlemen/WizardGang).
 - `sharktank.wizardgang.ai` is the only Custom Domain on `wizardgangprod`. Production version
   `fe0c3f61-c512-49b5-a49a-13776395803e` retains the existing Durable Objects, R2 bucket,
   secrets, static assets, and daily cron. Its 46 evidence routes, protected admin boundary, API,
@@ -25,27 +27,32 @@ Completed 2026-08-28 in the planned staged order:
   equivalent Hexframe URL. The historical Durable Object class remains exported for data and
   rollback continuity, but the old namespace is not bound to retirement traffic.
 
-## CURRENT ROUTE MAP
+## PRE-CUTOVER BASELINE (HISTORICAL)
 
-### Ownership and deployment
+This section records the system inspected before the cutover. It is retained as migration
+evidence and must not be read as current ownership.
 
-- `wizardgang.ai` is a Cloudflare Worker Custom Domain owned by Worker `wizardgangprod` in
-  `../WizardGangLocal`.
+### Former ownership and deployment
+
+- Before cutover, `wizardgang.ai` was a Cloudflare Worker Custom Domain owned by the combined
+  `wizardgangprod` Worker in the legacy local Shark Tank checkout. That checkout is retired; the
+  canonical product source is now
+  [`SouthernGentlemen/SharkTank`](https://github.com/SouthernGentlemen/SharkTank).
 - The active deployment inspected through Wrangler is version
   `d6bb01fd-3f2c-492c-8542-b889e893fe53`, created 2026-08-28T16:38:08Z.
-- The Worker currently combines four concerns: the WizardGang portfolio, the Shark Tank client,
+- The baseline Worker combined four concerns: the WizardGang portfolio, the Shark Tank client,
   the Shark Tank HTTP/WebSocket API, and the Shark Tank trust/operations estate.
 - Its production bindings include `ROOM` and `LOBBY` Durable Objects, `R2_ASSETS`, a daily cron,
   static game assets, version metadata, and operator secrets.
 - Static assets use `run_worker_first: true`. Unknown routes no longer receive the SPA: only
   `/play/`, `/ts[/]`, `/php[/]`, `/assets/*`, and `/og.png` may reach the asset binding. Other
   unknown paths receive a real portfolio 404.
-- `shadowmoney.wizardgang.ai` is live on Worker `shadowmoney` from `../ShadowMoney`.
-- `sharktank.wizardgang.ai` and `hexframe.wizardgang.ai` did not resolve during the live check.
-- `../Hexframe/wrangler.jsonc` declares `hexframe.wizardgang.ai` as a production Custom Domain,
-  but the `hexframe` Worker does not yet exist in the product account.
+- At inventory time, `shadowmoney.wizardgang.ai` was live on the legacy `shadowmoney` Worker.
+- At inventory time, `sharktank.wizardgang.ai` and `hexframe.wizardgang.ai` did not resolve.
+- The pre-cutover Hexframe configuration declared `hexframe.wizardgang.ai` as a production Custom
+  Domain, but the `hexframe` Worker did not yet exist in the product account.
 
-### Portfolio routes currently embedded in the Shark Tank Worker
+### Portfolio routes embedded in the Shark Tank Worker at inventory time
 
 | Route | Current behavior |
 | --- | --- |
@@ -103,13 +110,13 @@ private audit aliases below. The public `/audit/` page is not protected.
 | Room log | `/admin/game/:id[.json|.jsonl]`, legacy alias `/audit/game/:id[.json|.jsonl]` |
 | Replay | `/admin/replay/:id[.json]`, legacy alias `/audit/replay/:id[.json]` |
 
-### Current retired-route behavior
+### Retired-route behavior at inventory time
 
 `/arena*`, `/uno*`, `/x4*`, `/21*`, `/game*`, `/checkers*`, `/battleship*`, `/3d*`, and
 `/shark-run*` redirect to the portfolio root. They are not portfolio projects and will remain
 retired.
 
-## TARGET ROUTE MAP
+## CUTOVER TARGET (ACHIEVED)
 
 ```text
 wizardgang.ai
@@ -131,7 +138,7 @@ meter, audit register, status dashboard, or product API. A small stateless Worke
 as a migration boundary: it serves static assets, redirects human-facing legacy URLs, and
 temporarily proxies machine-facing Shark Tank routes whose response behavior must not change.
 
-## CLOUDFLARE CUTOVER PLAN
+## EXECUTED CLOUDFLARE CUTOVER PLAN
 
 1. Add `sharktank.wizardgang.ai` as a second Custom Domain on `wizardgangprod`; retain
    `wizardgang.ai` on the same deployment.
@@ -204,25 +211,22 @@ https://shadowmoney.wizardgang.ai/:splat
 
 Review `/play/`, `/training/`, `/lab/`, `/codex/`, and `/loadouts/` individually before activation.
 
-## FILES/REPOS THAT WILL CHANGE
+## SOURCE OWNERSHIP AFTER CUTOVER
 
-- `../WizardGangLocal`: add the Shark Tank Custom Domain, then remove portfolio ownership and the
-  root Custom Domain after cutover. Product runtime, data bindings, and controls stay intact.
-- `../WizardGang` (this repository): static portfolio, project metadata, build/verification scripts,
-  stateless compatibility Worker, Cloudflare configuration, and migration records.
-- `../Hexframe`: no reconstruction; only release-safe deployment/configuration changes if required
-  to activate the already-declared production domain.
-- `../ShadowMoney`: after Hexframe verification, replace its public response behavior with the
-  path-preserving retirement redirect while preserving recoverability of the old deployment.
+- [`SouthernGentlemen/SharkTank`](https://github.com/SouthernGentlemen/SharkTank) owns the product
+  runtime, infrastructure, controls, operations, governance evidence, tests, and deployment.
+- [`SouthernGentlemen/WizardGang`](https://github.com/SouthernGentlemen/WizardGang) owns only the
+  portfolio presentation, project metadata, and stateless compatibility boundary.
+- [`SouthernGentlemen/Hexframe`](https://github.com/SouthernGentlemen/Hexframe) owns the combat
+  runtime, authored content, lab, tests, and deployment.
+- [`SouthernGentlemen/YarReader`](https://github.com/SouthernGentlemen/YarReader) owns the archival
+  pipeline, portable reader, reconstruction evidence, tests, and releases.
+- The legacy `WizardGangLocal` source is retired. It owns no current route or recovery dependency.
+- The legacy ShadowMoney response is retired to the path-preserving Hexframe redirect while its
+  rollback evidence remains outside portfolio source.
 
-## FILES/REPOS THAT WILL NOT CHANGE
-
-- `../YarReader`: its local/offline architecture remains independent; the portfolio links to public
-  source and architecture evidence only.
-- `../ModuleReact3Fiber`: no gameplay or engine work is part of this migration.
-- `../wizardgang-recovered` and `../wizardgang-governance`: recovery and historical evidence remain
-  unchanged.
-- Hexframe, Shark Tank, and YarReader source is never copied into the portfolio repository.
+The portfolio never copies product runtime source, runtime state, private library metadata, or
+publisher-owned media from the canonical product repositories.
 
 ## RISKS
 
@@ -238,9 +242,8 @@ Review `/play/`, `/training/`, `/lab/`, `/codex/`, and `/loadouts/` individually
   never the root hostname.
 - **Stale SEO identity:** all portfolio canonicals, Open Graph URLs, sitemap entries, and page titles
   must use WizardGang/Hexframe names and portfolio routes; Shark Tank owns its own metadata.
-- **Uncommitted prior work:** `../WizardGangLocal` already contains deployed but uncommitted portfolio
-  changes and one modified submodule worktree. Migration commits must not discard or misattribute
-  that work.
+- **Legacy-source retirement:** the retired combined checkout is not a recovery authority. Product
+  recovery must use the canonical SharkTank repository and its documented production controls.
 - **Hexframe release policy:** Hexframe production deploys release tags only. Domain activation must
   not bypass that repository contract.
 - **Redirect permanence:** 308 responses are cached. ShadowMoney retirement is activated only after

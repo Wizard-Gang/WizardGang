@@ -7,6 +7,6 @@ and temporary compatibility routing for URLs that historically belonged to Shark
 not own any product runtime, authentication, database, Durable Object, WebSocket implementation,
 or product source code.
 
-The migration inventory and cutover contract are in
-[`docs/BOUNDARY-MIGRATION.md`](docs/BOUNDARY-MIGRATION.md).
-
+Current product ownership and recovery boundaries are in
+[`docs/OWNERSHIP.md`](docs/OWNERSHIP.md). The completed migration inventory and cutover contract
+remain in [`docs/BOUNDARY-MIGRATION.md`](docs/BOUNDARY-MIGRATION.md) as a historical record.
