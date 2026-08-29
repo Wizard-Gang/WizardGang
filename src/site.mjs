@@ -83,84 +83,159 @@ function actions(project, compact = false) {
   return `<div class="${compact ? "text-links" : "button-row"}">${links.join("")}</div>`;
 }
 
-function hexframeVisual() {
-  return `<div class="project-visual sim-visual hexframe-preview" role="img" aria-label="Hexframe mini training lab cycling attacks with hitboxes, hurtboxes, and an 18-frame timeline">
+// Both product previews below are traced from the live apps rather than invented: the
+// Shark Tank mascot is the same path data the game rasterises for every skin, and the
+// Hexframe fighter is the shipped rig drawn at its idle pose. Colours are copied from
+// each product's own tokens, so a change there is visible here as a mismatch.
+function sharkTankVisual() {
+  return `<div class="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: the player's cyan shark among rivals in a live tank, with the points, rank and size readouts, the top sharks leaderboard, and the dash and rocket abilities">
+    <div class="tank-arena">
+      <svg viewBox="0 0 800 470" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+        <defs>
+          <pattern id="tankSea" width="48" height="48" patternUnits="userSpaceOnUse">
+            <circle cx="7" cy="9" r="2.1" fill="#2f7a92" fill-opacity=".5"/>
+            <circle cx="31" cy="30" r="1.5" fill="#4b3f86" fill-opacity=".55"/>
+          </pattern>
+          <symbol id="tankShark" viewBox="0 0 180 110">
+            <path d="M35 55 4 26l8 30-8 29 31-25c12 26 67 35 112 4 12-8 20-8 29-9-9-2-17-4-29-12C102 13 47 27 35 55Z" fill="var(--body, #22e6ff)" stroke="#070b14" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M76 29 91 5l19 28M76 75 90 102l14-29" fill="var(--accent, #0891b2)" stroke="#070b14" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M41 48c24-15 62-22 106-5-43-8-79 1-105 19Z" fill="#fff" opacity=".18"/>
+            <circle cx="137" cy="40" r="13" fill="#fff" stroke="#070b14" stroke-width="4"/>
+            <circle cx="142" cy="43" r="5" fill="#070b14"/>
+            <path d="M119 66q21 16 42-2-21 31-42 2Z" fill="#47142a" stroke="#070b14" stroke-width="4" stroke-linejoin="round"/>
+            <path d="m126 69 5 10 6-8 6 8 5-11" fill="#fff" stroke="#070b14" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="158" cy="48" r="3" fill="#070b14"/>
+          </symbol>
+        </defs>
+        <rect width="800" height="470" fill="#0b0a14"/>
+        <rect width="800" height="470" fill="url(#tankSea)"/>
+        <g stroke="#315468" stroke-opacity=".54" stroke-width="1">
+          <path d="M96 0v470M226 0v470M356 0v470M486 0v470M616 0v470"/>
+        </g>
+        <g class="tank-food">
+          <circle cx="196" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
+          <circle cx="243" cy="286" r="3.4" fill="#22e6ff" opacity=".8"/>
+          <circle cx="404" cy="150" r="3.4" fill="#ffd54a" opacity=".8"/>
+          <circle cx="470" cy="268" r="5" fill="#ff8a1f" opacity=".98"/>
+          <circle cx="330" cy="404" r="3.4" fill="#ffd54a" opacity=".8"/>
+          <circle cx="150" cy="330" r="3.4" fill="#22e6ff" opacity=".8"/>
+          <circle cx="530" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
+        </g>
+        <g class="tank-fish tank-fish-a">
+          <use href="#tankShark" x="180" y="110" width="78" height="48" style="--body:#ffe14d;--accent:#b8890a"/>
+          <g class="tank-tag"><rect x="186" y="82" width="70" height="21" rx="6" fill="#ffe14d"/><text x="221" y="97">Chowder</text></g>
+        </g>
+        <g class="tank-fish tank-fish-b">
+          <use href="#tankShark" x="196" y="330" width="70" height="43" style="--body:#a78bff;--accent:#6d28d9"/>
+          <g class="tank-tag"><rect x="204" y="303" width="54" height="21" rx="6" fill="#a78bff"/><text x="231" y="318">Molar</text></g>
+        </g>
+        <g class="tank-fish tank-fish-c">
+          <use href="#tankShark" x="424" y="356" width="64" height="39" style="--body:#ff8a1f;--accent:#c2410c"/>
+          <g class="tank-tag"><rect x="432" y="330" width="48" height="21" rx="6" fill="#ff8a1f"/><text x="456" y="345">Tide</text></g>
+        </g>
+        <g class="tank-fish tank-fish-you">
+          <use href="#tankShark" x="286" y="212" width="106" height="65" style="--body:#22e6ff;--accent:#0891b2"/>
+          <g class="tank-tag"><rect x="284" y="178" width="110" height="23" rx="6" fill="#22e6ff"/><text x="339" y="194">Player (you)</text></g>
+        </g>
+      </svg>
+    </div>
+    <div class="tank-readout">
+      <div class="tank-card"><span>Points</span><strong>2</strong></div>
+      <div class="tank-card"><span>Rank</span><strong>16<small> / 24</small></strong></div>
+      <div class="tank-card"><span>Size</span><strong>1.0<small>×</small></strong></div>
+    </div>
+    <div class="tank-board">
+      <h4>Top Sharks</h4>
+      <ol>
+        <li><span>1</span><i style="background:#57ff5a"></i><b>Wriggle</b><em>230</em></li>
+        <li><span>2</span><i style="background:#a78bff"></i><b>Molar</b><em>197</em></li>
+        <li><span>3</span><i style="background:#ffe14d"></i><b>Chowder</b><em>177</em></li>
+        <li><span>4</span><i style="background:#a78bff"></i><b>Fang</b><em>134</em></li>
+        <li><span>5</span><i style="background:#22e6ff"></i><b>Barnacle</b><em>50</em></li>
+      </ol>
+    </div>
+    <div class="tank-abilities">
+      <span class="tank-ability tank-dash"><svg viewBox="0 0 32 24" aria-hidden="true"><path d="M2 6h13M1 12h11M4 18h11M17 2l13 10-13 10Z"/></svg><b>Dash</b><small>Space</small></span>
+      <span class="tank-ability tank-rocket"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19 4c4-2 7-2 9-2 0 2 0 5-2 9L15 22l-6-6L19 4Z"/><path d="m10 16-6 1-2 6 8-2M15 22l-1 8 6-2 1-6M9 23l-6 6"/><circle cx="22" cy="8" r="3"/></svg><b>Rocket</b><small>Shift</small></span>
+    </div>
     <style>
-      .hexframe-preview{display:block;padding:0;background:#090a0e}.hexframe-preview svg{display:block;width:100%;height:auto;min-height:420px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.hexframe-preview .hg{stroke:#ffffff12}.hexframe-preview .hl{fill:#b5b0bb;font-size:11px;font-weight:800;letter-spacing:1.4px}.hexframe-preview .ht{fill:#f5f2e9;font-size:15px;font-weight:900}.hexframe-preview .ha{fill:#d9ff43}.hexframe-preview .body{fill:#17171e;stroke:#f5f2e9;stroke-width:3}.hexframe-preview .limb{stroke:#f5f2e9;stroke-width:8;stroke-linecap:round}.hexframe-preview .hurt{fill:#78e8ff28;stroke:#78e8ff;stroke-width:2}.hexframe-preview .hit{fill:#ff5a6f33;stroke:#ff5a6f;stroke-width:2}.hexframe-preview .fn{fill:#85808c;font-size:8px;text-anchor:middle}.hexframe-preview .phase{fill:#b5b0bb;font-size:9px;font-weight:800;text-anchor:middle;letter-spacing:1px}.hexframe-preview .cursor{fill:#d9ff4326;stroke:#d9ff43;stroke-width:2}@media(prefers-reduced-motion:reduce){.hexframe-preview animate,.hexframe-preview animateTransform{display:none}.hexframe-preview .later{opacity:0}}
+      .tank-preview{position:relative;padding:0;background:#0b0a14;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}.tank-preview::before{display:none}.tank-arena{position:absolute;inset:0}.tank-arena svg{display:block;width:100%;height:100%}.tank-tag text{fill:#0b0a14;font:700 13px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-anchor:middle}.tank-readout,.tank-board,.tank-abilities{position:absolute;z-index:2}.tank-readout{top:12px;left:12px;display:flex;gap:8px}.tank-card{min-width:66px;padding:6px 10px;border:1px solid #3a355e;border-radius:12px;background:rgb(6 5 12 / 72%);text-align:center}.tank-card span{display:block;color:#b9b4d6;font-size:.62rem}.tank-card strong{display:block;margin-top:2px;color:#f3f1ff;font-size:1.05rem;font-variant-numeric:tabular-nums}.tank-card small{color:#9a95bd;font-size:.62rem;font-weight:600}.tank-board{top:12px;right:12px;width:190px;max-width:44%;padding:10px 12px;border:1px solid #3a355e;border-radius:12px;background:rgb(6 5 12 / 72%)}.tank-board h4{margin:0 0 8px;color:#b9b4d6;font-size:.66rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase}.tank-board ol{display:grid;margin:0;padding:0;gap:4px;list-style:none}.tank-board li{display:grid;align-items:center;padding:2px 2px;gap:8px;grid-template-columns:14px 10px 1fr auto;color:#f3f1ff;font-size:.76rem}.tank-board span{color:#b9b4d6;text-align:right}.tank-board i{width:9px;height:9px;border-radius:50%}.tank-board b{overflow:hidden;font-weight:500;text-overflow:ellipsis;white-space:nowrap}.tank-board em{font-style:normal;font-variant-numeric:tabular-nums}.tank-abilities{right:12px;bottom:12px;display:grid;gap:8px;justify-items:end}.tank-ability{display:grid;width:132px;padding:9px 12px;border:1px solid rgb(255 255 255 / 16%);border-radius:12px;column-gap:10px;grid-template-areas:"icon name" "icon key";grid-template-columns:26px 1fr;color:#f3f1ff}.tank-ability svg{width:22px;height:22px;align-self:center;fill:none;grid-area:icon;stroke:currentcolor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.4}.tank-ability b{align-self:end;font-size:.8rem;font-weight:800;grid-area:name;letter-spacing:.4px;text-transform:uppercase}.tank-ability small{align-self:start;font-size:.58rem;font-weight:700;grid-area:key;letter-spacing:.6px;opacity:.8;text-transform:uppercase}.tank-dash{background:#6557d7}.tank-rocket{background:#cc3f20}.tank-fish{transform-box:view-box}.tank-fish-you{animation:tank-you 6s ease-in-out infinite alternate}.tank-fish-a{animation:tank-a 9s ease-in-out infinite alternate}.tank-fish-b{animation:tank-b 11s ease-in-out infinite alternate}.tank-fish-c{animation:tank-c 8s ease-in-out infinite alternate}.tank-food{animation:tank-food 1.6s ease-in-out infinite alternate}@keyframes tank-you{from{transform:translate(-26px,14px)}to{transform:translate(26px,-14px)}}@keyframes tank-a{from{transform:translate(-34px,0)}to{transform:translate(96px,18px)}}@keyframes tank-b{from{transform:translate(-24px,18px)}to{transform:translate(104px,-24px)}}@keyframes tank-c{from{transform:translate(52px,10px)}to{transform:translate(-84px,-16px)}}@keyframes tank-food{from{opacity:.55}to{opacity:1}}@media(max-width:760px){.tank-board{display:none}.tank-ability{width:auto;grid-template-areas:"icon name";grid-template-columns:22px auto}.tank-ability small{display:none}}@media(prefers-reduced-motion:reduce){.tank-fish,.tank-food{animation:none!important}}
     </style>
-    <svg viewBox="0 0 720 420" aria-hidden="true" focusable="false">
-      <defs><pattern id="hfg" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" class="hg"/></pattern></defs><rect width="720" height="420" fill="url(#hfg)"/><text x="24" y="31" class="hl ha">HEXFRAME // MINI LAB</text><text x="696" y="31" class="hl" text-anchor="end">HITBOX + HURTBOX // 60 HZ</text><line x1="24" y1="300" x2="696" y2="300" stroke="#ffffff38" stroke-width="2"/>
-      <g transform="translate(205)"><rect x="-34" y="126" width="68" height="116" rx="18" class="hurt"/><circle cx="0" cy="111" r="22" class="body"/><rect x="-22" y="134" width="44" height="78" rx="14" class="body"/><line x1="-10" y1="208" x2="-28" y2="282" class="limb"/><line x1="12" y1="208" x2="33" y2="282" class="limb"/><line x1="-18" y1="150" x2="-48" y2="176" class="limb"/>
-        <g><animateTransform attributeName="transform" type="translate" dur="4s" repeatCount="indefinite" values="-10 0;-10 0;12 0;12 0;0 0;0 0" keyTimes="0;.22;.23;.42;.58;1"/>
-          <g><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="1;0;0;0;0;0;1" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="150" x2="82" y2="153" class="limb"/><rect x="70" y="132" width="72" height="44" rx="4" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.22;.23;.42;.43;1"/></rect></g>
-          <g class="later"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;1;0;0;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="145" x2="104" y2="126" class="limb"/><rect x="86" y="96" width="98" height="66" rx="4" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.28;.29;.46;.47;1"/></rect></g>
-          <g class="later"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;0;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="178" x2="88" y2="214" class="limb"/><rect x="74" y="196" width="92" height="44" rx="4" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.2;.21;.38;.39;1"/></rect></g>
-          <g class="later"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;1;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="145" x2="96" y2="92" class="limb"/><rect x="82" y="66" width="100" height="62" rx="4" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.26;.27;.45;.46;1"/></rect></g>
-          <g class="later"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;0;1;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="150" x2="106" y2="150" class="limb"/><rect x="76" y="104" width="154" height="90" rx="6" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.32;.33;.55;.56;1"/></rect></g>
-          <g class="later"><animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;0;0;1;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/><line x1="16" y1="142" x2="76" y2="128" class="limb"/><line x1="16" y1="162" x2="76" y2="180" class="limb"/><rect x="66" y="116" width="82" height="76" rx="6" class="hit"><animate attributeName="opacity" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;1;0;0" keyTimes="0;.24;.25;.42;.43;1"/></rect></g>
+  </div>`;
+}
+
+function hexframeVisual() {
+  const fighter = `<g id="hfRig">
+    <g transform="translate(0 -46)">
+      <rect x="-9" y="-6" width="18" height="12" rx="4" fill="var(--body, #7f8fd0)"/>
+      <g transform="translate(-1 0) rotate(-6)">
+        <rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--far, #4a5a86)"/>
+        <g transform="translate(0 24) rotate(8)">
+          <rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--far, #4a5a86)"/>
+          <g transform="translate(0 22)"><rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--far-dark, #3b4a70)"/></g>
         </g>
       </g>
-      <g transform="translate(492)"><rect x="-34" y="126" width="68" height="116" rx="18" class="hurt"/><circle cx="0" cy="111" r="22" class="body"/><rect x="-22" y="134" width="44" height="78" rx="14" class="body"/><line x1="-10" y1="208" x2="-28" y2="282" class="limb"/><line x1="12" y1="208" x2="33" y2="282" class="limb"/><line x1="-18" y1="150" x2="-58" y2="172" class="limb"/><line x1="18" y1="150" x2="54" y2="174" class="limb"/></g><text x="492" y="291" class="hl" text-anchor="middle">TRAINING DUMMY</text>
-      <g class="ht"><text x="24" y="58">5L // QUICK STRIKE<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="1;0;0;0;0;0;1" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text><text x="24" y="58" class="later">5H // HEAVY STRIKE<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;1;0;0;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text><text x="24" y="58" class="later">2L // LOW STRIKE<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;1;0;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text><text x="24" y="58" class="later">J.H // AIR HEAVY<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;1;0;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text><text x="24" y="58" class="later">236H // SPECIAL<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;0;1;0;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text><text x="24" y="58" class="later">THROW // COMMAND GRAB<animate attributeName="opacity" dur="24s" repeatCount="indefinite" calcMode="discrete" values="0;0;0;0;0;1;0" keyTimes="0;.1667;.3333;.5;.6667;.8333;1"/></text></g>
-      <g transform="translate(24 320)"><text y="10" class="hl">FRAME</text><g transform="translate(58)"><rect y="-4" width="612" height="29" rx="3" fill="#0f0f14" stroke="#313038"/><rect y="-4" width="170" height="29" fill="#a489ff30"/><rect x="170" y="-4" width="102" height="29" fill="#ff5a6f38"/><rect x="272" y="-4" width="340" height="29" fill="#78e8ff24"/><rect y="-4" width="34" height="29" class="cursor"><animate attributeName="x" dur="4s" repeatCount="indefinite" calcMode="discrete" values="0;34;68;102;136;170;204;238;272;306;340;374;408;442;476;510;544;578" keyTimes="0;.0588;.1176;.1764;.2353;.2941;.3529;.4118;.4706;.5294;.5882;.6471;.7059;.7647;.8235;.8824;.9412;1"/></rect><g class="fn"><text x="17" y="14">01</text><text x="51" y="14">02</text><text x="85" y="14">03</text><text x="119" y="14">04</text><text x="153" y="14">05</text><text x="187" y="14">06</text><text x="221" y="14">07</text><text x="255" y="14">08</text><text x="289" y="14">09</text><text x="323" y="14">10</text><text x="357" y="14">11</text><text x="391" y="14">12</text><text x="425" y="14">13</text><text x="459" y="14">14</text><text x="493" y="14">15</text><text x="527" y="14">16</text><text x="561" y="14">17</text><text x="595" y="14">18</text></g><text x="85" y="45" class="phase">STARTUP 05</text><text x="221" y="45" class="phase">ACTIVE 03</text><text x="442" y="45" class="phase">RECOVERY 10</text></g></g>
-      <g transform="translate(24 392)"><rect width="10" height="10" class="hurt"/><text x="17" y="9" class="hl">HURTBOX</text><rect x="92" width="10" height="10" class="hit"/><text x="109" y="9" class="hl">HITBOX</text><text x="696" y="9" class="hl" text-anchor="end">LAB VISUAL // DETERMINISTIC SYSTEMS</text></g>
-    </svg>
+      <g>
+        <rect x="-11" y="-30" width="22" height="30" rx="6" fill="var(--body, #7f8fd0)"/>
+        <rect x="-11" y="-18" width="22" height="3" fill="var(--accent, #c9d4ff)" opacity=".65"/>
+        <g transform="translate(-2 -26) rotate(-12)">
+          <rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--far, #4a5a86)"/>
+          <g transform="translate(0 16) rotate(-28)">
+            <rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--far, #4a5a86)"/>
+            <g transform="translate(0 14)"><circle cx="0" cy="3" r="4.5" fill="var(--far-dark, #3b4a70)"/></g>
+          </g>
+        </g>
+        <g transform="translate(0 -30)">
+          <circle cx="1" cy="-11" r="11" fill="var(--body, #7f8fd0)"/>
+          <path d="M 8 -15 L 14 -12 L 8 -9 Z" fill="var(--accent, #c9d4ff)"/>
+        </g>
+        <g transform="translate(2 -26) rotate(-18)">
+          <rect x="-4" y="0" width="8" height="16" rx="3.5" fill="var(--near, #9aa9e8)"/>
+          <g transform="translate(0 16) rotate(-34)">
+            <rect x="-3.5" y="0" width="7" height="14" rx="3" fill="var(--near, #9aa9e8)"/>
+            <g transform="translate(0 14)"><circle cx="0" cy="3" r="5" fill="var(--near-dark, #7686c4)"/></g>
+          </g>
+        </g>
+      </g>
+      <g transform="translate(1 0) rotate(8)">
+        <rect x="-5.5" y="0" width="11" height="24" rx="4.5" fill="var(--near, #9aa9e8)"/>
+        <g transform="translate(0 24) rotate(-6)">
+          <rect x="-5" y="0" width="10" height="22" rx="4" fill="var(--near, #9aa9e8)"/>
+          <g transform="translate(0 22)"><rect x="-4" y="0" width="16" height="6" rx="2.5" fill="var(--near-dark, #7686c4)"/></g>
+        </g>
+      </g>
+    </g>
+  </g>`;
+  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: the player fighter facing the training dummy on the deterministic stage, with health and stamina meters and the active route readout">
+    <header class="lab-brand">
+      <p class="lab-eyebrow">Hexframe / Training</p>
+      <strong>Prime. Link. Cash out.</strong>
+      <p class="lab-sub">Build a sixteen-technique arsenal. Route statuses. Finish the fight.</p>
+    </header>
+    <div class="lab-stage">
+      <div class="lab-hud">
+        <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 STA</small></strong></div>
+        <div class="lab-player lab-player-right"><strong><b>1000</b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
+      </div>
+      <svg viewBox="-150 -125 300 165" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+        <defs>${fighter}</defs>
+        <rect x="-150" y="-125" width="300" height="165" fill="#080a0f"/>
+        <rect x="-150" y="0" width="300" height="40" fill="#121219"/>
+        <line x1="0" y1="-125" x2="0" y2="40" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
+        <line x1="-150" y1="0" x2="150" y2="0" stroke="#484f58" stroke-width="2"/>
+        <g transform="translate(-40 0)"><g class="lab-idle"><use href="#hfRig" style="--body:#a8cf46;--near:#c4ed64;--near-dark:#8dac34;--far:#61792d;--far-dark:#465820;--accent:#efffc7"/></g></g>
+        <g transform="translate(40 0) scale(-1 1)"><g class="lab-idle lab-idle-b"><use href="#hfRig" style="--body:#687bdf;--near:#8fa0ff;--near-dark:#5568c9;--far:#3d487f;--far-dark:#303961;--accent:#dce2ff"/></g></g>
+      </svg>
+      <div class="lab-route"><span>Active</span><strong>Ready</strong><em>Choose any 16 of 29 moves</em></div>
+    </div>
+    <style>
+      .lab-preview{display:grid;padding:0;background:#080a0f;grid-template-rows:auto minmax(0,1fr)}.lab-preview::before{display:none}.lab-brand{padding:1.1rem 1.2rem .9rem;border-bottom:1px solid #1c2128}.lab-eyebrow{margin:0;color:#76e6c4;font:750 .58rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.17em;text-transform:uppercase}.lab-brand strong{display:block;margin:.5rem 0 .35rem;color:#edf0f2;font-size:1.3rem;font-weight:700;letter-spacing:-.055em}.lab-sub{margin:0;color:#89939c;font:.62rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.lab-stage{position:relative;overflow:hidden;min-height:260px;background:#080a0f}.lab-stage svg{display:block;width:100%;height:100%}.lab-hud{position:absolute;top:.7rem;right:.8rem;left:.8rem;z-index:2;display:flex;justify-content:space-between;gap:1rem}.lab-player{display:flex;align-items:center;gap:.5rem}.lab-player>span{color:#cbd1d6;font:800 .55rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase}.lab-meters{display:grid;width:min(30vw,140px);gap:3px}.lab-hp,.lab-sta{overflow:hidden;border-radius:1px}.lab-hp{height:6px;background:rgb(255 255 255 / 12%)}.lab-sta{height:3px;background:rgb(255 255 255 / 10%)}.lab-hp i,.lab-sta i{display:block;width:100%;height:100%}.lab-hp-p1{background:#76e6c4}.lab-hp-p2{background:#8999ff}.lab-sta i{background:#57b9df}.lab-player strong{display:grid;gap:1px}.lab-player b{color:#cbd1d6;font:900 .58rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.lab-player small{color:#77c9e8;font:650 .48rem/1 ui-monospace,SFMono-Regular,Consolas,monospace}.lab-player-right{text-align:right}.lab-route{position:absolute;bottom:.8rem;left:.8rem;z-index:2;display:grid;padding:.5rem .7rem;border-left:2px solid #76e6c4;background:rgb(8 11 14 / 78%);gap:2px}.lab-route span{color:#76e6c4;font:750 .5rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}.lab-route strong{color:#edf0f2;font-size:.82rem;font-weight:700;letter-spacing:.04em}.lab-route em{color:#89929b;font:.55rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;font-style:normal}.lab-idle{animation:lab-idle 3.2s ease-in-out infinite alternate}.lab-idle-b{animation-duration:4.1s}@keyframes lab-idle{from{transform:translateY(0)}to{transform:translateY(-1.8px)}}@media(max-width:700px){.lab-meters{width:22vw}.lab-player small{display:none}}@media(prefers-reduced-motion:reduce){.lab-idle{animation:none!important}}
+    </style>
   </div>`;
 }
 
 function projectVisual(project) {
-  if (project.slug === "sharktank") {
-    return `<div class="project-visual shark-preview" role="img" aria-label="Animated Shark Tank gameplay preview with ISO 27001 and ISO 42001 governance controls">
-      <div class="shark-game">
-        <div class="shark-hud"><strong>TANK 03</strong><span>LIVE SIMULATION</span><em>08 ACTIVE</em></div>
-        <div class="tank-tabs" aria-hidden="true"><span>01</span><span>02</span><span class="active">03</span><span>04</span></div>
-        <svg viewBox="0 0 800 330" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="tankWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#153e50"/><stop offset="1" stop-color="#07151d"/></linearGradient>
-            <linearGradient id="sharkBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9bb8c3"/><stop offset="1" stop-color="#536f7a"/></linearGradient>
-          </defs>
-          <rect width="800" height="330" fill="url(#tankWater)"/>
-          <path d="M0 58 C110 42 210 72 330 54 S560 35 800 61" fill="none" stroke="#78e8ff" stroke-opacity=".22" stroke-width="3"/>
-          <path d="M0 92 C150 111 260 74 410 96 S650 116 800 88" fill="none" stroke="#78e8ff" stroke-opacity=".1" stroke-width="2"/>
-          <g fill="#78e8ff" fill-opacity=".32"><circle cx="84" cy="252" r="4"/><circle cx="100" cy="226" r="2"/><circle cx="686" cy="266" r="5"/><circle cx="706" cy="236" r="2"/><circle cx="575" cy="86" r="3"/><circle cx="592" cy="62" r="2"/></g>
-          <g class="food" fill="#d9ff43"><circle cx="430" cy="208" r="5"/><circle cx="446" cy="199" r="3"/><circle cx="463" cy="215" r="4"/></g>
-          <g class="shark shark-a">
-            <polygon points="205,126 157,101 165,129 157,157" fill="#536f7a"/>
-            <ellipse cx="248" cy="129" rx="58" ry="27" fill="url(#sharkBody)"/>
-            <polygon points="243,105 263,72 278,111" fill="#6f8993"/>
-            <polygon points="248,151 271,178 286,145" fill="#5f7b86"/>
-            <circle cx="284" cy="121" r="4" fill="#08080b"/>
-            <path d="M294 135 q18 8 28 -2" fill="none" stroke="#263b43" stroke-width="3" stroke-linecap="round"/>
-          </g>
-          <g class="shark shark-b">
-            <polygon points="488,234 534,210 528,236 535,263" fill="#536f7a"/>
-            <ellipse cx="447" cy="236" rx="54" ry="25" fill="#839da7"/>
-            <polygon points="449,214 432,186 417,219" fill="#667f89"/>
-            <circle cx="412" cy="229" r="4" fill="#08080b"/>
-            <path d="M401 242 q-16 7 -25 -2" fill="none" stroke="#263b43" stroke-width="3" stroke-linecap="round"/>
-          </g>
-          <g class="shark shark-c">
-            <polygon points="594,141 558,121 563,143 558,163" fill="#3f5d68"/>
-            <ellipse cx="627" cy="143" rx="44" ry="21" fill="#6f8c97"/>
-            <polygon points="628,125 641,100 652,129" fill="#587480"/>
-            <circle cx="653" cy="137" r="3" fill="#08080b"/>
-          </g>
-          <g class="small-fish" fill="#d9ff43" fill-opacity=".8"><path d="M344 180 l18 -9 v18 z"/><ellipse cx="372" cy="180" rx="15" ry="8"/><path d="M110 196 l15 -7 v14 z"/><ellipse cx="134" cy="196" rx="12" ry="7"/></g>
-          <path d="M0 300 C150 282 290 318 430 296 S670 281 800 302 V330 H0Z" fill="#071015"/>
-        </svg>
-        <div class="shark-status"><span>ROOM AUTHORITY / DURABLE OBJECT</span><span>STATE SYNCED</span></div>
-      </div>
-      <div class="shark-governance">
-        <span><strong>ISO/IEC 27001</strong><small>Security controls</small></span>
-        <span><strong>ISO/IEC 42001</strong><small>AI governance</small></span>
-        <span><strong>LIVE EVIDENCE</strong><small>Risk · incidents · change</small></span>
-        <span><strong>RECOVERY</strong><small>Backups · restore drills</small></span>
-      </div>
-      <style>
-        .shark-preview{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:0;background:#071015}.shark-preview::before{display:none}.shark-game{position:relative;min-height:330px;overflow:hidden;background:#07151d}.shark-game::after{position:absolute;inset:0;background:linear-gradient(110deg,transparent 0 42%,rgb(120 232 255 / 7%) 48%,transparent 54%);content:"";animation:tank-shimmer 6s linear infinite;pointer-events:none}.shark-game svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shark-hud,.shark-status,.tank-tabs{position:absolute;z-index:2;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase}.shark-hud{top:1rem;left:1rem;display:flex;align-items:center;gap:.75rem;padding:.55rem .7rem;border:1px solid rgb(120 232 255 / 38%);background:rgb(7 16 21 / 78%);backdrop-filter:blur(6px)}.shark-hud strong{color:#78e8ff;font-size:.73rem;letter-spacing:.08em}.shark-hud span,.shark-hud em{color:#b5b0bb;font-size:.58rem;font-style:normal;letter-spacing:.06em}.shark-hud em{color:#d9ff43}.tank-tabs{top:1rem;right:1rem;display:flex;gap:.3rem}.tank-tabs span{display:grid;place-items:center;width:2rem;height:1.75rem;border:1px solid rgb(255 255 255 / 14%);background:rgb(7 16 21 / 70%);color:#85808c;font-size:.58rem;font-weight:800}.tank-tabs .active{border-color:#d9ff43;color:#d9ff43;box-shadow:0 0 16px rgb(217 255 67 / 16%)}.shark-status{right:1rem;bottom:.8rem;left:1rem;display:flex;justify-content:space-between;gap:1rem;color:#9ab0b8;font-size:.55rem;letter-spacing:.06em}.shark-status span:last-child{color:#d9ff43}.shark-governance{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #31434a;background:#0a0f13}.shark-governance span{display:flex;min-height:82px;flex-direction:column;justify-content:center;padding:.85rem 1rem;border-right:1px solid #27353b}.shark-governance span:last-child{border-right:0}.shark-governance strong{color:#f5f2e9;font:800 .62rem/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.shark-governance span:nth-child(-n+2) strong{color:#78e8ff}.shark-governance small{margin-top:.28rem;color:#85808c;font:600 .54rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}.shark{transform-box:fill-box;transform-origin:center}.shark-a{animation:swim-a 7s ease-in-out infinite alternate}.shark-b{animation:swim-b 8.5s ease-in-out infinite alternate}.shark-c{animation:swim-c 6s ease-in-out infinite alternate}.small-fish{animation:fish-drift 5.5s ease-in-out infinite alternate}.food{animation:food-pulse 1.2s ease-in-out infinite alternate}@keyframes swim-a{from{transform:translate(-70px,12px)}to{transform:translate(150px,-18px)}}@keyframes swim-b{from{transform:translate(105px,-12px)}to{transform:translate(-135px,18px)}}@keyframes swim-c{from{transform:translate(-55px,-8px)}to{transform:translate(70px,14px)}}@keyframes fish-drift{from{transform:translateX(-25px)}to{transform:translateX(55px)}}@keyframes food-pulse{from{opacity:.45;transform:scale(.86)}to{opacity:1;transform:scale(1.08)}}@keyframes tank-shimmer{from{transform:translateX(-70%)}to{transform:translateX(70%)}}@media(max-width:700px){.shark-governance{grid-template-columns:repeat(2,minmax(0,1fr))}.shark-governance span:nth-child(2){border-right:0}.shark-governance span:nth-child(-n+2){border-bottom:1px solid #27353b}.tank-tabs{display:none}.shark-hud span{display:none}}@media(prefers-reduced-motion:reduce){.shark-game::after,.shark,.small-fish,.food{animation:none!important}}
-      </style>
-    </div>`;
-  }
+  if (project.slug === "sharktank") return sharkTankVisual();
   if (project.slug === "hexframe") return hexframeVisual();
   return `<div class="project-visual archive-visual" role="img" aria-label="YarReader source to portable HTML flow"><header><strong>YAR / EXPORT</strong><span>OFFLINE BY DESIGN</span></header><div class="archive-files"><span><b>SOURCE</b><em>mixed publication formats</em><code>VERIFY</code></span><span><b>NORMALIZE</b><em>deterministic pages</em><code>HASH</code></span><span><b>HTML</b><em>relative static export</em><code>NO SERVER</code></span></div><footer><span>Recoverable</span><span>Portable</span><span>Verified</span></footer></div>`;
 }
