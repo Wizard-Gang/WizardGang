@@ -1,3 +1,5 @@
+const WIZARDGANG_REPO = "https://github.com/Wizard-Gang/WizardGang";
+
 export const projects = [
   {
     name: "Shark Tank",
@@ -8,8 +10,7 @@ export const projects = [
     tags: ["ISO/IEC 27001", "ISO/IEC 42001", "Risk management", "AI governance", "Cloudflare", "Operations"],
     liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/trust/",
-    sourceUrl: "https://github.com/SouthernGentlemen/SharkTank",
-    sourcePublic: true,
+    sourceUrl: WIZARDGANG_REPO,
     problem: "Compliance claims are easy to write and difficult to prove. Shark Tank asks whether security and AI governance can be made inspectable from the same production system they describe, without confusing a readiness exercise with certification.",
     built: [
       "A public 184-row readiness register spanning ISO/IEC 27001:2022 and ISO/IEC 42001:2023",
@@ -36,8 +37,7 @@ export const projects = [
     description: "A deterministic 2D fighting-game simulator and training laboratory built around fixed-step simulation, rollback, authored combat, and SVG rendering.",
     tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
-    sourceUrl: "https://github.com/SouthernGentlemen/Hexframe",
-    sourcePublic: true,
+    sourceUrl: WIZARDGANG_REPO,
     problem: "Combat has to mean the same thing to play, training, AI, replay, saves, and eventual network rollback. Browser timing, presentation state, and ambient randomness cannot be allowed to define the result.",
     built: [
       "A fixed 60 Hz integer simulation with explicit snapshots and hashes",
@@ -64,8 +64,7 @@ export const projects = [
     description: "A crash-recoverable pipeline that turns mixed publication formats into a verified static HTML library designed for offline and removable storage.",
     tags: ["TypeScript", "CLI", "Content addressing", "Recovery", "Static HTML", "Offline"],
     liveUrl: null,
-    sourceUrl: "https://github.com/SouthernGentlemen/YarReader",
-    sourcePublic: true,
+    sourceUrl: WIZARDGANG_REPO,
     problem: "CBZ, CBR, EPUB, PDF, loose images, duplicate releases, interrupted copies, and incomplete downloads all enter through one inbox. The system must preserve originals and never activate an export it has not completely verified.",
     built: [
       "Explicit adapters for six source families",

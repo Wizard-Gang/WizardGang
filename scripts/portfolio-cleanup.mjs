@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { professionalRoles } from "../src/professional.mjs";
 import { deployments, integrationGroups, systemGroups } from "../src/professional-systems.mjs";
 
-const GITHUB = "https://github.com/SouthernGentlemen";
+const GITHUB = "https://github.com/Wizard-Gang/WizardGang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacobyongue@outlook.com";
 

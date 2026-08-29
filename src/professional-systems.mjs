@@ -3,28 +3,28 @@
 // External references are intentionally centralized so links can be audited in one place.
 
 export const deployments = [
-  ["A Beka Book", "https://www.abeka.com/"],
-  ["BAMKO", "https://www.bamkousa.com/"],
-  ["Brixton", "https://www.brixton.com/"],
-  ["Bulk Reef Supply", "https://www.bulkreefsupply.com/"],
-  ["BuySeasons", "https://www.buyseasons.com/"],
-  ["Custom Integrated Designs", "https://www.cidresources.com/"],
-  ["Dot Foods", "https://www.dotfoods.com/"],
-  ["FamBrands", "https://www.fambrands.com/"],
   ["GNC", "https://www.gnc.com/"],
-  ["Hybrid Apparel", "https://hybridapparel.com/"],
-  ["IPSY", "https://www.ipsy.com/"],
   ["Jerry Leigh", "https://www.jerryleigh.com/"],
+  ["Hybrid Apparel", "https://hybridapparel.com/"],
   ["Manhattan Beachwear", "https://www.mbwswim.com/"],
   ["Obermeyer", "https://obermeyer.com/"],
-  ["Saddle Creek Logistics Services", "https://www.sclogistics.com/"],
-  ["Salon Service Group", "https://www.salonservicegroup.com/"],
-  ["Seeds 'N Such", "https://seedsnsuch.com/"],
-  ["Snap-on Tools", "https://www.snapon.com/"],
   ["Solutions 2 GO", "https://www.solutions2go.ca/"],
-  ["SpartanNash", "https://www.spartannash.com/"],
+  ["FamBrands", "https://www.fambrands.com/"],
+  ["Custom Integrated Designs", "https://www.cidresources.com/"],
+  ["BAMKO", "https://www.bamkousa.com/"],
+  ["Brixton", "https://www.brixton.com/"],
+  ["Dot Foods", "https://www.dotfoods.com/"],
+  ["Snap-on Tools", "https://www.snapon.com/"],
+  ["IPSY", "https://www.ipsy.com/"],
+  ["Younique", "https://www.youniqueproducts.com/"],
+  ["BuySeasons", "https://www.buyseasons.com/"],
+  ["Bulk Reef Supply", "https://www.bulkreefsupply.com/"],
+  ["Seeds 'N Such", "https://seedsnsuch.com/"],
   ["Waytek Wire", "https://www.waytekwire.com/"],
-  ["Younique", "https://www.youniqueproducts.com/"]
+  ["Saddle Creek Logistics Services", "https://www.sclogistics.com/"],
+  ["SpartanNash", "https://www.spartannash.com/"],
+  ["A Beka Book", "https://www.abeka.com/"],
+  ["Salon Service Group", "https://www.salonservicegroup.com/"]
 ].map(([name, url]) => ({ name, url }));
 
 export const integrationGroups = [

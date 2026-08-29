@@ -1,13 +1,11 @@
 import { projects } from "./projects.mjs";
 import { professionalEducation, professionalProjects, professionalRoles, professionalSkills } from "./professional.mjs";
+import { deployments, integrationGroups, systemGroups } from "./professional-systems.mjs";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
-const GITHUB = "https://github.com/SouthernGentlemen";
+const GITHUB = "https://github.com/Wizard-Gang/WizardGang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacobyongue@outlook.com";
-// Public resume artifact. The phone number and street address from the source document
-// must never reach this file; scripts/verify.mjs decodes the PDF and enforces that.
-const RESUME_PDF = "/JacobYongue_Resume.pdf";
 
 const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (character) => ({
   "&": "&amp;",
@@ -74,17 +72,16 @@ const tags = (items, label = "Technologies") => `<ul class="tags" aria-label="${
 
 function actions(project, compact = false) {
   const className = compact ? "text-link" : "button";
-  const links = [`<a class="${compact ? "text-link" : "button button-primary"}" href="/work/${project.slug}/">${compact ? "Case study" : "View project"} <span aria-hidden="true">→</span></a>`];
+  const links = [`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">WizardGang repo <span aria-hidden="true">↗</span></a>`];
 
   if (project.slug === "sharktank") {
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}">Trust &amp; evidence <span aria-hidden="true">↗</span></a>`);
-    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}">Live system <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Trust &amp; evidence <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Live system <span aria-hidden="true">↗</span></a>`);
   } else {
-    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}">Live demo <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}">Operations <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${className}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Operations <span aria-hidden="true">↗</span></a>`);
   }
 
-  if (project.sourcePublic && project.sourceUrl) links.push(`<a class="${className}" href="${project.sourceUrl}">Source <span aria-hidden="true">↗</span></a>`);
   return `<div class="${compact ? "text-links" : "button-row"}">${links.join("")}</div>`;
 }
 
@@ -374,7 +371,7 @@ function projectVisual(project) {
 
 function projectCard(project, index) {
   return `<article class="project-row${index % 2 ? " project-row-reverse" : ""}">
-    <div class="project-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="/work/${project.slug}/">${escapeHtml(project.name)}</a></h3><p>${escapeHtml(project.description)}</p>${tags(project.tags.slice(0, 5))}${actions(project, true)}</div>
+    <div class="project-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.name)} <span aria-hidden="true">↗</span></a></h3><p>${escapeHtml(project.description)}</p>${tags(project.tags.slice(0, 5))}${actions(project, true)}</div>
     ${projectVisual(project)}
   </article>`;
 }
@@ -511,20 +508,29 @@ function about(build) {
   return document({ title: "About — WizardGang Software Engineering", description: "About WizardGang: independent software systems and professional delivery work kept in clear, distinct portfolios.", path: "/about/", current: "about", body, build });
 }
 
+function officialReference(item) {
+  if (!item.url) return escapeHtml(item.name);
+  return `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.name)} <span class="sr-only">(opens in a new tab)</span></a>`;
+}
+
+function referenceList(items) {
+  return `<ul class="reference-cloud">${items.map((item) => `<li>${officialReference(item)}</li>`).join("")}</ul>`;
+}
+
+function capabilityList(items) {
+  return `<ul class="capability-cloud">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+}
+
 function resume(build) {
-  const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero resume-hero"><p class="kicker">Resume / selected experience</p><h1>Systems builder.<br><span>Delivery owner.</span></h1><p>Software engineer with 6+ years delivering enterprise applications in complex, regulated environments. Technical delivery across 20+ implementations, large distributed development and support teams, and zero-disruption migrations spanning supply chain, government, and higher-education systems subject to CJIS, FERPA, and HIPAA controls.</p><div class="button-row page-hero-actions"><a class="button button-primary" href="${RESUME_PDF}" download>Download resume (PDF) <span aria-hidden="true">↓</span></a><a class="button" href="mailto:${CONTACT_EMAIL}">Email</a><a class="button" href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a></div></section>
-    <section class="resume-section" aria-labelledby="resume-professional"><p class="kicker">Professional experience</p><h2 id="resume-professional">Delivery across the lifecycle.</h2>
-      ${professionalRoles.map((item) => `<article class="resume-entry"><div><strong>${escapeHtml(item.organization)}</strong><span>${escapeHtml(item.dates)}</span></div><div><h3>${escapeHtml(item.role)}</h3><p>${escapeHtml(item.summary)}</p></div></article>`).join("")}
-      <a class="text-link" href="/professional/">View all 15 professional projects <span aria-hidden="true">→</span></a>
-    </section>
-    <section class="resume-section" aria-labelledby="resume-projects"><p class="kicker">Independent project experience</p><h2 id="resume-projects">Built end to end.</h2>
-      ${projects.map((project) => `<article class="resume-entry"><div><strong>${escapeHtml(project.name)}</strong><span>${escapeHtml(project.eyebrow)}</span></div><div><h3>${escapeHtml(project.description)}</h3><ul>${project.built.slice(0, 2).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul><a class="text-link" href="/work/${project.slug}/">Case study <span aria-hidden="true">→</span></a></div></article>`).join("")}
-    </section>
-    <section class="resume-section" aria-labelledby="resume-strengths"><p class="kicker">Core strengths</p><h2 id="resume-strengths">Architecture with a product surface.</h2><div class="strength-grid"><div><strong>.NET &amp; SQL</strong><span>C#/.NET, Python, SQL Server, T-SQL, SSRS reporting, and high-volume ETL pipelines.</span></div><div><strong>Integrations</strong><span>REST/JSON APIs, EDI, SOAP, OAuth 2.0, SAML/SSO, and interface and data mapping.</span></div><div><strong>System design</strong><span>Domain models, invariants, ownership, and failure recovery.</span></div><div><strong>TypeScript &amp; Cloudflare</strong><span>Browser apps, Workers, Durable Objects, R2, APIs, protocols, and CLIs.</span></div><div><strong>Security &amp; governance</strong><span>Risk, controls, evidence, identity, incident response, and AI governance.</span></div><div><strong>Delivery &amp; operations</strong><span>CI/CD, QA/UAT, migrations and cutovers, monitoring, incidents, and training.</span></div></div></section>
-    <section class="explore"><p class="kicker">Project record</p><h2>Two contexts, both inspectable.</h2><div class="button-row"><a class="button button-primary" href="/professional/">Professional portfolio <span aria-hidden="true">→</span></a><a class="button" href="/work/">Independent lab</a><a class="button" href="${GITHUB}">GitHub <span aria-hidden="true">↗</span></a></div></section>
-    <section class="explore contact-block" aria-labelledby="resume-contact"><p class="kicker">Contact</p><h2 id="resume-contact">Start a conversation.</h2><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL} <span aria-hidden="true">→</span></a><a class="button" href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a><a class="button" href="${RESUME_PDF}" download>Download resume (PDF) <span aria-hidden="true">↓</span></a></div></section>
+  const integrations = integrationGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(group.items)}</article>`).join("");
+  const systems = systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("");
+  const body = `<main class="case-main systems-resume" id="main" tabindex="-1">
+    <section class="systems-resume-hero"><div><p class="kicker">Resume / professional record</p><h1>Professional<br><span>Systems.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Email <span aria-hidden="true">→</span></a><a class="button" href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">WizardGang repo <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="systems-resume-section" aria-labelledby="resume-deployments"><header><div><p class="kicker">01</p><h2 id="resume-deployments">Deployments</h2></div><p>Each deployment name links to the organization’s official website.</p></header>${referenceList(deployments)}</section>
+    <section class="systems-resume-section" aria-labelledby="resume-integrations"><header><div><p class="kicker">02</p><h2 id="resume-integrations">Integrations</h2></div><p>Each product or vendor name links to its official website.</p></header><div class="systems-resume-grid">${integrations}</div></section>
+    <section class="systems-resume-section" aria-labelledby="resume-systems"><header><div><p class="kicker">03</p><h2 id="resume-systems">Systems</h2></div></header><div class="systems-resume-grid">${systems}</div></section>
   </main>`;
-  return document({ title: "Resume — WizardGang Software Engineering", description: "Jacob Yongue: software engineer with 6+ years across C#/.NET, SQL Server, REST and EDI integrations, WMS and public-sector platforms, Cloudflare, security and AI governance, and production operations.", path: "/resume/", current: "resume", body, build });
+  return document({ title: "Professional Systems — WizardGang", description: "Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.", path: "/resume/", current: "resume", body, build });
 }
 
 function notFound(build) {

@@ -181,10 +181,80 @@
   color: var(--muted);
 }
 
+.systems-resume-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, .75fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: end;
+  min-height: 68vh;
+  padding: clamp(5rem, 11vw, 9rem) 0;
+}
+
+.systems-resume-hero h1 {
+  margin: .7rem 0 0;
+  font-size: clamp(4rem, 10vw, 9rem);
+  line-height: .83;
+  letter-spacing: -.065em;
+}
+
+.systems-resume-hero h1 span { color: var(--acid); }
+
+.systems-resume-hero > div:last-child > p {
+  max-width: 58ch;
+  margin: 0;
+  color: #d0ccd4;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+}
+
+.systems-resume-hero .button-row { margin-top: 1.7rem; }
+
+.systems-resume-section {
+  padding: clamp(4rem, 8vw, 7rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.systems-resume-section > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, .75fr);
+  gap: clamp(1.5rem, 5vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.systems-resume-section h2 {
+  margin: 0;
+  font-size: clamp(2.7rem, 7vw, 6.4rem);
+  line-height: .9;
+  letter-spacing: -.06em;
+}
+
+.systems-resume-section > header > p {
+  max-width: 50ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.systems-resume-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.systems-resume-grid .proof-group h3 {
+  margin: 0 0 .85rem;
+  color: var(--paper);
+  font-size: .95rem;
+}
+
 @media (max-width: 860px) {
   .professional-proof > header,
   .experience-proof > header,
   .about-proof > header,
+  .systems-resume-hero,
+  .systems-resume-section > header,
+  .systems-resume-grid,
   .integration-grid,
   .system-grid {
     grid-template-columns: 1fr;

@@ -1,5 +1,5 @@
-// Titles, dates, and figures below are reconciled against the published resume PDF
-// (public/JacobYongue_Resume.pdf). Keep them in sync when that document changes.
+// Titles, dates, and figures below are the canonical professional-history source.
+// Keep them factual when the professional record changes.
 // Ordered most-recent-first.
 export const professionalRoles = [
   {
