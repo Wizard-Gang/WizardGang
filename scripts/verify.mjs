@@ -49,7 +49,9 @@ for (const file of htmlFiles) {
   // dropped by the browser and the markup renders unstyled. Keep CSS in src/styles.css.
   if (/<style(?:\s|>)/i.test(html)) fail(`${relative}: inline <style> is blocked by the style-src policy`);
   if (/\sstyle="/i.test(html)) fail(`${relative}: inline style attribute is blocked by the style-src policy`);
-  if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/(?:Hexframe|YarReader|WizardGangLocal)/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
+  if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/(?:Hexframe|WizardGangLocal)/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
+  const yarReaderLinks = [...html.matchAll(/href="(https:\/\/github\.com\/SouthernGentlemen\/YarReader[^"]*)"/g)].map((match) => match[1]);
+  if (yarReaderLinks.some((href) => href !== "https://github.com/SouthernGentlemen/YarReader")) fail(`${relative}: contains a non-canonical YarReader source URL`);
   if (/Evergreen Dr|29631|jacobyongue@outlook\.com|865[ -]?9031/i.test(html)) fail(`${relative}: exposes private contact information from a source document`);
   if (/coming soon|disabled/i.test(html)) fail(`${relative}: contains a disabled/coming-soon action`);
   if (relative !== "404.html" && !html.includes('<link rel="canonical" href="https://wizardgang.ai/')) fail(`${relative}: missing canonical URL`);
@@ -87,6 +89,9 @@ for (const file of required) {
   try { await access(resolve(dist, file)); }
   catch { fail(`missing build artifact ${file}`); }
 }
+
+const yarReaderCaseStudy = await readFile(resolve(dist, "work/yarreader/index.html"), "utf8");
+if (!yarReaderCaseStudy.includes('href="https://github.com/SouthernGentlemen/YarReader"')) fail("YarReader case study is missing its canonical public source link");
 
 const worker = await readFile(resolve(root, "src/worker.mjs"), "utf8");
 if (/DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/.test(worker)) fail("portfolio Worker gained a product binding or authentication concern");
