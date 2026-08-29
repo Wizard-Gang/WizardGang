@@ -81,8 +81,13 @@ for (const [relative, destination] of [
 
 const resume = await readFile(resolve(dist, "resume/index.html"), "utf8");
 for (const required of [
-  "Professional<br><span>Systems.</span>",
+  "Jacob Yongue / professional history",
+  "Professional<br><span>History.</span>",
   "Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.",
+  "Employment record—not WizardGang client work.",
+  "These systems, integrations, and client deployments are part of Jacob Yongue’s professional history from roles at FastFetch Corp, Spartan Technology Solutions, and Supply Chain Technologies.",
+  "They were not delivered under the WizardGang brand.",
+  "<title>Professional History — Jacob Yongue</title>",
   ">Client Deployments<",
   'id="resume-deployments"',
   'id="resume-integrations"',
@@ -112,6 +117,11 @@ const systemsIndex = resume.indexOf('id="resume-systems"');
 const integrationsIndex = resume.indexOf('id="resume-integrations"');
 const deploymentsIndex = resume.indexOf('id="resume-deployments"');
 if (!(systemsIndex < integrationsIndex && integrationsIndex < deploymentsIndex)) fail("professional record must be ordered Systems, Integrations, Client Deployments");
+for (let index = 1; index < deployments.length; index += 1) {
+  const prior = resume.indexOf(`>${escapeHtml(deployments[index - 1].name)}`);
+  const current = resume.indexOf(`>${escapeHtml(deployments[index].name)}`);
+  if (!(prior < current)) fail(`client deployments are out of scale order at ${deployments[index].name}`);
+}
 for (const omitted of [
   "Each deployment name links to the organization’s official website.",
   "Each product or vendor name links to its official website.",
@@ -121,7 +131,7 @@ for (const omitted of [
 ]) {
   if (resume.includes(omitted)) fail(`rebuilt professional record must omit ${omitted}`);
 }
-if (/Download resume|JacobYongue_Resume\.pdf|Systems builder|Delivery owner/.test(resume)) fail("rebuilt resume still contains retired resume content");
+if (/Download resume|JacobYongue_Resume\.pdf|Systems builder|Delivery owner|Resume \/ professional record/.test(resume)) fail("rebuilt resume still contains retired resume content");
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
 for (const retired of ["/work/</loc>", "/professional/</loc>", "/about/</loc>"]) {

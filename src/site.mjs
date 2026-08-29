@@ -527,12 +527,12 @@ function resume(build) {
   const integrations = integrationGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(group.items)}</article>`).join("");
   const systems = systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("");
   const body = `<main class="case-main systems-resume" id="main" tabindex="-1">
-    <section class="systems-resume-hero"><div><p class="kicker">Resume / professional record</p><h1>Professional<br><span>Systems.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p></div></section>
+    <section class="systems-resume-hero"><div><p class="kicker">Jacob Yongue / professional history</p><h1>Professional<br><span>History.</span></h1></div><div><p>Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.</p><p class="employment-boundary"><strong>Employment record—not WizardGang client work.</strong> These systems, integrations, and client deployments are part of Jacob Yongue’s professional history from roles at FastFetch Corp, Spartan Technology Solutions, and Supply Chain Technologies. They were not delivered under the WizardGang brand.</p></div></section>
     <section class="systems-resume-section" aria-labelledby="resume-systems"><header><div><p class="kicker">01</p><h2 id="resume-systems">Systems</h2></div></header><div class="systems-resume-grid">${systems}</div></section>
     <section class="systems-resume-section" aria-labelledby="resume-integrations"><header><div><p class="kicker">02</p><h2 id="resume-integrations">Integrations</h2></div></header><div class="systems-resume-grid">${integrations}</div></section>
     <section class="systems-resume-section" aria-labelledby="resume-deployments"><header><div><p class="kicker">03</p><h2 id="resume-deployments">Client Deployments</h2></div></header>${referenceList(deployments)}</section>
   </main>`;
-  return document({ title: "Professional Systems — WizardGang", description: "Warehouse, fulfillment, logistics, justice, public-sector, and enterprise software delivered from requirements through production.", path: "/resume/", current: "resume", body, build });
+  return document({ title: "Professional History — Jacob Yongue", description: "Jacob Yongue’s professional employment history across warehouse, fulfillment, logistics, justice, public-sector, and enterprise systems—not WizardGang client work.", path: "/resume/", current: "resume", body, build });
 }
 
 function notFound(build) {

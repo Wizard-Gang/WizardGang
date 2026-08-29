@@ -115,7 +115,8 @@ for (const source of productRepositories) {
 if (!/`WizardGangLocal` is retired\./.test(ownership)) fail("ownership record does not retire WizardGangLocal");
 
 const resumePage = await readFile(resolve(dist, "resume/index.html"), "utf8");
-if (!resumePage.includes("Professional<br><span>Systems.</span>")) fail("resume page is missing the Professional Systems heading");
+if (!resumePage.includes("Professional<br><span>History.</span>")) fail("resume page is missing the Professional History heading");
+if (!resumePage.includes("Employment record—not WizardGang client work.")) fail("resume page is missing the employment-history boundary");
 if (/Download resume|JacobYongue_Resume\.pdf|Systems builder|Delivery owner/.test(resumePage)) fail("resume page still contains the retired resume surface");
 for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");

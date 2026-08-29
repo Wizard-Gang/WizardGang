@@ -206,6 +206,24 @@
   font-size: clamp(1.05rem, 2vw, 1.35rem);
 }
 
+.systems-resume-hero > div:last-child > .employment-boundary {
+  margin-top: 1.6rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .92rem;
+  line-height: 1.6;
+}
+
+.employment-boundary strong {
+  display: block;
+  margin-bottom: .35rem;
+  color: var(--acid);
+  font: 800 .72rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
 .systems-resume-section {
   padding: clamp(4rem, 8vw, 7rem) 0;
   border-top: 1px solid var(--line);
