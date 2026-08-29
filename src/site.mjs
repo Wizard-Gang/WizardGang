@@ -83,7 +83,56 @@ function actions(project, compact = false) {
 
 function projectVisual(project) {
   if (project.slug === "sharktank") {
-    return `<div class="project-visual edge-visual" role="img" aria-label="Shark Tank ISO 27001 and ISO 42001 governance evidence model"><header><strong>SHARK TANK / TRUST</strong><span>LIVE READINESS EXERCISE</span></header><div class="edge-map"><span>ISO 27001</span><span>ISO 42001</span><span>Risk &amp; controls</span><span>Live evidence</span><b>Policies · Operations · Recovery · Open gaps</b></div><footer><span>184 mapped rows</span><span>Restore drills</span><span>Change control</span><span>AI governance</span></footer></div>`;
+    return `<div class="project-visual shark-preview" role="img" aria-label="Animated Shark Tank gameplay preview with ISO 27001 and ISO 42001 governance controls">
+      <div class="shark-game">
+        <div class="shark-hud"><strong>TANK 03</strong><span>LIVE SIMULATION</span><em>08 ACTIVE</em></div>
+        <div class="tank-tabs" aria-hidden="true"><span>01</span><span>02</span><span class="active">03</span><span>04</span></div>
+        <svg viewBox="0 0 800 330" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="tankWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#153e50"/><stop offset="1" stop-color="#07151d"/></linearGradient>
+            <linearGradient id="sharkBody" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9bb8c3"/><stop offset="1" stop-color="#536f7a"/></linearGradient>
+          </defs>
+          <rect width="800" height="330" fill="url(#tankWater)"/>
+          <path d="M0 58 C110 42 210 72 330 54 S560 35 800 61" fill="none" stroke="#78e8ff" stroke-opacity=".22" stroke-width="3"/>
+          <path d="M0 92 C150 111 260 74 410 96 S650 116 800 88" fill="none" stroke="#78e8ff" stroke-opacity=".1" stroke-width="2"/>
+          <g fill="#78e8ff" fill-opacity=".32"><circle cx="84" cy="252" r="4"/><circle cx="100" cy="226" r="2"/><circle cx="686" cy="266" r="5"/><circle cx="706" cy="236" r="2"/><circle cx="575" cy="86" r="3"/><circle cx="592" cy="62" r="2"/></g>
+          <g class="food" fill="#d9ff43"><circle cx="430" cy="208" r="5"/><circle cx="446" cy="199" r="3"/><circle cx="463" cy="215" r="4"/></g>
+          <g class="shark shark-a">
+            <polygon points="205,126 157,101 165,129 157,157" fill="#536f7a"/>
+            <ellipse cx="248" cy="129" rx="58" ry="27" fill="url(#sharkBody)"/>
+            <polygon points="243,105 263,72 278,111" fill="#6f8993"/>
+            <polygon points="248,151 271,178 286,145" fill="#5f7b86"/>
+            <circle cx="284" cy="121" r="4" fill="#08080b"/>
+            <path d="M294 135 q18 8 28 -2" fill="none" stroke="#263b43" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g class="shark shark-b">
+            <polygon points="488,234 534,210 528,236 535,263" fill="#536f7a"/>
+            <ellipse cx="447" cy="236" rx="54" ry="25" fill="#839da7"/>
+            <polygon points="449,214 432,186 417,219" fill="#667f89"/>
+            <circle cx="412" cy="229" r="4" fill="#08080b"/>
+            <path d="M401 242 q-16 7 -25 -2" fill="none" stroke="#263b43" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g class="shark shark-c">
+            <polygon points="594,141 558,121 563,143 558,163" fill="#3f5d68"/>
+            <ellipse cx="627" cy="143" rx="44" ry="21" fill="#6f8c97"/>
+            <polygon points="628,125 641,100 652,129" fill="#587480"/>
+            <circle cx="653" cy="137" r="3" fill="#08080b"/>
+          </g>
+          <g class="small-fish" fill="#d9ff43" fill-opacity=".8"><path d="M344 180 l18 -9 v18 z"/><ellipse cx="372" cy="180" rx="15" ry="8"/><path d="M110 196 l15 -7 v14 z"/><ellipse cx="134" cy="196" rx="12" ry="7"/></g>
+          <path d="M0 300 C150 282 290 318 430 296 S670 281 800 302 V330 H0Z" fill="#071015"/>
+        </svg>
+        <div class="shark-status"><span>ROOM AUTHORITY / DURABLE OBJECT</span><span>STATE SYNCED</span></div>
+      </div>
+      <div class="shark-governance">
+        <span><strong>ISO/IEC 27001</strong><small>Security controls</small></span>
+        <span><strong>ISO/IEC 42001</strong><small>AI governance</small></span>
+        <span><strong>LIVE EVIDENCE</strong><small>Risk · incidents · change</small></span>
+        <span><strong>RECOVERY</strong><small>Backups · restore drills</small></span>
+      </div>
+      <style>
+        .shark-preview{display:grid;grid-template-rows:minmax(0,1fr) auto;padding:0;background:#071015}.shark-preview::before{display:none}.shark-game{position:relative;min-height:330px;overflow:hidden;background:#07151d}.shark-game::after{position:absolute;inset:0;background:linear-gradient(110deg,transparent 0 42%,rgb(120 232 255 / 7%) 48%,transparent 54%);content:"";animation:tank-shimmer 6s linear infinite;pointer-events:none}.shark-game svg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.shark-hud,.shark-status,.tank-tabs{position:absolute;z-index:2;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase}.shark-hud{top:1rem;left:1rem;display:flex;align-items:center;gap:.75rem;padding:.55rem .7rem;border:1px solid rgb(120 232 255 / 38%);background:rgb(7 16 21 / 78%);backdrop-filter:blur(6px)}.shark-hud strong{color:#78e8ff;font-size:.73rem;letter-spacing:.08em}.shark-hud span,.shark-hud em{color:#b5b0bb;font-size:.58rem;font-style:normal;letter-spacing:.06em}.shark-hud em{color:#d9ff43}.tank-tabs{top:1rem;right:1rem;display:flex;gap:.3rem}.tank-tabs span{display:grid;place-items:center;width:2rem;height:1.75rem;border:1px solid rgb(255 255 255 / 14%);background:rgb(7 16 21 / 70%);color:#85808c;font-size:.58rem;font-weight:800}.tank-tabs .active{border-color:#d9ff43;color:#d9ff43;box-shadow:0 0 16px rgb(217 255 67 / 16%)}.shark-status{right:1rem;bottom:.8rem;left:1rem;display:flex;justify-content:space-between;gap:1rem;color:#9ab0b8;font-size:.55rem;letter-spacing:.06em}.shark-status span:last-child{color:#d9ff43}.shark-governance{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #31434a;background:#0a0f13}.shark-governance span{display:flex;min-height:82px;flex-direction:column;justify-content:center;padding:.85rem 1rem;border-right:1px solid #27353b}.shark-governance span:last-child{border-right:0}.shark-governance strong{color:#f5f2e9;font:800 .62rem/1.25 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em}.shark-governance span:nth-child(-n+2) strong{color:#78e8ff}.shark-governance small{margin-top:.28rem;color:#85808c;font:600 .54rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace}.shark{transform-box:fill-box;transform-origin:center}.shark-a{animation:swim-a 7s ease-in-out infinite alternate}.shark-b{animation:swim-b 8.5s ease-in-out infinite alternate}.shark-c{animation:swim-c 6s ease-in-out infinite alternate}.small-fish{animation:fish-drift 5.5s ease-in-out infinite alternate}.food{animation:food-pulse 1.2s ease-in-out infinite alternate}@keyframes swim-a{from{transform:translate(-70px,12px)}to{transform:translate(150px,-18px)}}@keyframes swim-b{from{transform:translate(105px,-12px)}to{transform:translate(-135px,18px)}}@keyframes swim-c{from{transform:translate(-55px,-8px)}to{transform:translate(70px,14px)}}@keyframes fish-drift{from{transform:translateX(-25px)}to{transform:translateX(55px)}}@keyframes food-pulse{from{opacity:.45;transform:scale(.86)}to{opacity:1;transform:scale(1.08)}}@keyframes tank-shimmer{from{transform:translateX(-70%)}to{transform:translateX(70%)}}@media(max-width:700px){.shark-governance{grid-template-columns:repeat(2,minmax(0,1fr))}.shark-governance span:nth-child(2){border-right:0}.shark-governance span:nth-child(-n+2){border-bottom:1px solid #27353b}.tank-tabs{display:none}.shark-hud span{display:none}}@media(prefers-reduced-motion:reduce){.shark-game::after,.shark,.small-fish,.food{animation:none!important}}
+      </style>
+    </div>`;
   }
   if (project.slug === "hexframe") {
     return `<div class="project-visual sim-visual" role="img" aria-label="Hexframe deterministic simulation flow"><strong>60<small>HZ INTEGER SIMULATION</small></strong><div><span>Input</span><span>Simulation</span><span>Snapshots</span><span>Renderer</span></div></div>`;
