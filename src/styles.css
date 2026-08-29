@@ -933,3 +933,443 @@ h1 span { color: var(--muted); }
   .capability-grid article,
   .architecture > div { border-color: var(--muted); }
 }
+
+/* Product previews. Both cards recreate a real screen from the product they link to,
+   so their colours are copied from that product's own tokens rather than this site's.
+   These rules live here, not in a style element beside the markup: the site ships
+   `style-src 'self'`, which makes an inline stylesheet silently dead on production. */
+
+.tank-preview {
+  position: relative;
+  padding: 0;
+  background: #0b0a14;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.tank-preview::before { display: none; }
+
+.tank-arena {
+  position: absolute;
+  inset: 0;
+}
+
+.tank-arena svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.tank-tag text {
+  fill: #0b0a14;
+  font: 700 13px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  text-anchor: middle;
+}
+
+.tank-readout,
+.tank-board,
+.tank-abilities {
+  position: absolute;
+  z-index: 2;
+}
+
+.tank-readout {
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+}
+
+.tank-card {
+  min-width: 66px;
+  padding: 6px 10px;
+  border: 1px solid #3a355e;
+  border-radius: 12px;
+  background: rgb(6 5 12 / 72%);
+  text-align: center;
+}
+
+.tank-card span {
+  display: block;
+  color: #b9b4d6;
+  font-size: .62rem;
+}
+
+.tank-card strong {
+  display: block;
+  margin-top: 2px;
+  color: #f3f1ff;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tank-card small {
+  color: #9a95bd;
+  font-size: .62rem;
+  font-weight: 600;
+}
+
+.tank-board {
+  top: 12px;
+  right: 12px;
+  width: 190px;
+  max-width: 44%;
+  padding: 10px 12px;
+  border: 1px solid #3a355e;
+  border-radius: 12px;
+  background: rgb(6 5 12 / 72%);
+}
+
+.tank-board h4 {
+  margin: 0 0 8px;
+  color: #b9b4d6;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+
+.tank-board ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+  list-style: none;
+}
+
+.tank-board li {
+  display: grid;
+  align-items: center;
+  padding: 2px;
+  gap: 8px;
+  grid-template-columns: 14px 10px 1fr auto;
+  color: #f3f1ff;
+  font-size: .76rem;
+}
+
+.tank-board span {
+  color: #b9b4d6;
+  text-align: right;
+}
+
+.tank-board i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.tank-board b {
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tank-board em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.tank-abilities {
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.tank-ability {
+  display: grid;
+  width: 132px;
+  padding: 9px 12px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 12px;
+  column-gap: 10px;
+  grid-template-areas: "icon name" "icon key";
+  grid-template-columns: 26px 1fr;
+  color: #f3f1ff;
+}
+
+.tank-ability svg {
+  width: 22px;
+  height: 22px;
+  align-self: center;
+  fill: none;
+  grid-area: icon;
+  stroke: currentcolor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+.tank-ability b {
+  align-self: end;
+  font-size: .8rem;
+  font-weight: 800;
+  grid-area: name;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+}
+
+.tank-ability small {
+  align-self: start;
+  font-size: .58rem;
+  font-weight: 700;
+  grid-area: key;
+  letter-spacing: .6px;
+  opacity: .8;
+  text-transform: uppercase;
+}
+
+.tank-dash { background: #6557d7; }
+.tank-rocket { background: #cc3f20; }
+
+.tank-fish { transform-box: view-box; }
+.tank-fish-you { animation: tank-you 6s ease-in-out infinite alternate; }
+.tank-fish-a { animation: tank-a 9s ease-in-out infinite alternate; }
+.tank-fish-b { animation: tank-b 11s ease-in-out infinite alternate; }
+.tank-fish-c { animation: tank-c 8s ease-in-out infinite alternate; }
+.tank-food { animation: tank-food 1.6s ease-in-out infinite alternate; }
+
+@keyframes tank-you {
+  from { transform: translate(-26px, 14px); }
+  to { transform: translate(26px, -14px); }
+}
+
+@keyframes tank-a {
+  from { transform: translate(-34px, 0); }
+  to { transform: translate(96px, 18px); }
+}
+
+@keyframes tank-b {
+  from { transform: translate(-24px, 18px); }
+  to { transform: translate(104px, -24px); }
+}
+
+@keyframes tank-c {
+  from { transform: translate(52px, 10px); }
+  to { transform: translate(-84px, -16px); }
+}
+
+@keyframes tank-food {
+  from { opacity: .55; }
+  to { opacity: 1; }
+}
+
+.lab-preview {
+  display: grid;
+  padding: 0;
+  background: #080a0f;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.lab-preview::before { display: none; }
+
+.lab-brand {
+  padding: 1.1rem 1.2rem .9rem;
+  border-bottom: 1px solid #1c2128;
+}
+
+.lab-eyebrow {
+  margin: 0;
+  color: #76e6c4;
+  font: 750 .58rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .17em;
+  text-transform: uppercase;
+}
+
+.lab-brand strong {
+  display: block;
+  margin: .5rem 0 .35rem;
+  color: #edf0f2;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: -.055em;
+}
+
+.lab-sub {
+  margin: 0;
+  color: #89939c;
+  font: .62rem/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.lab-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  background: #080a0f;
+}
+
+.lab-stage svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lab-hud {
+  position: absolute;
+  top: .7rem;
+  right: .8rem;
+  left: .8rem;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.lab-player {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.lab-player > span {
+  color: #cbd1d6;
+  font: 800 .55rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.lab-meters {
+  display: grid;
+  width: min(30vw, 140px);
+  gap: 3px;
+}
+
+.lab-hp,
+.lab-sta {
+  overflow: hidden;
+  border-radius: 1px;
+}
+
+.lab-hp {
+  height: 6px;
+  background: rgb(255 255 255 / 12%);
+}
+
+.lab-sta {
+  height: 3px;
+  background: rgb(255 255 255 / 10%);
+}
+
+.lab-hp i,
+.lab-sta i {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.lab-hp-p1 { background: #76e6c4; }
+.lab-hp-p2 { background: #8999ff; }
+.lab-sta i { background: #57b9df; }
+
+.lab-player strong {
+  display: grid;
+  gap: 1px;
+}
+
+.lab-player b {
+  color: #cbd1d6;
+  font: 900 .58rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .08em;
+}
+
+.lab-player small {
+  color: #77c9e8;
+  font: 650 .48rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.lab-player-right { text-align: right; }
+
+.lab-route {
+  position: absolute;
+  bottom: .8rem;
+  left: .8rem;
+  z-index: 2;
+  display: grid;
+  padding: .5rem .7rem;
+  border-left: 2px solid #76e6c4;
+  background: rgb(8 11 14 / 78%);
+  gap: 2px;
+}
+
+.lab-route span {
+  color: #76e6c4;
+  font: 750 .5rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.lab-route strong {
+  color: #edf0f2;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.lab-route em {
+  color: #89929b;
+  font: .55rem/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-style: normal;
+}
+
+.lab-idle { animation: lab-idle 3.2s ease-in-out infinite alternate; }
+.lab-idle-b { animation-duration: 4.1s; }
+
+@keyframes lab-idle {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1.8px); }
+}
+
+/* Skin ids and per-fighter palettes are the ones the products define: SKINS in the
+   Shark Tank room engine, and .fighter-p1 / .fighter-p2 in the Hexframe lab stylesheet. */
+
+.skin-cyan { --body: #22e6ff; --accent: #0891b2; }
+.skin-gold { --body: #ffe14d; --accent: #b8890a; }
+.skin-violet { --body: #a78bff; --accent: #6d28d9; }
+.skin-orange { --body: #ff8a1f; --accent: #c2410c; }
+
+.dot-lime { background: #57ff5a; }
+.dot-violet { background: #a78bff; }
+.dot-gold { background: #ffe14d; }
+.dot-cyan { background: #22e6ff; }
+
+.fighter-p1 {
+  --body: #a8cf46;
+  --near: #c4ed64;
+  --near-dark: #8dac34;
+  --far: #61792d;
+  --far-dark: #465820;
+  --accent: #efffc7;
+}
+
+.fighter-p2 {
+  --body: #687bdf;
+  --near: #8fa0ff;
+  --near-dark: #5568c9;
+  --far: #3d487f;
+  --far-dark: #303961;
+  --accent: #dce2ff;
+}
+
+@media (max-width: 760px) {
+  .tank-board { display: none; }
+
+  .tank-ability {
+    width: auto;
+    grid-template-areas: "icon name";
+    grid-template-columns: 22px auto;
+  }
+
+  .tank-ability small { display: none; }
+}
+
+@media (max-width: 700px) {
+  .lab-meters { width: 22vw; }
+  .lab-player small { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tank-fish,
+  .tank-food,
+  .lab-idle { animation: none; }
+}

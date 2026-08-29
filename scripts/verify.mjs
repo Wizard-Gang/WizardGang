@@ -45,6 +45,10 @@ for (const file of htmlFiles) {
   if (!html.includes('property="og:title"') || !html.includes('property="og:description"')) fail(`${relative}: incomplete Open Graph metadata`);
   if (!html.includes('name="twitter:title"') || !html.includes('name="twitter:description"')) fail(`${relative}: incomplete Twitter metadata`);
   if (/<script(?:\s|>)/i.test(html)) fail(`${relative}: portfolio HTML must not ship client JavaScript`);
+  // The site ships `style-src 'self'`, so a <style> element or a style attribute is
+  // dropped by the browser and the markup renders unstyled. Keep CSS in src/styles.css.
+  if (/<style(?:\s|>)/i.test(html)) fail(`${relative}: inline <style> is blocked by the style-src policy`);
+  if (/\sstyle="/i.test(html)) fail(`${relative}: inline style attribute is blocked by the style-src policy`);
   if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/(?:Hexframe|YarReader|WizardGangLocal)/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
   if (/Evergreen Dr|29631|jacobyongue@outlook\.com|865[ -]?9031/i.test(html)) fail(`${relative}: exposes private contact information from a source document`);
   if (/coming soon|disabled/i.test(html)) fail(`${relative}: contains a disabled/coming-soon action`);

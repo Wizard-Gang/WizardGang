@@ -122,19 +122,19 @@ function sharkTankVisual() {
           <circle cx="530" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
         </g>
         <g class="tank-fish tank-fish-a">
-          <use href="#tankShark" x="180" y="110" width="78" height="48" style="--body:#ffe14d;--accent:#b8890a"/>
+          <use href="#tankShark" x="180" y="110" width="78" height="48" class="skin-gold"/>
           <g class="tank-tag"><rect x="186" y="82" width="70" height="21" rx="6" fill="#ffe14d"/><text x="221" y="97">Chowder</text></g>
         </g>
         <g class="tank-fish tank-fish-b">
-          <use href="#tankShark" x="196" y="330" width="70" height="43" style="--body:#a78bff;--accent:#6d28d9"/>
+          <use href="#tankShark" x="196" y="330" width="70" height="43" class="skin-violet"/>
           <g class="tank-tag"><rect x="204" y="303" width="54" height="21" rx="6" fill="#a78bff"/><text x="231" y="318">Molar</text></g>
         </g>
         <g class="tank-fish tank-fish-c">
-          <use href="#tankShark" x="424" y="356" width="64" height="39" style="--body:#ff8a1f;--accent:#c2410c"/>
+          <use href="#tankShark" x="424" y="356" width="64" height="39" class="skin-orange"/>
           <g class="tank-tag"><rect x="432" y="330" width="48" height="21" rx="6" fill="#ff8a1f"/><text x="456" y="345">Tide</text></g>
         </g>
         <g class="tank-fish tank-fish-you">
-          <use href="#tankShark" x="286" y="212" width="106" height="65" style="--body:#22e6ff;--accent:#0891b2"/>
+          <use href="#tankShark" x="286" y="212" width="106" height="65" class="skin-cyan"/>
           <g class="tank-tag"><rect x="284" y="178" width="110" height="23" rx="6" fill="#22e6ff"/><text x="339" y="194">Player (you)</text></g>
         </g>
       </svg>
@@ -147,20 +147,17 @@ function sharkTankVisual() {
     <div class="tank-board">
       <h4>Top Sharks</h4>
       <ol>
-        <li><span>1</span><i style="background:#57ff5a"></i><b>Wriggle</b><em>230</em></li>
-        <li><span>2</span><i style="background:#a78bff"></i><b>Molar</b><em>197</em></li>
-        <li><span>3</span><i style="background:#ffe14d"></i><b>Chowder</b><em>177</em></li>
-        <li><span>4</span><i style="background:#a78bff"></i><b>Fang</b><em>134</em></li>
-        <li><span>5</span><i style="background:#22e6ff"></i><b>Barnacle</b><em>50</em></li>
+        <li><span>1</span><i class="dot-lime"></i><b>Wriggle</b><em>230</em></li>
+        <li><span>2</span><i class="dot-violet"></i><b>Molar</b><em>197</em></li>
+        <li><span>3</span><i class="dot-gold"></i><b>Chowder</b><em>177</em></li>
+        <li><span>4</span><i class="dot-violet"></i><b>Fang</b><em>134</em></li>
+        <li><span>5</span><i class="dot-cyan"></i><b>Barnacle</b><em>50</em></li>
       </ol>
     </div>
     <div class="tank-abilities">
       <span class="tank-ability tank-dash"><svg viewBox="0 0 32 24" aria-hidden="true"><path d="M2 6h13M1 12h11M4 18h11M17 2l13 10-13 10Z"/></svg><b>Dash</b><small>Space</small></span>
       <span class="tank-ability tank-rocket"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M19 4c4-2 7-2 9-2 0 2 0 5-2 9L15 22l-6-6L19 4Z"/><path d="m10 16-6 1-2 6 8-2M15 22l-1 8 6-2 1-6M9 23l-6 6"/><circle cx="22" cy="8" r="3"/></svg><b>Rocket</b><small>Shift</small></span>
     </div>
-    <style>
-      .tank-preview{position:relative;padding:0;background:#0b0a14;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}.tank-preview::before{display:none}.tank-arena{position:absolute;inset:0}.tank-arena svg{display:block;width:100%;height:100%}.tank-tag text{fill:#0b0a14;font:700 13px ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-anchor:middle}.tank-readout,.tank-board,.tank-abilities{position:absolute;z-index:2}.tank-readout{top:12px;left:12px;display:flex;gap:8px}.tank-card{min-width:66px;padding:6px 10px;border:1px solid #3a355e;border-radius:12px;background:rgb(6 5 12 / 72%);text-align:center}.tank-card span{display:block;color:#b9b4d6;font-size:.62rem}.tank-card strong{display:block;margin-top:2px;color:#f3f1ff;font-size:1.05rem;font-variant-numeric:tabular-nums}.tank-card small{color:#9a95bd;font-size:.62rem;font-weight:600}.tank-board{top:12px;right:12px;width:190px;max-width:44%;padding:10px 12px;border:1px solid #3a355e;border-radius:12px;background:rgb(6 5 12 / 72%)}.tank-board h4{margin:0 0 8px;color:#b9b4d6;font-size:.66rem;font-weight:700;letter-spacing:.6px;text-transform:uppercase}.tank-board ol{display:grid;margin:0;padding:0;gap:4px;list-style:none}.tank-board li{display:grid;align-items:center;padding:2px 2px;gap:8px;grid-template-columns:14px 10px 1fr auto;color:#f3f1ff;font-size:.76rem}.tank-board span{color:#b9b4d6;text-align:right}.tank-board i{width:9px;height:9px;border-radius:50%}.tank-board b{overflow:hidden;font-weight:500;text-overflow:ellipsis;white-space:nowrap}.tank-board em{font-style:normal;font-variant-numeric:tabular-nums}.tank-abilities{right:12px;bottom:12px;display:grid;gap:8px;justify-items:end}.tank-ability{display:grid;width:132px;padding:9px 12px;border:1px solid rgb(255 255 255 / 16%);border-radius:12px;column-gap:10px;grid-template-areas:"icon name" "icon key";grid-template-columns:26px 1fr;color:#f3f1ff}.tank-ability svg{width:22px;height:22px;align-self:center;fill:none;grid-area:icon;stroke:currentcolor;stroke-linecap:round;stroke-linejoin:round;stroke-width:2.4}.tank-ability b{align-self:end;font-size:.8rem;font-weight:800;grid-area:name;letter-spacing:.4px;text-transform:uppercase}.tank-ability small{align-self:start;font-size:.58rem;font-weight:700;grid-area:key;letter-spacing:.6px;opacity:.8;text-transform:uppercase}.tank-dash{background:#6557d7}.tank-rocket{background:#cc3f20}.tank-fish{transform-box:view-box}.tank-fish-you{animation:tank-you 6s ease-in-out infinite alternate}.tank-fish-a{animation:tank-a 9s ease-in-out infinite alternate}.tank-fish-b{animation:tank-b 11s ease-in-out infinite alternate}.tank-fish-c{animation:tank-c 8s ease-in-out infinite alternate}.tank-food{animation:tank-food 1.6s ease-in-out infinite alternate}@keyframes tank-you{from{transform:translate(-26px,14px)}to{transform:translate(26px,-14px)}}@keyframes tank-a{from{transform:translate(-34px,0)}to{transform:translate(96px,18px)}}@keyframes tank-b{from{transform:translate(-24px,18px)}to{transform:translate(104px,-24px)}}@keyframes tank-c{from{transform:translate(52px,10px)}to{transform:translate(-84px,-16px)}}@keyframes tank-food{from{opacity:.55}to{opacity:1}}@media(max-width:760px){.tank-board{display:none}.tank-ability{width:auto;grid-template-areas:"icon name";grid-template-columns:22px auto}.tank-ability small{display:none}}@media(prefers-reduced-motion:reduce){.tank-fish,.tank-food{animation:none!important}}
-    </style>
   </div>`;
 }
 
@@ -223,14 +220,11 @@ function hexframeVisual() {
         <rect x="-150" y="0" width="300" height="40" fill="#121219"/>
         <line x1="0" y1="-125" x2="0" y2="40" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
         <line x1="-150" y1="0" x2="150" y2="0" stroke="#484f58" stroke-width="2"/>
-        <g transform="translate(-40 0)"><g class="lab-idle"><use href="#hfRig" style="--body:#a8cf46;--near:#c4ed64;--near-dark:#8dac34;--far:#61792d;--far-dark:#465820;--accent:#efffc7"/></g></g>
-        <g transform="translate(40 0) scale(-1 1)"><g class="lab-idle lab-idle-b"><use href="#hfRig" style="--body:#687bdf;--near:#8fa0ff;--near-dark:#5568c9;--far:#3d487f;--far-dark:#303961;--accent:#dce2ff"/></g></g>
+        <g transform="translate(-40 0)"><g class="lab-idle"><use href="#hfRig" class="fighter-p1"/></g></g>
+        <g transform="translate(40 0) scale(-1 1)"><g class="lab-idle lab-idle-b"><use href="#hfRig" class="fighter-p2"/></g></g>
       </svg>
       <div class="lab-route"><span>Active</span><strong>Ready</strong><em>Choose any 16 of 29 moves</em></div>
     </div>
-    <style>
-      .lab-preview{display:grid;padding:0;background:#080a0f;grid-template-rows:auto minmax(0,1fr)}.lab-preview::before{display:none}.lab-brand{padding:1.1rem 1.2rem .9rem;border-bottom:1px solid #1c2128}.lab-eyebrow{margin:0;color:#76e6c4;font:750 .58rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.17em;text-transform:uppercase}.lab-brand strong{display:block;margin:.5rem 0 .35rem;color:#edf0f2;font-size:1.3rem;font-weight:700;letter-spacing:-.055em}.lab-sub{margin:0;color:#89939c;font:.62rem/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.lab-stage{position:relative;overflow:hidden;min-height:260px;background:#080a0f}.lab-stage svg{display:block;width:100%;height:100%}.lab-hud{position:absolute;top:.7rem;right:.8rem;left:.8rem;z-index:2;display:flex;justify-content:space-between;gap:1rem}.lab-player{display:flex;align-items:center;gap:.5rem}.lab-player>span{color:#cbd1d6;font:800 .55rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase}.lab-meters{display:grid;width:min(30vw,140px);gap:3px}.lab-hp,.lab-sta{overflow:hidden;border-radius:1px}.lab-hp{height:6px;background:rgb(255 255 255 / 12%)}.lab-sta{height:3px;background:rgb(255 255 255 / 10%)}.lab-hp i,.lab-sta i{display:block;width:100%;height:100%}.lab-hp-p1{background:#76e6c4}.lab-hp-p2{background:#8999ff}.lab-sta i{background:#57b9df}.lab-player strong{display:grid;gap:1px}.lab-player b{color:#cbd1d6;font:900 .58rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}.lab-player small{color:#77c9e8;font:650 .48rem/1 ui-monospace,SFMono-Regular,Consolas,monospace}.lab-player-right{text-align:right}.lab-route{position:absolute;bottom:.8rem;left:.8rem;z-index:2;display:grid;padding:.5rem .7rem;border-left:2px solid #76e6c4;background:rgb(8 11 14 / 78%);gap:2px}.lab-route span{color:#76e6c4;font:750 .5rem/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.14em;text-transform:uppercase}.lab-route strong{color:#edf0f2;font-size:.82rem;font-weight:700;letter-spacing:.04em}.lab-route em{color:#89929b;font:.55rem/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;font-style:normal}.lab-idle{animation:lab-idle 3.2s ease-in-out infinite alternate}.lab-idle-b{animation-duration:4.1s}@keyframes lab-idle{from{transform:translateY(0)}to{transform:translateY(-1.8px)}}@media(max-width:700px){.lab-meters{width:22vw}.lab-player small{display:none}}@media(prefers-reduced-motion:reduce){.lab-idle{animation:none!important}}
-    </style>
   </div>`;
 }
 
