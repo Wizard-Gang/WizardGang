@@ -8,8 +8,8 @@ export const projects = [
     tags: ["ISO/IEC 27001", "ISO/IEC 42001", "Risk management", "AI governance", "Cloudflare", "Operations"],
     liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/trust/",
-    sourceUrl: null,
-    sourcePublic: false,
+    sourceUrl: "https://github.com/SouthernGentlemen/SharkTank",
+    sourcePublic: true,
     problem: "Compliance claims are easy to write and difficult to prove. Shark Tank asks whether security and AI governance can be made inspectable from the same production system they describe, without confusing a readiness exercise with certification.",
     built: [
       "A public 184-row readiness register spanning ISO/IEC 27001:2022 and ISO/IEC 42001:2023",
@@ -36,8 +36,8 @@ export const projects = [
     description: "A deterministic 2D fighting-game simulator and training laboratory built around fixed-step simulation, rollback, authored combat, and SVG rendering.",
     tags: ["TypeScript", "60 Hz simulation", "Rollback", "Training tools", "SVG", "Cloudflare"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
-    sourceUrl: null,
-    sourcePublic: false,
+    sourceUrl: "https://github.com/SouthernGentlemen/Hexframe",
+    sourcePublic: true,
     problem: "Combat has to mean the same thing to play, training, AI, replay, saves, and eventual network rollback. Browser timing, presentation state, and ambient randomness cannot be allowed to define the result.",
     built: [
       "A fixed 60 Hz integer simulation with explicit snapshots and hashes",
