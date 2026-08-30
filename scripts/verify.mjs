@@ -105,7 +105,7 @@ for (const file of required) {
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 for (const requiredText of [
   "Jacob <span>Yongue.</span>",
-  "I build systems that hold up.",
+  "I build systems that deliver",
   "Software engineer · Systems · Project delivery",
   "I design, build, integrate, and deliver software systems from requirements through production.",
   "Selected projects", "Selected work", "Capabilities", "About"
