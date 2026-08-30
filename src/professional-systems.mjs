@@ -38,6 +38,7 @@ export const integrationGroups = [
       ["QuickBooks POS", "https://quickbooks.intuit.com/pos/"],
       ["RedPrairie", "https://blueyonder.com/"],
       ["Blue Yonder", "https://blueyonder.com/"],
+      ["CIMS WMS", "https://cloudimsystems.com/"],
       // The exact public vendor identity for the historical Canbar integration is not
       // reliably resolvable today. Keep the experience visible rather than attaching
       // an unrelated modern company to it; add a URL only when the canonical identity
@@ -95,7 +96,10 @@ export const integrationGroups = [
   },
   {
     title: "Justice & Legal",
-    items: ["Axon", "LexisNexis"]
+    items: [
+      ["Axon", "https://www.axon.com/"],
+      ["LexisNexis", "https://www.lexisnexis.com/en-us/"]
+    ]
   }
 ].map((group) => ({
   ...group,
