@@ -372,16 +372,6 @@ function projectVisual(project) {
   return yarReaderVisual();
 }
 
-function projectProof(project) {
-  if (project.slug === "sharktank") {
-    return `<div class="proof-snippet governance-snippet" aria-label="SharkTank governance evidence chain"><span>Running system</span><i>→</i><span>Evidence</span><i>→</i><span>Controls</span><i>→</i><span>Management system</span><div><b>ISO 27001</b><b>ISO 42001</b></div></div>`;
-  }
-  if (project.slug === "hexframe") {
-    return `<div class="proof-snippet frame-snippet" aria-label="Hexframe deterministic move timeline"><header><span>standing_light</span><b>18 frames</b></header><div class="frame-track"><i class="startup"></i><i class="startup"></i><i class="startup"></i><i class="startup"></i><i class="active"></i><i class="active"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i><i class="recovery"></i></div><footer><span>Startup 4f</span><span>Active 2f</span><span>Recovery 12f</span></footer></div>`;
-  }
-  return `<div class="proof-snippet library-snippet" aria-label="YarReader populated fictional library"><img src="/yarreader-library-art.jpg" alt="Six original fictional comic scenes shown as subdued library thumbnails" loading="lazy" decoding="async"><div><strong>6 series</strong><span>66 chapters · Offline library</span></div></div>`;
-}
-
 function projectCardActions(project) {
   const play = project.liveUrl ? `<a class="text-link" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a>` : "";
   const caseStudy = `<a class="text-link" href="/projects/${project.slug}/case-study/">Case Study <span aria-hidden="true">→</span></a>`;
@@ -391,20 +381,19 @@ function projectCardActions(project) {
 
 function projectCard(project) {
   return `<article class="project-card">
-    ${projectProof(project)}
+    <div class="project-card-visual">${projectVisual(project)}</div>
     <div class="project-card-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="/projects/${project.slug}/">${escapeHtml(project.name)}</a></h3><p>${escapeHtml(project.description)}</p>${projectCardActions(project)}</div>
   </article>`;
 }
 
 function selectedWork() {
-  const roles = professionalRoles.filter((role) => role.organization !== "Independent venture").slice(0, 3);
-  return `<div class="selected-work-grid">${roles.map((role) => `<article><span>${escapeHtml(role.dates)}</span><h3>${escapeHtml(role.organization)}</h3><strong>${escapeHtml(role.role)}</strong><p>${escapeHtml(role.summary)}</p></article>`).join("")}</div>`;
+  return `<div class="selected-work-grid">${professionalRoles.map((role) => `<article><span>${escapeHtml(role.dates)}</span><h3>${escapeHtml(role.organization)}</h3><strong>${escapeHtml(role.role)}</strong><p>${escapeHtml(role.summary)}</p></article>`).join("")}</div>`;
 }
 
 function capabilityGrid() {
   const items = [
     ["01", "Software engineering", "Browser applications, APIs, data pipelines, CLIs, simulation, testing, and production support."],
-    ["02", "Systems integration", "ERP, WMS, carrier, commerce, EDI, identity, and vendor platforms connected to real operations."],
+    ["02", "Systems integration", "Getting separate systems to work as one — warehouses, ERPs, storefronts, shipping carriers, and logins — through APIs, EDI, and data mapping."],
     ["03", "Implementation", "Requirements, workflow analysis, migration, configuration, QA, training, go-live, and stabilization."],
     ["04", "Technical project delivery", "Cross-functional planning, team leadership, risk management, release cadence, and accountable handoff."],
     ["05", "Operations, QA & governance", "Observability, incidents, recovery, secure change, evidence, and ISO-aligned management systems."]
@@ -414,7 +403,7 @@ function capabilityGrid() {
 
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div class="home-statement-card"><p>wizardgang.ai</p><h2>I build systems that hold up.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue.</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><p class="hero-meta">Engineering depth · Operational context · Inspectable proof</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that hold up.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue.</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
