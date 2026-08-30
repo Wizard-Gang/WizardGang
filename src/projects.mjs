@@ -41,13 +41,13 @@ export const projects = [
     sourceUrl: "https://github.com/Wizard-Gang/Hexframe",
     problem: "The match, training screen, computer player, replay, saved game, and future online mode all need to agree about what happened. If each part calculates combat differently, a punch could hit in one view and miss in another. Hexframe therefore calculates the fight in one place and lets every feature read the same result.",
     built: [
-      "Combat updates exactly 60 times per second and uses whole-number math, so the same inputs produce the same result",
-      "Moves, equipment, crafting, and status effects are stored as readable game data instead of being hidden in animation code",
-      "Replays and future online rollback can save and restore the same exact match state",
-      "Computer teammates choose from the same moves and equipment available to the player",
-      "Characters are drawn with SVG graphics, but those graphics cannot change damage, timing, or collisions",
-      "An engineering lab shows move frames, hitboxes, damage, and saved state",
-      "Accessible controls for keyboard and gamepad, plus clear focus, larger text, reduced motion, stronger contrast, and color labels"
+      "A playable training stage with one fighter and one practice dummy",
+      "Pause, play, or move forward and backward through the fight one frame at a time",
+      "Freeze automatically when a hit connects so the exact contact can be inspected",
+      "Show or hide hitboxes, hurtboxes, pushboxes, character origins, and skeletons",
+      "Read damage, movement, hitstun, blockstun, and fighter state for the selected frame",
+      "Save a position, capture its inputs, and replay the same scenario",
+      "Use the lab with keyboard or gamepad and adjust focus, text size, contrast, color labels, and motion"
     ],
     architecture: [
       ["Controls", "Read player buttons and choices made by computer teammates"],

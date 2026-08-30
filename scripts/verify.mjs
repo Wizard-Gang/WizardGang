@@ -138,14 +138,14 @@ for (const [slug, source] of expectedSources) {
 }
 
 const sharkCase = await readFile(resolve(dist, "projects/sharktank/case-study/index.html"), "utf8");
-for (const text of ["It starts with multiplayer gameplay", "ISO/IEC 27001", "ISO/IEC 42001", "The application code is 100% AI-generated", "computer-controlled sharks are ordinary game logic", "100% uptime maintained", "Billable actions", "Policies and evidence", "WCAG 2.0 AA", "Jacob operates Shark Tank"]) {
+for (const text of ["It starts with multiplayer gameplay", "ISO/IEC 27001", "ISO/IEC 42001", "The application code is 100% AI-generated", "100% uptime maintained", "Billable actions", "Policies and evidence", "WCAG 2.0 AA", "Jacob operates Shark Tank"]) {
   if (!sharkCase.includes(text)) fail(`SharkTank case study missing ${text}`);
 }
-for (const text of ["These sharks follow rules, not a trained AI model", "Computer sharks exist only to fill empty seats", "incidents can happen"]) {
+for (const text of ["These sharks follow rules, not a trained AI model", "Computer sharks exist only to fill empty seats", "computer-controlled sharks are ordinary game logic", "The policies and evidence explain how the game is developed and operated", "incidents can happen"]) {
   if (sharkCase.includes(text)) fail(`SharkTank case study still contains the retired framing: ${text}`);
 }
 const hexCase = await readFile(resolve(dist, "projects/hexframe/case-study/index.html"), "utf8");
-for (const text of ["Graphics show the fight; game rules decide it", "Menus and controls are built for more players", "WCAG 2.0 AA", "Complete keyboard operation", "reduced-motion", "focus restoration"]) {
+for (const text of ["Make every feature agree on what happened", "A playable training stage with one fighter and one practice dummy", "Freeze automatically when a hit connects", "Graphics show the fight; game rules decide it", "The lab supports different controls and display needs", "WCAG 2.0 AA", "Keyboard and gamepad controls", "Reduced motion", "Screen-reader messages"]) {
   if (!hexCase.includes(text)) fail(`Hexframe case study missing ${text}`);
 }
 const yarCase = await readFile(resolve(dist, "projects/yarreader/case-study/index.html"), "utf8");
