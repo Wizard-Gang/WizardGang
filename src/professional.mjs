@@ -21,7 +21,7 @@ export const professionalRoles = [
     summary: "Led .NET case-management delivery, CI/CD, production support, and migration planning for public-sector systems."
   },
   {
-    organization: "Independent venture",
+    organization: "Shadow Money Wizard Gang",
     role: "Founder / operator",
     dates: "Aug 2023 - Current",
     summary: "Run a seasonal short-term rental every year, owning licensing, pricing, bookings, guest service, compliance, and closeout."
@@ -170,7 +170,7 @@ export const professionalProjects = [
   },
   {
     name: "Airbnb 2023 / Founded a Company",
-    organization: "Independent venture",
+    organization: "Shadow Money Wizard Gang",
     company: "Airbnb",
     dates: "Aug 2023 - Nov 2023",
     role: "Founder / Property Operator",
@@ -200,7 +200,7 @@ export const professionalProjects = [
   },
   {
     name: "Airbnb 2024",
-    organization: "Independent venture",
+    organization: "Shadow Money Wizard Gang",
     company: "Airbnb",
     dates: "Aug 2024 - Nov 2024",
     role: "Founder / Property Operator",
@@ -259,32 +259,6 @@ export const professionalProjects = [
     outcome: "Delivered an RMA workflow inside the existing RF application, enabling returned goods to be received, tracked, and returned to inventory through standard operations."
   }
 ];
-
-export const professionalEducation = {
-  degree: {
-    institution: "Clemson University",
-    credential: "Bachelor of Arts, Computer Science",
-    completed: "2018"
-  },
-  certification: {
-    name: "PMP, Project Management Institute",
-    // Stated exactly as the resume states it. Not a certification claim.
-    status: "Application approved, exam pending",
-    year: "2026"
-  },
-  provider: "Project Management Institute",
-  completed: "Apr 2025",
-  hours: "38.5 hours",
-  topics: [
-    "Disciplined Agile",
-    "Scrum",
-    "Business continuity",
-    "Value stream management",
-    "Citizen development",
-    "Generative AI for project managers",
-    "Prompt engineering"
-  ]
-};
 
 // Straight from the resume's core-skills block: this is the billable, paid-work stack,
 // distinct from the TypeScript/Cloudflare surface the independent lab runs on.

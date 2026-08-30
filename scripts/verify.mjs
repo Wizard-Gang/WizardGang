@@ -173,8 +173,11 @@ for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-play
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");
-for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations."]) {
+for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations.", "Axon", "LexisNexis", "Shadow Money Wizard Gang"]) {
   if (!work.includes(requiredText)) fail(`work page missing ${requiredText}`);
+}
+for (const retiredText of ["Education &amp; certification", "Clemson University", "Independent venture"]) {
+  if (work.includes(retiredText)) fail(`work page still contains retired content: ${retiredText}`);
 }
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
