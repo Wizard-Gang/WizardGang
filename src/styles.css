@@ -248,6 +248,11 @@ h1 span { color: var(--muted); }
   font: 800 .72rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
 
+.section-heading > .text-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
 .project-row {
   display: grid;
   grid-template-columns: minmax(0, .72fr) minmax(360px, 1.28fr);

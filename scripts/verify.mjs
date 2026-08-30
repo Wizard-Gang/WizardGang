@@ -109,7 +109,7 @@ for (const requiredText of [
   "I build systems that deliver.",
   "Software engineer · Systems · Project delivery",
   "I design, build, integrate, and deliver software systems from requirements through production.",
-  "Selected projects", "Selected work", "Capabilities", "About"
+  "Selected projects", "Selected work", "Small-business websites, launched cleanly.", "Capabilities", "About"
 ]) {
   if (!home.includes(requiredText)) fail(`homepage missing ${requiredText}`);
 }
@@ -118,6 +118,11 @@ for (const retired of ["Two bodies of work", "Different contexts. Clear boundari
 }
 if (!home.includes('content="https://wizardgang.ai/og-jacob-yongue.jpg"')) fail("homepage missing Jacob-first social preview");
 if (!home.includes('href="https://github.com/Wizard-Gang"')) fail("homepage generic GitHub action must target the Wizard-Gang organization");
+const expectedHomeActions = `<div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="https://github.com/Wizard-Gang" target="_blank" rel="noopener noreferrer">GitHub</a></div>`;
+if (!home.includes(expectedHomeActions)) fail("homepage primary actions are missing their required order or plain labels");
+for (const servicePreview of ["Starter", "$95", "Business", "$195", "Owner+", "$350", "View services"]) {
+  if (!home.includes(servicePreview)) fail(`homepage services preview missing ${servicePreview}`);
+}
 if (!home.includes("accessible interfaces") || !home.includes("accessible controls")) fail("homepage project summaries are missing shared accessibility capability");
 
 for (const slug of projectSlugs) {
@@ -192,6 +197,7 @@ const services = await readFile(resolve(dist, "services/index.html"), "utf8");
 for (const requiredText of ["Launch the site", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", 'href="/services/example/"']) {
   if (!services.includes(requiredText)) fail(`services page missing ${requiredText}`);
 }
+if (!services.includes('<span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span>')) fail("services desktop headline lines are not explicit");
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
 for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]) {

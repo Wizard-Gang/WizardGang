@@ -598,7 +598,7 @@
 
 .services-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+  grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr);
   gap: clamp(2.5rem, 8vw, 7rem);
   align-items: end;
   min-height: min(760px, calc(100vh - 80px));
@@ -606,8 +606,15 @@
 }
 
 .services-hero h1 {
-  font-size: clamp(4rem, 9vw, 8rem);
+  font-size: clamp(4rem, 6.5vw, 6.25rem);
 }
+
+.services-hero h1 span {
+  display: block;
+  white-space: nowrap;
+}
+
+.services-hero h1 .services-hero-line-primary { color: var(--paper); }
 
 .services-hero-copy > p {
   margin: 0 0 1.8rem;
@@ -812,6 +819,7 @@
   .service-package-grid,
   .service-process-grid { grid-template-columns: 1fr; }
   .contact-band { align-items: flex-start; flex-direction: column; }
+  .services-hero h1 span { white-space: normal; }
 }
 
 @media (max-width: 560px) {
