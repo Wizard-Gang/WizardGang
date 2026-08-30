@@ -525,51 +525,51 @@ function projectShowcase(project, build) {
 
 function sharkTankCaseStudy(project, build) {
   const operatingControls = [
-    "Availability and service state exposed from the running system",
-    "Incident records with cause, impact, status, and closure",
-    "Change records tied to production behavior and evidence",
-    "Daily state copies with restore drills that read the stored copy",
-    "Usage metering and a hard spend gate for variable-cost traffic",
-    "Append-only operational receipts with integrity verification"
+    "The current service status and uptime number come from the running system",
+    "Incident records explain what happened, who was affected, and how the issue was closed",
+    "Each release records what changed and which live behavior proves it works",
+    "Daily backups are tested by restoring and reading the saved copy",
+    "The service counts resource use and stops costly actions at a hard limit",
+    "Important operator actions are added to a history that can be checked for changes"
   ];
   const aiControls = [
-    "Defined AI-system purpose, scope, and operating boundary",
-    "Deterministic rule-based agents; no model, training-data, or inference dependency",
-    "Impact assessment that states what the system does and does not decide about people",
-    "Version-controlled behavior and change management",
-    "Monitoring through replayable, inspectable system state",
-    "Documented limitations and retained operator authority"
+    "Computer sharks exist only to fill empty seats and make the tank active",
+    "The same starting state and player actions always produce the same bot behavior",
+    "Bots cannot read a player's name or profile, make decisions about people, or fire rockets",
+    "Every change to a bot rule is saved, reviewed, and tied to a release",
+    "Replays make bot movement and decisions easy to inspect",
+    "The limits are documented, and a human operator remains in control"
   ];
   const accessibilityControls = [
-    "Complete keyboard operation for the public evidence surfaces and supported game controls",
-    "Visible focus, semantic landmarks, ordered headings, labelled controls, and skip navigation",
-    "Screen-reader status and error messages that update without stealing focus",
-    "Readable contrast, scalable presentation, and responsive layouts at browser zoom",
-    "Reduced-motion, high-contrast, font-scale, colour-label, caption, and steering-assist preferences"
+    "Public pages and supported game controls can be used with a keyboard",
+    "Visible focus shows where the user is, while clear headings, labels, and skip links make pages easier to navigate",
+    "Screen readers announce status changes and errors without moving the user's place",
+    "Text and layouts remain readable with browser zoom and stronger contrast",
+    "Options include reduced motion, larger text, color labels, captions, and steering help"
   ];
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/sharktank/">← SharkTank overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
-    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>Compliance claims are easy to write and difficult to prove.</h2><p>${escapeHtml(project.problem)}</p></div></section>
-    <section class="case-section"><div class="case-label">02 — Approach</div><div><h2>Use a real application as the governed workload.</h2><p>The game exercises identity, realtime state, change, incidents, continuity, resource consumption, accessibility, and deterministic agents. The management system around it defines how risk is decided, how controls operate, and how evidence survives contact with production.</p></div></section>
-    <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Security governance maps to production controls.</h2><p>Scope, risk treatment, access, suppliers, secure development, operations, incident response, recovery, and change management are mapped to the running service. Supplier, excluded, partial, and gap positions remain visible. This is an aligned readiness exercise, not certification.</p></div></section>
-    <section class="case-section"><div class="case-label">04 — ISO/IEC 42001</div><div><h2>AI purpose and limits are explicit.</h2><p>The computer-controlled sharks are deterministic and rule-based. Their intended use, impact boundary, operator authority, lifecycle, monitoring, transparency, and change control are governed without implying a model or inference dependency that does not exist.</p><ul class="built-list">${aiControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">05 — Reliability</div><div><h2>Uptime is evidence, not a frozen marketing number.</h2><p>The live dashboard derives availability from the complete incident record since project start. When that source supports 100%, the interface says <strong>100% uptime maintained</strong>; if the evidence changes, the displayed value changes with it.</p><ul class="built-list">${operatingControls.slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">06 — Accessibility</div><div><h2>Accessibility is part of production governance.</h2><p>The validated public, menu, settings, and supported gameplay interfaces target <strong>WCAG 2.0 AA</strong>. The claim is scoped to those implemented interfaces and controls; it does not imply that every spatial visual interaction has an equivalent nonvisual experience.</p><ul class="built-list">${accessibilityControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">07 — Cost governance</div><div><h2>The workload has an explicit operating boundary.</h2><p>Resource use is metered against current limits and history. At the implemented hard threshold, variable-cost gameplay and public writes close while read-only evidence, status, security intake, and protected recovery paths remain available. Core accountability is preserved before normal operation resumes.</p>${architecture([
-      ["Normal", "Gameplay, writes, and evidence operate normally"],
-      ["Threshold reached", "The hard spend gate closes variable-cost traffic"],
-      ["Core protected", "Status, evidence, security intake, and recovery remain available"],
-      ["Recover", "An authenticated operator resets the measurement boundary and restores normal operation"]
+    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>A checklist does not prove a system is safe.</h2><p>${escapeHtml(project.problem)}</p></div></section>
+    <section class="case-section"><div class="case-label">02 — Approach</div><div><h2>Run the rules against a real game.</h2><p>The game gives those rules something real to control. Players join rooms, information changes in real time, incidents can happen, backups can be tested, and running the service costs money. Each part creates a record that shows whether the rule worked.</p></div></section>
+    <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Show how security is handled.</h2><p><strong>ISO/IEC 27001</strong> is a framework for managing information-security risks. In Shark Tank, topics such as access, code changes, incidents, suppliers, and backups link to a live page or record. Items that are incomplete, handled by a supplier, not relevant, or still need work are labelled instead of hidden. The project follows the framework for practice; it is not certified.</p></div></section>
+    <section class="case-section"><div class="case-label">04 — ISO/IEC 42001</div><div><h2>These sharks follow rules, not a trained AI model.</h2><p><strong>ISO/IEC 42001</strong> is a framework for managing AI systems. Shark Tank uses it to document what the computer sharks may do, what information they may use, how their behavior is tested, and how changes are approved. The sharks run programmed rules; there is no training data, learned model, or outside AI service.</p><ul class="built-list">${aiControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">05 — Reliability</div><div><h2>The uptime number comes from the incident log.</h2><p>The site does not type an uptime percentage into a marketing page. It calculates the number from every recorded outage since the project started. When the record supports it, the page says <strong>100% uptime maintained</strong>. If an outage is recorded, the number changes automatically.</p><ul class="built-list">${operatingControls.slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">06 — Accessibility</div><div><h2>More people can use the site and its controls.</h2><p><strong>WCAG 2.0 AA</strong> is a common set of web-accessibility rules. Shark Tank's public pages, menus, settings, and supported game controls are tested against those rules. This does not mean every visual action in the game has a matching nonvisual version; the claim covers the listed screens and controls.</p><ul class="built-list">${accessibilityControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">07 — Cost governance</div><div><h2>Spending cannot grow forever.</h2><p>The service counts how many paid resources it uses. When it reaches a hard limit, it pauses actions that could add more cost, such as gameplay and public writes. Read-only status pages, evidence, security reports, and recovery tools stay available. An approved operator can restore normal service after reviewing the limit.</p>${architecture([
+      ["Normal", "The game, updates, and public records work normally"],
+      ["Limit reached", "Actions that could create more cost are paused"],
+      ["Important pages stay up", "Status, evidence, security reports, and recovery remain available"],
+      ["Restart", "An approved operator reviews the limit and restores normal service"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">08 — Evidence architecture</div><div><h2>Requirement → control → implementation → live evidence → operational record.</h2><p>Policies and control descriptions are not treated as proof by themselves. Each supported position resolves into a running route, operational record, or explicit limitation.</p>${architecture([
-      ["Requirement", "State the governed outcome and boundary"],
-      ["Control", "Choose the technical or operational response"],
-      ["Implementation", "Make the response part of the workload"],
-      ["Live evidence", "Expose the current result and retained operational record"]
+    <section class="case-section"><div class="case-label">08 — Evidence</div><div><h2>Follow each claim to its proof.</h2><p>A written policy is only a starting point. Each supported claim links to the feature, live page, or saved record that proves what happened. If the proof is missing or limited, the site says so.</p>${architecture([
+      ["Rule", "Explain what should happen and where the rule applies"],
+      ["Safeguard", "Choose the code or operating step that enforces the rule"],
+      ["Running feature", "Make the safeguard part of the real service"],
+      ["Record", "Show the current result and keep a history that can be checked"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">09 — Architecture</div><div><h2>Clear boundaries keep the evidence trustworthy.</h2>${architecture(project.architecture)}<p>Workers own routing, validation, policy, and public evidence; Durable Objects own realtime state and receipts; R2 holds independent state copies read by recovery drills.</p></div></section>
-    <section class="case-section"><div class="case-label">10 — Result</div><div><h2>A running system whose governance can be inspected.</h2><p>${escapeHtml(project.result)}</p><p>The result is a production workload where security governance, AI governance, reliability, accessibility, cost, continuity, and operational evidence can be checked rather than merely claimed.</p>${actions(project)}</div></section>
+    <section class="case-section"><div class="case-label">09 — Architecture</div><div><h2>Each service has one job.</h2>${architecture(project.architecture)}<p>The Worker handles web requests and public pages. Durable Objects keep live game rooms, logs, and operator records. R2 stores separate backup copies that recovery tests read later.</p></div></section>
+    <section class="case-section"><div class="case-label">10 — Result</div><div><h2>Visitors can check the work.</h2><p>${escapeHtml(project.result)}</p><p>The point is simple: the site shows records from the running service instead of asking visitors to trust a list of claims.</p>${actions(project)}</div></section>
   </main>`;
   return document({
     title: "SharkTank — ISO 27001 & ISO 42001 Governance Case Study | WizardGang",
@@ -587,17 +587,23 @@ function projectCaseStudy(project, build) {
   const title = project.slug === "hexframe"
     ? "Hexframe — Deterministic Fighting Game Systems | WizardGang"
     : "YarReader — Portable Media Pipeline | WizardGang";
-  const accessibility = project.slug === "hexframe" ? `<section class="case-section"><div class="case-label">05 — Accessibility</div><div><h2>Accessibility shapes the application architecture.</h2><p>Hexframe’s menus, navigation, settings, lab, and supported game controls target <strong>WCAG 2.0 AA</strong>. Keyboard and gamepad input share the same action model; modal focus is trapped and restored; tab interfaces use managed focus; status and combat feedback have semantic output; and pointer-only actions have keyboard alternatives.</p><ul class="built-list"><li>Complete keyboard operation across menus, training, loadouts, settings, and supported combat controls</li><li>Visible and optional stronger focus states, semantic tabs and dialogs, and predictable focus restoration</li><li>Scalable text, high-contrast and colour-vision modes, status patterns, captions, and screen-reader combat output</li><li>System-aware and explicit reduced-motion settings that remove nonessential motion</li><li>Accessible training and lab controls with labelled frame, move, loadout, and status feedback</li></ul><p>The claim is precise: the implemented interface and control surfaces are covered. It does not claim that every spatial visual fighting-game interaction has a fully equivalent nonvisual experience.</p></div></section>` : "";
+  const accessibility = project.slug === "hexframe" ? `<section class="case-section"><div class="case-label">05 — Accessibility</div><div><h2>Menus and controls are built for more players.</h2><p><strong>WCAG 2.0 AA</strong> is a common set of web-accessibility rules. Hexframe applies those rules to its menus, navigation, settings, training lab, and supported game controls. Keyboard and gamepad buttons trigger the same actions. Dialogs keep keyboard focus inside them and return the user to the right place when they close. Important status and combat messages are also available to screen readers.</p><ul class="built-list"><li>Complete keyboard operation for menus, training, move sets, settings, and supported combat controls</li><li>A stronger-focus option, clearly labelled tabs and dialogs, and predictable focus restoration</li><li>Larger text, high-contrast and color-vision modes, captions, and screen-reader combat messages</li><li>A reduced-motion setting that removes movement that is not needed to play</li><li>Training tools with clear labels for frames, moves, equipment, and combat status</li></ul><p>This claim covers the listed screens and controls. It does not claim that every visual fighting-game action has a complete nonvisual replacement.</p></div></section>` : "";
   const resultNumber = project.slug === "hexframe" ? "06" : "05";
+  const engineeringHeading = project.slug === "hexframe"
+    ? "Graphics show the fight; game rules decide it."
+    : "Do the hard work before the reader opens.";
+  const resultHeading = project.slug === "hexframe"
+    ? "A playable foundation that can grow."
+    : "A library that can recover and be rebuilt.";
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/${project.slug}/">← ${escapeHtml(project.name)} overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
-    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>The constraint that shapes the system.</h2><p>${escapeHtml(project.problem)}</p></div></section>
-    <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>A complete path, not an isolated component.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Explicit ownership at every boundary.</h2>${architecture(project.architecture)}</div></section>
-    <section class="case-section"><div class="case-label">04 — Interesting engineering</div><div><h2>The part worth looking at twice.</h2><p>${escapeHtml(project.engineering)}</p></div></section>
+    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>Why this is hard.</h2><p>${escapeHtml(project.problem)}</p></div></section>
+    <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>What the project does.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Each part has one job.</h2>${architecture(project.architecture)}</div></section>
+    <section class="case-section"><div class="case-label">04 — Key design choice</div><div><h2>${engineeringHeading}</h2><p>${escapeHtml(project.engineering)}</p></div></section>
     ${accessibility}
-    <section class="case-section"><div class="case-label">${resultNumber} — Result / current state</div><div><h2>What exists now.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
+    <section class="case-section"><div class="case-label">${resultNumber} — What works today</div><div><h2>${resultHeading}</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
   return document({ title, description: project.description, path: `/projects/${project.slug}/case-study/`, current: "projects", body, build });
 }

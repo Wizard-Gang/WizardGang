@@ -138,12 +138,19 @@ for (const [slug, source] of expectedSources) {
 }
 
 const sharkCase = await readFile(resolve(dist, "projects/sharktank/case-study/index.html"), "utf8");
-for (const text of ["ISO/IEC 27001", "ISO/IEC 42001", "100% uptime maintained", "WCAG 2.0 AA", "Cost governance", "Requirement → control → implementation → live evidence → operational record"]) {
+for (const text of ["A checklist does not prove a system is safe", "ISO/IEC 27001", "ISO/IEC 42001", "100% uptime maintained", "WCAG 2.0 AA", "Cost governance", "Follow each claim to its proof"]) {
   if (!sharkCase.includes(text)) fail(`SharkTank case study missing ${text}`);
 }
 const hexCase = await readFile(resolve(dist, "projects/hexframe/case-study/index.html"), "utf8");
-for (const text of ["Accessibility shapes the application architecture", "WCAG 2.0 AA", "Complete keyboard operation", "reduced-motion", "focus restoration"]) {
+for (const text of ["Graphics show the fight; game rules decide it", "Menus and controls are built for more players", "WCAG 2.0 AA", "Complete keyboard operation", "reduced-motion", "focus restoration"]) {
   if (!hexCase.includes(text)) fail(`Hexframe case study missing ${text}`);
+}
+const yarCase = await readFile(resolve(dist, "projects/yarreader/case-study/index.html"), "utf8");
+for (const text of ["Each part has one job", "Do the hard work before the reader opens", "A library that can recover and be rebuilt", "digital fingerprint"]) {
+  if (!yarCase.includes(text)) fail(`YarReader case study missing ${text}`);
+}
+for (const phrase of ["A complete path, not an isolated component", "Explicit ownership at every boundary", "The part worth looking at twice", "What exists now"] ) {
+  if (hexCase.includes(phrase) || yarCase.includes(phrase)) fail(`technical case studies still contain dense placeholder heading: ${phrase}`);
 }
 
 const yarOverview = await readFile(resolve(dist, "projects/yarreader/index.html"), "utf8");
