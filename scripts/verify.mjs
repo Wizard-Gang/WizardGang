@@ -44,7 +44,7 @@ function fragmentOf(href) {
 
 const files = await walk(dist);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
-if (htmlFiles.length !== 11) fail(`expected 11 canonical HTML pages, found ${htmlFiles.length}`);
+if (htmlFiles.length !== 12) fail(`expected 12 canonical HTML pages, found ${htmlFiles.length}`);
 
 for (const file of htmlFiles) {
   const relative = file.slice(dist.length + 1);
@@ -52,7 +52,7 @@ for (const file of htmlFiles) {
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
   if (!html.includes('<nav class="site-nav" aria-label="Primary">')) fail(`${relative}: missing primary navigation`);
-  for (const label of ["Projects", "Work", "About", "GitHub"]) {
+  for (const label of ["Projects", "Work", "Services", "About", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
   }
   if (html.includes('href="/resume') || html.includes(">Resume<")) fail(`${relative}: exposes retired Resume navigation or content`);
@@ -72,6 +72,7 @@ for (const file of htmlFiles) {
   }
   for (const match of html.matchAll(/href="([^"]+)"/g)) {
     if (match[1].startsWith("//")) fail(`${relative}: malformed protocol-relative URL ${match[1]}`);
+    if (PERMANENT_REDIRECTS.has(match[1].split(/[?#]/)[0])) continue;
     const target = internalTarget(match[1]);
     if (!target) continue;
     try {
@@ -104,8 +105,8 @@ for (const file of required) {
 
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 for (const requiredText of [
-  "Jacob <span>Yongue.</span>",
-  "I build systems that deliver",
+  "Jacob <span>Yongue</span>",
+  "I build systems that deliver.",
   "Software engineer · Systems · Project delivery",
   "I design, build, integrate, and deliver software systems from requirements through production.",
   "Selected projects", "Selected work", "Capabilities", "About"
@@ -173,11 +174,16 @@ for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-play
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");
-for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations.", "Axon", "LexisNexis", "Shadow Money Wizard Gang"]) {
+for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations.", "Axon", "LexisNexis", "Shadow Money Wizard Gang", "Sep 2024 - Apr 2026", "Jun 2023 - Aug 2024"]) {
   if (!work.includes(requiredText)) fail(`work page missing ${requiredText}`);
 }
-for (const retiredText of ["Education &amp; certification", "Clemson University", "Independent venture"]) {
+for (const retiredText of ["Education &amp; certification", "Clemson University", "Independent venture", "Oct 2024 - Apr 2026", "Nov 2023 - Sep 2024"]) {
   if (work.includes(retiredText)) fail(`work page still contains retired content: ${retiredText}`);
+}
+
+const services = await readFile(resolve(dist, "services/index.html"), "utf8");
+for (const requiredText of ["Launch the site", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", 'href="/services/example/"']) {
+  if (!services.includes(requiredText)) fail(`services page missing ${requiredText}`);
 }
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
@@ -189,7 +195,7 @@ for (const removedText of ["WizardGang.ai is my personal engineering portfolio",
 }
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
-for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/about/"]) {
+for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/services/", "/about/"]) {
   if (!sitemap.includes(route)) fail(`sitemap missing ${route}`);
 }
 if (sitemap.includes("/resume/") || sitemap.includes("/professional/") || sitemap.includes("/work/sharktank/")) fail("sitemap includes a retired compatibility route");
@@ -198,6 +204,7 @@ const expectedRedirects = new Map([
   ["/github", "https://github.com/Wizard-Gang"],
   ["/resume/", "/work/"],
   ["/professional/", "/work/"],
+  ["/services/example/", "https://yourwebsite.wizardgang.ai/"],
   ["/work/sharktank/", "/projects/sharktank/"],
   ["/work/shark-tank/", "/projects/sharktank/"],
   ["/work/hexframe/", "/projects/hexframe/"],

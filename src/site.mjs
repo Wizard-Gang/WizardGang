@@ -18,6 +18,7 @@ function header(current = "") {
   const nav = [
     ["projects", "/projects/", "Projects"],
     ["work", "/work/", "Work"],
+    ["services", "/services/", "Services"],
     ["about", "/about/", "About"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
   const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
@@ -452,7 +453,7 @@ function capabilityGrid() {
 
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that deliver</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue.</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that deliver.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/services/">Services</a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
@@ -478,6 +479,41 @@ function work(build) {
     <p class="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
   </main>`;
   return document({ title: "Work — Jacob Yongue | Professional Portfolio", description: "Jacob Yongue's professional portfolio: systems delivered, deployments, integrations, career history, QA, implementation, and production support from 2019 through 2026.", path: "/work/", current: "work", body, build });
+}
+
+function services(build) {
+  const packages = [
+    {
+      name: "Starter",
+      price: "$95",
+      pages: "Up to 3 pages",
+      description: "A focused site for a small business that needs a credible home, clear services, and a direct contact path.",
+      features: ["Responsive design", "Home, services, and contact routes", "Direct email and contact details", "Owner-controlled source and deployment"]
+    },
+    {
+      name: "Business",
+      price: "$195",
+      pages: "Up to 5 pages",
+      description: "A broader business site with room to show the work, establish trust, and collect useful customer inquiries.",
+      features: ["Everything in Starter", "Gallery and testimonial sections", "Service-area content", "First-party contact form"]
+    },
+    {
+      name: "Owner+",
+      price: "$350",
+      pages: "Up to 8 pages",
+      description: "A complete site with dedicated pages, stored contact requests, and documentation for future maintenance.",
+      features: ["Everything in Business", "FAQ and expanded content routes", "Stored contact submissions", "AI-ready documentation and automated deployment"]
+    }
+  ];
+  const packageCards = packages.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p><ul>${item.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul></article>`).join("");
+  const body = `<main class="case-main services-main" id="main" tabindex="-1">
+    <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1>Launch the site.<br><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>Fixed-scope website packages for small businesses that need a clean launch without giving up ownership of their source, domain, or deployment.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a><a class="button" href="/services/example/">View the Owner+ example <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="service-packages" aria-labelledby="packages-heading"><header><div><p class="kicker">Website packages</p><h2 id="packages-heading">Choose the scope that fits.</h2></div><p>Each package uses the same responsive, config-driven foundation. The difference is how many routes and customer-facing features the site includes.</p></header><div class="service-package-grid">${packageCards}</div></section>
+    <section class="service-process" aria-labelledby="process-heading"><header><div><p class="kicker">Delivery</p><h2 id="process-heading">From business details to a working site.</h2></div><p>You provide the business information, brand direction, approved copy, images, and domain access. I configure, test, deploy, and hand over the working site.</p></header><div class="service-process-grid"><article><span>01</span><h3>Define the site</h3><p>Confirm the package, pages, content, visual direction, and contact path.</p></article><article><span>02</span><h3>Build and check</h3><p>Configure the site, test its routes and forms, and prepare the production domain.</p></article><article><span>03</span><h3>Deploy and hand over</h3><p>Publish the site and leave the source, configuration, and deployment under your control.</p></article></div></section>
+    <section class="service-notes"><div><p class="kicker">Scope</p><h2>Clear package boundaries.</h2></div><p>Domain purchases, paid third-party services, custom application features, ecommerce, and large copy or content migrations are quoted separately before work begins.</p></section>
+    <section class="contact-band" aria-label="Website service contact"><p>Need a small-business website with a clear handoff?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Get in touch</a><a class="button" href="/services/example/">Open the example <span aria-hidden="true">↗</span></a></div></section>
+  </main>`;
+  return document({ title: "Website Services — Jacob Yongue | WizardGang", description: "Fixed-scope small-business website packages from Jacob Yongue: responsive design, owner-controlled source, clear delivery, and a live Owner+ example.", path: "/services/", current: "services", body, build });
 }
 
 function architecture(items) {
@@ -639,6 +675,7 @@ export function createPages(build) {
     ...projects.map((project) => [`projects/${project.slug}/index.html`, projectShowcase(project, build)]),
     ...projects.map((project) => [`projects/${project.slug}/case-study/index.html`, projectCaseStudy(project, build)]),
     ["work/index.html", work(build)],
+    ["services/index.html", services(build)],
     ["about/index.html", about(build)],
     ["404.html", notFound(build)]
   ]);
