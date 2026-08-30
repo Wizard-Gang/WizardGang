@@ -44,7 +44,7 @@ function fragmentOf(href) {
 
 const files = await walk(dist);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
-if (htmlFiles.length !== 12) fail(`expected 12 canonical HTML pages, found ${htmlFiles.length}`);
+if (htmlFiles.length !== 14) fail(`expected 14 canonical HTML pages, found ${htmlFiles.length}`);
 
 for (const file of htmlFiles) {
   const relative = file.slice(dist.length + 1);
@@ -52,14 +52,28 @@ for (const file of htmlFiles) {
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
   if (!html.includes('<nav class="site-nav" aria-label="Primary">')) fail(`${relative}: missing primary navigation`);
-  for (const label of ["Projects", "Work", "Services", "About", "GitHub"]) {
+  for (const label of ["Projects", "Work", "Services", "About", "Compliance", "Glossary", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
+  }
+  for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200", "play-previews"]) {
+    if (!html.includes(`id="${id}"`)) fail(`${relative}: missing display setting ${id}`);
+  }
+  if (!html.includes('id="play-previews" aria-describedby="motion-setting-help" checked')) fail(`${relative}: preview motion must be on by default`);
+  if (!html.includes(">Preferences</summary>")) fail(`${relative}: missing preferences disclosure`);
+  for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
+    const visible = match[2].replace(/<[^>]+>/g, " ").replace(/[↗→]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+    if (["play", "case study", "github", "evidence"].includes(visible) && !/\saria-label="[^"]{12,}"/i.test(match[1])) {
+      fail(`${relative}: compact ${visible} link is missing a descriptive accessible name`);
+    }
   }
   if (html.includes('href="/resume') || html.includes(">Resume<")) fail(`${relative}: exposes retired Resume navigation or content`);
   if (!/<title>[^<]{12,}<\/title>/.test(html)) fail(`${relative}: missing descriptive title`);
   if (!/<meta name="description" content="[^"]{40,}">/.test(html)) fail(`${relative}: missing meta description`);
   if (!html.includes('property="og:title"') || !html.includes('property="og:description"')) fail(`${relative}: incomplete Open Graph metadata`);
-  if (/<script(?:\s|>)/i.test(html)) fail(`${relative}: portfolio HTML must not ship client JavaScript`);
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
+  if (scripts.length !== 1 || !/\ssrc="\/assets\/site\.js\?v=[^"]+"/.test(scripts[0]?.[1] || "") || scripts[0]?.[2].trim()) {
+    fail(`${relative}: must load exactly the first-party preferences script without inline JavaScript`);
+  }
   if (/<style(?:\s|>)/i.test(html) || /\sstyle="/i.test(html)) fail(`${relative}: contains inline styles blocked by CSP`);
   if (/ShadowMoney|WizardGangLocal|github\.com\/SouthernGentlemen\/WizardGangLocal/i.test(html)) fail(`${relative}: exposes a retired name or private repository URL`);
   if (retiredRepositories.some((href) => html.includes(`href="${href}"`))) fail(`${relative}: links a retired per-project repository`);
@@ -94,7 +108,7 @@ for (const file of htmlFiles) {
 }
 
 const required = [
-  "_headers", "assets/styles.css", "favicon.svg", "og-jacob-yongue.jpg",
+  "_headers", "assets/styles.css", "assets/site.js", "favicon.svg", "og-jacob-yongue.jpg",
   "sharktank-project.jpg", "hexframe-project.jpg", "yarreader-library-art.jpg",
   "robots.txt", "sitemap.xml", "site.webmanifest", "version.json"
 ];
@@ -102,14 +116,18 @@ for (const file of required) {
   try { await access(resolve(dist, file)); }
   catch { fail(`missing build artifact ${file}`); }
 }
+for (const file of ["README.md", "SECURITY.md", "docs/ACCESSIBILITY.md", "docs/COMPLIANCE.md"]) {
+  try { await access(resolve(root, file)); }
+  catch { fail(`missing public compliance record ${file}`); }
+}
 
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 for (const requiredText of [
   "Jacob <span>Yongue</span>",
   "I build systems that deliver.",
   "Software engineer · Systems · Project delivery",
-  "I design, build, integrate, and deliver software systems from requirements through production.",
-  "Selected projects", "Selected work", "Your website. Your code. Your infrastructure.", "Capabilities", "About"
+  "I design, build, connect, and launch software, then help teams keep it working in production.",
+  "Selected projects", "Selected work", "Capabilities", "About"
 ]) {
   if (!home.includes(requiredText)) fail(`homepage missing ${requiredText}`);
 }
@@ -118,10 +136,12 @@ for (const retired of ["Two bodies of work", "Different contexts. Clear boundari
 }
 if (!home.includes('content="https://wizardgang.ai/og-jacob-yongue.jpg"')) fail("homepage missing Jacob-first social preview");
 if (!home.includes('href="https://github.com/Wizard-Gang"')) fail("homepage generic GitHub action must target the Wizard-Gang organization");
-const expectedHomeActions = `<div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="https://github.com/Wizard-Gang" target="_blank" rel="noopener noreferrer">GitHub</a></div>`;
+const expectedHomeActions = `<div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="/compliance/">Compliance</a><a class="button" href="https://github.com/Wizard-Gang" target="_blank" rel="noopener noreferrer" aria-label="Visit WizardGang on GitHub (opens in a new tab)">GitHub</a></div>`;
 if (!home.includes(expectedHomeActions)) fail("homepage primary actions are missing their required order or plain labels");
-for (const servicePreview of ["Starter", "$95", "Business", "$195", "Owner+", "$350", "View services"]) {
-  if (!home.includes(servicePreview)) fail(`homepage services preview missing ${servicePreview}`);
+if (/plain-language-summary|What I do, without the technical shorthand/i.test(home)) fail("homepage still contains the removed plain-language summary");
+if (home.indexOf("<h1") > home.indexOf("<h2")) fail("homepage must expose its h1 before any h2");
+for (const servicePreview of ["selected-services", "Your website. Your code. Your infrastructure.", "View services", "services-teaser-copy"]) {
+  if (home.includes(servicePreview)) fail(`homepage still contains services preview content: ${servicePreview}`);
 }
 if (!home.includes("accessible interfaces") || !home.includes("accessible controls")) fail("homepage project summaries are missing shared accessibility capability");
 
@@ -168,14 +188,30 @@ const styles = await readFile(resolve(dist, "assets/styles.css"), "utf8");
 if (!yarOverview.includes('data-fixture="synthetic"') || !yarOverview.includes("Original demo artwork") || !styles.includes('url("/yarreader-library-art.jpg")')) {
   fail("YarReader overview must use and identify original fictional demo artwork");
 }
-for (const marker of ["tank-food-eat-a", "tank-food-eat-b", "tank-food-eat-c", "tank-dash-trail", "tank-rocket-shot", "tank-rocket-burst"]) {
+for (const marker of ["tank-food-eat-a", "tank-food-eat-b", "tank-food-eat-c", "tank-dash-trail", "tank-rocket-shot", "tank-rocket-burst", "tank-abilities", "tank-dash", "tank-rocket"]) {
   if (!projectsOverview.includes(marker)) fail(`SharkTank project card is missing gameplay marker ${marker}`);
 }
-for (const marker of ["lab-dummy-a", "lab-dummy-b", "lab-contact-a", "lab-contact-b", "lab-health-970", "lab-health-950", ">30</text>", ">20</text>"]) {
+if (projectsOverview.includes("tank-player-dash-icon") || projectsOverview.includes("tank-player-rocket-icon")) fail("SharkTank ability icons must not be attached to the shark");
+for (const marker of ["lab-dummy-a", "lab-dummy-b", "lab-contact-a", "lab-contact-b", "lab-health-970", "lab-health-950", "lab-bone-a-arm_upper_r", "lab-hit-window-a", "lab-hit-window-b", "hexframe-move-data", "Startup frames", "Cancel frames", "<td>30</td>", "<td>20</td>"]) {
   if (!projectsOverview.includes(marker)) fail(`Hexframe project card is missing combat marker ${marker}`);
 }
-for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-player-gameplay", "tank-rocket-flight", "lab-dummy-a", "lab-dummy-b", "lab-dummy-health"]) {
+if (/<text(?:\s|>)/i.test(projectsOverview) || /<animate(?:Transform)?(?:\s|>)/i.test(projectsOverview)) fail("project previews must not render text or uncontrolled motion inside SVG");
+for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-player-gameplay", "tank-rocket-flight", "lab-bone-a-arm-upper", "lab-hit-window-a", "lab-hit-window-b", "lab-dummy-a", "lab-dummy-b", "lab-dummy-health"]) {
   if (!styles.includes(`@keyframes ${animation}`)) fail(`project card gameplay is missing ${animation} animation`);
+}
+for (const accessibilityStyle of [
+  ".project-visual * { animation-play-state: paused !important; }",
+  "body:has(#play-previews:checked) .project-visual * { animation-play-state: running !important; }",
+  "html:has(#text-size-200:checked) { font-size: 200%; }",
+  "body:has(#theme-light:checked)",
+  "#c7d0d7",
+  "#c8cedb",
+  "#c9c4e4"
+]) {
+  if (!styles.includes(accessibilityStyle)) fail(`compiled styles missing accessibility rule ${accessibilityStyle}`);
+}
+if (/tank-rocket-flame\s+\.(?:0|1|2|3)\d?s/i.test(styles)) {
+  fail("project preview flame animation must stay below three flashes per second");
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");
@@ -206,20 +242,52 @@ const about = await readFile(resolve(dist, "about/index.html"), "utf8");
 for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]) {
   if (!about.includes(requiredText)) fail(`about page missing ${requiredText}`);
 }
+
+const compliance = await readFile(resolve(dist, "compliance/index.html"), "utf8");
+for (const requiredText of ["Compliance.", "WCAG 2.0", "Level A", "Level AA", "Level AAA", "ISO/IEC 27001:2022", "ISO/IEC 42001:2023", "AI-developed. Human-reviewed.", "✓ Met", "◐ Partial", "! Gap", "Report an issue."]) {
+  if (!compliance.includes(requiredText)) fail(`compliance page missing ${requiredText}`);
+}
+if (count(compliance, /class="compliance-item wcag-item"/g) !== 61) fail("compliance page must list all 61 WCAG 2.0 success criteria");
+if (count(compliance, /class="compliance-item iso-item"/g) !== 16) fail("compliance page must list the 16 portfolio-wide ISO clauses and annex records");
+if (count(compliance, /status-met/g) !== 64 || count(compliance, /status-partial/g) !== 12 || count(compliance, /status-gap/g) !== 1) {
+  fail("compliance page status totals must remain 64 met, 12 partial, and 1 gap");
+}
+if (count(compliance, /href="https:\/\/www\.w3\.org\/TR\/WCAG20\/#/g) !== 61) fail("every WCAG checklist item must link directly to its official success criterion");
+if (count(compliance, /href="https:\/\/github\.com\/Wizard-Gang\/WizardGang\/blob\/main\/docs\/COMPLIANCE\.md#iso-/g) !== 16) fail("every ISO checklist item must link directly to its public clause record");
+for (const requiredText of ["Report issue", "Public documentation", "corresponding clause (opens in a new tab)"]) {
+  if (!compliance.includes(requiredText)) fail(`compliance page missing direct action or accessible link text: ${requiredText}`);
+}
+for (const retiredText of ["WCAG 2.0<br><span>checklist.</span>", "A concise self-assessment of the main WizardGang portfolio pages", "SharkTank", "Project evidence"]) {
+  if (compliance.includes(retiredText)) fail(`compliance page still contains retired content: ${retiredText}`);
+}
+const glossary = await readFile(resolve(dist, "glossary/index.html"), "utf8");
+for (const requiredText of ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]) {
+  if (!glossary.includes(requiredText)) fail(`glossary page missing ${requiredText}`);
+}
+try {
+  await access(resolve(dist, "security/index.html"));
+  fail("retired security page is still generated");
+} catch { /* /security/ is now a redirect to Compliance. */ }
+const siteScript = await readFile(resolve(dist, "assets/site.js"), "utf8");
+for (const requiredText of ["Español", "document.documentElement.lang = locale", "wizardgang.preferences.v1", "Jugar", "Caso de estudio", "Contraste (mejorado)", "Contexto de la organización", "Pautas de Accesibilidad para el Contenido Web", "Informar de un problema"]) {
+  if (!siteScript.includes(requiredText)) fail(`preferences script missing Spanish internationalization behavior: ${requiredText}`);
+}
 for (const removedText of ["WizardGang.ai is my personal engineering portfolio", "Let’s talk about the system", "Professional work</a>"]) {
   if (about.includes(removedText)) fail(`about page still contains removed content: ${removedText}`);
 }
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
-for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/services/", "/about/"]) {
+for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/services/", "/about/", "/compliance/", "/glossary/"]) {
   if (!sitemap.includes(route)) fail(`sitemap missing ${route}`);
 }
-if (sitemap.includes("/resume/") || sitemap.includes("/professional/") || sitemap.includes("/work/sharktank/")) fail("sitemap includes a retired compatibility route");
+if (sitemap.includes("/resume/") || sitemap.includes("/professional/") || sitemap.includes("/work/sharktank/") || sitemap.includes("/security/")) fail("sitemap includes a retired compatibility route");
 
 const expectedRedirects = new Map([
   ["/github", "https://github.com/Wizard-Gang"],
   ["/resume/", "/work/"],
   ["/professional/", "/work/"],
+  ["/accessibility/", "/compliance/"],
+  ["/security/", "/compliance/"],
   ["/services/example/", "https://yourwebsite.wizardgang.ai/"],
   ["/work/sharktank/", "/projects/sharktank/"],
   ["/work/shark-tank/", "/projects/sharktank/"],
@@ -245,4 +313,4 @@ if (failures.length) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
   process.exit(1);
 }
-console.log(`Verified ${htmlFiles.length} canonical HTML pages, metadata, assets, internal links, anchors, repository URLs, accessibility positioning, and ${PERMANENT_REDIRECTS.size} direct compatibility redirects.`);
+console.log(`Verified ${htmlFiles.length} canonical HTML pages, metadata, assets, internal links, anchors, repository URLs, compliance positioning, and ${PERMANENT_REDIRECTS.size} direct compatibility redirects.`);

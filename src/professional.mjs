@@ -6,19 +6,19 @@ export const professionalRoles = [
     organization: "University of Georgia",
     role: "AI Engineer",
     dates: "May 2026 - Current",
-    summary: "Building applied AI systems at the University of Georgia."
+    summary: "Building practical systems that use artificial intelligence (AI) at the University of Georgia."
   },
   {
     organization: "Supply Chain Technologies",
     role: "Consultant / Technical Lead",
     dates: "Sep 2024 - Apr 2026",
-    summary: "Led distributed delivery across enterprise WMS implementations, integrations, releases, and production support."
+    summary: "Led distributed delivery for enterprise warehouse management system (WMS) implementations, integrations, releases, and production support."
   },
   {
     organization: "Spartan Technology Solutions",
     role: "Lead Developer",
     dates: "Jun 2023 - Aug 2024",
-    summary: "Led .NET case-management delivery, CI/CD, production support, and migration planning for public-sector systems."
+    summary: "Led .NET case-management delivery, continuous integration and continuous delivery (CI/CD), production support, and migration planning for public-sector systems."
   },
   {
     organization: "Shadow Money Wizard Gang",
@@ -30,7 +30,7 @@ export const professionalRoles = [
     organization: "FastFetch Corp",
     role: "Senior Software Engineer",
     dates: "Jul 2019 - May 2023",
-    summary: "Built and supported .NET fulfillment systems, ETL pipelines, WMS integrations, and zero-downtime migrations."
+    summary: "Built and supported .NET fulfillment systems, extract-transform-load (ETL) data pipelines, warehouse management system (WMS) integrations, and migrations without planned downtime."
   }
 ];
 

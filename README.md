@@ -32,6 +32,9 @@ npm run check
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
 - [Boundary migration record](docs/BOUNDARY-MIGRATION.md)
+- [Compliance management record](docs/COMPLIANCE.md)
+- [Accessibility record](docs/ACCESSIBILITY.md)
+- [Security reporting](SECURITY.md)
 
 ## Deployment
 

@@ -46,21 +46,44 @@ function header(current = "") {
     ["services", "/services/", "Services"],
     ["about", "/about/", "About"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
-  const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a>`;
+  const support = [
+    ["compliance", "/compliance/", "Compliance"],
+    ["glossary", "/glossary/", "Glossary"]
+  ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
+  const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer" aria-label="WizardGang on GitHub (opens in a new tab)">GitHub</a>`;
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Jacob Yongue portfolio home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>JACOB YONGUE</strong><small>wizardgang.ai</small></span></a>
-      <nav class="site-nav" aria-label="Primary">${nav}${repository}</nav>
+      <nav class="site-nav" aria-label="Primary">${nav}<span class="site-nav-support">${support}${repository}</span></nav>
     </header>`;
 }
 
+function displaySettings() {
+  return `<details class="display-settings">
+    <summary>Preferences</summary>
+    <section class="settings-toolbar" aria-label="Language, display, and motion preferences">
+      <label class="setting-language"><span>Language</span><select id="page-language" autocomplete="off"><option value="en">English</option><option value="es">Español</option></select></label>
+      <fieldset class="setting-theme">
+        <legend>Theme</legend>
+        <label><input type="radio" name="page-theme" id="theme-dark" checked> Dark</label>
+        <label><input type="radio" name="page-theme" id="theme-light"> Light</label>
+      </fieldset>
+      <label class="setting-toggle"><input type="checkbox" id="reading-layout" checked><span>Readable layout</span></label>
+      <label class="setting-toggle"><input type="checkbox" id="text-size-200"><span>200% text</span></label>
+      <label class="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" checked><span>Play previews</span></label>
+      <small class="sr-only" id="motion-setting-help">Previews play by default and remain still when reduced motion is requested.</small>
+    </section>
+  </details>`;
+}
+
 function footer(build, current = "") {
-  const contact = `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a></span>`;
-  return `<footer class="site-footer"><span>Jacob Yongue · Software engineering portfolio</span>${contact}<span>WizardGang.ai · Build <a href="/version.json">${escapeHtml(build.commit)}</a></span></footer>`;
+  const contact = `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">Jacob Yongue on LinkedIn <span aria-hidden="true">↗</span></a><a href="/compliance/">Compliance</a><a href="/glossary/">Glossary</a></span>`;
+  return `<footer class="site-footer"><span>Jacob Yongue · Software engineering portfolio</span>${contact}<span>WizardGang.ai · <a href="/version.json">View build metadata for ${escapeHtml(build.commit)}</a></span></footer>`;
 }
 
 function document({ title, description, path, current, body, build, social = false, noindex = false }) {
   const canonical = `${SITE_ORIGIN}${path}`;
+  const assetVersion = encodeURIComponent(build.commit);
   const identity = noindex
     ? '<meta name="robots" content="noindex">'
     : `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}">`;
@@ -85,10 +108,12 @@ function document({ title, description, path, current, body, build, social = fal
     ${socialImage}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/assets/styles.css">
+    <link rel="stylesheet" href="/assets/styles.css?v=${assetVersion}">
+    <script src="/assets/site.js?v=${assetVersion}" defer></script>
   </head>
   <body>
     ${header(current)}
+    ${displaySettings()}
     ${body}
     ${footer(build, current)}
   </body>
@@ -102,14 +127,14 @@ function actions(project, compact = false) {
   const links = [];
 
   if (project.slug === "sharktank") {
-    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Evidence <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} operating evidence (opens in a new tab)">Evidence <span aria-hidden="true">↗</span></a>`);
   } else {
-    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer">Operations <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} operations (opens in a new tab)">Evidence <span aria-hidden="true">↗</span></a>`);
   }
 
-  links.push(`<a class="${className}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`);
+  links.push(`<a class="${className}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`);
 
   return `<div class="${compact ? "text-links" : "button-row"}">${links.join("")}</div>`;
 }
@@ -163,15 +188,12 @@ function sharkTankVisual() {
         </g>
         <g class="tank-fish tank-fish-a">
           <use href="#tankShark" x="380" y="150" width="78" height="48" class="skin-gold"/>
-          <g class="tank-tag"><rect x="386" y="122" width="70" height="21" rx="6" fill="#ffe14d"/><text x="421" y="137">Chowder</text></g>
         </g>
         <g class="tank-fish tank-fish-b">
           <use href="#tankShark" x="196" y="330" width="70" height="43" class="skin-violet"/>
-          <g class="tank-tag"><rect x="204" y="303" width="54" height="21" rx="6" fill="#a78bff"/><text x="231" y="318">Molar</text></g>
         </g>
         <g class="tank-fish tank-fish-c">
           <use href="#tankShark" x="424" y="356" width="64" height="39" class="skin-orange"/>
-          <g class="tank-tag"><rect x="432" y="330" width="48" height="21" rx="6" fill="#ff8a1f"/><text x="456" y="345">Tide</text></g>
         </g>
         <g class="tank-fish tank-fish-you">
           <g class="tank-dash-trail">
@@ -181,7 +203,6 @@ function sharkTankVisual() {
             <circle cx="224" cy="246" r="3.5" fill="#fff"/>
           </g>
           <use href="#tankShark" x="286" y="212" width="106" height="65" class="skin-cyan"/>
-          <g class="tank-tag"><rect x="284" y="178" width="110" height="23" rx="6" fill="#22e6ff"/><text x="339" y="194">Player (you)</text></g>
         </g>
         <g class="tank-rocket-shot">
           <g class="tank-rocket-flame">
@@ -280,16 +301,12 @@ const LAB_TAKES = [
   }
 ];
 
-const LAB_LOOP = "4.5s";
-
 function labBone(take, name, pivot, parts) {
   const values = take.bones[name];
   const still = take.still[name];
-  const spin = values
-    ? `<animateTransform attributeName="transform" type="rotate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${values}" keyTimes="${take.keyTimes}"/>`
-    : "";
+  const animated = values ? ` class="lab-bone lab-bone-${take.id}-${name}"` : "";
   const held = !values && still !== undefined ? ` transform="rotate(${still})"` : "";
-  return `<g transform="translate(${pivot})"><g${held}>${spin}${parts}</g></g>`;
+  return `<g transform="translate(${pivot})"><g${animated}${held}>${parts}</g></g>`;
 }
 
 function labFighter(take) {
@@ -314,7 +331,7 @@ function labFighter(take) {
 
   const spine = `<rect x="-9" y="-6" width="18" height="12" rx="4" fill="var(--body)"/>${legL}${torso}${legR}`;
   if (!take.pelvis) return `<g transform="translate(0 -46)">${spine}</g>`;
-  return `<g><animateTransform attributeName="transform" type="translate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${take.pelvis}" keyTimes="${take.keyTimes}"/>${spine}</g>`;
+  return `<g class="lab-pelvis lab-pelvis-${take.id}">${spine}</g>`;
 }
 
 function labDummy(take) {
@@ -329,7 +346,6 @@ function labDummy(take) {
     <g transform="translate(47 ${contactY})"><g class="lab-contact lab-contact-${take.id}">
       <circle class="lab-contact-ring" r="9"/>
       <path class="lab-contact-rays" d="M-16 0H16M0-16V16M-12-12 12 12M12-12-12 12"/>
-      <text class="lab-damage-number" y="-20" text-anchor="middle">${take.damage}</text>
     </g></g>`;
 }
 
@@ -341,9 +357,7 @@ function labBox(x, y, w, h, className) {
 function labTake(take) {
   const hurt = take.hurtboxes.map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
   const { x, y, w, h } = take.hitbox;
-  const open = take.hit[0] / take.duration;
-  const close = (take.hit[1] + 1) / take.duration;
-  const hit = `<g opacity="0"><animate attributeName="opacity" dur="${LAB_LOOP}" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;${open.toFixed(3)};${close.toFixed(3)}"/>${labBox(x, y, w, h, "lab-hitbox")}</g>`;
+  const hit = `<g class="lab-hit-window lab-hit-window-${take.id}">${labBox(x, y, w, h, "lab-hitbox")}</g>`;
   return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}${labDummy(take)}</g>`;
 }
 
@@ -351,15 +365,16 @@ function labTimeline(take) {
   const cells = { frame: "", phase: "", hit: "", cancel: "" };
   for (let i = 0; i < take.duration; i += 1) {
     const phase = i < take.startup ? "startup" : i < take.startup + take.active ? "active" : "recovery";
+    const phaseLabel = phase === "startup" ? "S" : phase === "active" ? "A" : "R";
     cells.frame += `<span class="lab-cell lab-cell-number">${String(i + 1).padStart(2, "0")}</span>`;
-    cells.phase += `<span class="lab-cell lab-on lab-phase-${phase}"></span>`;
-    cells.hit += `<span class="lab-cell${i >= take.hit[0] && i <= take.hit[1] ? " lab-cell-hit" : ""}"></span>`;
-    cells.cancel += `<span class="lab-cell${i >= take.cancel[0] && i <= take.cancel[1] ? " lab-cell-cancel" : ""}"></span>`;
+    cells.phase += `<span class="lab-cell lab-on lab-phase-${phase}">${phaseLabel}</span>`;
+    cells.hit += `<span class="lab-cell${i >= take.hit[0] && i <= take.hit[1] ? " lab-cell-hit" : ""}">${i >= take.hit[0] && i <= take.hit[1] ? "H" : ""}</span>`;
+    cells.cancel += `<span class="lab-cell${i >= take.cancel[0] && i <= take.cancel[1] ? " lab-cell-cancel" : ""}">${i >= take.cancel[0] && i <= take.cancel[1] ? "C" : ""}</span>`;
   }
   const row = (label, body) => `<div class="lab-row"><strong>${label}</strong><div>${body}</div></div>`;
   return `<div class="lab-take lab-take-${take.id} lab-tl lab-tl-${take.duration}">
       <header>
-        <div><p>Move timeline / event-derived</p><h4>${take.key}</h4></div>
+        <div><p>Move timeline / event-derived</p><strong class="lab-move-name">${take.key}</strong></div>
         <dl>
           <div><dt>Startup</dt><dd>${take.startup}f</dd></div>
           <div><dt>Active</dt><dd>${take.active}f</dd></div>
@@ -374,8 +389,19 @@ function labTimeline(take) {
     </div>`;
 }
 
+function hexframeMoveData() {
+  const range = ([start, end]) => start === end ? String(start + 1) : `${start + 1}–${end + 1}`;
+  const rows = LAB_TAKES.map((take) => {
+    const activeStart = take.startup + 1;
+    const activeEnd = take.startup + take.active;
+    const recoveryStart = activeEnd + 1;
+    return `<tr><th scope="row">${escapeHtml(take.key)}</th><td>1–${take.startup}</td><td>${activeStart}–${activeEnd}</td><td>${recoveryStart}–${take.duration}</td><td>${range(take.hit)}</td><td>${range(take.cancel)}</td><td>${take.damage}</td><td>${take.pushback}</td></tr>`;
+  }).join("");
+  return `<div class="sr-only"><table id="hexframe-move-data"><caption>Hexframe move data represented by the animated timeline</caption><thead><tr><th scope="col">Move</th><th scope="col">Startup frames</th><th scope="col">Active frames</th><th scope="col">Recovery frames</th><th scope="col">Hit frames</th><th scope="col">Cancel frames</th><th scope="col">Damage</th><th scope="col">Pushback</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
 function hexframeVisual() {
-  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: two authored attacks deal 30 and 20 damage, produce impact sparks, reduce the dummy's health, and push the dummy backward in sync with the move timeline">
+  return `<div class="preview-with-data"><div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: two authored attacks deal 30 and 20 damage, produce impact sparks, reduce the dummy's health, and push the dummy backward in sync with the move timeline" aria-describedby="hexframe-move-data">
     <header class="lab-brand">
       <p class="lab-eyebrow">Hexframe / Training</p>
       <strong>Prime. Link. Cash out.</strong>
@@ -383,8 +409,8 @@ function hexframeVisual() {
     </header>
     <div class="lab-stage">
       <div class="lab-hud">
-        <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 STA</small></strong></div>
-        <div class="lab-player lab-player-right"><strong><b class="lab-health-readout"><i class="lab-health-number lab-health-1000">1000</i><i class="lab-health-number lab-health-970">970</i><i class="lab-health-number lab-health-950">950</i></b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
+        <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 stamina</small></strong></div>
+        <div class="lab-player lab-player-right"><strong><b class="lab-health-readout"><i class="lab-health-number lab-health-1000">1000</i><i class="lab-health-number lab-health-970">970</i><i class="lab-health-number lab-health-950">950</i></b><small>100 stamina</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
       </div>
       <svg viewBox="-150 -125 300 158" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
         <rect x="-400" y="-125" width="800" height="158" fill="#080a0f"/>
@@ -394,10 +420,10 @@ function hexframeVisual() {
         ${LAB_TAKES.map(labTake).join("")}
       </svg>
       <div class="lab-legend"><span class="lab-key lab-key-hurt">Hurtbox</span><span class="lab-key lab-key-hit">Hitbox</span></div>
-      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Hit confirmed</span><strong>${take.key}</strong><em>${take.damage} damage · ${take.pushback} pushback · ${take.active}f active</em></div>`).join("")}
+      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Hit confirmed</span><strong>${take.key}</strong><em>${take.damage} damage · ${take.pushback} pushback · ${take.active} frames active</em></div>`).join("")}
     </div>
     ${LAB_TAKES.map(labTimeline).join("")}
-  </div>`;
+  </div>${hexframeMoveData()}</div>`;
 }
 
 // The library shelf uses YarReader's own interface language with original, title-free demo
@@ -448,9 +474,9 @@ function projectVisual(project) {
 }
 
 function projectCardActions(project) {
-  const play = project.liveUrl ? `<a class="text-link" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a>` : "";
-  const caseStudy = `<a class="text-link" href="/projects/${project.slug}/case-study/">Case Study <span aria-hidden="true">→</span></a>`;
-  const github = `<a class="text-link" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
+  const play = project.liveUrl ? `<a class="text-link" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>` : "";
+  const caseStudy = `<a class="text-link" href="/projects/${project.slug}/case-study/" aria-label="Read the ${escapeHtml(project.name)} case study">Case study <span aria-hidden="true">→</span></a>`;
+  const github = `<a class="text-link" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`;
   return `<div class="project-card-actions">${play}${caseStudy}${github}</div>`;
 }
 
@@ -467,25 +493,20 @@ function selectedWork() {
 
 function capabilityGrid() {
   const items = [
-    ["01", "Software engineering", "Browser applications, APIs, data pipelines, CLIs, simulation, testing, and production support."],
-    ["02", "Systems integration", "Getting separate systems to work as one — warehouses, ERPs, storefronts, shipping carriers, and logins — through APIs, EDI, and data mapping."],
-    ["03", "Implementation", "Requirements, workflow analysis, migration, configuration, QA, training, go-live, and stabilization."],
+    ["01", "Software engineering", "Browser applications, application programming interfaces (APIs), data pipelines, command-line tools, simulation, testing, and production support."],
+    ["02", "Systems integration", "Getting separate systems to work as one — warehouses, enterprise resource planning (ERP) platforms, storefronts, shipping carriers, and logins — through APIs, electronic data interchange (EDI), and clearly matched data fields."],
+    ["03", "Implementation", "Requirements, workflow analysis, migration, configuration, quality assurance (QA), training, launch, and early production support."],
     ["04", "Technical project delivery", "Cross-functional planning, team leadership, risk management, release cadence, and accountable handoff."],
-    ["05", "Operations, QA & governance", "Observability, incidents, recovery, secure change, evidence, and ISO-aligned management systems."]
+    ["05", "Operations, quality & governance", "System monitoring, incident response, recovery, secure change, evidence, and management practices aligned with International Organization for Standardization (ISO) guidance."]
   ];
   return `<div class="capability-grid">${items.map(([number, title, copy]) => `<article><small>${number}</small><h3>${title}</h3><p>${copy}</p></article>`).join("")}</div>`;
 }
 
-function homeServices() {
-  return `<div class="services-teaser-copy"><p>We don’t sell you a website subscription. We build you a small piece of software and hand you the keys: source code, repository, deployment, and domain.</p><a class="text-link" href="${WEBSITE_DEMO_WALKTHROUGH}" target="_blank" rel="noopener noreferrer">See how the example works <span aria-hidden="true">↗</span></a></div><div class="service-package-grid">${WEBSITE_PACKAGES.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p></article>`).join("")}</div>`;
-}
-
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that deliver.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a></div></div></section>
+    <section class="hero jacob-hero"><div class="home-statement-card"><p>I build systems that deliver.</p></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, connect, and launch software, then help teams keep it working in production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="/compliance/">Compliance</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer" aria-label="Visit WizardGang on GitHub (opens in a new tab)">GitHub</a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
-    <section class="portfolio-section selected-services" aria-labelledby="selected-services-heading"><div class="section-heading"><div><p class="kicker">Services</p><h2 id="selected-services-heading">Your website. Your code. Your infrastructure.</h2></div><a class="text-link" href="/services/">View services <span aria-hidden="true">→</span></a></div>${homeServices()}</section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
     <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
@@ -563,17 +584,16 @@ const projectNarrative = {
 
 function projectShowcase(project, build) {
   const copy = projectNarrative[project.slug];
-  const liveLabel = project.slug === "sharktank" ? "Play" : project.liveUrl ? "Launch application" : "Inspect source";
-  const liveHref = project.liveUrl || project.sourceUrl;
-  const primaryActions = project.slug === "sharktank"
-    ? `<a class="button button-primary" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer">Play <span aria-hidden="true">↗</span></a><a class="button" href="/projects/sharktank/case-study/">Case Study <span aria-hidden="true">→</span></a><a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`
-    : `<a class="button button-primary" href="${liveHref}" target="_blank" rel="noopener noreferrer">${project.slug === "hexframe" ? "Play" : liveLabel} <span aria-hidden="true">↗</span></a><a class="button" href="/projects/${project.slug}/case-study/">Case Study <span aria-hidden="true">→</span></a><a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
+  const playAction = project.liveUrl ? `<a class="button button-primary" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>` : "";
+  const caseStudyAction = `<a class="button${project.liveUrl ? "" : " button-primary"}" href="/projects/${project.slug}/case-study/" aria-label="Read the ${escapeHtml(project.name)} case study">Case study <span aria-hidden="true">→</span></a>`;
+  const githubAction = `<a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`;
+  const primaryActions = `${playAction}${caseStudyAction}${githubAction}`;
   const body = `<main class="case-main showcase-main" id="main" tabindex="-1"><a class="crumb" href="/projects/">← Projects</a>
     <section class="showcase-hero"><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1><p>${escapeHtml(copy.tagline)}</p><div class="button-row">${primaryActions}</div></section>
     <div class="case-visual showcase-visual">${projectVisual(project)}</div>
     <section class="showcase-overview"><article><p class="kicker">What it is</p><h2>A complete working system.</h2><p>${escapeHtml(copy.what)}</p></article><article><p class="kicker">Why I built it</p><h2>The engineering question.</h2><p>${escapeHtml(copy.why)}</p></article></section>
     <section class="case-section"><div class="case-label">Engineering highlights</div><div><h2>What the project demonstrates.</h2><ul class="built-list">${copy.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="project-depth"><div><p class="kicker">Go deeper</p><h2>Overview first. Evidence when you want it.</h2></div><div><p>The case study explains the architecture, boundaries, tradeoffs, and current state. The running application and repository provide the proof.</p><div class="button-row"><a class="button button-primary" href="/projects/${project.slug}/case-study/">Read case study <span aria-hidden="true">→</span></a><a class="button" href="${liveHref}" target="_blank" rel="noopener noreferrer">${liveLabel} <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="project-depth"><div><p class="kicker">Go deeper</p><h2>Overview first. Evidence when you want it.</h2></div><div><p>The case study explains the architecture, boundaries, tradeoffs, and current state. The running application and repository provide the proof.</p><div class="button-row">${caseStudyAction}${playAction}${githubAction}</div></div></section>
   </main>`;
   return document({ title: `${project.name} — Project by Jacob Yongue`, description: `${copy.tagline} ${copy.what}`, path: `/projects/${project.slug}/`, current: "projects", body, build });
 }
@@ -683,6 +703,255 @@ function capabilityList(items) {
   return `<ul class="capability-cloud">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
+const WCAG_LEVELS = [
+  {
+    level: "A",
+    criteria: [
+      ["1.1.1", "Non-text Content", "Visual previews and informational images provide text alternatives or semantic data.", "met"],
+      ["1.2.1", "Audio-only and Video-only (Prerecorded)", "The portfolio publishes no prerecorded audio-only or video-only media.", "met"],
+      ["1.2.2", "Captions (Prerecorded)", "The portfolio publishes no prerecorded synchronized media that requires captions.", "met"],
+      ["1.2.3", "Audio Description or Media Alternative", "The portfolio publishes no prerecorded synchronized video requiring an alternative.", "met"],
+      ["1.3.1", "Info and Relationships", "Headings, landmarks, lists, tables, labels, and groups express the page structure.", "met"],
+      ["1.3.2", "Meaningful Sequence", "The source order preserves the intended reading and interaction sequence.", "met"],
+      ["1.3.3", "Sensory Characteristics", "Instructions and controls do not depend only on shape, position, or sound.", "met"],
+      ["1.4.1", "Use of Color", "Labels, text, patterns, and symbols accompany color-coded states.", "met"],
+      ["1.4.2", "Audio Control", "No audio starts automatically.", "met"],
+      ["2.1.1", "Keyboard", "Navigation, preferences, and links use native keyboard-operable controls.", "met"],
+      ["2.1.2", "No Keyboard Trap", "No component traps keyboard focus.", "met"],
+      ["2.2.1", "Timing Adjustable", "The portfolio sets no time limits for reading or interaction.", "met"],
+      ["2.2.2", "Pause, Stop, Hide", "Project motion has a persistent Play previews control that can pause animation.", "met"],
+      ["2.3.1", "Three Flashes or Below Threshold", "Preview motion stays below the three-flashes threshold.", "met"],
+      ["2.4.1", "Bypass Blocks", "Every page starts with a keyboard-visible skip link to main content.", "met"],
+      ["2.4.2", "Page Titled", "Every route has a descriptive page title.", "met"],
+      ["2.4.3", "Focus Order", "Keyboard focus follows the document and visual sequence.", "met"],
+      ["2.4.4", "Link Purpose (In Context)", "Links have clear visible context and descriptive accessible names.", "met"],
+      ["3.1.1", "Language of Page", "The document language is English by default and changes to Spanish with the language preference.", "met"],
+      ["3.2.1", "On Focus", "Moving focus does not trigger navigation or unexpected changes.", "met"],
+      ["3.2.2", "On Input", "Preference changes are immediate, reversible, and match their labels.", "met"],
+      ["3.3.1", "Error Identification", "The portfolio has no data-entry forms; native controls expose their state.", "met"],
+      ["3.3.2", "Labels or Instructions", "All preference controls have visible labels and grouped legends.", "met"],
+      ["4.1.1", "Parsing", "Generated pages use nested, closed, uniquely identified HTML structures.", "met"],
+      ["4.1.2", "Name, Role, Value", "Native controls and descriptive link names expose role, state, and purpose.", "met"]
+    ]
+  },
+  {
+    level: "AA",
+    criteria: [
+      ["1.2.4", "Captions (Live)", "The portfolio publishes no live synchronized media.", "met"],
+      ["1.2.5", "Audio Description (Prerecorded)", "The portfolio publishes no prerecorded video requiring audio description.", "met"],
+      ["1.4.3", "Contrast (Minimum)", "Text contrast is tested above the Level AA thresholds in both themes.", "met"],
+      ["1.4.4", "Resize Text", "The 200% text preference reflows without clipped text or horizontal page scrolling.", "met"],
+      ["1.4.5", "Images of Text", "Informational text is rendered as HTML rather than embedded in images.", "met"],
+      ["2.4.5", "Multiple Ways", "Primary navigation, page links, sitemap, and route index provide multiple paths.", "met"],
+      ["2.4.6", "Headings and Labels", "Headings and labels describe their section or control.", "met"],
+      ["2.4.7", "Focus Visible", "Keyboard focus uses a high-contrast three-pixel outline.", "met"],
+      ["3.1.2", "Language of Parts", "Spanish mode translates shared and core content, but remaining English technical passages still need explicit language marking.", "partial"],
+      ["3.2.3", "Consistent Navigation", "Shared navigation appears in the same relative order on every page.", "met"],
+      ["3.2.4", "Consistent Identification", "Repeated controls and destinations use consistent names and presentation.", "met"],
+      ["3.3.3", "Error Suggestion", "The portfolio does not collect user-entered data or produce correctable submission errors.", "met"],
+      ["3.3.4", "Error Prevention (Legal, Financial, Data)", "The portfolio performs no legal, financial, or stored-data submissions.", "met"]
+    ]
+  },
+  {
+    level: "AAA",
+    criteria: [
+      ["1.2.6", "Sign Language (Prerecorded)", "The portfolio publishes no prerecorded synchronized media.", "met"],
+      ["1.2.7", "Extended Audio Description", "The portfolio publishes no prerecorded video requiring extended description.", "met"],
+      ["1.2.8", "Media Alternative (Prerecorded)", "The portfolio publishes no prerecorded synchronized or video-only media.", "met"],
+      ["1.2.9", "Audio-only (Live)", "The portfolio publishes no live audio-only content.", "met"],
+      ["1.4.6", "Contrast (Enhanced)", "Normal and large text are tested against the Level AAA contrast thresholds in both themes.", "met"],
+      ["1.4.7", "Low or No Background Audio", "The portfolio publishes no speech audio with background sound.", "met"],
+      ["1.4.8", "Visual Presentation", "Theme, line length, spacing, and 200% text preferences support readable text blocks.", "met"],
+      ["1.4.9", "Images of Text (No Exception)", "Images of text are limited to essential brand marks; content text remains HTML.", "met"],
+      ["2.1.3", "Keyboard (No Exception)", "All portfolio functionality is available through native keyboard interaction.", "met"],
+      ["2.2.3", "No Timing", "No action or content depends on completing a timed interaction.", "met"],
+      ["2.2.4", "Interruptions", "The site presents no automatic interruptions or alerts.", "met"],
+      ["2.2.5", "Re-authenticating", "The portfolio has no authentication or expiring sessions.", "met"],
+      ["2.3.2", "Three Flashes", "Project preview motion remains below three flashes per second.", "met"],
+      ["2.4.8", "Location", "Current navigation state and detail-page breadcrumbs help, but every page does not yet show a breadcrumb trail.", "partial"],
+      ["2.4.9", "Link Purpose (Link Only)", "Compact labels retain project-specific, destination-specific accessible names.", "met"],
+      ["2.4.10", "Section Headings", "Long pages are divided with descriptive section headings.", "met"],
+      ["3.1.3", "Unusual Words", "The glossary explains major technical terms, but not every specialized phrase is linked at first use.", "partial"],
+      ["3.1.4", "Abbreviations", "Technical abbreviations are expanded at first use and collected in the glossary.", "met"],
+      ["3.1.5", "Reading Level", "Definitions and clearer copy help, but the professional and technical case studies remain advanced reading.", "partial"],
+      ["3.1.6", "Pronunciation", "The site does not yet provide pronunciation help for names or technical terms when pronunciation could clarify meaning.", "gap"],
+      ["3.2.5", "Change on Request", "Navigation and preference changes occur only after a user action.", "met"],
+      ["3.3.5", "Help", "Persistent contact, compliance, and glossary routes provide help without a data-entry workflow.", "met"],
+      ["3.3.6", "Error Prevention (All)", "The site has no stored submissions to confirm, reverse, or correct.", "met"]
+    ]
+  }
+];
+
+const WCAG_CLAUSE_IDS = {
+  "1.1.1": "text-equiv-all",
+  "1.2.1": "media-equiv-av-only-alt",
+  "1.2.2": "media-equiv-captions",
+  "1.2.3": "media-equiv-audio-desc",
+  "1.2.4": "media-equiv-real-time-captions",
+  "1.2.5": "media-equiv-audio-desc-only",
+  "1.2.6": "media-equiv-sign",
+  "1.2.7": "media-equiv-extended-ad",
+  "1.2.8": "media-equiv-text-doc",
+  "1.2.9": "media-equiv-live-audio-only",
+  "1.3.1": "content-structure-separation-programmatic",
+  "1.3.2": "content-structure-separation-sequence",
+  "1.3.3": "content-structure-separation-understanding",
+  "1.4.1": "visual-audio-contrast-without-color",
+  "1.4.2": "visual-audio-contrast-dis-audio",
+  "1.4.3": "visual-audio-contrast-contrast",
+  "1.4.4": "visual-audio-contrast-scale",
+  "1.4.5": "visual-audio-contrast-text-presentation",
+  "1.4.6": "visual-audio-contrast7",
+  "1.4.7": "visual-audio-contrast-noaudio",
+  "1.4.8": "visual-audio-contrast-visual-presentation",
+  "1.4.9": "visual-audio-contrast-text-images",
+  "2.1.1": "keyboard-operation-keyboard-operable",
+  "2.1.2": "keyboard-operation-trapping",
+  "2.1.3": "keyboard-operation-all-funcs",
+  "2.2.1": "time-limits-required-behaviors",
+  "2.2.2": "time-limits-pause",
+  "2.2.3": "time-limits-no-exceptions",
+  "2.2.4": "time-limits-postponed",
+  "2.2.5": "time-limits-server-timeout",
+  "2.3.1": "seizure-does-not-violate",
+  "2.3.2": "seizure-three-times",
+  "2.4.1": "navigation-mechanisms-skip",
+  "2.4.2": "navigation-mechanisms-title",
+  "2.4.3": "navigation-mechanisms-focus-order",
+  "2.4.4": "navigation-mechanisms-refs",
+  "2.4.5": "navigation-mechanisms-mult-loc",
+  "2.4.6": "navigation-mechanisms-descriptive",
+  "2.4.7": "navigation-mechanisms-focus-visible",
+  "2.4.8": "navigation-mechanisms-location",
+  "2.4.9": "navigation-mechanisms-link",
+  "2.4.10": "navigation-mechanisms-headings",
+  "3.1.1": "meaning-doc-lang-id",
+  "3.1.2": "meaning-other-lang-id",
+  "3.1.3": "meaning-idioms",
+  "3.1.4": "meaning-located",
+  "3.1.5": "meaning-supplements",
+  "3.1.6": "meaning-pronunciation",
+  "3.2.1": "consistent-behavior-receive-focus",
+  "3.2.2": "consistent-behavior-unpredictable-change",
+  "3.2.3": "consistent-behavior-consistent-locations",
+  "3.2.4": "consistent-behavior-consistent-functionality",
+  "3.2.5": "consistent-behavior-no-extreme-changes-context",
+  "3.3.1": "minimize-error-identified",
+  "3.3.2": "minimize-error-cues",
+  "3.3.3": "minimize-error-suggestions",
+  "3.3.4": "minimize-error-reversible",
+  "3.3.5": "minimize-error-context-help",
+  "3.3.6": "minimize-error-reversible-all",
+  "4.1.1": "ensure-compat-parses",
+  "4.1.2": "ensure-compat-rsv"
+};
+
+const PUBLIC_COMPLIANCE_DOC = "https://github.com/Wizard-Gang/WizardGang/blob/main/docs/COMPLIANCE.md";
+
+const ISO_STANDARDS = [
+  {
+    id: "iso-27001",
+    area: "Information security",
+    name: "ISO/IEC 27001:2022",
+    url: "https://www.iso.org/standard/27001",
+    criteria: [
+      ["4", "Context of the organization", "Scope, interested parties, system boundaries, and the information-security management system are publicly documented.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-4`],
+      ["5", "Leadership", "Ownership, policy, roles, and release accountability are assigned to Jacob Yongue.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-5`],
+      ["6", "Planning", "Security risks, treatment decisions, objectives, and applicable controls are recorded in the public compliance documentation.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-6`],
+      ["7", "Support", "Resources, communication, and document control are defined; recurring competence-review evidence remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-7`],
+      ["8", "Operation", "Automated checks, staged deployment, change review, reporting, and rollback form the operating process.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-8`],
+      ["9", "Performance evaluation", "Release checks are recorded, but a scheduled internal-audit and management-review history remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-9`],
+      ["10", "Improvement", "Issues can drive corrective changes, but a formal nonconformity and corrective-action history remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-clause-10`],
+      ["A", "Statement of applicability", "A portfolio-scoped Annex A applicability record is published and will be updated as the boundary changes.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-27001-annex-a`]
+    ]
+  },
+  {
+    id: "iso-42001",
+    area: "AI management",
+    name: "ISO/IEC 42001:2023",
+    url: "https://www.iso.org/standard/42001",
+    criteria: [
+      ["4", "Context of the organization", "AI-development scope, interested parties, intended use, and portfolio boundaries are publicly documented.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-4`],
+      ["5", "Leadership", "Human ownership, AI policy, approval authority, and accountability are assigned to Jacob Yongue.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-5`],
+      ["6", "Planning", "AI risks, impacts, objectives, and treatment decisions are recorded for the portfolio delivery process.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-6`],
+      ["7", "Support", "Source, prompts, tools, build records, and communication paths are defined; recurring competence-review evidence remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-7`],
+      ["8", "Operation", "Human review, automated verification, development deployment, approval, and rollback govern AI-produced changes.", "met", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-8`],
+      ["9", "Performance evaluation", "Build and release results are checked, but a scheduled AI-management audit and review history remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-9`],
+      ["10", "Improvement", "Defects and feedback lead to revisions, but a formal nonconformity and corrective-action history remains incomplete.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-clause-10`],
+      ["A", "Reference controls", "A portfolio-scoped AI control applicability record is published and will be updated with material AI-tool changes.", "partial", `${PUBLIC_COMPLIANCE_DOC}#iso-42001-annex-a`]
+    ]
+  }
+];
+
+const GLOSSARY = [
+    ["Artificial intelligence (AI)", "Software that can produce or analyze content from learned patterns. On this site, AI mainly describes how code was created or how a work system is used."],
+    ["Application programming interface (API)", "A defined way for two software systems to request information or actions from each other."],
+    ["Command-line interface (CLI)", "A program controlled by typed commands instead of on-screen buttons."],
+    ["Continuous integration and continuous delivery (CI/CD)", "Automated checks and release steps that help teams test and publish software safely."],
+    ["Data mapping", "Matching a field in one system, such as an order number, to the corresponding field in another system."],
+    ["Deterministic simulation", "A simulation that produces the same result whenever it starts with the same data and actions."],
+    ["Electronic data interchange (EDI)", "A standard way for businesses to exchange documents such as orders and shipping notices."],
+    ["Enterprise resource planning (ERP)", "Business software used to manage areas such as orders, finance, inventory, and purchasing."],
+    ["Extract, transform, and load (ETL)", "A process that reads data, reshapes or checks it, and writes it into another system."],
+    ["International Electrotechnical Commission (IEC)", "An organization that develops international standards for electrical, electronic, and related technologies."],
+    ["International Organization for Standardization (ISO)", "An organization that publishes international standards for management, technology, safety, and other fields."],
+    ["Quality assurance (QA)", "Planned checking used to find problems and confirm that software meets its requirements."],
+    ["Rollback architecture", "A game design that can restore an earlier state and calculate the same events again, which helps players stay synchronized online."],
+    ["R2 object storage", "A Cloudflare service used to store files and backup copies."],
+    ["System monitoring and observability", "Logs, measurements, and status information that help an operator understand what a running system is doing."],
+    ["Web Content Accessibility Guidelines (WCAG)", "A published set of testable requirements for making web content more accessible to people with disabilities."],
+    ["Warehouse management system (WMS)", "Software used to manage inventory and work inside a warehouse."],
+    ["Content addressing", "Identifying a file by a digital fingerprint made from its contents rather than only by its name or location."],
+    ["Billable cloud action", "An application action that uses a measured online service and can add to its operating cost."]
+];
+
+const statusLabel = (status) => ({ met: "✓ Met", partial: "◐ Partial", gap: "! Gap" })[status];
+
+function statusCounts(criteria) {
+  return criteria.reduce((result, criterion) => ({ ...result, [criterion[3]]: result[criterion[3]] + 1 }), { met: 0, partial: 0, gap: 0 });
+}
+
+function statusSummary(criteria) {
+  const counts = statusCounts(criteria);
+  return `<p class="compliance-counts"><span>✓ ${counts.met} met</span><span>◐ ${counts.partial} partial</span><span>! ${counts.gap} gap</span></p>`;
+}
+
+function checklistRows(criteria, className) {
+  return criteria.map(([number, title, description, status, reference]) => {
+    const content = `<span>${number}</span><strong>${escapeHtml(title)}</strong>`;
+    const criterion = reference
+      ? `<a class="criterion" href="${escapeHtml(reference)}" target="_blank" rel="noopener noreferrer">${content}<span class="sr-only"> — corresponding clause (opens in a new tab)</span></a>`
+      : `<div class="criterion">${content}</div>`;
+    return `<li class="compliance-item ${className}">${criterion}<p>${escapeHtml(description)}</p><span class="status status-${status}">${statusLabel(status)}</span></li>`;
+  }).join("");
+}
+
+function complianceLevel({ level, criteria }) {
+  const counts = criteria.reduce((result, criterion) => ({ ...result, [criterion[3]]: result[criterion[3]] + 1 }), { met: 0, partial: 0, gap: 0 });
+  const referencedCriteria = criteria.map((criterion) => [...criterion, `https://www.w3.org/TR/WCAG20/#${WCAG_CLAUSE_IDS[criterion[0]]}`]);
+  return `<section class="compliance-level" aria-labelledby="level-${level.toLowerCase()}"><header><div><p class="kicker">Level ${level}</p><h3 id="level-${level.toLowerCase()}">Level ${level}</h3></div><p class="compliance-counts"><span>✓ ${counts.met} met</span><span>◐ ${counts.partial} partial</span><span>! ${counts.gap} gap</span></p></header><ol class="compliance-list">${checklistRows(referencedCriteria, "wcag-item")}</ol></section>`;
+}
+
+function managementStandard({ id, area, name, url, criteria }) {
+  return `<section class="compliance-standard compliance-management" aria-labelledby="${id}"><header class="compliance-standard-heading"><div><p class="kicker">${escapeHtml(area)}</p><h2 id="${id}"><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)} <span aria-hidden="true">↗</span></a></h2></div>${statusSummary(criteria)}</header><ol class="compliance-list">${checklistRows(criteria, "iso-item")}</ol></section>`;
+}
+
+function compliance(build) {
+  const body = `<main class="case-main compliance-main" id="main" tabindex="-1">
+    <section class="compliance-heading"><p class="kicker">WizardGang</p><h1>Compliance.</h1><p>AI-developed. Human-reviewed. Public self-assessment—not certification.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">Report issue</a><a class="button" href="${PUBLIC_COMPLIANCE_DOC}" target="_blank" rel="noopener noreferrer">Public documentation <span aria-hidden="true">↗</span></a></div></section>
+    <section class="compliance-standard" aria-labelledby="wcag-2"><header class="compliance-standard-heading"><div><p class="kicker">Accessibility</p><h2 id="wcag-2"><a href="https://www.w3.org/TR/WCAG20/" target="_blank" rel="noopener noreferrer">WCAG 2.0 <span aria-hidden="true">↗</span></a></h2></div><p class="standard-levels">Level A · Level AA · Level AAA</p></header>${WCAG_LEVELS.map(complianceLevel).join("")}</section>
+    ${ISO_STANDARDS.map(managementStandard).join("")}
+    <section class="compliance-report" aria-labelledby="compliance-report-heading"><div><p class="kicker">Security + accessibility</p><h2 id="compliance-report-heading">Report an issue.</h2></div><div><p>Email <a href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">${CONTACT_EMAIL}</a> with the affected address and steps to reproduce it. Do not include passwords, private records, or destructive proof.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">Report issue</a></div></div></section>
+  </main>`;
+  return document({ title: "Compliance — WizardGang", description: "WizardGang public self-assessment against WCAG 2.0, ISO/IEC 27001:2022, and ISO/IEC 42001:2023 with Met, Partial, and Gap status.", path: "/compliance/", current: "compliance", body, build });
+}
+
+function glossary(build) {
+  const glossaryMarkup = GLOSSARY.map(([term, definition]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("");
+  const body = `<main class="case-main accessibility-main" id="main" tabindex="-1"><section class="page-hero"><p class="kicker">Glossary</p><h1>Technical terms.<br><span>Clear definitions.</span></h1><p>Definitions for the specialized language used throughout the portfolio.</p></section><section class="accessibility-section" id="glossary" aria-labelledby="glossary-heading"><div><p class="kicker">A–Z</p><h2 id="glossary-heading">Terms used on this site.</h2></div><dl class="glossary-list">${glossaryMarkup}</dl></section></main>`;
+  return document({ title: "Glossary — WizardGang", description: "Clear definitions for technical terms and abbreviations used throughout Jacob Yongue's software engineering portfolio.", path: "/glossary/", current: "glossary", body, build });
+}
+
 function notFound(build) {
   const body = `<main class="site-main" id="main" tabindex="-1"><section class="not-found"><p class="kicker">404 / Route not found</p><h1>Nothing here.</h1><p>Return to Jacob Yongue’s portfolio or inspect the project index.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects <span aria-hidden="true">→</span></a><a class="button" href="/">Home</a></div></section></main>`;
   return document({ title: "Not Found — WizardGang", description: "That WizardGang portfolio page does not exist.", path: "/404/", body, build, noindex: true });
@@ -697,6 +966,8 @@ export function createPages(build) {
     ["work/index.html", work(build)],
     ["services/index.html", services(build)],
     ["about/index.html", about(build)],
+    ["compliance/index.html", compliance(build)],
+    ["glossary/index.html", glossary(build)],
     ["404.html", notFound(build)]
   ]);
 }
