@@ -109,7 +109,7 @@ for (const requiredText of [
   "I build systems that deliver.",
   "Software engineer · Systems · Project delivery",
   "I design, build, integrate, and deliver software systems from requirements through production.",
-  "Selected projects", "Selected work", "Small-business websites, launched cleanly.", "Capabilities", "About"
+  "Selected projects", "Selected work", "Your website. Your code. Your infrastructure.", "Capabilities", "About"
 ]) {
   if (!home.includes(requiredText)) fail(`homepage missing ${requiredText}`);
 }
@@ -194,10 +194,13 @@ for (const retiredText of ["Education &amp; certification", "Clemson University"
 }
 
 const services = await readFile(resolve(dist, "services/index.html"), "utf8");
-for (const requiredText of ["Launch the site", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", 'href="/services/example/"']) {
+for (const requiredText of ["Launch the site", "Keep the keys", "The website is yours", "Your website. Your code. Your infrastructure.", "No required monthly hosting subscription for qualifying sites", "What drives what?", "Built to be handed over", "Add infrastructure when the business needs it", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", 'href="https://yourwebsite.wizardgang.ai/how-it-works/"']) {
   if (!services.includes(requiredText)) fail(`services page missing ${requiredText}`);
 }
 if (!services.includes('<span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span>')) fail("services desktop headline lines are not explicit");
+for (const forbiddenClaim of ["$0 hosting forever", "$0/month forever"]) {
+  if (services.includes(forbiddenClaim)) fail(`services page contains unqualified cost claim: ${forbiddenClaim}`);
+}
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
 for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]) {
