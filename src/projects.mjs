@@ -3,22 +3,22 @@ export const projects = [
     name: "SharkTank",
     slug: "sharktank",
     number: "01",
-    eyebrow: "Security & AI governance",
-    description: "An online shark game with public records for its security rules, bot limits, uptime, accessible interfaces, spending limit, incidents, and backups.",
-    tags: ["ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "WCAG 2.0 AA interfaces", "Live evidence", "Cost governance"],
+    eyebrow: "AI-developed multiplayer game",
+    description: "A live multiplayer shark game built entirely with AI-generated code, with billable cloud actions, accessible interfaces, and built-in security, cost, reliability, and operating controls.",
+    tags: ["Multiplayer game", "100% AI-developed", "ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "Built-in cost controls"],
     capabilities: ["ISO 27001", "ISO 42001", "WCAG", "Live Uptime", "Cost Governance"],
     liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
     sourceUrl: "https://github.com/Wizard-Gang/SharkTank",
-    problem: "Anyone can write a policy that says a service is secure. The hard part is showing what the service actually does. Shark Tank puts its rules, records, limits, and known problems next to a real online game so visitors can check them. It follows the structure of two ISO standards as a practice exercise; it is not certified.",
+    problem: "Shark Tank is a game first, but running it creates real responsibilities. Multiplayer actions use billable cloud resources, public input must be checked, changes must be tested, and the fully AI-generated code needs a clear management process. Those controls must protect the game without getting in the player's way.",
     built: [
-      "A public checklist covering 184 security and AI-governance requirements",
-      "Plain records showing which rules are complete, incomplete, handled by a supplier, or not relevant",
-      "Links from each supported claim to a live page or record from the running service",
-      "Public history for uptime, incidents, code changes, spending limits, backups, and recovery tests",
-      "Keyboard support, visible focus, screen-reader updates, zoom support, and reduced-motion options",
-      "Computer sharks that follow fixed rules with published limits and tests",
-      "Known gaps shown openly instead of being described as finished"
+      "A realtime multiplayer game where sharks eat food, dash through the tank, fire rockets, and compete for score",
+      "Metering for billable actions, with a hard spending limit that can pause costly activity",
+      "Built-in access checks, input validation, protected operator controls, status monitoring, and recovery tools",
+      "A development process for a codebase written entirely by AI",
+      "Policies mapped to ISO/IEC 27001 and ISO/IEC 42001, with each supported claim linked to evidence",
+      "Service records for releases, uptime, operator actions, resource use, backups, and recovery tests",
+      "Keyboard support, visible focus, screen-reader updates, zoom support, and reduced-motion options"
     ],
     architecture: [
       ["Browser", "Game surface and public trust routes"],
@@ -26,8 +26,8 @@ export const projects = [
       ["Durable Objects", "Rooms, state, sockets, logs, and receipts"],
       ["R2", "Daily state copies and restore evidence"]
     ],
-    engineering: "A written rule is not counted as proof by itself. Each supported claim links to a live page or record that shows what the service did. If proof is missing, the site records the limit instead of hiding it.",
-    result: "Shark Tank is a live practice project, not a certification. Before playing, visitors can see how it handles security, computer-controlled players, uptime, accessibility, spending limits, backups, and unfinished work."
+    engineering: "The controls are part of the same service as the game. New functionality goes through the same ISO-aligned rules for security, AI-generated code, change, cost, recovery, and evidence. The running service keeps the records that show those rules were followed.",
+    result: "Shark Tank is a playable multiplayer game built entirely with AI-generated code. It runs with ISO-aligned security and operating practices, limits its billable activity, documents its policies, and maintains evidence from the live service. It demonstrates alignment; it does not claim certification."
   },
   {
     name: "Hexframe",
