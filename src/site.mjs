@@ -89,11 +89,11 @@ function actions(project, compact = false) {
 }
 
 // Both product previews below are traced from the live apps rather than invented: the
-// Shark Tank mascot is the same path data the game rasterises for every skin, and the
-// Hexframe fighter is the shipped rig drawn at its idle pose. Colours are copied from
-// each product's own tokens, so a change there is visible here as a mismatch.
+// Shark Tank mascot and rocket are the same silhouettes the game rasterises, and the
+// Hexframe fighter is the shipped rig. Colours, damage and pushback are copied from the
+// products' own authored data, so a change there is visible here as a mismatch.
 function sharkTankVisual() {
-  return `<div class="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: the player's cyan shark among rivals in a live tank, with the points, rank and size readouts, the top sharks leaderboard, and the dash and rocket abilities">
+  return `<div class="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: rival sharks chase and eat food dots while the player's cyan shark chomp-dashes and fires a rocket across the live tank">
     <div class="tank-arena">
       <svg viewBox="0 0 800 470" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
         <defs>
@@ -111,14 +111,23 @@ function sharkTankVisual() {
             <path d="m126 69 5 10 6-8 6 8 5-11" fill="#fff" stroke="#070b14" stroke-width="2" stroke-linejoin="round"/>
             <circle cx="158" cy="48" r="3" fill="#070b14"/>
           </symbol>
+          <symbol id="tankRocket" viewBox="0 0 72 34">
+            <path d="M66 17 47 6H23L9 17l14 11h24Z" fill="#f3f1ff" stroke="#070b14" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M25 7 9 1l5 16L9 33l16-6" fill="#ff5a36" stroke="#070b14" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="47" cy="17" r="6" fill="#22e6ff" stroke="#070b14" stroke-width="3"/>
+          </symbol>
         </defs>
         <rect width="800" height="470" fill="#0b0a14"/>
         <rect width="800" height="470" fill="url(#tankSea)"/>
         <g stroke="#315468" stroke-opacity=".54" stroke-width="1">
           <path d="M96 0v470M226 0v470M356 0v470M486 0v470M616 0v470"/>
         </g>
-        <g class="tank-food">
+        <g class="tank-food" aria-hidden="true">
           <circle cx="196" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
+          <circle class="tank-food-eat tank-food-eat-a" cx="477" cy="176" r="4.2" fill="#ffd54a"/>
+          <circle class="tank-food-eat tank-food-eat-b" cx="297" cy="351" r="4.2" fill="#22e6ff"/>
+          <circle class="tank-food-eat tank-food-eat-c" cx="543" cy="376" r="5.2" fill="#ff8a1f"/>
+          <circle class="tank-food-eat tank-food-eat-you" cx="449" cy="241" r="4.6" fill="#ffd54a"/>
           <circle cx="243" cy="286" r="3.4" fill="#22e6ff" opacity=".8"/>
           <circle cx="404" cy="150" r="3.4" fill="#ffd54a" opacity=".8"/>
           <circle cx="470" cy="268" r="5" fill="#ff8a1f" opacity=".98"/>
@@ -127,8 +136,8 @@ function sharkTankVisual() {
           <circle cx="530" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
         </g>
         <g class="tank-fish tank-fish-a">
-          <use href="#tankShark" x="180" y="110" width="78" height="48" class="skin-gold"/>
-          <g class="tank-tag"><rect x="186" y="82" width="70" height="21" rx="6" fill="#ffe14d"/><text x="221" y="97">Chowder</text></g>
+          <use href="#tankShark" x="380" y="150" width="78" height="48" class="skin-gold"/>
+          <g class="tank-tag"><rect x="386" y="122" width="70" height="21" rx="6" fill="#ffe14d"/><text x="421" y="137">Chowder</text></g>
         </g>
         <g class="tank-fish tank-fish-b">
           <use href="#tankShark" x="196" y="330" width="70" height="43" class="skin-violet"/>
@@ -139,9 +148,34 @@ function sharkTankVisual() {
           <g class="tank-tag"><rect x="432" y="330" width="48" height="21" rx="6" fill="#ff8a1f"/><text x="456" y="345">Tide</text></g>
         </g>
         <g class="tank-fish tank-fish-you">
+          <g class="tank-dash-trail">
+            <circle cx="280" cy="244" r="10" fill="#22e6ff"/>
+            <circle cx="258" cy="248" r="7" fill="#fff"/>
+            <circle cx="239" cy="241" r="5" fill="#22e6ff"/>
+            <circle cx="224" cy="246" r="3.5" fill="#fff"/>
+          </g>
           <use href="#tankShark" x="286" y="212" width="106" height="65" class="skin-cyan"/>
           <g class="tank-tag"><rect x="284" y="178" width="110" height="23" rx="6" fill="#22e6ff"/><text x="339" y="194">Player (you)</text></g>
         </g>
+        <g class="tank-rocket-shot">
+          <g class="tank-rocket-flame">
+            <circle cx="-8" cy="17" r="7" fill="#ff5a36"/>
+            <circle cx="-20" cy="17" r="5" fill="#ffd54a"/>
+            <circle cx="-31" cy="17" r="3.5" fill="#ff5a36"/>
+          </g>
+          <use href="#tankRocket" width="72" height="34"/>
+        </g>
+        <g transform="translate(702 234)"><g class="tank-rocket-burst">
+          <circle cx="-23" cy="-5" r="6" fill="#ff5a36"/>
+          <circle cx="-13" cy="-19" r="5" fill="#ffd54a"/>
+          <circle cx="4" cy="-24" r="4" fill="#fff"/>
+          <circle cx="19" cy="-14" r="6" fill="#ff8a1f"/>
+          <circle cx="25" cy="4" r="5" fill="#ffd54a"/>
+          <circle cx="12" cy="20" r="6" fill="#ff5a36"/>
+          <circle cx="-7" cy="24" r="4" fill="#fff"/>
+          <circle cx="-22" cy="14" r="5" fill="#ff8a1f"/>
+          <circle r="10" fill="#fff"/>
+        </g></g>
       </svg>
     </div>
     <div class="tank-readout">
@@ -181,6 +215,8 @@ const LAB_TAKES = [
     hit: [4, 5],
     cancel: [5, 15],
     hitbox: { x: 26, y: 62, w: 44, h: 20 },
+    damage: 30,
+    pushback: 3,
     hurtboxes: [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]],
     keyTimes: "0;0.167;0.222;0.278;0.556;0.94;1",
     pelvis: null,
@@ -202,6 +238,8 @@ const LAB_TAKES = [
     hit: [4, 6],
     cancel: [6, 13],
     hitbox: { x: 22, y: 12, w: 42, h: 18 },
+    damage: 20,
+    pushback: 2.2,
     hurtboxes: [[-18, 0, 36, 34], [-18, 34, 36, 22], [-14, 56, 28, 20]],
     keyTimes: "0;0.25;0.375;1",
     pelvis: "0 -32;0 -30;0 -30.33;0 -32",
@@ -253,6 +291,22 @@ function labFighter(take) {
   return `<g><animateTransform attributeName="transform" type="translate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${take.pelvis}" keyTimes="${take.keyTimes}"/>${spine}</g>`;
 }
 
+function labDummy(take) {
+  const hurtboxes = [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]]
+    .map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
+  const idle = { bones: {}, still: {}, pelvis: null, keyTimes: "" };
+  const contactY = -(take.hitbox.y + take.hitbox.h / 2);
+  return `<g class="lab-dummy lab-dummy-${take.id}">
+      ${hurtboxes}
+      <g class="lab-dummy-body lab-dummy-body-${take.id}"><g transform="scale(-1 1)"><g class="fighter-p2">${labFighter(idle)}</g></g></g>
+    </g>
+    <g transform="translate(47 ${contactY})"><g class="lab-contact lab-contact-${take.id}">
+      <circle class="lab-contact-ring" r="9"/>
+      <path class="lab-contact-rays" d="M-16 0H16M0-16V16M-12-12 12 12M12-12-12 12"/>
+      <text class="lab-damage-number" y="-20" text-anchor="middle">${take.damage}</text>
+    </g></g>`;
+}
+
 // Boxes are authored with y measured up from the feet; the stage draws y downward.
 function labBox(x, y, w, h, className) {
   return `<rect class="${className}" x="${x}" y="${-(y + h)}" width="${w}" height="${h}"/>`;
@@ -264,7 +318,7 @@ function labTake(take) {
   const open = take.hit[0] / take.duration;
   const close = (take.hit[1] + 1) / take.duration;
   const hit = `<g opacity="0"><animate attributeName="opacity" dur="${LAB_LOOP}" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;${open.toFixed(3)};${close.toFixed(3)}"/>${labBox(x, y, w, h, "lab-hitbox")}</g>`;
-  return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}</g>`;
+  return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}${labDummy(take)}</g>`;
 }
 
 function labTimeline(take) {
@@ -295,11 +349,7 @@ function labTimeline(take) {
 }
 
 function hexframeVisual() {
-  const idle = { bones: {}, still: {}, pelvis: null, keyTimes: "" };
-  const dummyHurt = [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]]
-    .map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
-  const dummy = `<g transform="translate(34 0)">${dummyHurt}<g transform="scale(-1 1)"><g class="fighter-p2">${labFighter(idle)}</g></g></g>`;
-  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode cycling two authored attacks against the dummy, showing live hitboxes and hurtboxes over the stage and the startup, active, recovery and cancel windows on the move timeline">
+  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: two authored attacks deal 30 and 20 damage, produce impact sparks, reduce the dummy's health, and push the dummy backward in sync with the move timeline">
     <header class="lab-brand">
       <p class="lab-eyebrow">Hexframe / Training</p>
       <strong>Prime. Link. Cash out.</strong>
@@ -308,18 +358,17 @@ function hexframeVisual() {
     <div class="lab-stage">
       <div class="lab-hud">
         <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 STA</small></strong></div>
-        <div class="lab-player lab-player-right"><strong><b>1000</b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
+        <div class="lab-player lab-player-right"><strong><b class="lab-health-readout"><i class="lab-health-number lab-health-1000">1000</i><i class="lab-health-number lab-health-970">970</i><i class="lab-health-number lab-health-950">950</i></b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
       </div>
       <svg viewBox="-150 -125 300 158" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
         <rect x="-400" y="-125" width="800" height="158" fill="#080a0f"/>
         <rect x="-400" y="0" width="800" height="33" fill="#121219"/>
         <line x1="0" y1="-125" x2="0" y2="33" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
         <line x1="-400" y1="0" x2="400" y2="0" stroke="#484f58" stroke-width="2"/>
-        ${dummy}
         ${LAB_TAKES.map(labTake).join("")}
       </svg>
       <div class="lab-legend"><span class="lab-key lab-key-hurt">Hurtbox</span><span class="lab-key lab-key-hit">Hitbox</span></div>
-      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Active</span><strong>${take.key}</strong><em>${take.startup}f startup · ${take.active}f active · ${take.recovery}f recovery</em></div>`).join("")}
+      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Hit confirmed</span><strong>${take.key}</strong><em>${take.damage} damage · ${take.pushback} pushback · ${take.active}f active</em></div>`).join("")}
     </div>
     ${LAB_TAKES.map(labTimeline).join("")}
   </div>`;
@@ -438,16 +487,16 @@ function architecture(items) {
 
 const projectNarrative = {
   sharktank: {
-    tagline: "A running workload where governance can be inspected, not merely claimed.",
-    what: "A realtime multiplayer production workload used to demonstrate ISO/IEC 27001- and ISO/IEC 42001-aligned controls through live operational evidence, accessible interfaces, spend boundaries, controlled degradation, and maintained availability.",
-    why: "Compliance claims are easy to write and difficult to prove. SharkTank tests whether security, AI, reliability, accessibility, cost, and continuity requirements can stay concrete when attached to a real workload instead of a hypothetical company or slide deck.",
-    highlights: ["ISO/IEC 27001 and ISO/IEC 42001 alignment", "Live uptime, incident, change, recovery, and receipt evidence", "WCAG 2.0 AA support across the public and game interfaces", "Spend governance with a hard gate and safe degradation"]
+    tagline: "A multiplayer shark game built entirely with AI-generated code.",
+    what: "Players swim through a shared tank, eat food, dash forward, fire rockets, and compete for score. The live game also includes security checks, billable-action limits, status monitoring, backups, recovery tools, and public operating records.",
+    why: "Realtime gameplay uses cloud resources that cost money, accepts public input, and changes over time. Shark Tank was built to handle those everyday operating needs from the start while also governing a codebase produced entirely by AI.",
+    highlights: ["Realtime multiplayer shark gameplay", "A codebase written entirely by AI", "ISO/IEC 27001-aligned security and operating controls", "ISO/IEC 42001-aligned management of AI development", "Metered billable actions with a hard spending limit"]
   },
   hexframe: {
     tagline: "Fighting-game systems made deterministic and inspectable.",
     what: "A browser-based fighting-game system and engineering laboratory built around fixed-step combat, authored frame data, replayable state, rollback-ready boundaries, keyboard and gamepad parity, semantic menus, and accessible training tools.",
     why: "Fighting games compress hard engineering problems into a visible system: timing, input, simulation authority, animation, collision, debugging, accessibility, and tools all have to agree on what happened.",
-    highlights: ["Fixed 60 Hz integer simulation", "Replay and rollback contracts", "Training and debugging tools on the authoritative state model", "WCAG 2.0 AA support for menus, navigation, settings, and training interfaces"]
+    highlights: ["A playable stage with a practice dummy", "Pause-on-contact and frame-by-frame controls", "Hitbox, hurtbox, pushbox, and state inspection", "Saved positions and repeatable scenario replays", "Keyboard, gamepad, and accessible display settings"]
   },
   yarreader: {
     tagline: "A portable media library that works without a server.",
@@ -476,54 +525,54 @@ function projectShowcase(project, build) {
 
 function sharkTankCaseStudy(project, build) {
   const operatingControls = [
-    "Availability and service state exposed from the running system",
-    "Incident records with cause, impact, status, and closure",
-    "Change records tied to production behavior and evidence",
-    "Daily state copies with restore drills that read the stored copy",
-    "Usage metering and a hard spend gate for variable-cost traffic",
-    "Append-only operational receipts with integrity verification"
+    "Public input is checked before the game accepts it",
+    "Operator controls are protected and leave a record when they are used",
+    "Each release records what changed and how the result was checked",
+    "Daily backups are tested by restoring and reading the saved copy",
+    "The service reports its current status and calculates uptime from its own records",
+    "The service counts billable activity and stops costly actions at a hard limit"
   ];
-  const aiControls = [
-    "Defined AI-system purpose, scope, and operating boundary",
-    "Deterministic rule-based agents; no model, training-data, or inference dependency",
-    "Impact assessment that states what the system does and does not decide about people",
-    "Version-controlled behavior and change management",
-    "Monitoring through replayable, inspectable system state",
-    "Documented limitations and retained operator authority"
+  const aiDevelopmentControls = [
+    "The application code is 100% AI-generated",
+    "Policies describe how AI-produced changes are planned, checked, tested, and released",
+    "Security, cost, accessibility, recovery, and evidence requirements apply to AI-produced features",
+    "Tests and live records check the result instead of trusting generated code because it looks correct",
+    "Jacob owns the service, approves its operation, and remains responsible for its results"
   ];
   const accessibilityControls = [
-    "Complete keyboard operation for the public evidence surfaces and supported game controls",
-    "Visible focus, semantic landmarks, ordered headings, labelled controls, and skip navigation",
-    "Screen-reader status and error messages that update without stealing focus",
-    "Readable contrast, scalable presentation, and responsive layouts at browser zoom",
-    "Reduced-motion, high-contrast, font-scale, colour-label, caption, and steering-assist preferences"
+    "Public pages and supported game controls can be used with a keyboard",
+    "Visible focus shows where the user is, while clear headings, labels, and skip links make pages easier to navigate",
+    "Screen readers announce status changes and errors without moving the user's place",
+    "Text and layouts remain readable with browser zoom and stronger contrast",
+    "Options include reduced motion, larger text, color labels, captions, and steering help"
   ];
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/sharktank/">← SharkTank overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
-    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>Compliance claims are easy to write and difficult to prove.</h2><p>${escapeHtml(project.problem)}</p></div></section>
-    <section class="case-section"><div class="case-label">02 — Approach</div><div><h2>Use a real application as the governed workload.</h2><p>The game exercises identity, realtime state, change, incidents, continuity, resource consumption, accessibility, and deterministic agents. The management system around it defines how risk is decided, how controls operate, and how evidence survives contact with production.</p></div></section>
-    <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Security governance maps to production controls.</h2><p>Scope, risk treatment, access, suppliers, secure development, operations, incident response, recovery, and change management are mapped to the running service. Supplier, excluded, partial, and gap positions remain visible. This is an aligned readiness exercise, not certification.</p></div></section>
-    <section class="case-section"><div class="case-label">04 — ISO/IEC 42001</div><div><h2>AI purpose and limits are explicit.</h2><p>The computer-controlled sharks are deterministic and rule-based. Their intended use, impact boundary, operator authority, lifecycle, monitoring, transparency, and change control are governed without implying a model or inference dependency that does not exist.</p><ul class="built-list">${aiControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">05 — Reliability</div><div><h2>Uptime is evidence, not a frozen marketing number.</h2><p>The live dashboard derives availability from the complete incident record since project start. When that source supports 100%, the interface says <strong>100% uptime maintained</strong>; if the evidence changes, the displayed value changes with it.</p><ul class="built-list">${operatingControls.slice(0, 4).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">06 — Accessibility</div><div><h2>Accessibility is part of production governance.</h2><p>The validated public, menu, settings, and supported gameplay interfaces target <strong>WCAG 2.0 AA</strong>. The claim is scoped to those implemented interfaces and controls; it does not imply that every spatial visual interaction has an equivalent nonvisual experience.</p><ul class="built-list">${accessibilityControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">07 — Cost governance</div><div><h2>The workload has an explicit operating boundary.</h2><p>Resource use is metered against current limits and history. At the implemented hard threshold, variable-cost gameplay and public writes close while read-only evidence, status, security intake, and protected recovery paths remain available. Core accountability is preserved before normal operation resumes.</p>${architecture([
-      ["Normal", "Gameplay, writes, and evidence operate normally"],
-      ["Threshold reached", "The hard spend gate closes variable-cost traffic"],
-      ["Core protected", "Status, evidence, security intake, and recovery remain available"],
-      ["Recover", "An authenticated operator resets the measurement boundary and restores normal operation"]
+    <section class="case-section"><div class="case-label">01 — The game</div><div><h2>It starts with multiplayer gameplay.</h2><p>Players control sharks in a shared tank. They eat food, dash forward, fire rockets, and compete for score while the server keeps everyone in the same match. The security and operating features support that game; they are not the game itself.</p></div></section>
+    <section class="case-section"><div class="case-label">02 — The operating problem</div><div><h2>A live game uses real resources.</h2><p>${escapeHtml(project.problem)}</p><p>Shark Tank therefore includes the checks needed to run the game responsibly. They protect public input, control operator access, track billable activity, record changes, and provide a recovery path.</p></div></section>
+    <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Secure operation is built into the game.</h2><p><strong>ISO/IEC 27001</strong> provides principles for managing information security. Shark Tank applies those principles to every feature and to the way the live service is operated: access is controlled, input is checked, changes are tested, backups are verified, and important actions leave records. These are everyday safeguards, not a claim that a security incident has occurred.</p><ul class="built-list">${operatingControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">04 — ISO/IEC 42001</div><div><h2>The AI story is how the game was developed.</h2><p><strong>ISO/IEC 42001</strong> applies here because the codebase was developed entirely with AI-generated code. It guides how that development is managed: what AI is used for, how its output is checked, who remains responsible, and what evidence is kept.</p><ul class="built-list">${aiDevelopmentControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">05 — Owner-run operations</div><div><h2>Controls help the owner run the service.</h2><p>Jacob operates Shark Tank. If a real incident occurs, he reports it, investigates it, resolves it, and closes the record. Built-in checks and status pages help him see what the service is doing and respond when action is needed.</p></div></section>
+    <section class="case-section"><div class="case-label">06 — Reliability</div><div><h2>Uptime comes from the service record.</h2><p>The site calculates availability from the records kept since the project started. When those records support it, the page says <strong>100% uptime maintained</strong>. If the record changes, the displayed number changes too.</p></div></section>
+    <section class="case-section"><div class="case-label">07 — Billable actions</div><div><h2>Gameplay has a spending limit.</h2><p>Joining a tank, running a live room, steering, dashing, and saving records all use metered cloud resources. The service measures that activity while the game runs. At the hard spending limit, it pauses gameplay and other actions that could add cost. Status, evidence, and recovery pages remain available so Jacob can review the situation before restarting normal play.</p>${architecture([
+      ["Normal", "The game, updates, and public records work normally"],
+      ["Measure", "The service counts billable activity as it happens"],
+      ["Limit reached", "Gameplay and other costly actions pause"],
+      ["Review and restart", "Status and recovery stay available to the owner"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">08 — Evidence architecture</div><div><h2>Requirement → control → implementation → live evidence → operational record.</h2><p>Policies and control descriptions are not treated as proof by themselves. Each supported position resolves into a running route, operational record, or explicit limitation.</p>${architecture([
-      ["Requirement", "State the governed outcome and boundary"],
-      ["Control", "Choose the technical or operational response"],
-      ["Implementation", "Make the response part of the workload"],
-      ["Live evidence", "Expose the current result and retained operational record"]
+    <section class="case-section"><div class="case-label">08 — Policies and evidence</div><div><h2>The rules and their results stay together.</h2><p>Shark Tank documents its policies against ISO/IEC 27001 and ISO/IEC 42001. The same service keeps evidence for the controls it operates, including changes, uptime, billable activity, operator actions, backups, and recovery checks. This makes it possible to compare a written policy with what the game actually did.</p>${architecture([
+      ["Policy", "State the rule and the ISO requirement it supports"],
+      ["Game control", "Build the rule into the service or its operating process"],
+      ["Check", "Test that the control behaves as intended"],
+      ["Evidence", "Keep the live result or operating record"]
     ])}</div></section>
-    <section class="case-section"><div class="case-label">09 — Architecture</div><div><h2>Clear boundaries keep the evidence trustworthy.</h2>${architecture(project.architecture)}<p>Workers own routing, validation, policy, and public evidence; Durable Objects own realtime state and receipts; R2 holds independent state copies read by recovery drills.</p></div></section>
-    <section class="case-section"><div class="case-label">10 — Result</div><div><h2>A running system whose governance can be inspected.</h2><p>${escapeHtml(project.result)}</p><p>The result is a production workload where security governance, AI governance, reliability, accessibility, cost, continuity, and operational evidence can be checked rather than merely claimed.</p>${actions(project)}</div></section>
+    <section class="case-section"><div class="case-label">09 — Accessibility</div><div><h2>More people can use the site and its controls.</h2><p><strong>WCAG 2.0 AA</strong> is a common set of web-accessibility rules. Shark Tank's public pages, menus, settings, and supported game controls are tested against those rules. This does not mean every visual action in the game has a matching nonvisual version; the claim covers the listed screens and controls.</p><ul class="built-list">${accessibilityControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">10 — Architecture</div><div><h2>Each service has one job.</h2>${architecture(project.architecture)}<p>The browser shows the game and public records. The Worker checks requests and serves those pages. Durable Objects keep live matches, logs, and operator records. R2 stores separate backup copies for recovery tests.</p></div></section>
+    <section class="case-section"><div class="case-label">11 — Result</div><div><h2>A game first, with its controls built in.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
   return document({
-    title: "SharkTank — ISO 27001 & ISO 42001 Governance Case Study | WizardGang",
+    title: "SharkTank — AI-Developed Multiplayer Game Case Study | WizardGang",
     description: project.description,
     path: "/projects/sharktank/case-study/",
     current: "projects",
@@ -538,17 +587,23 @@ function projectCaseStudy(project, build) {
   const title = project.slug === "hexframe"
     ? "Hexframe — Deterministic Fighting Game Systems | WizardGang"
     : "YarReader — Portable Media Pipeline | WizardGang";
-  const accessibility = project.slug === "hexframe" ? `<section class="case-section"><div class="case-label">05 — Accessibility</div><div><h2>Accessibility shapes the application architecture.</h2><p>Hexframe’s menus, navigation, settings, lab, and supported game controls target <strong>WCAG 2.0 AA</strong>. Keyboard and gamepad input share the same action model; modal focus is trapped and restored; tab interfaces use managed focus; status and combat feedback have semantic output; and pointer-only actions have keyboard alternatives.</p><ul class="built-list"><li>Complete keyboard operation across menus, training, loadouts, settings, and supported combat controls</li><li>Visible and optional stronger focus states, semantic tabs and dialogs, and predictable focus restoration</li><li>Scalable text, high-contrast and colour-vision modes, status patterns, captions, and screen-reader combat output</li><li>System-aware and explicit reduced-motion settings that remove nonessential motion</li><li>Accessible training and lab controls with labelled frame, move, loadout, and status feedback</li></ul><p>The claim is precise: the implemented interface and control surfaces are covered. It does not claim that every spatial visual fighting-game interaction has a fully equivalent nonvisual experience.</p></div></section>` : "";
+  const accessibility = project.slug === "hexframe" ? `<section class="case-section"><div class="case-label">05 — Accessibility</div><div><h2>The lab supports different controls and display needs.</h2><p>Hexframe's menus and training tools target <strong>WCAG 2.0 AA</strong>. The lab works with a keyboard or gamepad, always shows which control has focus, and can announce important combat updates to a screen reader. Players can also change text size, contrast, color labels, and motion.</p><ul class="built-list"><li>Keyboard and gamepad controls for the training lab and menus</li><li>Clear focus when moving through buttons, tabs, and dialogs</li><li>Larger text, stronger contrast, and color-vision settings</li><li>Reduced motion and reduced combat flashes</li><li>Screen-reader messages for important status and combat changes</li></ul><p>The claim covers these menus, tools, settings, and supported controls. It does not claim a complete nonvisual replacement for the spatial fight itself.</p></div></section>` : "";
   const resultNumber = project.slug === "hexframe" ? "06" : "05";
+  const engineeringHeading = project.slug === "hexframe"
+    ? "Graphics show the fight; game rules decide it."
+    : "Do the hard work before the reader opens.";
+  const resultHeading = project.slug === "hexframe"
+    ? "A playable foundation that can grow."
+    : "A library that can recover and be rebuilt.";
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/${project.slug}/">← ${escapeHtml(project.name)} overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
     <div class="case-visual">${projectVisual(project)}</div>
-    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>The constraint that shapes the system.</h2><p>${escapeHtml(project.problem)}</p></div></section>
-    <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>A complete path, not an isolated component.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
-    <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Explicit ownership at every boundary.</h2>${architecture(project.architecture)}</div></section>
-    <section class="case-section"><div class="case-label">04 — Interesting engineering</div><div><h2>The part worth looking at twice.</h2><p>${escapeHtml(project.engineering)}</p></div></section>
+    <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>${project.slug === "hexframe" ? "Make every feature agree on what happened." : "Protect the library while rebuilding it."}</h2><p>${escapeHtml(project.problem)}</p></div></section>
+    <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>What the project does.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
+    <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Each part has one job.</h2>${architecture(project.architecture)}</div></section>
+    <section class="case-section"><div class="case-label">04 — Key design choice</div><div><h2>${engineeringHeading}</h2><p>${escapeHtml(project.engineering)}</p></div></section>
     ${accessibility}
-    <section class="case-section"><div class="case-label">${resultNumber} — Result / current state</div><div><h2>What exists now.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
+    <section class="case-section"><div class="case-label">${resultNumber} — What works today</div><div><h2>${resultHeading}</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
   return document({ title, description: project.description, path: `/projects/${project.slug}/case-study/`, current: "projects", body, build });
 }

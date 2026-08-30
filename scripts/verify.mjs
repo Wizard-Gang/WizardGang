@@ -138,18 +138,38 @@ for (const [slug, source] of expectedSources) {
 }
 
 const sharkCase = await readFile(resolve(dist, "projects/sharktank/case-study/index.html"), "utf8");
-for (const text of ["ISO/IEC 27001", "ISO/IEC 42001", "100% uptime maintained", "WCAG 2.0 AA", "Cost governance", "Requirement → control → implementation → live evidence → operational record"]) {
+for (const text of ["It starts with multiplayer gameplay", "ISO/IEC 27001", "ISO/IEC 42001", "The application code is 100% AI-generated", "100% uptime maintained", "Billable actions", "Policies and evidence", "WCAG 2.0 AA", "Jacob operates Shark Tank"]) {
   if (!sharkCase.includes(text)) fail(`SharkTank case study missing ${text}`);
 }
+for (const text of ["These sharks follow rules, not a trained AI model", "Computer sharks exist only to fill empty seats", "computer-controlled sharks are ordinary game logic", "The policies and evidence explain how the game is developed and operated", "incidents can happen"]) {
+  if (sharkCase.includes(text)) fail(`SharkTank case study still contains the retired framing: ${text}`);
+}
 const hexCase = await readFile(resolve(dist, "projects/hexframe/case-study/index.html"), "utf8");
-for (const text of ["Accessibility shapes the application architecture", "WCAG 2.0 AA", "Complete keyboard operation", "reduced-motion", "focus restoration"]) {
+for (const text of ["Make every feature agree on what happened", "A playable training stage with one fighter and one practice dummy", "Freeze automatically when a hit connects", "Graphics show the fight; game rules decide it", "The lab supports different controls and display needs", "WCAG 2.0 AA", "Keyboard and gamepad controls", "Reduced motion", "Screen-reader messages"]) {
   if (!hexCase.includes(text)) fail(`Hexframe case study missing ${text}`);
+}
+const yarCase = await readFile(resolve(dist, "projects/yarreader/case-study/index.html"), "utf8");
+for (const text of ["Each part has one job", "Do the hard work before the reader opens", "A library that can recover and be rebuilt", "digital fingerprint"]) {
+  if (!yarCase.includes(text)) fail(`YarReader case study missing ${text}`);
+}
+for (const phrase of ["A complete path, not an isolated component", "Explicit ownership at every boundary", "The part worth looking at twice", "What exists now"] ) {
+  if (hexCase.includes(phrase) || yarCase.includes(phrase)) fail(`technical case studies still contain dense placeholder heading: ${phrase}`);
 }
 
 const yarOverview = await readFile(resolve(dist, "projects/yarreader/index.html"), "utf8");
+const projectsOverview = await readFile(resolve(dist, "projects/index.html"), "utf8");
 const styles = await readFile(resolve(dist, "assets/styles.css"), "utf8");
 if (!yarOverview.includes('data-fixture="synthetic"') || !yarOverview.includes("Original demo artwork") || !styles.includes('url("/yarreader-library-art.jpg")')) {
   fail("YarReader overview must use and identify original fictional demo artwork");
+}
+for (const marker of ["tank-food-eat-a", "tank-food-eat-b", "tank-food-eat-c", "tank-dash-trail", "tank-rocket-shot", "tank-rocket-burst"]) {
+  if (!projectsOverview.includes(marker)) fail(`SharkTank project card is missing gameplay marker ${marker}`);
+}
+for (const marker of ["lab-dummy-a", "lab-dummy-b", "lab-contact-a", "lab-contact-b", "lab-health-970", "lab-health-950", ">30</text>", ">20</text>"]) {
+  if (!projectsOverview.includes(marker)) fail(`Hexframe project card is missing combat marker ${marker}`);
+}
+for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-player-gameplay", "tank-rocket-flight", "lab-dummy-a", "lab-dummy-b", "lab-dummy-health"]) {
+  if (!styles.includes(`@keyframes ${animation}`)) fail(`project card gameplay is missing ${animation} animation`);
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");
