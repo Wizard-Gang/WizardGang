@@ -11,13 +11,13 @@ export const professionalRoles = [
   {
     organization: "Supply Chain Technologies",
     role: "Consultant / Technical Lead",
-    dates: "Oct 2024 - Apr 2026",
+    dates: "Sep 2024 - Apr 2026",
     summary: "Led distributed delivery across enterprise WMS implementations, integrations, releases, and production support."
   },
   {
     organization: "Spartan Technology Solutions",
     role: "Lead Developer",
-    dates: "Nov 2023 - Sep 2024",
+    dates: "Jun 2023 - Aug 2024",
     summary: "Led .NET case-management delivery, CI/CD, production support, and migration planning for public-sector systems."
   },
   {

@@ -8,6 +8,8 @@ export const PERMANENT_REDIRECTS = new Map([
   ["/resume/", "/work/"],
   ["/professional", "/work/"],
   ["/professional/", "/work/"],
+  ["/services/example", "https://yourwebsite.wizardgang.ai/"],
+  ["/services/example/", "https://yourwebsite.wizardgang.ai/"],
   ["/work/shadowmoney", "/projects/hexframe/"],
   ["/work/shadowmoney/", "/projects/hexframe/"],
   ["/work/hexframe", "/projects/hexframe/"],
