@@ -1744,5 +1744,11 @@ h1 span { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   .tank-fish,
   .tank-food,
+  .lab-playhead,
   .lab-idle { animation: none; }
+
+  /* The two takes cross-fade on a shared cycle; with the animation stopped they would
+     both be opaque and stack, so hold the first take as a still frame instead. */
+  .lab-take-a { animation: none; opacity: 1; }
+  .lab-take-b { display: none; }
 }

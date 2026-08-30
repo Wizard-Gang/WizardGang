@@ -23,8 +23,8 @@ export const professionalRoles = [
   {
     organization: "Independent venture",
     role: "Founder / operator",
-    dates: "Aug 2023 - Nov 2024",
-    summary: "Operated two seasonal rental cycles across licensing, bookings, guest service, compliance, and closeout."
+    dates: "Aug 2023 - Current",
+    summary: "Run a seasonal short-term rental every year, owning licensing, pricing, bookings, guest service, compliance, and closeout."
   },
   {
     organization: "FastFetch Corp",
