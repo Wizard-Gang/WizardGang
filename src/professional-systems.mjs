@@ -92,6 +92,10 @@ export const integrationGroups = [
       ["Jira", "https://www.atlassian.com/software/jira"],
       ["Zapier", "https://zapier.com/"]
     ]
+  },
+  {
+    title: "Justice & Legal",
+    items: ["Axon", "LexisNexis"]
   }
 ].map((group) => ({
   ...group,
