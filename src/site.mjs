@@ -6,6 +6,29 @@ const SITE_ORIGIN = "https://wizardgang.ai";
 const GITHUB = "https://github.com/Wizard-Gang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacobyongue@outlook.com";
+const WEBSITE_PACKAGES = [
+  {
+    name: "Starter",
+    price: "$95",
+    pages: "Up to 3 pages",
+    description: "A focused site for a small business that needs a credible home, clear services, and a direct contact path.",
+    features: ["Responsive design", "Home, services, and contact routes", "Direct email and contact details", "Owner-controlled source and deployment"]
+  },
+  {
+    name: "Business",
+    price: "$195",
+    pages: "Up to 5 pages",
+    description: "A broader business site with room to show the work, establish trust, and collect useful customer inquiries.",
+    features: ["Everything in Starter", "Gallery and testimonial sections", "Service-area content", "First-party contact form"]
+  },
+  {
+    name: "Owner+",
+    price: "$350",
+    pages: "Up to 8 pages",
+    description: "A complete site with dedicated pages, stored contact requests, and documentation for future maintenance.",
+    features: ["Everything in Business", "FAQ and expanded content routes", "Stored contact submissions", "AI-ready documentation and automated deployment"]
+  }
+];
 
 const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (character) => ({
   "&": "&amp;",
@@ -21,7 +44,7 @@ function header(current = "") {
     ["services", "/services/", "Services"],
     ["about", "/about/", "About"]
   ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
-  const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>`;
+  const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a>`;
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Jacob Yongue portfolio home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>JACOB YONGUE</strong><small>wizardgang.ai</small></span></a>
@@ -451,11 +474,16 @@ function capabilityGrid() {
   return `<div class="capability-grid">${items.map(([number, title, copy]) => `<article><small>${number}</small><h3>${title}</h3><p>${copy}</p></article>`).join("")}</div>`;
 }
 
+function homeServices() {
+  return `<div class="service-package-grid">${WEBSITE_PACKAGES.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p></article>`).join("")}</div>`;
+}
+
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that deliver.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects <span aria-hidden="true">→</span></a><a class="button" href="/services/">Services</a><a class="button" href="/work/">Work</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="hero jacob-hero"><div class="home-statement-card"><h2>I build systems that deliver.</h2></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, integrate, and deliver software systems from requirements through production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer">GitHub</a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
+    <section class="portfolio-section selected-services" aria-labelledby="selected-services-heading"><div class="section-heading"><div><p class="kicker">Services</p><h2 id="selected-services-heading">Small-business websites, launched cleanly.</h2></div><a class="text-link" href="/services/">View services <span aria-hidden="true">→</span></a></div>${homeServices()}</section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
     <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
@@ -482,32 +510,9 @@ function work(build) {
 }
 
 function services(build) {
-  const packages = [
-    {
-      name: "Starter",
-      price: "$95",
-      pages: "Up to 3 pages",
-      description: "A focused site for a small business that needs a credible home, clear services, and a direct contact path.",
-      features: ["Responsive design", "Home, services, and contact routes", "Direct email and contact details", "Owner-controlled source and deployment"]
-    },
-    {
-      name: "Business",
-      price: "$195",
-      pages: "Up to 5 pages",
-      description: "A broader business site with room to show the work, establish trust, and collect useful customer inquiries.",
-      features: ["Everything in Starter", "Gallery and testimonial sections", "Service-area content", "First-party contact form"]
-    },
-    {
-      name: "Owner+",
-      price: "$350",
-      pages: "Up to 8 pages",
-      description: "A complete site with dedicated pages, stored contact requests, and documentation for future maintenance.",
-      features: ["Everything in Business", "FAQ and expanded content routes", "Stored contact submissions", "AI-ready documentation and automated deployment"]
-    }
-  ];
-  const packageCards = packages.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p><ul>${item.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul></article>`).join("");
+  const packageCards = WEBSITE_PACKAGES.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p><ul>${item.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul></article>`).join("");
   const body = `<main class="case-main services-main" id="main" tabindex="-1">
-    <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1>Launch the site.<br><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>Fixed-scope website packages for small businesses that need a clean launch without giving up ownership of their source, domain, or deployment.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a><a class="button" href="/services/example/">View the Owner+ example <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1><span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>Fixed-scope website packages for small businesses that need a clean launch without giving up ownership of their source, domain, or deployment.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a><a class="button" href="/services/example/">View the Owner+ example <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="service-packages" aria-labelledby="packages-heading"><header><div><p class="kicker">Website packages</p><h2 id="packages-heading">Choose the scope that fits.</h2></div><p>Each package uses the same responsive, config-driven foundation. The difference is how many routes and customer-facing features the site includes.</p></header><div class="service-package-grid">${packageCards}</div></section>
     <section class="service-process" aria-labelledby="process-heading"><header><div><p class="kicker">Delivery</p><h2 id="process-heading">From business details to a working site.</h2></div><p>You provide the business information, brand direction, approved copy, images, and domain access. I configure, test, deploy, and hand over the working site.</p></header><div class="service-process-grid"><article><span>01</span><h3>Define the site</h3><p>Confirm the package, pages, content, visual direction, and contact path.</p></article><article><span>02</span><h3>Build and check</h3><p>Configure the site, test its routes and forms, and prepare the production domain.</p></article><article><span>03</span><h3>Deploy and hand over</h3><p>Publish the site and leave the source, configuration, and deployment under your control.</p></article></div></section>
     <section class="service-notes"><div><p class="kicker">Scope</p><h2>Clear package boundaries.</h2></div><p>Domain purchases, paid third-party services, custom application features, ecommerce, and large copy or content migrations are quoted separately before work begins.</p></section>
