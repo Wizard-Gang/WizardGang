@@ -147,9 +147,19 @@ for (const text of ["Accessibility shapes the application architecture", "WCAG 2
 }
 
 const yarOverview = await readFile(resolve(dist, "projects/yarreader/index.html"), "utf8");
+const projectsOverview = await readFile(resolve(dist, "projects/index.html"), "utf8");
 const styles = await readFile(resolve(dist, "assets/styles.css"), "utf8");
 if (!yarOverview.includes('data-fixture="synthetic"') || !yarOverview.includes("Original demo artwork") || !styles.includes('url("/yarreader-library-art.jpg")')) {
   fail("YarReader overview must use and identify original fictional demo artwork");
+}
+for (const marker of ["tank-food-eat-a", "tank-food-eat-b", "tank-food-eat-c", "tank-dash-trail", "tank-rocket-shot", "tank-rocket-burst"]) {
+  if (!projectsOverview.includes(marker)) fail(`SharkTank project card is missing gameplay marker ${marker}`);
+}
+for (const marker of ["lab-dummy-a", "lab-dummy-b", "lab-contact-a", "lab-contact-b", "lab-health-970", "lab-health-950", ">30</text>", ">20</text>"]) {
+  if (!projectsOverview.includes(marker)) fail(`Hexframe project card is missing combat marker ${marker}`);
+}
+for (const animation of ["tank-feed-a", "tank-feed-b", "tank-feed-c", "tank-player-gameplay", "tank-rocket-flight", "lab-dummy-a", "lab-dummy-b", "lab-dummy-health"]) {
+  if (!styles.includes(`@keyframes ${animation}`)) fail(`project card gameplay is missing ${animation} animation`);
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");

@@ -1129,36 +1129,116 @@ h1 span { color: var(--muted); }
 .tank-dash { background: #6557d7; }
 .tank-rocket { background: #cc3f20; }
 
-.tank-fish { transform-box: view-box; }
-.tank-fish-you { animation: tank-you 6s ease-in-out infinite alternate; }
-.tank-fish-a { animation: tank-a 9s ease-in-out infinite alternate; }
-.tank-fish-b { animation: tank-b 11s ease-in-out infinite alternate; }
-.tank-fish-c { animation: tank-c 8s ease-in-out infinite alternate; }
-.tank-food { animation: tank-food 1.6s ease-in-out infinite alternate; }
-
-@keyframes tank-you {
-  from { transform: translate(-26px, 14px); }
-  to { transform: translate(26px, -14px); }
+.tank-fish,
+.tank-rocket-shot {
+  transform-box: view-box;
 }
 
-@keyframes tank-a {
-  from { transform: translate(-34px, 0); }
-  to { transform: translate(96px, 18px); }
+.tank-food-eat,
+.tank-rocket-burst,
+.tank-dash-trail,
+.tank-rocket-flame {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
-@keyframes tank-b {
-  from { transform: translate(-24px, 18px); }
-  to { transform: translate(104px, -24px); }
+/* One shared eight-second match loop keeps every bite, dash, projectile and ability
+   flash legible as cause and effect instead of unrelated decorative motion. */
+.tank-fish-a { animation: tank-feed-a 8s ease-in-out infinite; }
+.tank-fish-b { animation: tank-feed-b 8s ease-in-out infinite; }
+.tank-fish-c { animation: tank-feed-c 8s ease-in-out infinite; }
+.tank-fish-you { animation: tank-player-gameplay 8s ease-in-out infinite; }
+.tank-dash-trail { animation: tank-dash-trail 8s ease-out infinite; opacity: 0; }
+.tank-food-eat { transform-origin: center; }
+.tank-food-eat-a { animation: tank-food-a 8s step-end infinite; }
+.tank-food-eat-b { animation: tank-food-b 8s step-end infinite; }
+.tank-food-eat-c { animation: tank-food-c 8s step-end infinite; }
+.tank-food-eat-you { animation: tank-food-you 8s step-end infinite; }
+.tank-rocket-shot { animation: tank-rocket-flight 8s linear infinite; opacity: 0; }
+.tank-rocket-flame { animation: tank-rocket-flame .16s ease-in-out infinite alternate; transform-origin: right center; }
+.tank-rocket-burst { animation: tank-rocket-impact 8s ease-out infinite; opacity: 0; transform-origin: center; }
+.tank-dash { animation: tank-dash-control 8s ease-out infinite; }
+.tank-rocket { animation: tank-rocket-control 8s ease-out infinite; }
+
+@keyframes tank-feed-a {
+  0% { transform: translate(-22px, 0); }
+  12% { transform: translate(-8px, 0); }
+  18% { transform: translate(22px, 0) scale(1.05, 1); }
+  26% { transform: translate(31px, -4px); }
+  48% { transform: translate(58px, 9px); }
+  72% { transform: translate(20px, 16px); }
+  100% { transform: translate(-22px, 0); }
 }
 
-@keyframes tank-c {
-  from { transform: translate(52px, 10px); }
-  to { transform: translate(-84px, -16px); }
+@keyframes tank-feed-b {
+  0% { transform: translate(-18px, 12px); }
+  34% { transform: translate(-8px, 8px); }
+  43% { transform: translate(35px, 0) scale(1.05, 1); }
+  52% { transform: translate(44px, -4px); }
+  73% { transform: translate(70px, -15px); }
+  100% { transform: translate(-18px, 12px); }
 }
 
-@keyframes tank-food {
-  from { opacity: .55; }
-  to { opacity: 1; }
+@keyframes tank-feed-c {
+  0% { transform: translate(30px, 6px); }
+  54% { transform: translate(10px, 3px); }
+  69% { transform: translate(57px, 0) scale(1.06, 1); }
+  78% { transform: translate(65px, -3px); }
+  91% { transform: translate(20px, 8px); }
+  100% { transform: translate(30px, 6px); }
+}
+
+@keyframes tank-player-gameplay {
+  0% { transform: translate(-28px, 14px); }
+  14% { transform: translate(-20px, 8px); }
+  18% { transform: translate(-18px, 8px) scale(1, 1); }
+  25% { transform: translate(62px, -6px) scale(1.09, .96); }
+  32% { transform: translate(70px, -6px); }
+  45% { transform: translate(38px, -14px); }
+  58% { transform: translate(40px, -14px); }
+  74% { transform: translate(44px, 16px); }
+  100% { transform: translate(-28px, 14px); }
+}
+
+@keyframes tank-dash-trail {
+  0%, 17%, 31%, 100% { opacity: 0; transform: translateX(0) scale(.7); }
+  20% { opacity: .75; transform: translateX(-6px) scale(.9); }
+  25% { opacity: .95; transform: translateX(-18px) scale(1.08); }
+  29% { opacity: .25; transform: translateX(-34px) scale(.8); }
+}
+
+@keyframes tank-food-a { 0%, 17%, 88%, 100% { opacity: 1; } 18%, 87% { opacity: 0; } }
+@keyframes tank-food-b { 0%, 42%, 91%, 100% { opacity: 1; } 43%, 90% { opacity: 0; } }
+@keyframes tank-food-c { 0%, 68%, 96%, 100% { opacity: 1; } 69%, 95% { opacity: 0; } }
+@keyframes tank-food-you { 0%, 23%, 90%, 100% { opacity: 1; } 24%, 89% { opacity: 0; } }
+
+@keyframes tank-rocket-flight {
+  0%, 51% { opacity: 0; transform: translate(426px, 225px) scale(.82); }
+  52% { opacity: 1; transform: translate(430px, 225px) scale(.82); }
+  68% { opacity: 1; transform: translate(655px, 217px) scale(.82); }
+  70%, 100% { opacity: 0; transform: translate(683px, 217px) scale(.82); }
+}
+
+@keyframes tank-rocket-flame {
+  from { opacity: .65; transform: scaleX(.72); }
+  to { opacity: 1; transform: scaleX(1.18); }
+}
+
+@keyframes tank-rocket-impact {
+  0%, 68% { opacity: 0; transform: scale(.2) rotate(0deg); }
+  70% { opacity: 1; transform: scale(.55) rotate(8deg); }
+  75% { opacity: 0; transform: scale(1.65) rotate(28deg); }
+  100% { opacity: 0; transform: scale(1.65) rotate(28deg); }
+}
+
+@keyframes tank-dash-control {
+  0%, 17%, 31%, 100% { box-shadow: none; filter: brightness(1); }
+  21%, 27% { box-shadow: 0 0 0 3px rgb(255 255 255 / 42%), 0 0 24px rgb(143 123 255 / 72%); filter: brightness(1.22); }
+}
+
+@keyframes tank-rocket-control {
+  0%, 50%, 59%, 100% { box-shadow: none; filter: brightness(1); }
+  52%, 56% { box-shadow: 0 0 0 3px rgb(255 255 255 / 42%), 0 0 24px rgb(255 90 54 / 72%); filter: brightness(1.22); }
 }
 
 .lab-preview {
@@ -1269,7 +1349,11 @@ h1 span { color: var(--muted); }
 }
 
 .lab-hp-p1 { background: #76e6c4; }
-.lab-hp-p2 { background: #8999ff; }
+.lab-hp-p2 {
+  margin-left: auto;
+  background: #8999ff;
+  animation: lab-dummy-health 9s linear infinite;
+}
 .lab-sta i { background: #57b9df; }
 
 .lab-player strong {
@@ -1287,6 +1371,27 @@ h1 span { color: var(--muted); }
   color: #77c9e8;
   font: 650 .48rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
 }
+
+.lab-health-readout {
+  position: relative;
+  display: block;
+  min-width: 4ch;
+  height: .65rem;
+}
+
+.lab-health-number {
+  position: absolute;
+  inset: 0;
+  animation-duration: 9s;
+  animation-iteration-count: infinite;
+  animation-timing-function: step-end;
+  font-style: normal;
+  opacity: 0;
+}
+
+.lab-health-1000 { animation-name: lab-health-1000; opacity: 1; }
+.lab-health-970 { animation-name: lab-health-970; }
+.lab-health-950 { animation-name: lab-health-950; }
 
 .lab-player-right { text-align: right; }
 
@@ -1337,6 +1442,79 @@ h1 span { color: var(--muted); }
   50%, 100% { opacity: 1; }
 }
 
+/* The dummy reacts on the same authored active frames as each move. The first hit uses
+   the standing light's 30 damage / 3 pushback; the second uses 20 / 2.2. */
+.lab-dummy {
+  transform-box: view-box;
+}
+
+.lab-dummy-body,
+.lab-contact {
+  transform-box: fill-box;
+}
+
+.lab-dummy-a { animation: lab-dummy-a 4.5s ease-out infinite; }
+.lab-dummy-b { animation: lab-dummy-b 4.5s ease-out infinite; }
+.lab-dummy-body { transform-origin: center bottom; }
+.lab-dummy-body-a { animation: lab-dummy-body-a 4.5s ease-out infinite; }
+.lab-dummy-body-b { animation: lab-dummy-body-b 4.5s ease-out infinite; }
+.lab-contact { opacity: 0; transform-origin: center; }
+.lab-contact-a { animation: lab-contact-a 4.5s ease-out infinite; }
+.lab-contact-b { animation: lab-contact-b 4.5s ease-out infinite; }
+
+@keyframes lab-dummy-a {
+  0%, 21% { transform: translate(64px, 0); }
+  23% { transform: translate(67px, 0); }
+  27% { transform: translate(80px, -1px); }
+  48% { transform: translate(81px, 0); }
+  78% { transform: translate(71px, 0); }
+  100% { transform: translate(64px, 0); }
+}
+
+@keyframes lab-dummy-b {
+  0%, 24% { transform: translate(64px, 0); }
+  26% { transform: translate(66px, 0); }
+  30% { transform: translate(76px, 0); }
+  48% { transform: translate(77px, 0); }
+  78% { transform: translate(69px, 0); }
+  100% { transform: translate(64px, 0); }
+}
+
+@keyframes lab-dummy-body-a {
+  0%, 21%, 43%, 100% { transform: rotate(0deg); }
+  24%, 30% { transform: rotate(9deg); }
+}
+
+@keyframes lab-dummy-body-b {
+  0%, 24%, 43%, 100% { transform: rotate(0deg); }
+  27%, 33% { transform: rotate(6deg); }
+}
+
+@keyframes lab-contact-a {
+  0%, 20% { opacity: 0; transform: scale(.25) rotate(0deg); }
+  22% { opacity: 1; transform: scale(.75) rotate(8deg); }
+  27% { opacity: 1; transform: scale(1.2) rotate(24deg); }
+  34%, 100% { opacity: 0; transform: scale(1.65) rotate(38deg); }
+}
+
+@keyframes lab-contact-b {
+  0%, 23% { opacity: 0; transform: scale(.25) rotate(0deg); }
+  25% { opacity: 1; transform: scale(.72) rotate(8deg); }
+  30% { opacity: 1; transform: scale(1.1) rotate(22deg); }
+  37%, 100% { opacity: 0; transform: scale(1.5) rotate(34deg); }
+}
+
+@keyframes lab-dummy-health {
+  0%, 10.5% { width: 100%; }
+  13%, 61.5% { width: 97%; }
+  64%, 96% { width: 95%; }
+  100% { width: 100%; }
+}
+
+@keyframes lab-health-1000 { 0%, 10.5%, 96%, 100% { opacity: 1; } 13%, 95.9% { opacity: 0; } }
+@keyframes lab-health-970 { 0%, 10.5%, 64%, 100% { opacity: 0; } 13%, 61.5% { opacity: 1; } }
+@keyframes lab-health-950 { 0%, 61.5%, 96%, 100% { opacity: 0; } 64%, 95.9% { opacity: 1; } }
+
 .lab-hurtbox,
 .lab-hitbox {
   fill-opacity: .14;
@@ -1346,6 +1524,29 @@ h1 span { color: var(--muted); }
 
 .lab-hurtbox { fill: #37a7ff; stroke: #65baff; }
 .lab-hitbox { fill: #ff3d4f; stroke: #ff5364; }
+
+.lab-contact-ring {
+  fill: none;
+  stroke: #efffc7;
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.lab-contact-rays {
+  fill: none;
+  stroke: #76e6c4;
+  stroke-linecap: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.lab-damage-number {
+  fill: #fff;
+  paint-order: stroke;
+  stroke: #080a0f;
+  stroke-width: 4px;
+  font: 900 14px ui-monospace, SFMono-Regular, Consolas, monospace;
+}
 
 .lab-legend {
   position: absolute;
@@ -1743,9 +1944,31 @@ h1 span { color: var(--muted); }
 
 @media (prefers-reduced-motion: reduce) {
   .tank-fish,
-  .tank-food,
+  .tank-food-eat,
+  .tank-rocket-shot,
+  .tank-rocket-burst,
+  .tank-dash-trail,
+  .tank-rocket-flame,
+  .tank-ability,
   .lab-playhead,
-  .lab-idle { animation: none; }
+  .lab-idle,
+  .lab-dummy,
+  .lab-dummy-body,
+  .lab-contact,
+  .lab-hp-p2,
+  .lab-health-number { animation: none; }
+
+  .tank-fish-you { transform: translate(42px, -8px); }
+  .tank-dash-trail { opacity: .72; transform: translateX(-20px); }
+  .tank-rocket-shot { opacity: 1; transform: translate(520px, 221px) scale(.82); }
+  .tank-rocket-burst { display: none; }
+  .lab-dummy { transform: translate(76px, 0); }
+  .lab-dummy-body { transform: rotate(7deg); }
+  .lab-contact { opacity: 1; transform: scale(1); }
+  .lab-hp-p2 { width: 97%; }
+  .lab-health-1000,
+  .lab-health-950 { opacity: 0; }
+  .lab-health-970 { opacity: 1; }
 
   /* The two takes cross-fade on a shared cycle; with the animation stopped they would
      both be opaque and stack, so hold the first take as a still frame instead. */

@@ -89,11 +89,11 @@ function actions(project, compact = false) {
 }
 
 // Both product previews below are traced from the live apps rather than invented: the
-// Shark Tank mascot is the same path data the game rasterises for every skin, and the
-// Hexframe fighter is the shipped rig drawn at its idle pose. Colours are copied from
-// each product's own tokens, so a change there is visible here as a mismatch.
+// Shark Tank mascot and rocket are the same silhouettes the game rasterises, and the
+// Hexframe fighter is the shipped rig. Colours, damage and pushback are copied from the
+// products' own authored data, so a change there is visible here as a mismatch.
 function sharkTankVisual() {
-  return `<div class="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: the player's cyan shark among rivals in a live tank, with the points, rank and size readouts, the top sharks leaderboard, and the dash and rocket abilities">
+  return `<div class="project-visual tank-preview" role="img" aria-label="Shark Tank gameplay: rival sharks chase and eat food dots while the player's cyan shark chomp-dashes and fires a rocket across the live tank">
     <div class="tank-arena">
       <svg viewBox="0 0 800 470" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
         <defs>
@@ -111,14 +111,23 @@ function sharkTankVisual() {
             <path d="m126 69 5 10 6-8 6 8 5-11" fill="#fff" stroke="#070b14" stroke-width="2" stroke-linejoin="round"/>
             <circle cx="158" cy="48" r="3" fill="#070b14"/>
           </symbol>
+          <symbol id="tankRocket" viewBox="0 0 72 34">
+            <path d="M66 17 47 6H23L9 17l14 11h24Z" fill="#f3f1ff" stroke="#070b14" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M25 7 9 1l5 16L9 33l16-6" fill="#ff5a36" stroke="#070b14" stroke-width="3" stroke-linejoin="round"/>
+            <circle cx="47" cy="17" r="6" fill="#22e6ff" stroke="#070b14" stroke-width="3"/>
+          </symbol>
         </defs>
         <rect width="800" height="470" fill="#0b0a14"/>
         <rect width="800" height="470" fill="url(#tankSea)"/>
         <g stroke="#315468" stroke-opacity=".54" stroke-width="1">
           <path d="M96 0v470M226 0v470M356 0v470M486 0v470M616 0v470"/>
         </g>
-        <g class="tank-food">
+        <g class="tank-food" aria-hidden="true">
           <circle cx="196" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
+          <circle class="tank-food-eat tank-food-eat-a" cx="477" cy="176" r="4.2" fill="#ffd54a"/>
+          <circle class="tank-food-eat tank-food-eat-b" cx="297" cy="351" r="4.2" fill="#22e6ff"/>
+          <circle class="tank-food-eat tank-food-eat-c" cx="543" cy="376" r="5.2" fill="#ff8a1f"/>
+          <circle class="tank-food-eat tank-food-eat-you" cx="449" cy="241" r="4.6" fill="#ffd54a"/>
           <circle cx="243" cy="286" r="3.4" fill="#22e6ff" opacity=".8"/>
           <circle cx="404" cy="150" r="3.4" fill="#ffd54a" opacity=".8"/>
           <circle cx="470" cy="268" r="5" fill="#ff8a1f" opacity=".98"/>
@@ -127,8 +136,8 @@ function sharkTankVisual() {
           <circle cx="530" cy="196" r="3.4" fill="#ffd54a" opacity=".8"/>
         </g>
         <g class="tank-fish tank-fish-a">
-          <use href="#tankShark" x="180" y="110" width="78" height="48" class="skin-gold"/>
-          <g class="tank-tag"><rect x="186" y="82" width="70" height="21" rx="6" fill="#ffe14d"/><text x="221" y="97">Chowder</text></g>
+          <use href="#tankShark" x="380" y="150" width="78" height="48" class="skin-gold"/>
+          <g class="tank-tag"><rect x="386" y="122" width="70" height="21" rx="6" fill="#ffe14d"/><text x="421" y="137">Chowder</text></g>
         </g>
         <g class="tank-fish tank-fish-b">
           <use href="#tankShark" x="196" y="330" width="70" height="43" class="skin-violet"/>
@@ -139,9 +148,34 @@ function sharkTankVisual() {
           <g class="tank-tag"><rect x="432" y="330" width="48" height="21" rx="6" fill="#ff8a1f"/><text x="456" y="345">Tide</text></g>
         </g>
         <g class="tank-fish tank-fish-you">
+          <g class="tank-dash-trail">
+            <circle cx="280" cy="244" r="10" fill="#22e6ff"/>
+            <circle cx="258" cy="248" r="7" fill="#fff"/>
+            <circle cx="239" cy="241" r="5" fill="#22e6ff"/>
+            <circle cx="224" cy="246" r="3.5" fill="#fff"/>
+          </g>
           <use href="#tankShark" x="286" y="212" width="106" height="65" class="skin-cyan"/>
           <g class="tank-tag"><rect x="284" y="178" width="110" height="23" rx="6" fill="#22e6ff"/><text x="339" y="194">Player (you)</text></g>
         </g>
+        <g class="tank-rocket-shot">
+          <g class="tank-rocket-flame">
+            <circle cx="-8" cy="17" r="7" fill="#ff5a36"/>
+            <circle cx="-20" cy="17" r="5" fill="#ffd54a"/>
+            <circle cx="-31" cy="17" r="3.5" fill="#ff5a36"/>
+          </g>
+          <use href="#tankRocket" width="72" height="34"/>
+        </g>
+        <g transform="translate(702 234)"><g class="tank-rocket-burst">
+          <circle cx="-23" cy="-5" r="6" fill="#ff5a36"/>
+          <circle cx="-13" cy="-19" r="5" fill="#ffd54a"/>
+          <circle cx="4" cy="-24" r="4" fill="#fff"/>
+          <circle cx="19" cy="-14" r="6" fill="#ff8a1f"/>
+          <circle cx="25" cy="4" r="5" fill="#ffd54a"/>
+          <circle cx="12" cy="20" r="6" fill="#ff5a36"/>
+          <circle cx="-7" cy="24" r="4" fill="#fff"/>
+          <circle cx="-22" cy="14" r="5" fill="#ff8a1f"/>
+          <circle r="10" fill="#fff"/>
+        </g></g>
       </svg>
     </div>
     <div class="tank-readout">
@@ -181,6 +215,8 @@ const LAB_TAKES = [
     hit: [4, 5],
     cancel: [5, 15],
     hitbox: { x: 26, y: 62, w: 44, h: 20 },
+    damage: 30,
+    pushback: 3,
     hurtboxes: [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]],
     keyTimes: "0;0.167;0.222;0.278;0.556;0.94;1",
     pelvis: null,
@@ -202,6 +238,8 @@ const LAB_TAKES = [
     hit: [4, 6],
     cancel: [6, 13],
     hitbox: { x: 22, y: 12, w: 42, h: 18 },
+    damage: 20,
+    pushback: 2.2,
     hurtboxes: [[-18, 0, 36, 34], [-18, 34, 36, 22], [-14, 56, 28, 20]],
     keyTimes: "0;0.25;0.375;1",
     pelvis: "0 -32;0 -30;0 -30.33;0 -32",
@@ -253,6 +291,22 @@ function labFighter(take) {
   return `<g><animateTransform attributeName="transform" type="translate" dur="${LAB_LOOP}" repeatCount="indefinite" values="${take.pelvis}" keyTimes="${take.keyTimes}"/>${spine}</g>`;
 }
 
+function labDummy(take) {
+  const hurtboxes = [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]]
+    .map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
+  const idle = { bones: {}, still: {}, pelvis: null, keyTimes: "" };
+  const contactY = -(take.hitbox.y + take.hitbox.h / 2);
+  return `<g class="lab-dummy lab-dummy-${take.id}">
+      ${hurtboxes}
+      <g class="lab-dummy-body lab-dummy-body-${take.id}"><g transform="scale(-1 1)"><g class="fighter-p2">${labFighter(idle)}</g></g></g>
+    </g>
+    <g transform="translate(47 ${contactY})"><g class="lab-contact lab-contact-${take.id}">
+      <circle class="lab-contact-ring" r="9"/>
+      <path class="lab-contact-rays" d="M-16 0H16M0-16V16M-12-12 12 12M12-12-12 12"/>
+      <text class="lab-damage-number" y="-20" text-anchor="middle">${take.damage}</text>
+    </g></g>`;
+}
+
 // Boxes are authored with y measured up from the feet; the stage draws y downward.
 function labBox(x, y, w, h, className) {
   return `<rect class="${className}" x="${x}" y="${-(y + h)}" width="${w}" height="${h}"/>`;
@@ -264,7 +318,7 @@ function labTake(take) {
   const open = take.hit[0] / take.duration;
   const close = (take.hit[1] + 1) / take.duration;
   const hit = `<g opacity="0"><animate attributeName="opacity" dur="${LAB_LOOP}" repeatCount="indefinite" calcMode="discrete" values="0;1;0" keyTimes="0;${open.toFixed(3)};${close.toFixed(3)}"/>${labBox(x, y, w, h, "lab-hitbox")}</g>`;
-  return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}</g>`;
+  return `<g class="lab-take lab-take-${take.id}" transform="translate(-30 0)">${hurt}<g class="fighter-p1">${labFighter(take)}</g>${hit}${labDummy(take)}</g>`;
 }
 
 function labTimeline(take) {
@@ -295,11 +349,7 @@ function labTimeline(take) {
 }
 
 function hexframeVisual() {
-  const idle = { bones: {}, still: {}, pelvis: null, keyTimes: "" };
-  const dummyHurt = [[-16, 0, 32, 44], [-18, 44, 36, 38], [-14, 82, 28, 22]]
-    .map(([x, y, w, h]) => labBox(x, y, w, h, "lab-hurtbox")).join("");
-  const dummy = `<g transform="translate(34 0)">${dummyHurt}<g transform="scale(-1 1)"><g class="fighter-p2">${labFighter(idle)}</g></g></g>`;
-  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode cycling two authored attacks against the dummy, showing live hitboxes and hurtboxes over the stage and the startup, active, recovery and cancel windows on the move timeline">
+  return `<div class="project-visual lab-preview" role="img" aria-label="Hexframe training mode: two authored attacks deal 30 and 20 damage, produce impact sparks, reduce the dummy's health, and push the dummy backward in sync with the move timeline">
     <header class="lab-brand">
       <p class="lab-eyebrow">Hexframe / Training</p>
       <strong>Prime. Link. Cash out.</strong>
@@ -308,18 +358,17 @@ function hexframeVisual() {
     <div class="lab-stage">
       <div class="lab-hud">
         <div class="lab-player"><span>You</span><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p1"></i></div><div class="lab-sta"><i></i></div></div><strong><b>1050</b><small>100 STA</small></strong></div>
-        <div class="lab-player lab-player-right"><strong><b>1000</b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
+        <div class="lab-player lab-player-right"><strong><b class="lab-health-readout"><i class="lab-health-number lab-health-1000">1000</i><i class="lab-health-number lab-health-970">970</i><i class="lab-health-number lab-health-950">950</i></b><small>100 STA</small></strong><div class="lab-meters"><div class="lab-hp"><i class="lab-hp-p2"></i></div><div class="lab-sta"><i></i></div></div><span>Dummy</span></div>
       </div>
       <svg viewBox="-150 -125 300 158" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
         <rect x="-400" y="-125" width="800" height="158" fill="#080a0f"/>
         <rect x="-400" y="0" width="800" height="33" fill="#121219"/>
         <line x1="0" y1="-125" x2="0" y2="33" stroke="#21262d" stroke-width="1" stroke-dasharray="4 8"/>
         <line x1="-400" y1="0" x2="400" y2="0" stroke="#484f58" stroke-width="2"/>
-        ${dummy}
         ${LAB_TAKES.map(labTake).join("")}
       </svg>
       <div class="lab-legend"><span class="lab-key lab-key-hurt">Hurtbox</span><span class="lab-key lab-key-hit">Hitbox</span></div>
-      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Active</span><strong>${take.key}</strong><em>${take.startup}f startup · ${take.active}f active · ${take.recovery}f recovery</em></div>`).join("")}
+      ${LAB_TAKES.map((take) => `<div class="lab-take lab-take-${take.id} lab-route"><span>Hit confirmed</span><strong>${take.key}</strong><em>${take.damage} damage · ${take.pushback} pushback · ${take.active}f active</em></div>`).join("")}
     </div>
     ${LAB_TAKES.map(labTimeline).join("")}
   </div>`;
