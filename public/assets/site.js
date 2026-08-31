@@ -865,7 +865,7 @@
   };
   const navDisclosure = document.querySelector(".nav-disclosure");
   const navToggle = navDisclosure?.querySelector(".nav-toggle");
-  const siteNav = document.querySelector("#site-nav");
+  const siteNav = navDisclosure?.querySelector(".site-nav-mobile");
 
   function setNavigationOpen(open) {
     if (!navDisclosure) return;

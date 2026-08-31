@@ -50,9 +50,10 @@ function header(current = "") {
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Jacob Yongue portfolio home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>JACOB YONGUE</strong><small>wizardgang.ai</small></span></a>
+      <nav class="site-nav site-nav-desktop" aria-label="Primary">${nav}</nav>
       <details class="nav-disclosure">
         <summary class="nav-toggle"><span>Menu</span><span class="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span></summary>
-        <nav class="site-nav" aria-label="Primary" id="site-nav">${nav}</nav>
+        <nav class="site-nav site-nav-mobile" aria-label="Primary mobile">${nav}</nav>
       </details>
     </header>`;
 }

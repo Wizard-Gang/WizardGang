@@ -51,8 +51,8 @@ for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
-  if (!html.includes('<nav class="site-nav" aria-label="Primary" id="site-nav">')) fail(`${relative}: missing primary navigation`);
-  if (!html.includes('<details class="nav-disclosure">') || !html.includes('<summary class="nav-toggle">')) fail(`${relative}: missing no-JavaScript mobile navigation disclosure`);
+  if (!html.includes('<nav class="site-nav site-nav-desktop" aria-label="Primary">')) fail(`${relative}: missing desktop primary navigation`);
+  if (!html.includes('<details class="nav-disclosure">') || !html.includes('<summary class="nav-toggle">') || !html.includes('<nav class="site-nav site-nav-mobile" aria-label="Primary mobile">')) fail(`${relative}: missing no-JavaScript mobile navigation disclosure`);
   for (const label of ["Projects", "Work", "About", "Contact", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
   }

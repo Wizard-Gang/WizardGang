@@ -261,7 +261,7 @@ body:has(#theme-light:checked) .service-source-head {
 .site-nav a:hover,
 .site-nav a[aria-current="page"] { color: var(--paper); }
 
-.nav-disclosure { display: contents; }
+.nav-disclosure { display: none; }
 
 .nav-toggle {
   display: none;
@@ -1088,6 +1088,8 @@ h1 span { color: var(--muted); }
   .site-footer { flex-direction: column; gap: .9rem; }
 
   .site-header { align-items: center; flex-wrap: wrap; }
+  .site-nav-desktop { display: none; }
+  .nav-disclosure { display: contents; }
   .nav-toggle { display: inline-flex; }
   .nav-disclosure:not([open]) .site-nav { display: none; }
   .nav-disclosure[open] .site-nav { display: flex; }
