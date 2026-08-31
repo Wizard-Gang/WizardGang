@@ -69,6 +69,7 @@ for (const file of htmlFiles) {
     if (!html.includes(`id="${id}"`)) fail(`${relative}: missing display setting ${id}`);
   }
   if (!html.includes('id="play-previews" aria-describedby="motion-setting-help" checked')) fail(`${relative}: preview motion must play by default`);
+  if (!html.includes('id="motion-setting-help">Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.</small>')) fail(`${relative}: preview motion help must describe the play-by-default behavior`);
   if (!html.includes(">Preferences</summary>")) fail(`${relative}: missing preferences disclosure`);
   for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
     const visible = match[2].replace(/<[^>]+>/g, " ").replace(/[↗→]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
@@ -285,6 +286,13 @@ if (count(compliance, /status-met/g) !== 62 || count(compliance, /status-partial
 }
 if (count(compliance, /href="https:\/\/www\.w3\.org\/TR\/WCAG22\/#/g) !== 55) fail("every WCAG 2.2 A and AA checklist item must link directly to its official success criterion");
 if (count(compliance, /href="https:\/\/github\.com\/Wizard-Gang\/WizardGang\/blob\/main\/docs\/COMPLIANCE\.md#iso-/g) !== 16) fail("every ISO checklist item must link directly to its public clause record");
+const previewDefaultClaim = "Project previews play by default; pause them with the Play previews control.";
+if (!compliance.includes(previewDefaultClaim)) fail("WCAG 2.2.2 must describe the play-by-default preview behavior");
+if (!siteScript.includes(previewDefaultClaim)) fail("Preferences help must agree with the WCAG 2.2.2 preview behavior");
+const accessibilityRecord = await readFile(resolve(root, "docs/ACCESSIBILITY.md"), "utf8");
+for (const [label, contents] of [["compliance page", compliance], ["preferences script", siteScript], ["accessibility record", accessibilityRecord]]) {
+  if (/paused[- ]by[- ]default|animations (?:are|están) pausad/i.test(contents)) fail(`${label} preserves the retired paused-by-default claim`);
+}
 for (const requiredText of ["Report issue", "Public documentation", "corresponding clause"]) {
   if (!compliance.includes(requiredText)) fail(`compliance page missing direct action or accessible link text: ${requiredText}`);
 }
@@ -338,6 +346,11 @@ for (const [from, to] of PERMANENT_REDIRECTS) {
 const worker = await readFile(resolve(root, "src/worker.mjs"), "utf8");
 if (/DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/.test(worker)) fail("portfolio Worker gained a product binding or authentication concern");
 if (!worker.includes("sharktank.wizardgang.ai")) fail("compatibility Worker is missing the SharkTank boundary");
+
+const headers = await readFile(resolve(dist, "_headers"), "utf8");
+if (!headers.includes("Cache-Control: public, max-age=0, must-revalidate, no-transform")) {
+  fail("HTML responses must opt out of Cloudflare JavaScript Detection transforms");
+}
 
 if (failures.length) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
