@@ -256,7 +256,7 @@ for (const retiredText of ["Education &amp; certification", "Clemson University"
 }
 
 const services = await readFile(resolve(dist, "services/index.html"), "utf8");
-for (const requiredText of ["Launch the site", "Keep the keys", "The website is yours", "Your website. Your code. Your infrastructure.", "No required monthly hosting subscription for qualifying sites", "What drives what?", "Built to be handed over", "Add infrastructure when the business needs it", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", 'href="https://yourwebsite.wizardgang.ai/how-it-works/"']) {
+for (const requiredText of ["Launch the site", "Keep the keys", "The website is yours", "Your website. Your code. Your infrastructure.", "No required monthly hosting subscription for qualifying sites", "Built to be handed over", "Add infrastructure when the business needs it", "Starter", "$95", "Business", "$195", "Owner+", "$350", "Up to 3 pages", "Up to 5 pages", "Up to 8 pages", "History and checks"]) {
   if (!services.includes(requiredText)) fail(`services page missing ${requiredText}`);
 }
 if (!services.includes('<span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span>')) fail("services desktop headline lines are not explicit");
@@ -268,6 +268,9 @@ for (const agencyVoice of ["We don’t sell", "We build you", "WizardGang can bu
 }
 for (const forbiddenClaim of ["$0 hosting forever", "$0/month forever"]) {
   if (services.includes(forbiddenClaim)) fail(`services page contains unqualified cost claim: ${forbiddenClaim}`);
+}
+for (const retiredDemoReference of ["yourwebsite.wizardgang.ai", "Live example", "Open the demo", "service-demo", "service-source-map"]) {
+  if (services.includes(retiredDemoReference) || siteScript.includes(retiredDemoReference)) fail(`retired website demo reference remains: ${retiredDemoReference}`);
 }
 
 const about = await readFile(resolve(dist, "about/index.html"), "utf8");
@@ -326,7 +329,7 @@ const expectedRedirects = new Map([
   ["/professional/", "/work/"],
   ["/accessibility/", "/compliance/"],
   ["/security/", "/compliance/"],
-  ["/services/example/", "https://yourwebsite.wizardgang.ai/"],
+  ["/services/example/", "/services/"],
   ["/work/sharktank/", "/projects/sharktank/"],
   ["/work/shark-tank/", "/projects/sharktank/"],
   ["/work/hexframe/", "/projects/hexframe/"],

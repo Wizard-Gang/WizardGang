@@ -676,7 +676,6 @@
 
 .service-packages,
 .service-ownership,
-.service-demo,
 .service-handoff,
 .service-process,
 .service-growth,
@@ -687,7 +686,6 @@
 
 .service-packages > header,
 .service-ownership > header,
-.service-demo > header,
 .service-process > header,
 .service-notes {
   display: grid;
@@ -698,14 +696,12 @@
 
 .service-packages > header,
 .service-ownership > header,
-.service-demo > header,
 .service-process > header {
   margin-bottom: clamp(2rem, 5vw, 3.5rem);
 }
 
 .service-packages h2,
 .service-ownership h2,
-.service-demo h2,
 .service-handoff h2,
 .service-process h2,
 .service-growth h2,
@@ -721,11 +717,6 @@
 .service-process > header > p,
 .service-notes > p {
   margin: 0;
-  color: var(--muted);
-}
-
-.service-demo > header > div:last-child > p {
-  margin: 0 0 1.5rem;
   color: var(--muted);
 }
 
@@ -873,41 +864,6 @@
 
 .service-cost > div:last-child > p { margin: 0 0 1rem; color: var(--muted); }
 .service-cost .text-links { margin-top: 1.5rem; }
-
-.service-source-map { border: 1px solid var(--line); background: var(--panel); }
-
-.service-source-map > h3 {
-  margin: 0;
-  padding: 1.3rem clamp(1rem, 3vw, 2rem);
-  border-bottom: 1px solid var(--line);
-  font-size: clamp(1.4rem, 3vw, 2.1rem);
-}
-
-.service-source-row {
-  display: grid;
-  grid-template-columns: minmax(190px, .72fr) minmax(0, 1.28fr);
-  border-bottom: 1px solid var(--line);
-}
-
-.service-source-row:last-child { border-bottom: 0; }
-
-.service-source-row > * {
-  padding: .95rem clamp(1rem, 3vw, 2rem);
-}
-
-.service-source-row > *:first-child { border-right: 1px solid var(--line); }
-.service-source-row > span { color: var(--muted); }
-.service-source-row strong { color: var(--paper); }
-
-.service-source-head {
-  background: #0c0c10;
-  color: var(--acid);
-  font: 800 .68rem/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-}
-
-.service-source-head > span { color: var(--acid); }
 
 .service-handoff {
   display: grid;
@@ -1278,7 +1234,6 @@ a.criterion:hover strong { text-decoration: underline; text-underline-offset: .2
   .services-hero,
   .service-packages > header,
   .service-ownership > header,
-  .service-demo > header,
   .service-cost,
   .service-handoff,
   .service-process > header,
@@ -1313,10 +1268,6 @@ a.criterion:hover strong { text-decoration: underline; text-underline-offset: .2
   .capabilities .capability-grid,
   .principle-grid { grid-template-columns: 1fr; }
   .section-heading { align-items: flex-start; flex-direction: column; }
-  .service-source-row { grid-template-columns: 1fr; }
-  .service-source-row > *:first-child { padding-bottom: .25rem; border-right: 0; }
-  .service-source-row > *:last-child { padding-top: .25rem; }
-  .service-source-head { display: none; }
 }
 
 body:has(#reading-layout:checked) :where(.site-main, .case-main) p {
@@ -1360,7 +1311,6 @@ html:has(#text-size-200:checked) :where(
   .services-hero,
   .service-packages > header,
   .service-ownership > header,
-  .service-demo > header,
   .service-cost,
   .service-handoff,
   .service-process > header,
