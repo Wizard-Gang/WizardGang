@@ -210,10 +210,6 @@ body:has(#theme-light:checked) .professional-main {
   --professional-line: #56666a;
 }
 
-body:has(#theme-light:checked) .service-source-head {
-  background: #f0f0f3;
-}
-
 .wordmark {
   display: inline-flex;
   align-items: center;
