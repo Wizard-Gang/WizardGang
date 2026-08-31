@@ -14,7 +14,7 @@ self-assessment, not an accessibility certification or blanket conformance claim
 - keyboard navigation, skip link, focus order, and visible focus;
 - dark and light contrast, color-independent meaning, and 200% text and 400% browser-zoom reflow;
 - decorative-preview exclusion from the accessibility tree and adjacent project descriptions;
-- paused-by-default motion, pause/play control, operating-system reduced-motion behavior, and flash rate;
+- play-by-default preview motion, a persistent pause/play control, operating-system reduced-motion behavior, and flash rate;
 - minimum target size and spacing for links, controls, and disclosures;
 - English and Spanish page-language behavior;
 - canonical routes, alternate paths, sitemap, titles, and error pages; and

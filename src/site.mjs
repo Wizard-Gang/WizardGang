@@ -729,7 +729,7 @@ const WCAG_LEVELS = [
       ["2.1.2", "No Keyboard Trap", "No component traps keyboard focus.", "met"],
       ["2.1.4", "Character Key Shortcuts", "The portfolio defines no single-character keyboard shortcuts.", "met"],
       ["2.2.1", "Timing Adjustable", "The portfolio sets no time limits for reading or interaction.", "met"],
-      ["2.2.2", "Pause, Stop, Hide", "Project previews are paused by default and have a persistent Play previews control.", "met"],
+      ["2.2.2", "Pause, Stop, Hide", "Project previews play by default; pause them with the Play previews control.", "met"],
       ["2.3.1", "Three Flashes or Below Threshold", "Preview motion stays below the three-flashes threshold.", "met"],
       ["2.4.1", "Bypass Blocks", "Every page starts with a keyboard-visible skip link to main content.", "met"],
       ["2.4.2", "Page Titled", "Every route has a descriptive page title.", "met"],
