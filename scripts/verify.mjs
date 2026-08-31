@@ -51,21 +51,32 @@ for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
-  if (!html.includes('<nav class="site-nav" aria-label="Primary">')) fail(`${relative}: missing primary navigation`);
-  for (const label of ["Projects", "Work", "Services", "About", "Compliance", "Glossary", "GitHub"]) {
+  if (!html.includes('<nav class="site-nav" aria-label="Primary" id="site-nav">')) fail(`${relative}: missing primary navigation`);
+  if (!html.includes('<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">')) fail(`${relative}: missing accessible mobile navigation disclosure`);
+  for (const label of ["Projects", "Work", "About", "Contact", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
+  }
+  const footer = html.match(/<footer class="site-footer">[\s\S]*?<\/footer>/)?.[0] ?? "";
+  if (!footer) fail(`${relative}: missing site footer`);
+  if (!footer.includes('href="mailto:jacob@wizardgang.ai">jacob@wizardgang.ai</a>')) fail(`${relative}: missing WizardGang footer email`);
+  if (!footer.includes(">LinkedIn <span")) fail(`${relative}: missing LinkedIn footer link`);
+  if (!/WizardGang\.ai · <a href="\/version\.json">Build [0-9a-f]{12}<\/a>/.test(footer)) fail(`${relative}: missing linked build hash`);
+  if (footer.includes("View build metadata")) fail(`${relative}: wordy build metadata label remains`);
+  for (const retiredFooterLink of [">Website services</a>", ">Compliance</a>", ">Glossary</a>"]) {
+    if (footer.includes(retiredFooterLink)) fail(`${relative}: retired footer link remains: ${retiredFooterLink}`);
   }
   for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200", "play-previews"]) {
     if (!html.includes(`id="${id}"`)) fail(`${relative}: missing display setting ${id}`);
   }
-  if (!html.includes('id="play-previews" aria-describedby="motion-setting-help" checked')) fail(`${relative}: preview motion must be on by default`);
+  if (!html.includes('id="play-previews" aria-describedby="motion-setting-help" checked')) fail(`${relative}: preview motion must play by default`);
   if (!html.includes(">Preferences</summary>")) fail(`${relative}: missing preferences disclosure`);
   for (const match of html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)) {
     const visible = match[2].replace(/<[^>]+>/g, " ").replace(/[↗→]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
-    if (["play", "case study", "github", "evidence"].includes(visible) && !/\saria-label="[^"]{12,}"/i.test(match[1])) {
+    if (["play", "case study", "github", "evidence"].includes(visible) && /class="[^"]*(?:button|text-link)[^"]*"/i.test(match[1]) && !/\saria-label="[^"]{12,}"/i.test(match[1])) {
       fail(`${relative}: compact ${visible} link is missing a descriptive accessible name`);
     }
   }
+  if (/target="_blank"/i.test(html)) fail(`${relative}: forces an external link into a new tab`);
   if (html.includes('href="/resume') || html.includes(">Resume<")) fail(`${relative}: exposes retired Resume navigation or content`);
   if (!/<title>[^<]{12,}<\/title>/.test(html)) fail(`${relative}: missing descriptive title`);
   if (!/<meta name="description" content="[^"]{40,}">/.test(html)) fail(`${relative}: missing meta description`);
@@ -124,7 +135,7 @@ for (const file of ["README.md", "SECURITY.md", "docs/ACCESSIBILITY.md", "docs/C
 const home = await readFile(resolve(dist, "index.html"), "utf8");
 for (const requiredText of [
   "Jacob <span>Yongue</span>",
-  "I build systems that deliver.",
+  "I build systems that ship.",
   "Software engineer · Systems · Project delivery",
   "I design, build, connect, and launch software, then help teams keep it working in production.",
   "Selected projects", "Selected work", "Capabilities", "About"
@@ -136,10 +147,12 @@ for (const retired of ["Two bodies of work", "Different contexts. Clear boundari
 }
 if (!home.includes('content="https://wizardgang.ai/og-jacob-yongue.jpg"')) fail("homepage missing Jacob-first social preview");
 if (!home.includes('href="https://github.com/Wizard-Gang"')) fail("homepage generic GitHub action must target the Wizard-Gang organization");
-const expectedHomeActions = `<div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="/compliance/">Compliance</a><a class="button" href="https://github.com/Wizard-Gang" target="_blank" rel="noopener noreferrer" aria-label="Visit WizardGang on GitHub (opens in a new tab)">GitHub</a></div>`;
-if (!home.includes(expectedHomeActions)) fail("homepage primary actions are missing their required order or plain labels");
+const expectedHomeActions = `<div class="button-row"><a class="button button-primary" href="/projects/">View projects</a><a class="button" href="mailto:jacob@wizardgang.ai">Get in touch</a></div>`;
+if (!home.includes(expectedHomeActions)) fail("homepage must expose only the View projects and Get in touch hero actions");
 if (/plain-language-summary|What I do, without the technical shorthand/i.test(home)) fail("homepage still contains the removed plain-language summary");
 if (home.indexOf("<h1") > home.indexOf("<h2")) fail("homepage must expose its h1 before any h2");
+if (home.indexOf("<h1") > home.indexOf("I build systems that ship.")) fail("homepage must expose Jacob's h1 before the tagline");
+if (count(home, /class="project-card-visual" aria-hidden="true" inert/g) !== 3) fail("homepage project previews must be decorative and inert");
 for (const servicePreview of ["selected-services", "Your website. Your code. Your infrastructure.", "View services", "services-teaser-copy"]) {
   if (home.includes(servicePreview)) fail(`homepage still contains services preview content: ${servicePreview}`);
 }
@@ -151,6 +164,8 @@ for (const slug of projectSlugs) {
   if (!overview.includes(`/projects/${slug}/case-study/`)) fail(`${slug} overview missing case-study link`);
   if (!caseStudy.includes(`/projects/${slug}/`)) fail(`${slug} case study missing overview link`);
   if (!overview.includes("GitHub") || !caseStudy.includes("GitHub")) fail(`${slug} pages missing source evidence`);
+  if (!overview.includes('class="case-visual showcase-visual" aria-hidden="true" inert')) fail(`${slug} overview preview must be decorative and inert`);
+  if (!caseStudy.includes('class="case-visual" aria-hidden="true" inert')) fail(`${slug} case-study preview must be decorative and inert`);
 }
 
 const expectedSources = new Map([
@@ -185,6 +200,7 @@ for (const phrase of ["A complete path, not an isolated component", "Explicit ow
 const yarOverview = await readFile(resolve(dist, "projects/yarreader/index.html"), "utf8");
 const projectsOverview = await readFile(resolve(dist, "projects/index.html"), "utf8");
 const styles = await readFile(resolve(dist, "assets/styles.css"), "utf8");
+const siteScript = await readFile(resolve(dist, "assets/site.js"), "utf8");
 if (!yarOverview.includes('data-fixture="synthetic"') || !yarOverview.includes("Original demo artwork") || !styles.includes('url("/yarreader-library-art.jpg")')) {
   fail("YarReader overview must use and identify original fictional demo artwork");
 }
@@ -204,19 +220,28 @@ for (const accessibilityStyle of [
   "body:has(#play-previews:checked) .project-visual * { animation-play-state: running !important; }",
   "html:has(#text-size-200:checked) { font-size: 200%; }",
   "body:has(#theme-light:checked)",
+  ".js .site-nav[data-open] { display: flex; }",
+  "--line: #6f6a75",
+  "min-height: 44px",
   "#c7d0d7",
   "#c8cedb",
   "#c9c4e4"
 ]) {
   if (!styles.includes(accessibilityStyle)) fail(`compiled styles missing accessibility rule ${accessibilityStyle}`);
 }
+for (const navigationBehavior of ['document.documentElement.classList.add("js")', 'navToggle.setAttribute("aria-expanded", String(open))', 'event.key === "Escape"']) {
+  if (!siteScript.includes(navigationBehavior)) fail(`site script missing mobile navigation behavior: ${navigationBehavior}`);
+}
 if (/tank-rocket-flame\s+\.(?:0|1|2|3)\d?s/i.test(styles)) {
   fail("project preview flame animation must stay below three flashes per second");
 }
 
 const work = await readFile(resolve(dist, "work/index.html"), "utf8");
-for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations.", "Axon", "LexisNexis", "CIMS WMS", "Shadow Money Wizard Gang", "Sep 2024 - Apr 2026", "Jun 2023 - Aug 2024"]) {
+for (const requiredText of ["Career history", "Systems delivered", "Integrations", "Deployments", "Real systems in real operations.", "Systems organized by what they do.", "Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.", "Organization links are provided for identification only.", "Axon", "LexisNexis", "CIMS WMS", "Shadow Money Wizard Gang", "Sep 2024 - Apr 2026", "Jun 2023 - Aug 2024"]) {
   if (!work.includes(requiredText)) fail(`work page missing ${requiredText}`);
+}
+for (const retiredWorkCopy of ["Grouped by the problem and operating environment", "Selected examples from each category", "Selected deployment context from Jacob’s employment history", "All integrations", "All deployments", "All core skills", 'class="work-disclosure"']) {
+  if (work.includes(retiredWorkCopy)) fail(`work page still contains ${retiredWorkCopy}`);
 }
 for (const integrationLink of [
   'href="https://www.axon.com/"',
@@ -234,6 +259,12 @@ for (const requiredText of ["Launch the site", "Keep the keys", "The website is 
   if (!services.includes(requiredText)) fail(`services page missing ${requiredText}`);
 }
 if (!services.includes('<span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span>')) fail("services desktop headline lines are not explicit");
+for (const firstPersonCopy of ["I don’t sell you a website subscription", "I build you a small piece of software", "I can build, configure, test, and launch the site", "I do not have to stay in the middle"]) {
+  if (!services.includes(firstPersonCopy)) fail(`services page missing first-person voice: ${firstPersonCopy}`);
+}
+for (const agencyVoice of ["We don’t sell", "We build you", "WizardGang can build", "WizardGang does not have to stay"]) {
+  if (services.includes(agencyVoice)) fail(`services page still contains agency voice: ${agencyVoice}`);
+}
 for (const forbiddenClaim of ["$0 hosting forever", "$0/month forever"]) {
   if (services.includes(forbiddenClaim)) fail(`services page contains unqualified cost claim: ${forbiddenClaim}`);
 }
@@ -244,20 +275,20 @@ for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implement
 }
 
 const compliance = await readFile(resolve(dist, "compliance/index.html"), "utf8");
-for (const requiredText of ["Compliance.", "WCAG 2.0", "Level A", "Level AA", "Level AAA", "ISO/IEC 27001:2022", "ISO/IEC 42001:2023", "AI-developed. Human-reviewed.", "✓ Met", "◐ Partial", "! Gap", "Report an issue."]) {
+for (const requiredText of ["Compliance.", "WCAG 2.2 AA", "Level A", "Level AA", "route-by-route testing target", "not a certification or blanket conformance claim", "ISO/IEC 27001:2022", "ISO/IEC 42001:2023", "AI-developed. Human-reviewed.", "✓ Met", "◐ Partial", "Report an issue."]) {
   if (!compliance.includes(requiredText)) fail(`compliance page missing ${requiredText}`);
 }
-if (count(compliance, /class="compliance-item wcag-item"/g) !== 61) fail("compliance page must list all 61 WCAG 2.0 success criteria");
+if (count(compliance, /class="compliance-item wcag-item"/g) !== 55) fail("compliance page must list all 55 WCAG 2.2 Level A and AA success criteria");
 if (count(compliance, /class="compliance-item iso-item"/g) !== 16) fail("compliance page must list the 16 portfolio-wide ISO clauses and annex records");
-if (count(compliance, /status-met/g) !== 64 || count(compliance, /status-partial/g) !== 12 || count(compliance, /status-gap/g) !== 1) {
-  fail("compliance page status totals must remain 64 met, 12 partial, and 1 gap");
+if (count(compliance, /status-met/g) !== 62 || count(compliance, /status-partial/g) !== 9 || count(compliance, /status-gap/g) !== 0) {
+  fail("compliance page status totals must remain 62 met, 9 partial, and 0 gaps");
 }
-if (count(compliance, /href="https:\/\/www\.w3\.org\/TR\/WCAG20\/#/g) !== 61) fail("every WCAG checklist item must link directly to its official success criterion");
+if (count(compliance, /href="https:\/\/www\.w3\.org\/TR\/WCAG22\/#/g) !== 55) fail("every WCAG 2.2 A and AA checklist item must link directly to its official success criterion");
 if (count(compliance, /href="https:\/\/github\.com\/Wizard-Gang\/WizardGang\/blob\/main\/docs\/COMPLIANCE\.md#iso-/g) !== 16) fail("every ISO checklist item must link directly to its public clause record");
-for (const requiredText of ["Report issue", "Public documentation", "corresponding clause (opens in a new tab)"]) {
+for (const requiredText of ["Report issue", "Public documentation", "corresponding clause"]) {
   if (!compliance.includes(requiredText)) fail(`compliance page missing direct action or accessible link text: ${requiredText}`);
 }
-for (const retiredText of ["WCAG 2.0<br><span>checklist.</span>", "A concise self-assessment of the main WizardGang portfolio pages", "SharkTank", "Project evidence"]) {
+for (const retiredText of ["WCAG 2.0<br><span>checklist.</span>", "Level AAA", "A concise self-assessment of the main WizardGang portfolio pages", "SharkTank", "Project evidence"]) {
   if (compliance.includes(retiredText)) fail(`compliance page still contains retired content: ${retiredText}`);
 }
 const glossary = await readFile(resolve(dist, "glossary/index.html"), "utf8");
@@ -268,7 +299,6 @@ try {
   await access(resolve(dist, "security/index.html"));
   fail("retired security page is still generated");
 } catch { /* /security/ is now a redirect to Compliance. */ }
-const siteScript = await readFile(resolve(dist, "assets/site.js"), "utf8");
 for (const requiredText of ["Español", "document.documentElement.lang = locale", "wizardgang.preferences.v1", "Jugar", "Caso de estudio", "Contraste (mejorado)", "Contexto de la organización", "Pautas de Accesibilidad para el Contenido Web", "Informar de un problema"]) {
   if (!siteScript.includes(requiredText)) fail(`preferences script missing Spanish internationalization behavior: ${requiredText}`);
 }

@@ -1,6 +1,8 @@
 (() => {
   "use strict";
 
+  document.documentElement.classList.add("js");
+
   const storageKey = "wizardgang.preferences.v1";
   const spanish = new Map([
     ["Skip to main content", "Saltar al contenido principal"],
@@ -8,10 +10,13 @@
     ["Work", "Trayectoria"],
     ["Services", "Servicios"],
     ["About", "Acerca de"],
+    ["Contact", "Contacto"],
+    ["Website services", "Servicios web"],
     ["Security", "Seguridad"],
     ["Accessibility", "Accesibilidad"],
     ["Compliance", "Cumplimiento"],
     ["Glossary", "Glosario"],
+    ["Menu", "Menú"],
     ["Preferences", "Preferencias"],
     ["Language", "Idioma"],
     ["English", "Inglés"],
@@ -23,7 +28,7 @@
     ["200% text", "Texto al 200 %"],
     ["Play previews", "Reproducir vistas previas"],
     ["Language, display, and motion preferences", "Preferencias de idioma, visualización y movimiento"],
-    ["Previews play by default and remain still when reduced motion is requested.", "Las vistas previas se reproducen de forma predeterminada y permanecen inmóviles cuando se solicita reducir el movimiento."],
+    ["Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.", "Las vistas previas se reproducen de forma predeterminada. Desactiva esta opción para pausarlas; las preferencias de movimiento reducido siempre se respetan."],
     ["Play", "Jugar"],
     ["Case study", "Caso de estudio"],
     ["Evidence", "Evidencia"],
@@ -36,9 +41,9 @@
     ["Get in touch", "Contactar"],
     ["Professional work", "Trabajo profesional"],
     ["Jacob Yongue · Software engineering portfolio", "Jacob Yongue · Portafolio de ingeniería de software"],
-    ["Jacob Yongue on LinkedIn", "Jacob Yongue en LinkedIn"],
+    ["LinkedIn", "LinkedIn"],
     ["WizardGang.ai ·", "WizardGang.ai ·"],
-    ["I build systems that deliver.", "Construyo sistemas que dan resultados."],
+    ["I build systems that ship.", "Construyo sistemas que llegan a producción."],
     ["Software engineer · Systems · Project delivery", "Ingeniero de software · Sistemas · Entrega de proyectos"],
     ["I design, build, connect, and launch software, then help teams keep it working in production.", "Diseño, construyo, conecto y lanzo software; después ayudo a los equipos a mantenerlo funcionando en producción."],
     ["Selected projects", "Proyectos seleccionados"],
@@ -47,10 +52,10 @@
     ["Systems delivered in real operations.", "Sistemas entregados en operaciones reales."],
     ["Your website. Your code. Your infrastructure.", "Tu sitio web. Tu código. Tu infraestructura."],
     ["Capabilities", "Capacidades"],
-    ["Build, connect, deliver, operate.", "Construir, conectar, entregar y operar."],
+    ["From idea to production.", "De la idea a producción."],
     ["Practical systems. Full ownership.", "Sistemas prácticos. Responsabilidad completa."],
     ["Need someone who can move from requirements to a working system?", "¿Necesitas a alguien que lleve los requisitos hasta un sistema funcional?"],
-    ["We don’t sell you a website subscription. We build you a small piece of software and hand you the keys: source code, repository, deployment, and domain.", "No te vendemos una suscripción a un sitio web. Construimos una pequeña pieza de software y te entregamos las llaves: código fuente, repositorio, despliegue y dominio."],
+    ["I don’t sell you a website subscription. I build you a small piece of software and hand you the keys: source code, repository, deployment, and domain.", "No te vendo una suscripción a un sitio web. Te construyo una pequeña pieza de software y te entrego las llaves: código fuente, repositorio, despliegue y dominio."],
     ["See how the example works", "Ver cómo funciona el ejemplo"],
     ["Starter", "Inicial"],
     ["Business", "Negocio"],
@@ -60,14 +65,16 @@
     ["A focused site for a small business that needs a credible home, clear services, and a direct contact path.", "Un sitio enfocado para una pequeña empresa que necesita una presencia confiable, servicios claros y una vía directa de contacto."],
     ["A broader business site with room to show the work, establish trust, and collect useful customer inquiries.", "Un sitio empresarial más amplio para mostrar el trabajo, generar confianza y recibir consultas útiles de clientes."],
     ["A complete site with dedicated pages, stored contact requests, and documentation for future maintenance.", "Un sitio completo con páginas dedicadas, solicitudes de contacto guardadas y documentación para el mantenimiento futuro."],
-    ["Software engineering", "Ingeniería de software"],
-    ["Systems integration", "Integración de sistemas"],
-    ["Implementation", "Implementación"],
-    ["Technical project delivery", "Entrega técnica de proyectos"],
-    ["Operations, quality & governance", "Operaciones, calidad y gobernanza"],
-    ["Browser applications, application programming interfaces (APIs), data pipelines, command-line tools, simulation, testing, and production support.", "Aplicaciones web, interfaces de programación de aplicaciones (API), canalizaciones de datos, herramientas de línea de comandos, simulación, pruebas y soporte de producción."],
-    ["Requirements, workflow analysis, migration, configuration, quality assurance (QA), training, launch, and early production support.", "Requisitos, análisis de flujos de trabajo, migración, configuración, aseguramiento de la calidad (QA), capacitación, lanzamiento y soporte inicial de producción."],
-    ["Cross-functional planning, team leadership, risk management, release cadence, and accountable handoff.", "Planificación multifuncional, liderazgo de equipos, gestión de riesgos, ritmo de lanzamientos y traspaso responsable."],
+    ["Build the software", "Construyo el software"],
+    ["Connect the systems", "Conecto los sistemas"],
+    ["Put it into use", "Lo pongo en funcionamiento"],
+    ["Lead the work", "Lidero el trabajo"],
+    ["Keep it running", "Lo mantengo funcionando"],
+    ["I turn requirements into applications, APIs, data tools, and automation.", "Convierto requisitos en aplicaciones, API, herramientas de datos y automatización."],
+    ["I make business systems share the right data at the right time.", "Hago que los sistemas empresariales compartan los datos correctos en el momento adecuado."],
+    ["I move data, configure workflows, test, train users, and support launch.", "Migro datos, configuro flujos de trabajo, pruebo, capacito a usuarios y apoyo el lanzamiento."],
+    ["I keep scope, owners, risks, and releases clear.", "Mantengo claros el alcance, los responsables, los riesgos y los lanzamientos."],
+    ["I monitor production, respond to incidents, improve recovery, and document changes.", "Superviso producción, respondo a incidentes, mejoro la recuperación y documento los cambios."],
     ["I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.", "Soy ingeniero de software y líder de implementación. Trabajo con comodidad entre código, operaciones y entrega. Aprendo rápido los dominios desconocidos, hago explícitos los límites del sistema y acompaño el trabajo hasta producción."],
     ["A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.", "Un juego multijugador de tiburones construido por completo con código creado por inteligencia artificial (IA), con costos de nube medidos, interfaces accesibles y controles integrados de seguridad, confiabilidad y operación."],
     ["A browser fighting game where every hit has one repeatable result. It includes accessible controls, training tools, replays, computer players, and a foundation for future online play.", "Un juego de lucha en el navegador donde cada golpe produce un resultado repetible. Incluye controles accesibles, herramientas de entrenamiento, repeticiones, jugadores controlados por computadora y una base para futuro juego en línea."],
@@ -179,8 +186,8 @@
     ["Understand the words.", "Comprende las palabras."],
     ["This page explains the accessibility target, the preferences available on every page, and the technical glossary used throughout the portfolio.", "Esta página explica el objetivo de accesibilidad, las preferencias disponibles en cada página y el glosario técnico utilizado en todo el portafolio."],
     ["Commitment", "Compromiso"],
-    ["An AAA-oriented site, with honest status.", "Un sitio orientado al nivel AAA, con un estado transparente."],
-    ["WizardGang targets the Web Content Accessibility Guidelines (WCAG) 2.0 at Level AAA for its main portfolio pages. The site uses semantic HTML, keyboard navigation, visible focus, high-contrast text, paused-by-default motion, text alternatives, and plain-language help.", "WizardGang tiene como objetivo el nivel AAA de las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.0 en las páginas principales del portafolio. El sitio utiliza HTML semántico, navegación por teclado, foco visible, texto de alto contraste, movimiento pausado de forma predeterminada, alternativas textuales y ayuda clara."],
+    ["A WCAG 2.2 AA testing target, with honest status.", "Un objetivo de pruebas WCAG 2.2 AA, con un estado transparente."],
+    ["WizardGang targets the Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA for its main portfolio pages. The site uses semantic HTML, keyboard navigation, visible focus, high-contrast text, paused-by-default motion, decorative preview isolation, and plain-language help.", "WizardGang tiene como objetivo el nivel AA de las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2 en las páginas principales del portafolio. El sitio utiliza HTML semántico, navegación por teclado, foco visible, texto de alto contraste, movimiento pausado de forma predeterminada, aislamiento de vistas previas decorativas y ayuda clara."],
     ["This is a design and testing target, not a certification claim. Browser, screen-reader, zoom, and flashing checks must remain part of every release.", "Este es un objetivo de diseño y pruebas, no una afirmación de certificación. Las comprobaciones de navegador, lector de pantalla, ampliación y destellos deben formar parte de cada versión."],
     ["Choose language, display, and motion.", "Elige idioma, visualización y movimiento."],
     ["Open Preferences near the top of any page. You can use the site in English or Spanish, choose a dark or light high-contrast theme, increase text to 200%, apply a readable layout, and play or pause project preview animations. Preferences are saved in this browser. Animations are paused by default.", "Abre Preferencias cerca de la parte superior de cualquier página. Puedes usar el sitio en inglés o español, elegir un tema oscuro o claro de alto contraste, aumentar el texto al 200 %, aplicar un diseño legible y reproducir o pausar las animaciones de vista previa. Las preferencias se guardan en este navegador. Las animaciones están pausadas de forma predeterminada."],
@@ -236,7 +243,7 @@
     ["Report an issue.", "Informar de un problema."],
     ["Report issue", "Informar de un problema"],
     ["Public documentation", "Documentación pública"],
-    ["corresponding clause (opens in a new tab)", "cláusula correspondiente (se abre en una pestaña nueva)"],
+    ["corresponding clause", "cláusula correspondiente"],
     ["Email", "Correo electrónico"],
     ["with the affected address and steps to reproduce it. Do not include passwords, private records, or destructive proof.", "con la dirección afectada y los pasos para reproducirlo. No incluyas contraseñas, datos privados ni pruebas destructivas."],
     ["Artificial-intelligence-developed multiplayer game", "Juego multijugador desarrollado con inteligencia artificial"],
@@ -438,7 +445,7 @@
     ["If a copy or conversion stops, YarReader continues from its work journal. Different editions keep clear identities. Every finished library is checked before use and never changes afterward. If generated files are lost, they can be rebuilt from the protected originals and catalog.", "Si se detiene una copia o conversión, YarReader continúa desde su diario de trabajo. Las distintas ediciones mantienen identidades claras. Cada biblioteca terminada se comprueba antes de usarse y no cambia después. Si se pierden archivos generados, pueden reconstruirse a partir de los originales protegidos y el catálogo."],
     ["AI, supply-chain, fulfillment, and public-sector systems delivered from discovery through production.", "Sistemas de IA, cadena de suministro, cumplimiento y sector público entregados desde el descubrimiento hasta producción."],
     ["What I owned, what I delivered, and the operating context around each role.", "Lo que asumí, lo que entregué y el contexto operativo de cada función."],
-    ["Grouped by the problem and operating environment—not as a technology inventory.", "Agrupados por el problema y el entorno operativo, no como inventario tecnológico."],
+    ["Systems organized by what they do.", "Sistemas organizados por su función."],
     ["Warehouse & Fulfillment", "Almacén y cumplimiento"],
     ["Fulfillment", "Cumplimiento"],
     ["Inventory", "Inventario"],
@@ -474,8 +481,8 @@
     ["Warehouse Hardware", "Hardware de almacén"],
     ["Development & Workflow", "Desarrollo y flujo de trabajo"],
     ["Justice & Legal", "Justicia y legal"],
-    ["Named deployment context from Jacob’s employment history. Organization links are provided for identification only.", "Contexto de despliegue identificado en el historial laboral de Jacob. Los enlaces de organizaciones se ofrecen solo para identificación."],
-    ["The languages, platforms, and practices this professional record was delivered on.", "Los lenguajes, plataformas y prácticas con los que se entregó esta trayectoria profesional."],
+    ["Organization links are provided for identification only.", "Los enlaces de organizaciones se ofrecen solo para identificación."],
+    ["The languages, platforms, and practices behind this professional record.", "Los lenguajes, plataformas y prácticas que sustentan esta trayectoria profesional."],
     ["Getting separate systems to work as one — warehouses, enterprise resource planning (ERP) platforms, storefronts, shipping carriers, and logins — through APIs, electronic data interchange (EDI), and clearly matched data fields.", "Hacer que sistemas separados funcionen como uno —almacenes, plataformas de planificación de recursos empresariales (ERP), tiendas, transportistas e inicios de sesión— mediante API, intercambio electrónico de datos (EDI) y campos de datos claramente relacionados."],
     ["System monitoring, incident response, recovery, secure change, evidence, and management practices aligned with International Organization for Standardization (ISO) guidance.", "Seguimiento del sistema, respuesta a incidentes, recuperación, cambios seguros, evidencia y prácticas de gestión alineadas con las orientaciones de la Organización Internacional de Normalización (ISO)."],
     ["Development & data", "Desarrollo y datos"],
@@ -494,7 +501,7 @@
     ["End-user training", "Capacitación de usuarios finales"],
     ["Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.", "Las marcas de empresas y productos se muestran solo para identificar el contexto del proyecto. Todas pertenecen a sus respectivos propietarios; no se implica respaldo alguno."],
     ["Services / small-business websites", "Servicios / sitios web para pequeñas empresas"],
-    ["We don’t sell you a website subscription. We build you a small piece of software and hand you the keys.", "No te vendemos una suscripción a un sitio web. Construimos una pequeña pieza de software y te entregamos las llaves."],
+    ["I don’t sell you a website subscription. I build you a small piece of software and hand you the keys.", "No te vendo una suscripción a un sitio web. Te construyo una pequeña pieza de software y te entrego las llaves."],
     ["Each package uses the same responsive, config-driven foundation. The difference is how many routes and customer-facing features the site includes.", "Cada paquete utiliza la misma base adaptable y controlada por configuración. La diferencia está en cuántas rutas y funciones para clientes incluye el sitio."],
     ["Responsive design", "Diseño adaptable"],
     ["Home, services, and contact routes", "Rutas de inicio, servicios y contacto"],
@@ -513,7 +520,7 @@
     ["Your source code, site configuration, content, and change history live in a repository you control.", "Tu código fuente, configuración, contenido e historial de cambios viven en un repositorio que controlas."],
     ["Cloudflare builds and delivers the site, handles HTTPS, and connects it to the internet from infrastructure you control.", "Cloudflare construye y entrega el sitio, gestiona HTTPS y lo conecta a internet desde una infraestructura que controlas."],
     ["Your domain", "Tu dominio"],
-    ["Your business address points directly to your deployment. WizardGang does not have to stay in the middle.", "La dirección de tu negocio apunta directamente a tu despliegue. WizardGang no tiene que permanecer como intermediario."],
+    ["Your business address points directly to your deployment. I do not have to stay in the middle.", "La dirección de tu negocio apunta directamente a tu despliegue. Yo no tengo que permanecer como intermediario."],
     ["A small system first", "Primero, un sistema pequeño"],
     ["No required monthly hosting subscription for qualifying sites.", "Sin suscripción mensual obligatoria de alojamiento para sitios que cumplan los requisitos."],
     ["For qualifying small-business sites, production infrastructure can run on the free tiers of GitHub and Cloudflare. Cloudflare currently includes 100,000 Worker requests per day on its free plan, and static asset requests are free and unlimited.", "Para sitios de pequeñas empresas que cumplan los requisitos, la infraestructura de producción puede funcionar en los niveles gratuitos de GitHub y Cloudflare. Actualmente, Cloudflare incluye 100 000 solicitudes de Worker al día en su plan gratuito, y las solicitudes de recursos estáticos son gratuitas e ilimitadas."],
@@ -644,7 +651,7 @@
     ["Change on Request", "Cambio a petición"],
     ["Navigation and preference changes occur only after a user action.", "Los cambios de navegación y preferencias solo ocurren después de una acción del usuario."],
     ["Help", "Ayuda"],
-    ["Persistent contact, compliance, and glossary routes provide help without a data-entry workflow.", "Las rutas permanentes de contacto, cumplimiento y glosario ofrecen ayuda sin un flujo de entrada de datos."],
+    ["Contact help remains in consistent primary-navigation and footer locations.", "La ayuda de contacto permanece en ubicaciones coherentes de la navegación principal y el pie de página."],
     ["Error Prevention (All)", "Prevención de errores (todos)"],
     ["The site has no stored submissions to confirm, reverse, or correct.", "El sitio no tiene envíos almacenados que confirmar, revertir o corregir."],
     ["Information security", "Seguridad de la información"],
@@ -730,7 +737,11 @@
     ["Custom domain", "Dominio personalizado"],
     ["Cloudflare serves the deployed site at the business address", "Cloudflare sirve el sitio desplegado en la dirección del negocio"],
     ["Handoff", "Traspaso"],
-    ["WizardGang can build, configure, test, and launch the site. You receive the pieces another developer—or an AI coding tool—would need to continue the work later.", "WizardGang puede construir, configurar, probar y lanzar el sitio. Recibes las piezas que otro desarrollador —o una herramienta de programación con IA— necesitaría para continuar el trabajo más adelante."],
+    ["I can build, configure, test, and launch the site. You receive the pieces another developer—or an AI coding tool—would need to continue the work later.", "Puedo construir, configurar, probar y lanzar el sitio. Recibes las piezas que otro desarrollador —o una herramienta de programación con IA— necesitaría para continuar el trabajo más adelante."],
+    ["Accessibility target", "Objetivo de accesibilidad"],
+    ["WCAG 2.2 AA", "WCAG 2.2 AA"],
+    ["Level A · Level AA", "Nivel A · Nivel AA"],
+    ["This is a route-by-route testing target and public self-assessment, not a certification or blanket conformance claim.", "Este es un objetivo de prueba ruta por ruta y una autoevaluación pública, no una certificación ni una afirmación general de conformidad."],
     ["Source code", "Código fuente"],
     ["GitHub repository", "Repositorio de GitHub"],
     ["Site configuration and content", "Configuración y contenido del sitio"],
@@ -767,7 +778,6 @@
     ["Clear definitions.", "Definiciones claras."],
     ["Definitions for the specialized language used throughout the portfolio.", "Definiciones del lenguaje especializado utilizado en todo el portafolio."],
     ["Terms used on this site.", "Términos utilizados en este sitio."],
-    ["(opens in a new tab)", "(se abre en una pestaña nueva)"],
     ["May 2026 - Current", "may. 2026 - actualidad"],
     ["Sep 2024 - Apr 2026", "sept. 2024 - abr. 2026"],
     ["Jun 2023 - Aug 2024", "jun. 2023 - ago. 2024"],
@@ -801,27 +811,26 @@
 
   function translateDynamic(value) {
     const rules = [
-      [/^Play (.+) \(opens in a new tab\)$/, "Jugar a $1 (se abre en una pestaña nueva)"],
+      [/^Play (.+)$/, "Jugar a $1"],
       [/^Read the (.+) case study$/, "Leer el caso de estudio de $1"],
-      [/^View (.+) source code on GitHub \(opens in a new tab\)$/, "Ver el código fuente de $1 en GitHub (se abre en una pestaña nueva)"],
-      [/^View (.+) operating evidence \(opens in a new tab\)$/, "Ver la evidencia operativa de $1 (se abre en una pestaña nueva)"],
-      [/^View (.+) operations \(opens in a new tab\)$/, "Ver las operaciones de $1 (se abre en una pestaña nueva)"],
-      [/^(.+) on GitHub \(opens in a new tab\)$/, "$1 en GitHub (se abre en una pestaña nueva)"],
+      [/^View (.+) source code on GitHub$/, "Ver el código fuente de $1 en GitHub"],
+      [/^View (.+) operating evidence$/, "Ver la evidencia operativa de $1"],
+      [/^View (.+) operations$/, "Ver las operaciones de $1"],
+      [/^Visit WizardGang on GitHub$/, "Visitar WizardGang en GitHub"],
       [/^← Projects$/, "← Proyectos"],
       [/^← (.+) overview$/, "← Resumen de $1"],
       [/^(.+) overview$/, "Resumen de $1"],
       [/^(\d+) — (.+)$/, (_, number, label) => `${number} — ${spanish.get(label) || label}`],
       [/^(\d+) \/ (.+)$/, (_, number, label) => `${number} / ${spanish.get(label) || label}`],
       [/^Level (A|AA|AAA)$/, "Nivel $1"],
+      [/^Level A · Level AA$/, "Nivel A · Nivel AA"],
       [/^Level A · Level AA · Level AAA$/, "Nivel A · Nivel AA · Nivel AAA"],
       [/^(\d+) units$/, "$1 unidades"],
       [/^(\d+) damage · ([\d.]+) pushback · (\d+) frames active$/, "$1 de daño · $2 de empuje · $3 fotogramas activos"],
       [/^(\d+) fictional series · (\d+) chapters · Original demo artwork$/, "$1 series ficticias · $2 capítulos · Arte original de demostración"],
       [/^(\d+) sample series$/, "$1 series de muestra"],
       [/^(Comic|Manga|Webtoon|Webtoons) · (.+)$/, (_, genre, issue) => `${spanish.get(genre) || genre} · ${issue}`],
-      [/^(.+) \(opens in a new tab\)$/, "$1 (se abre en una pestaña nueva)"],
       [/^(.+) — Project by Jacob Yongue$/, "$1 — Proyecto de Jacob Yongue"],
-      [/^View build metadata for (.+)$/, "Ver metadatos de la compilación $1"],
       [/^✓ (\d+) met$/, "✓ $1 cumplidos"],
       [/^◐ (\d+) partial$/, "◐ $1 parciales"],
       [/^! (\d+) gap$/, "! $1 pendientes"]
@@ -856,7 +865,37 @@
     text: document.querySelector("#text-size-200"),
     motion: document.querySelector("#play-previews")
   };
+  const navToggle = document.querySelector(".nav-toggle");
+  const siteNav = document.querySelector("#site-nav");
+
+  function setNavigationOpen(open) {
+    if (!navToggle || !siteNav) return;
+    navToggle.setAttribute("aria-expanded", String(open));
+    siteNav.toggleAttribute("data-open", open);
+  }
+
+  navToggle?.addEventListener("click", () => {
+    setNavigationOpen(navToggle.getAttribute("aria-expanded") !== "true");
+  });
+  siteNav?.addEventListener("click", (event) => {
+    if (event.target.closest("a")) setNavigationOpen(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navToggle?.getAttribute("aria-expanded") === "true") {
+      setNavigationOpen(false);
+      navToggle.focus();
+    }
+  });
+  const mobileNavigation = matchMedia("(max-width: 760px)");
+  mobileNavigation.addEventListener("change", (event) => {
+    if (!event.matches) setNavigationOpen(false);
+  });
+
   const saved = readPreferences();
+  // Earlier builds stored the old paused default whenever any setting changed, so a
+  // saved `false` did not necessarily mean the visitor had chosen to pause previews.
+  // From this release onward, only an explicit motion-control change is authoritative.
+  let motionExplicit = saved.motionExplicit === true || saved.motion === true;
   const initialLocale = saved.language || (navigator.language?.toLowerCase().startsWith("es") ? "es" : "en");
 
   function applyLocale(locale) {
@@ -871,7 +910,7 @@
   else if (saved.theme === "dark") controls.dark.checked = true;
   if (typeof saved.reading === "boolean") controls.reading.checked = saved.reading;
   if (typeof saved.text === "boolean") controls.text.checked = saved.text;
-  if (typeof saved.motion === "boolean") controls.motion.checked = saved.motion;
+  if (motionExplicit && typeof saved.motion === "boolean") controls.motion.checked = saved.motion;
   applyLocale(initialLocale);
 
   function persist() {
@@ -880,12 +919,14 @@
       theme: controls.light.checked ? "light" : "dark",
       reading: controls.reading.checked,
       text: controls.text.checked,
-      motion: controls.motion.checked
+      motion: controls.motion.checked,
+      motionExplicit
     });
   }
 
   controls.language.addEventListener("change", () => { applyLocale(controls.language.value); persist(); });
-  for (const control of [controls.dark, controls.light, controls.reading, controls.text, controls.motion]) {
+  for (const control of [controls.dark, controls.light, controls.reading, controls.text]) {
     control.addEventListener("change", persist);
   }
+  controls.motion.addEventListener("change", () => { motionExplicit = true; persist(); });
 })();

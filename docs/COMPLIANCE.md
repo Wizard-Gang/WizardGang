@@ -195,7 +195,7 @@ collect submissions, make automated decisions, host an AI model, or operate cust
 
 ## Accessibility record
 
-The public checklist links each WCAG 2.0 item to the corresponding W3C success criterion. Scope,
+The public checklist links each WCAG 2.2 Level A and AA item to the corresponding W3C success criterion. Scope,
 test approach, limitations, and reporting are documented in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 
 ## Review and change control
@@ -203,4 +203,3 @@ test approach, limitations, and reporting are documented in [`ACCESSIBILITY.md`]
 Review this record after a material change to scope, data collection, hosting, dependencies,
 AI-development tools, public claims, or incident history, and at least annually while the site is
 maintained. Changes are approved through the same public source history as the implementation.
-

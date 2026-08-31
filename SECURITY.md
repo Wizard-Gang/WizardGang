@@ -8,7 +8,7 @@ issues through their canonical public repositories or operating sites.
 
 ## Report privately
 
-Email `jacobyongue@outlook.com` with the affected URL, impact, and minimal reproduction steps.
+Email `jacob@wizardgang.ai` with the affected URL, impact, and minimal reproduction steps.
 Please do not open a public issue for an unpatched vulnerability and do not include passwords,
 private records, credentials, destructive proof, or data belonging to another person.
 
@@ -22,4 +22,3 @@ Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, o
 Security headers, automated release checks, a development deployment, versioned source, and rollback
 reduce the public attack surface. These controls reduce risk; they do not guarantee that defects or
 incidents cannot occur.
-
