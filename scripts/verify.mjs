@@ -51,8 +51,8 @@ for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
-  if (!html.includes('<nav class="site-nav" aria-label="Primary" id="site-nav">')) fail(`${relative}: missing primary navigation`);
-  if (!html.includes('<button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">')) fail(`${relative}: missing accessible mobile navigation disclosure`);
+  if (!html.includes('<nav class="site-nav site-nav-desktop" aria-label="Primary">')) fail(`${relative}: missing desktop primary navigation`);
+  if (!html.includes('<details class="nav-disclosure">') || !html.includes('<summary class="nav-toggle">') || !html.includes('<nav class="site-nav site-nav-mobile" aria-label="Primary mobile">')) fail(`${relative}: missing no-JavaScript mobile navigation disclosure`);
   for (const label of ["Projects", "Work", "About", "Contact", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
   }
@@ -220,7 +220,7 @@ for (const accessibilityStyle of [
   "body:has(#play-previews:checked) .project-visual * { animation-play-state: running !important; }",
   "html:has(#text-size-200:checked) { font-size: 200%; }",
   "body:has(#theme-light:checked)",
-  ".js .site-nav[data-open] { display: flex; }",
+  ".nav-disclosure[open] .site-nav { display: flex; }",
   "--line: #6f6a75",
   "min-height: 44px",
   "#c7d0d7",
@@ -229,7 +229,7 @@ for (const accessibilityStyle of [
 ]) {
   if (!styles.includes(accessibilityStyle)) fail(`compiled styles missing accessibility rule ${accessibilityStyle}`);
 }
-for (const navigationBehavior of ['document.documentElement.classList.add("js")', 'navToggle.setAttribute("aria-expanded", String(open))', 'event.key === "Escape"']) {
+for (const navigationBehavior of ['navDisclosure.toggleAttribute("open", open)', 'event.key === "Escape"']) {
   if (!siteScript.includes(navigationBehavior)) fail(`site script missing mobile navigation behavior: ${navigationBehavior}`);
 }
 if (/tank-rocket-flame\s+\.(?:0|1|2|3)\d?s/i.test(styles)) {

@@ -1,8 +1,6 @@
 (() => {
   "use strict";
 
-  document.documentElement.classList.add("js");
-
   const storageKey = "wizardgang.preferences.v1";
   const spanish = new Map([
     ["Skip to main content", "Saltar al contenido principal"],
@@ -865,25 +863,22 @@
     text: document.querySelector("#text-size-200"),
     motion: document.querySelector("#play-previews")
   };
-  const navToggle = document.querySelector(".nav-toggle");
-  const siteNav = document.querySelector("#site-nav");
+  const navDisclosure = document.querySelector(".nav-disclosure");
+  const navToggle = navDisclosure?.querySelector(".nav-toggle");
+  const siteNav = navDisclosure?.querySelector(".site-nav-mobile");
 
   function setNavigationOpen(open) {
-    if (!navToggle || !siteNav) return;
-    navToggle.setAttribute("aria-expanded", String(open));
-    siteNav.toggleAttribute("data-open", open);
+    if (!navDisclosure) return;
+    navDisclosure.toggleAttribute("open", open);
   }
 
-  navToggle?.addEventListener("click", () => {
-    setNavigationOpen(navToggle.getAttribute("aria-expanded") !== "true");
-  });
   siteNav?.addEventListener("click", (event) => {
     if (event.target.closest("a")) setNavigationOpen(false);
   });
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && navToggle?.getAttribute("aria-expanded") === "true") {
+    if (event.key === "Escape" && navDisclosure?.open) {
       setNavigationOpen(false);
-      navToggle.focus();
+      navToggle?.focus();
     }
   });
   const mobileNavigation = matchMedia("(max-width: 760px)");
