@@ -5,7 +5,7 @@ import { deployments, integrationGroups, systemGroups } from "./professional-sys
 const SITE_ORIGIN = "https://wizardgang.ai";
 const GITHUB = "https://github.com/Wizard-Gang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
-const CONTACT_EMAIL = "jacobyongue@outlook.com";
+const CONTACT_EMAIL = "jacob@wizardgang.ai";
 const WEBSITE_DEMO = "https://yourwebsite.wizardgang.ai";
 const WEBSITE_DEMO_WALKTHROUGH = `${WEBSITE_DEMO}/how-it-works/`;
 const WEBSITE_PACKAGES = [
@@ -43,18 +43,15 @@ function header(current = "") {
   const nav = [
     ["projects", "/projects/", "Projects"],
     ["work", "/work/", "Work"],
-    ["services", "/services/", "Services"],
-    ["about", "/about/", "About"]
-  ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
-  const support = [
-    ["compliance", "/compliance/", "Compliance"],
-    ["glossary", "/glossary/", "Glossary"]
-  ].map(([key, href, label]) => `<a href="${href}"${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
-  const repository = `<a href="${GITHUB}" target="_blank" rel="noopener noreferrer" aria-label="WizardGang on GitHub (opens in a new tab)">GitHub</a>`;
+    ["about", "/about/", "About"],
+    ["", `mailto:${CONTACT_EMAIL}`, "Contact"],
+    ["", GITHUB, "GitHub"]
+  ].map(([key, href, label]) => `<a href="${href}"${href === GITHUB ? ' aria-label="Visit WizardGang on GitHub"' : ""}${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
       <a class="wordmark" href="/" aria-label="Jacob Yongue portfolio home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>JACOB YONGUE</strong><small>wizardgang.ai</small></span></a>
-      <nav class="site-nav" aria-label="Primary">${nav}<span class="site-nav-support">${support}${repository}</span></nav>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span>Menu</span><span class="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span></button>
+      <nav class="site-nav" aria-label="Primary" id="site-nav">${nav}</nav>
     </header>`;
 }
 
@@ -71,19 +68,21 @@ function displaySettings() {
       <label class="setting-toggle"><input type="checkbox" id="reading-layout" checked><span>Readable layout</span></label>
       <label class="setting-toggle"><input type="checkbox" id="text-size-200"><span>200% text</span></label>
       <label class="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" checked><span>Play previews</span></label>
-      <small class="sr-only" id="motion-setting-help">Previews play by default and remain still when reduced motion is requested.</small>
+      <small class="sr-only" id="motion-setting-help">Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.</small>
     </section>
   </details>`;
 }
 
 function footer(build, current = "") {
-  const contact = `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">Jacob Yongue on LinkedIn <span aria-hidden="true">↗</span></a><a href="/compliance/">Compliance</a><a href="/glossary/">Glossary</a></span>`;
-  return `<footer class="site-footer"><span>Jacob Yongue · Software engineering portfolio</span>${contact}<span>WizardGang.ai · <a href="/version.json">View build metadata for ${escapeHtml(build.commit)}</a></span></footer>`;
+  const contact = `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a></span>`;
+  return `<footer class="site-footer"><span>Jacob Yongue · Software engineering portfolio</span>${contact}<span>WizardGang.ai · <a href="/version.json">Build ${escapeHtml(build.commit)}</a></span></footer>`;
 }
 
 function document({ title, description, path, current, body, build, social = false, noindex = false }) {
   const canonical = `${SITE_ORIGIN}${path}`;
-  const assetVersion = encodeURIComponent(build.commit);
+  // The visible build label remains the Git hash, while the asset key also changes for
+  // verified deployments made from an intentionally dirty working tree.
+  const assetVersion = encodeURIComponent(`${build.commit}-${Date.parse(build.builtAt)}`);
   const identity = noindex
     ? '<meta name="robots" content="noindex">'
     : `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}">`;
@@ -127,14 +126,14 @@ function actions(project, compact = false) {
   const links = [];
 
   if (project.slug === "sharktank") {
-    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} operating evidence (opens in a new tab)">Evidence <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" aria-label="Play ${escapeHtml(project.name)}">Play <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" aria-label="View ${escapeHtml(project.name)} operating evidence">Evidence <span aria-hidden="true">↗</span></a>`);
   } else {
-    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>`);
-    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} operations (opens in a new tab)">Evidence <span aria-hidden="true">↗</span></a>`);
+    if (project.liveUrl) links.push(`<a class="${compact ? "text-link" : "button button-primary"}" href="${project.liveUrl}" aria-label="Play ${escapeHtml(project.name)}">Play <span aria-hidden="true">↗</span></a>`);
+    if (project.operationsUrl) links.push(`<a class="${className}" href="${project.operationsUrl}" aria-label="View ${escapeHtml(project.name)} operations">Evidence <span aria-hidden="true">↗</span></a>`);
   }
 
-  links.push(`<a class="${className}" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`);
+  links.push(`<a class="${className}" href="${project.sourceUrl}" aria-label="View ${escapeHtml(project.name)} source code on GitHub">GitHub <span aria-hidden="true">↗</span></a>`);
 
   return `<div class="${compact ? "text-links" : "button-row"}">${links.join("")}</div>`;
 }
@@ -231,7 +230,7 @@ function sharkTankVisual() {
       <div class="tank-card"><span>Size</span><strong>1.0<small>×</small></strong></div>
     </div>
     <div class="tank-board">
-      <h4>Top Sharks</h4>
+      <p class="tank-board-title">Top Sharks</p>
       <ol>
         <li><span>1</span><i class="dot-lime"></i><b>Wriggle</b><em>230</em></li>
         <li><span>2</span><i class="dot-violet"></i><b>Molar</b><em>197</em></li>
@@ -474,15 +473,15 @@ function projectVisual(project) {
 }
 
 function projectCardActions(project) {
-  const play = project.liveUrl ? `<a class="text-link" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>` : "";
+  const play = project.liveUrl ? `<a class="text-link" href="${project.liveUrl}" aria-label="Play ${escapeHtml(project.name)}">Play <span aria-hidden="true">↗</span></a>` : "";
   const caseStudy = `<a class="text-link" href="/projects/${project.slug}/case-study/" aria-label="Read the ${escapeHtml(project.name)} case study">Case study <span aria-hidden="true">→</span></a>`;
-  const github = `<a class="text-link" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`;
+  const github = `<a class="text-link" href="${project.sourceUrl}" aria-label="View ${escapeHtml(project.name)} source code on GitHub">GitHub <span aria-hidden="true">↗</span></a>`;
   return `<div class="project-card-actions">${play}${caseStudy}${github}</div>`;
 }
 
 function projectCard(project) {
   return `<article class="project-card">
-    <div class="project-card-visual">${projectVisual(project)}</div>
+    <div class="project-card-visual" aria-hidden="true" inert>${projectVisual(project)}</div>
     <div class="project-card-copy"><span class="project-number">${project.number} / ${escapeHtml(project.eyebrow)}</span><h3><a href="/projects/${project.slug}/">${escapeHtml(project.name)}</a></h3><p>${escapeHtml(project.description)}</p>${projectCardActions(project)}</div>
   </article>`;
 }
@@ -493,21 +492,21 @@ function selectedWork() {
 
 function capabilityGrid() {
   const items = [
-    ["01", "Software engineering", "Browser applications, application programming interfaces (APIs), data pipelines, command-line tools, simulation, testing, and production support."],
-    ["02", "Systems integration", "Getting separate systems to work as one — warehouses, enterprise resource planning (ERP) platforms, storefronts, shipping carriers, and logins — through APIs, electronic data interchange (EDI), and clearly matched data fields."],
-    ["03", "Implementation", "Requirements, workflow analysis, migration, configuration, quality assurance (QA), training, launch, and early production support."],
-    ["04", "Technical project delivery", "Cross-functional planning, team leadership, risk management, release cadence, and accountable handoff."],
-    ["05", "Operations, quality & governance", "System monitoring, incident response, recovery, secure change, evidence, and management practices aligned with International Organization for Standardization (ISO) guidance."]
+    ["01", "Build the software", "I turn requirements into applications, APIs, data tools, and automation."],
+    ["02", "Connect the systems", "I make business systems share the right data at the right time."],
+    ["03", "Put it into use", "I move data, configure workflows, test, train users, and support launch."],
+    ["04", "Lead the work", "I keep scope, owners, risks, and releases clear."],
+    ["05", "Keep it running", "I monitor production, respond to incidents, improve recovery, and document changes."]
   ];
   return `<div class="capability-grid">${items.map(([number, title, copy]) => `<article><small>${number}</small><h3>${title}</h3><p>${copy}</p></article>`).join("")}</div>`;
 }
 
 function home(build) {
   const body = `<main class="site-main" id="main" tabindex="-1">
-    <section class="hero jacob-hero"><div class="home-statement-card"><p>I build systems that deliver.</p></div><div><p class="kicker">Software engineer · Systems · Project delivery</p><h1>Jacob <span>Yongue</span></h1></div><div class="hero-side"><p>I design, build, connect, and launch software, then help teams keep it working in production.</p><div class="button-row"><a class="button button-primary" href="/projects/">Projects</a><a class="button" href="/work/">Work</a><a class="button" href="/services/">Services</a><a class="button" href="/about/">About</a><a class="button" href="/compliance/">Compliance</a><a class="button" href="${GITHUB}" target="_blank" rel="noopener noreferrer" aria-label="Visit WizardGang on GitHub (opens in a new tab)">GitHub</a></div></div></section>
+    <section class="hero jacob-hero"><div class="hero-identity"><h1>Jacob <span>Yongue</span></h1><p class="kicker hero-role">Software engineer · Systems · Project delivery</p><div class="home-statement-card"><p>I build systems that ship.</p></div></div><div class="hero-side"><p>I design, build, connect, and launch software, then help teams keep it working in production.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects</a><a class="button" href="mailto:${CONTACT_EMAIL}">Get in touch</a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
     <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
-    <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">Build, connect, deliver, operate.</h2></div></div>${capabilityGrid()}</section>
+    <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">From idea to production.</h2></div></div>${capabilityGrid()}</section>
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
     <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
   </main>`;
@@ -523,10 +522,10 @@ function work(build) {
   const body = `<main class="case-main professional-main" id="main" tabindex="-1">
     <section class="professional-hero"><div><p class="kicker">Work / professional portfolio</p><h1>Production work.<br><span>Operational stakes.</span></h1></div><div class="professional-hero-copy"><p>AI, supply-chain, fulfillment, and public-sector systems delivered from discovery through production.</p></div></section>
     <section class="professional-experience" aria-labelledby="experience-heading"><div class="professional-section-heading"><div><p class="kicker">Career history</p><h2 id="experience-heading">Roles across the delivery path.</h2></div><p>What I owned, what I delivered, and the operating context around each role.</p></div><div class="experience-grid">${professionalRoles.map((item) => `<article><span>${escapeHtml(item.dates)}</span><h3>${escapeHtml(item.organization)}</h3><strong>${escapeHtml(item.role)}</strong><p>${escapeHtml(item.summary)}</p></article>`).join("")}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-systems"><header><div><p class="kicker">Systems delivered</p><h2 id="work-systems">Real systems in real operations.</h2></div><p>Grouped by the problem and operating environment—not as a technology inventory.</p></header><div class="systems-resume-grid">${systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("")}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-integrations"><header><div><p class="kicker">Integrations</p><h2 id="work-integrations">Connected business operations.</h2></div><p>Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.</p></header><div class="systems-resume-grid">${integrationGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(group.items)}</article>`).join("")}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-deployments"><header><div><p class="kicker">Deployments</p><h2 id="work-deployments">Organizations and environments.</h2></div><p>Named deployment context from Jacob’s employment history. Organization links are provided for identification only.</p></header>${referenceList(deployments)}</section>
-    <section class="professional-skills" aria-labelledby="skills-heading"><div class="professional-section-heading"><div><p class="kicker">Core skills</p><h2 id="skills-heading">The delivery stack.</h2></div><p>The languages, platforms, and practices this professional record was delivered on.</p></div><div class="skill-columns">${professionalSkills.map((group) => `<div><strong>${escapeHtml(group.label)}</strong>${tags(group.items, group.label)}</div>`).join("")}</div></section>
+    <section class="systems-resume-section" aria-labelledby="work-systems"><header><div><p class="kicker">Systems delivered</p><h2 id="work-systems">Real systems in real operations.</h2></div><p>Systems organized by what they do.</p></header><div class="systems-resume-grid">${systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("")}</div></section>
+    <section class="systems-resume-section" aria-labelledby="work-integrations"><header><div><p class="kicker">Integrations</p><h2 id="work-integrations">Connected business operations.</h2></div><p>Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.</p></header><div class="systems-resume-grid">${referenceGroups(integrationGroups)}</div></section>
+    <section class="systems-resume-section" aria-labelledby="work-deployments"><header><div><p class="kicker">Deployments</p><h2 id="work-deployments">Organizations and environments.</h2></div><p>Organization links are provided for identification only.</p></header>${referenceList(deployments)}</section>
+    <section class="professional-skills" aria-labelledby="skills-heading"><div class="professional-section-heading"><div><p class="kicker">Core skills</p><h2 id="skills-heading">The delivery stack.</h2></div><p>The languages, platforms, and practices behind this professional record.</p></div><div class="skill-columns">${professionalSkills.map((group) => `<div><strong>${escapeHtml(group.label)}</strong>${tags(group.items, group.label)}</div>`).join("")}</div></section>
     <p class="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
   </main>`;
   return document({ title: "Work — Jacob Yongue | Professional Portfolio", description: "Jacob Yongue's professional portfolio: systems delivered, deployments, integrations, career history, QA, implementation, and production support from 2019 through 2026.", path: "/work/", current: "work", body, build });
@@ -544,15 +543,15 @@ function services(build) {
     ["Custom domain", "Cloudflare serves the deployed site at the business address"]
   ];
   const body = `<main class="case-main services-main" id="main" tabindex="-1">
-    <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1><span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>We don’t sell you a website subscription. We build you a small piece of software and hand you the keys.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a><a class="button" href="${WEBSITE_DEMO_WALKTHROUGH}" target="_blank" rel="noopener noreferrer">See how it works <span aria-hidden="true">↗</span></a></div></div></section>
+    <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1><span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>I don’t sell you a website subscription. I build you a small piece of software and hand you the keys.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a><a class="button" href="${WEBSITE_DEMO_WALKTHROUGH}">See how it works <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="service-packages" aria-labelledby="packages-heading"><header><div><p class="kicker">Website packages</p><h2 id="packages-heading">Choose the scope that fits.</h2></div><p>Each package uses the same responsive, config-driven foundation. The difference is how many routes and customer-facing features the site includes.</p></header><div class="service-package-grid">${packageCards}</div></section>
-    <section class="service-ownership" aria-labelledby="ownership-heading"><header><div><p class="kicker">Ownership</p><h2 id="ownership-heading">The website is yours.</h2></div><p>Most website builders keep the system behind your site. This approach gives you a real software project that you can see, own, and move.</p></header><p class="service-statement">Your website. Your code. Your infrastructure.</p><div class="service-stack" role="list" aria-label="Website ownership and deployment path"><article role="listitem"><span>01</span><h3>GitHub</h3><p>Your source code, site configuration, content, and change history live in a repository you control.</p></article><article role="listitem"><span>02</span><h3>Cloudflare</h3><p>Cloudflare builds and delivers the site, handles HTTPS, and connects it to the internet from infrastructure you control.</p></article><article role="listitem"><span>03</span><h3>Your domain</h3><p>Your business address points directly to your deployment. WizardGang does not have to stay in the middle.</p></article></div><aside class="service-cost"><div><p class="kicker">A small system first</p><h3>No required monthly hosting subscription for qualifying sites.</h3></div><div><p>For qualifying small-business sites, production infrastructure can run on the free tiers of GitHub and Cloudflare. Cloudflare currently includes 100,000 Worker requests per day on its free plan, and static asset requests are free and unlimited.</p><p>Domain registration, paid add-ons, and usage above current free-tier limits are separate. The point is ownership—not a promise that every site will cost $0 forever.</p><div class="text-links"><a class="text-link" href="https://developers.cloudflare.com/workers/platform/pricing/" target="_blank" rel="noopener noreferrer">Cloudflare limits <span aria-hidden="true">↗</span></a><a class="text-link" href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans" target="_blank" rel="noopener noreferrer">GitHub plans <span aria-hidden="true">↗</span></a></div></div></aside></section>
-    <section class="service-demo" aria-labelledby="demo-heading"><header><div><p class="kicker">Live example</p><h2 id="demo-heading">See exactly what runs the website.</h2></div><div><p>The Owner+ demonstration is not a screenshot. It is a real site built from a real repository and deployed through the same path described here.</p><div class="button-row"><a class="button button-primary" href="${WEBSITE_DEMO_WALKTHROUGH}" target="_blank" rel="noopener noreferrer">See how this website works <span aria-hidden="true">↗</span></a><a class="button" href="${WEBSITE_DEMO}" target="_blank" rel="noopener noreferrer">Open the demo <span aria-hidden="true">↗</span></a></div></div></header><div class="service-source-map"><h3>What drives what?</h3><div class="service-source-table" role="table" aria-label="Website source and result mapping"><div class="service-source-row service-source-head" role="row"><span role="columnheader">You change</span><span role="columnheader">What happens</span></div>${sourceMap.map(([source, result]) => `<div class="service-source-row" role="row"><strong role="cell">${escapeHtml(source)}</strong><span role="cell">${escapeHtml(result)}</span></div>`).join("")}</div></div></section>
-    <section class="service-handoff" aria-labelledby="handoff-heading"><div><p class="kicker">Handoff</p><h2 id="handoff-heading">Built to be handed over.</h2><p>WizardGang can build, configure, test, and launch the site. You receive the pieces another developer—or an AI coding tool—would need to continue the work later.</p></div><ul><li>Source code</li><li>GitHub repository</li><li>Site configuration and content</li><li>Domain and deployment configuration</li><li>Change and deployment history</li><li>Documentation for future work</li></ul></section>
+    <section class="service-ownership" aria-labelledby="ownership-heading"><header><div><p class="kicker">Ownership</p><h2 id="ownership-heading">The website is yours.</h2></div><p>Most website builders keep the system behind your site. This approach gives you a real software project that you can see, own, and move.</p></header><p class="service-statement">Your website. Your code. Your infrastructure.</p><div class="service-stack" role="list" aria-label="Website ownership and deployment path"><article role="listitem"><span>01</span><h3>GitHub</h3><p>Your source code, site configuration, content, and change history live in a repository you control.</p></article><article role="listitem"><span>02</span><h3>Cloudflare</h3><p>Cloudflare builds and delivers the site, handles HTTPS, and connects it to the internet from infrastructure you control.</p></article><article role="listitem"><span>03</span><h3>Your domain</h3><p>Your business address points directly to your deployment. I do not have to stay in the middle.</p></article></div><aside class="service-cost"><div><p class="kicker">A small system first</p><h3>No required monthly hosting subscription for qualifying sites.</h3></div><div><p>For qualifying small-business sites, production infrastructure can run on the free tiers of GitHub and Cloudflare. Cloudflare currently includes 100,000 Worker requests per day on its free plan, and static asset requests are free and unlimited.</p><p>Domain registration, paid add-ons, and usage above current free-tier limits are separate. The point is ownership—not a promise that every site will cost $0 forever.</p><div class="text-links"><a class="text-link" href="https://developers.cloudflare.com/workers/platform/pricing/">Cloudflare limits <span aria-hidden="true">↗</span></a><a class="text-link" href="https://docs.github.com/en/get-started/learning-about-github/githubs-plans">GitHub plans <span aria-hidden="true">↗</span></a></div></div></aside></section>
+    <section class="service-demo" aria-labelledby="demo-heading"><header><div><p class="kicker">Live example</p><h2 id="demo-heading">See exactly what runs the website.</h2></div><div><p>The Owner+ demonstration is not a screenshot. It is a real site built from a real repository and deployed through the same path described here.</p><div class="button-row"><a class="button button-primary" href="${WEBSITE_DEMO_WALKTHROUGH}">See how this website works <span aria-hidden="true">↗</span></a><a class="button" href="${WEBSITE_DEMO}">Open the demo <span aria-hidden="true">↗</span></a></div></div></header><div class="service-source-map"><h3>What drives what?</h3><div class="service-source-table" role="table" aria-label="Website source and result mapping"><div class="service-source-row service-source-head" role="row"><span role="columnheader">You change</span><span role="columnheader">What happens</span></div>${sourceMap.map(([source, result]) => `<div class="service-source-row" role="row"><strong role="cell">${escapeHtml(source)}</strong><span role="cell">${escapeHtml(result)}</span></div>`).join("")}</div></div></section>
+    <section class="service-handoff" aria-labelledby="handoff-heading"><div><p class="kicker">Handoff</p><h2 id="handoff-heading">Built to be handed over.</h2><p>I can build, configure, test, and launch the site. You receive the pieces another developer—or an AI coding tool—would need to continue the work later.</p></div><ul><li>Source code</li><li>GitHub repository</li><li>Site configuration and content</li><li>Domain and deployment configuration</li><li>Change and deployment history</li><li>Documentation for future work</li></ul></section>
     <section class="service-process" aria-labelledby="process-heading"><header><div><p class="kicker">Delivery</p><h2 id="process-heading">From business details to a working site.</h2></div><p>You provide the business information, brand direction, approved copy, images, and domain access. I configure, test, deploy, and hand over the working site.</p></header><div class="service-process-grid"><article><span>01</span><h3>Define the site</h3><p>Confirm the package, pages, content, visual direction, and contact path.</p></article><article><span>02</span><h3>Build and check</h3><p>Configure the site, test its routes and forms, and prepare the production domain.</p></article><article><span>03</span><h3>Deploy and hand over</h3><p>Publish the site and leave the source, configuration, and deployment under your control.</p></article></div></section>
     <section class="service-growth" aria-labelledby="growth-heading"><div><p class="kicker">Start small, grow for a reason</p><h2 id="growth-heading">Add infrastructure when the business needs it.</h2></div><ol><li><span>01</span><strong>Buy</strong><small>A fixed-scope site</small></li><li><span>02</span><strong>Own</strong><small>Code, domain, deployment</small></li><li><span>03</span><strong>Understand</strong><small>A visible source of truth</small></li><li><span>04</span><strong>Verify</strong><small>Demo, history, and checks</small></li><li><span>05</span><strong>Grow</strong><small>Forms, data, booking, or automation</small></li></ol></section>
     <section class="service-notes"><div><p class="kicker">Scope</p><h2>Clear package boundaries.</h2></div><p>Domain purchases, paid third-party services, custom application features, ecommerce, and large copy or content migrations are quoted separately before work begins.</p></section>
-    <section class="contact-band" aria-label="Website service contact"><p>Ready to own the website you pay for?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Get in touch</a><a class="button" href="${WEBSITE_DEMO_WALKTHROUGH}" target="_blank" rel="noopener noreferrer">See how it works <span aria-hidden="true">↗</span></a></div></section>
+    <section class="contact-band" aria-label="Website service contact"><p>Ready to own the website you pay for?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Get in touch</a><a class="button" href="${WEBSITE_DEMO_WALKTHROUGH}">See how it works <span aria-hidden="true">↗</span></a></div></section>
   </main>`;
   return document({ title: "Website Services — Jacob Yongue | WizardGang", description: "Fixed-scope small-business websites with owner-controlled source code, GitHub repository, Cloudflare deployment, domain, and a live inspectable example.", path: "/services/", current: "services", body, build });
 }
@@ -584,13 +583,13 @@ const projectNarrative = {
 
 function projectShowcase(project, build) {
   const copy = projectNarrative[project.slug];
-  const playAction = project.liveUrl ? `<a class="button button-primary" href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" aria-label="Play ${escapeHtml(project.name)} (opens in a new tab)">Play <span aria-hidden="true">↗</span></a>` : "";
+  const playAction = project.liveUrl ? `<a class="button button-primary" href="${project.liveUrl}" aria-label="Play ${escapeHtml(project.name)}">Play <span aria-hidden="true">↗</span></a>` : "";
   const caseStudyAction = `<a class="button${project.liveUrl ? "" : " button-primary"}" href="/projects/${project.slug}/case-study/" aria-label="Read the ${escapeHtml(project.name)} case study">Case study <span aria-hidden="true">→</span></a>`;
-  const githubAction = `<a class="button" href="${project.sourceUrl}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(project.name)} source code on GitHub (opens in a new tab)">GitHub <span aria-hidden="true">↗</span></a>`;
+  const githubAction = `<a class="button" href="${project.sourceUrl}" aria-label="View ${escapeHtml(project.name)} source code on GitHub">GitHub <span aria-hidden="true">↗</span></a>`;
   const primaryActions = `${playAction}${caseStudyAction}${githubAction}`;
   const body = `<main class="case-main showcase-main" id="main" tabindex="-1"><a class="crumb" href="/projects/">← Projects</a>
     <section class="showcase-hero"><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1><p>${escapeHtml(copy.tagline)}</p><div class="button-row">${primaryActions}</div></section>
-    <div class="case-visual showcase-visual">${projectVisual(project)}</div>
+    <div class="case-visual showcase-visual" aria-hidden="true" inert>${projectVisual(project)}</div>
     <section class="showcase-overview"><article><p class="kicker">What it is</p><h2>A complete working system.</h2><p>${escapeHtml(copy.what)}</p></article><article><p class="kicker">Why I built it</p><h2>The engineering question.</h2><p>${escapeHtml(copy.why)}</p></article></section>
     <section class="case-section"><div class="case-label">Engineering highlights</div><div><h2>What the project demonstrates.</h2><ul class="built-list">${copy.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
     <section class="project-depth"><div><p class="kicker">Go deeper</p><h2>Overview first. Evidence when you want it.</h2></div><div><p>The case study explains the architecture, boundaries, tradeoffs, and current state. The running application and repository provide the proof.</p><div class="button-row">${caseStudyAction}${playAction}${githubAction}</div></div></section>
@@ -623,7 +622,7 @@ function sharkTankCaseStudy(project, build) {
   ];
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/sharktank/">← SharkTank overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
-    <div class="case-visual">${projectVisual(project)}</div>
+    <div class="case-visual" aria-hidden="true" inert>${projectVisual(project)}</div>
     <section class="case-section"><div class="case-label">01 — The game</div><div><h2>It starts with multiplayer gameplay.</h2><p>Players control sharks in a shared tank. They eat food, dash forward, fire rockets, and compete for score while the server keeps everyone in the same match. The security and operating features support that game; they are not the game itself.</p></div></section>
     <section class="case-section"><div class="case-label">02 — The operating problem</div><div><h2>A live game uses real resources.</h2><p>${escapeHtml(project.problem)}</p><p>Shark Tank therefore includes the checks needed to run the game responsibly. They protect public input, control operator access, track billable activity, record changes, and provide a recovery path.</p></div></section>
     <section class="case-section"><div class="case-label">03 — ISO/IEC 27001</div><div><h2>Secure operation is built into the game.</h2><p><strong>ISO/IEC 27001</strong> provides principles for managing information security. Shark Tank applies those principles to every feature and to the way the live service is operated: access is controlled, input is checked, changes are tested, backups are verified, and important actions leave records. These are everyday safeguards, not a claim that a security incident has occurred.</p><ul class="built-list">${operatingControls.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
@@ -672,7 +671,7 @@ function projectCaseStudy(project, build) {
     : "A library that can recover and be rebuilt.";
   const body = `<main class="case-main" id="main" tabindex="-1"><a class="crumb" href="/projects/${project.slug}/">← ${escapeHtml(project.name)} overview</a>
     <section class="case-hero"><div><p class="kicker">${project.number} / ${escapeHtml(project.eyebrow)}</p><h1>${escapeHtml(project.name)}</h1></div><div><p class="case-lede">${escapeHtml(project.description)}</p>${tags(project.tags)}${actions(project)}</div></section>
-    <div class="case-visual">${projectVisual(project)}</div>
+    <div class="case-visual" aria-hidden="true" inert>${projectVisual(project)}</div>
     <section class="case-section"><div class="case-label">01 — Problem</div><div><h2>${project.slug === "hexframe" ? "Make every feature agree on what happened." : "Protect the library while rebuilding it."}</h2><p>${escapeHtml(project.problem)}</p></div></section>
     <section class="case-section"><div class="case-label">02 — What I built</div><div><h2>What the project does.</h2><ul class="built-list">${project.built.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
     <section class="case-section"><div class="case-label">03 — Architecture</div><div><h2>Each part has one job.</h2>${architecture(project.architecture)}</div></section>
@@ -692,11 +691,18 @@ function about(build) {
 
 function officialReference(item) {
   if (!item.url) return escapeHtml(item.name);
-  return `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.name)} <span class="sr-only">(opens in a new tab)</span></a>`;
+  return `<a href="${escapeHtml(item.url)}">${escapeHtml(item.name)}</a>`;
 }
 
 function referenceList(items) {
   return `<ul class="reference-cloud">${items.map((item) => `<li>${officialReference(item)}</li>`).join("")}</ul>`;
+}
+
+function referenceGroups(groups, limit) {
+  return groups.map((group) => {
+    const items = Number.isInteger(limit) ? group.items.slice(0, limit) : group.items;
+    return `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(items)}</article>`;
+  }).join("");
 }
 
 function capabilityList(items) {
@@ -707,7 +713,7 @@ const WCAG_LEVELS = [
   {
     level: "A",
     criteria: [
-      ["1.1.1", "Non-text Content", "Visual previews and informational images provide text alternatives or semantic data.", "met"],
+      ["1.1.1", "Non-text Content", "Decorative project previews are excluded from the accessibility tree; adjacent project names and descriptions provide the useful content.", "met"],
       ["1.2.1", "Audio-only and Video-only (Prerecorded)", "The portfolio publishes no prerecorded audio-only or video-only media.", "met"],
       ["1.2.2", "Captions (Prerecorded)", "The portfolio publishes no prerecorded synchronized media that requires captions.", "met"],
       ["1.2.3", "Audio Description or Media Alternative", "The portfolio publishes no prerecorded synchronized video requiring an alternative.", "met"],
@@ -716,21 +722,27 @@ const WCAG_LEVELS = [
       ["1.3.3", "Sensory Characteristics", "Instructions and controls do not depend only on shape, position, or sound.", "met"],
       ["1.4.1", "Use of Color", "Labels, text, patterns, and symbols accompany color-coded states.", "met"],
       ["1.4.2", "Audio Control", "No audio starts automatically.", "met"],
-      ["2.1.1", "Keyboard", "Navigation, preferences, and links use native keyboard-operable controls.", "met"],
+      ["2.1.1", "Keyboard", "Navigation, preferences, disclosures, and links use native keyboard-operable controls.", "met"],
       ["2.1.2", "No Keyboard Trap", "No component traps keyboard focus.", "met"],
+      ["2.1.4", "Character Key Shortcuts", "The portfolio defines no single-character keyboard shortcuts.", "met"],
       ["2.2.1", "Timing Adjustable", "The portfolio sets no time limits for reading or interaction.", "met"],
-      ["2.2.2", "Pause, Stop, Hide", "Project motion has a persistent Play previews control that can pause animation.", "met"],
+      ["2.2.2", "Pause, Stop, Hide", "Project previews are paused by default and have a persistent Play previews control.", "met"],
       ["2.3.1", "Three Flashes or Below Threshold", "Preview motion stays below the three-flashes threshold.", "met"],
       ["2.4.1", "Bypass Blocks", "Every page starts with a keyboard-visible skip link to main content.", "met"],
       ["2.4.2", "Page Titled", "Every route has a descriptive page title.", "met"],
       ["2.4.3", "Focus Order", "Keyboard focus follows the document and visual sequence.", "met"],
       ["2.4.4", "Link Purpose (In Context)", "Links have clear visible context and descriptive accessible names.", "met"],
+      ["2.5.1", "Pointer Gestures", "The portfolio requires no multipoint or path-based pointer gestures.", "met"],
+      ["2.5.2", "Pointer Cancellation", "Links and controls use native activation behavior rather than custom down-event actions.", "met"],
+      ["2.5.3", "Label in Name", "Visible control and link labels are included in their accessible names.", "met"],
+      ["2.5.4", "Motion Actuation", "No function requires device movement or user motion.", "met"],
       ["3.1.1", "Language of Page", "The document language is English by default and changes to Spanish with the language preference.", "met"],
       ["3.2.1", "On Focus", "Moving focus does not trigger navigation or unexpected changes.", "met"],
       ["3.2.2", "On Input", "Preference changes are immediate, reversible, and match their labels.", "met"],
+      ["3.2.6", "Consistent Help", "Contact help remains in consistent primary-navigation and footer locations.", "met"],
       ["3.3.1", "Error Identification", "The portfolio has no data-entry forms; native controls expose their state.", "met"],
       ["3.3.2", "Labels or Instructions", "All preference controls have visible labels and grouped legends.", "met"],
-      ["4.1.1", "Parsing", "Generated pages use nested, closed, uniquely identified HTML structures.", "met"],
+      ["3.3.7", "Redundant Entry", "The portfolio does not ask visitors to enter information more than once.", "met"],
       ["4.1.2", "Name, Role, Value", "Native controls and descriptive link names expose role, state, and purpose.", "met"]
     ]
   },
@@ -739,111 +751,88 @@ const WCAG_LEVELS = [
     criteria: [
       ["1.2.4", "Captions (Live)", "The portfolio publishes no live synchronized media.", "met"],
       ["1.2.5", "Audio Description (Prerecorded)", "The portfolio publishes no prerecorded video requiring audio description.", "met"],
+      ["1.3.4", "Orientation", "Layouts work in portrait and landscape without locking the viewport orientation.", "met"],
+      ["1.3.5", "Identify Input Purpose", "The portfolio does not collect personal information through input fields.", "met"],
       ["1.4.3", "Contrast (Minimum)", "Text contrast is tested above the Level AA thresholds in both themes.", "met"],
       ["1.4.4", "Resize Text", "The 200% text preference reflows without clipped text or horizontal page scrolling.", "met"],
       ["1.4.5", "Images of Text", "Informational text is rendered as HTML rather than embedded in images.", "met"],
+      ["1.4.10", "Reflow", "Pages reflow at narrow and zoom-equivalent widths without horizontal page scrolling.", "met"],
+      ["1.4.11", "Non-text Contrast", "Control boundaries and focus indicators use design tokens with at least 3:1 contrast.", "met"],
+      ["1.4.12", "Text Spacing", "Text remains visible when user spacing overrides are applied.", "met"],
+      ["1.4.13", "Content on Hover or Focus", "The portfolio does not reveal essential content only on hover or focus.", "met"],
       ["2.4.5", "Multiple Ways", "Primary navigation, page links, sitemap, and route index provide multiple paths.", "met"],
       ["2.4.6", "Headings and Labels", "Headings and labels describe their section or control.", "met"],
       ["2.4.7", "Focus Visible", "Keyboard focus uses a high-contrast three-pixel outline.", "met"],
+      ["2.4.11", "Focus Not Obscured (Minimum)", "Focused controls are not covered by sticky or overlapping interface elements.", "met"],
+      ["2.5.7", "Dragging Movements", "No function requires dragging; native scrolling remains available.", "met"],
+      ["2.5.8", "Target Size (Minimum)", "Interactive controls meet a 44-pixel design target where practical and otherwise exceed the 24-pixel minimum or spacing exception.", "met"],
       ["3.1.2", "Language of Parts", "Spanish mode translates shared and core content, but remaining English technical passages still need explicit language marking.", "partial"],
       ["3.2.3", "Consistent Navigation", "Shared navigation appears in the same relative order on every page.", "met"],
       ["3.2.4", "Consistent Identification", "Repeated controls and destinations use consistent names and presentation.", "met"],
       ["3.3.3", "Error Suggestion", "The portfolio does not collect user-entered data or produce correctable submission errors.", "met"],
-      ["3.3.4", "Error Prevention (Legal, Financial, Data)", "The portfolio performs no legal, financial, or stored-data submissions.", "met"]
-    ]
-  },
-  {
-    level: "AAA",
-    criteria: [
-      ["1.2.6", "Sign Language (Prerecorded)", "The portfolio publishes no prerecorded synchronized media.", "met"],
-      ["1.2.7", "Extended Audio Description", "The portfolio publishes no prerecorded video requiring extended description.", "met"],
-      ["1.2.8", "Media Alternative (Prerecorded)", "The portfolio publishes no prerecorded synchronized or video-only media.", "met"],
-      ["1.2.9", "Audio-only (Live)", "The portfolio publishes no live audio-only content.", "met"],
-      ["1.4.6", "Contrast (Enhanced)", "Normal and large text are tested against the Level AAA contrast thresholds in both themes.", "met"],
-      ["1.4.7", "Low or No Background Audio", "The portfolio publishes no speech audio with background sound.", "met"],
-      ["1.4.8", "Visual Presentation", "Theme, line length, spacing, and 200% text preferences support readable text blocks.", "met"],
-      ["1.4.9", "Images of Text (No Exception)", "Images of text are limited to essential brand marks; content text remains HTML.", "met"],
-      ["2.1.3", "Keyboard (No Exception)", "All portfolio functionality is available through native keyboard interaction.", "met"],
-      ["2.2.3", "No Timing", "No action or content depends on completing a timed interaction.", "met"],
-      ["2.2.4", "Interruptions", "The site presents no automatic interruptions or alerts.", "met"],
-      ["2.2.5", "Re-authenticating", "The portfolio has no authentication or expiring sessions.", "met"],
-      ["2.3.2", "Three Flashes", "Project preview motion remains below three flashes per second.", "met"],
-      ["2.4.8", "Location", "Current navigation state and detail-page breadcrumbs help, but every page does not yet show a breadcrumb trail.", "partial"],
-      ["2.4.9", "Link Purpose (Link Only)", "Compact labels retain project-specific, destination-specific accessible names.", "met"],
-      ["2.4.10", "Section Headings", "Long pages are divided with descriptive section headings.", "met"],
-      ["3.1.3", "Unusual Words", "The glossary explains major technical terms, but not every specialized phrase is linked at first use.", "partial"],
-      ["3.1.4", "Abbreviations", "Technical abbreviations are expanded at first use and collected in the glossary.", "met"],
-      ["3.1.5", "Reading Level", "Definitions and clearer copy help, but the professional and technical case studies remain advanced reading.", "partial"],
-      ["3.1.6", "Pronunciation", "The site does not yet provide pronunciation help for names or technical terms when pronunciation could clarify meaning.", "gap"],
-      ["3.2.5", "Change on Request", "Navigation and preference changes occur only after a user action.", "met"],
-      ["3.3.5", "Help", "Persistent contact, compliance, and glossary routes provide help without a data-entry workflow.", "met"],
-      ["3.3.6", "Error Prevention (All)", "The site has no stored submissions to confirm, reverse, or correct.", "met"]
+      ["3.3.4", "Error Prevention (Legal, Financial, Data)", "The portfolio performs no legal, financial, or stored-data submissions.", "met"],
+      ["3.3.8", "Accessible Authentication (Minimum)", "The portfolio has no authentication flow or cognitive-function test.", "met"],
+      ["4.1.3", "Status Messages", "The portfolio does not present dynamic status messages that require assistive-technology announcements.", "met"]
     ]
   }
 ];
 
 const WCAG_CLAUSE_IDS = {
-  "1.1.1": "text-equiv-all",
-  "1.2.1": "media-equiv-av-only-alt",
-  "1.2.2": "media-equiv-captions",
-  "1.2.3": "media-equiv-audio-desc",
-  "1.2.4": "media-equiv-real-time-captions",
-  "1.2.5": "media-equiv-audio-desc-only",
-  "1.2.6": "media-equiv-sign",
-  "1.2.7": "media-equiv-extended-ad",
-  "1.2.8": "media-equiv-text-doc",
-  "1.2.9": "media-equiv-live-audio-only",
-  "1.3.1": "content-structure-separation-programmatic",
-  "1.3.2": "content-structure-separation-sequence",
-  "1.3.3": "content-structure-separation-understanding",
-  "1.4.1": "visual-audio-contrast-without-color",
-  "1.4.2": "visual-audio-contrast-dis-audio",
-  "1.4.3": "visual-audio-contrast-contrast",
-  "1.4.4": "visual-audio-contrast-scale",
-  "1.4.5": "visual-audio-contrast-text-presentation",
-  "1.4.6": "visual-audio-contrast7",
-  "1.4.7": "visual-audio-contrast-noaudio",
-  "1.4.8": "visual-audio-contrast-visual-presentation",
-  "1.4.9": "visual-audio-contrast-text-images",
-  "2.1.1": "keyboard-operation-keyboard-operable",
-  "2.1.2": "keyboard-operation-trapping",
-  "2.1.3": "keyboard-operation-all-funcs",
-  "2.2.1": "time-limits-required-behaviors",
-  "2.2.2": "time-limits-pause",
-  "2.2.3": "time-limits-no-exceptions",
-  "2.2.4": "time-limits-postponed",
-  "2.2.5": "time-limits-server-timeout",
-  "2.3.1": "seizure-does-not-violate",
-  "2.3.2": "seizure-three-times",
-  "2.4.1": "navigation-mechanisms-skip",
-  "2.4.2": "navigation-mechanisms-title",
-  "2.4.3": "navigation-mechanisms-focus-order",
-  "2.4.4": "navigation-mechanisms-refs",
-  "2.4.5": "navigation-mechanisms-mult-loc",
-  "2.4.6": "navigation-mechanisms-descriptive",
-  "2.4.7": "navigation-mechanisms-focus-visible",
-  "2.4.8": "navigation-mechanisms-location",
-  "2.4.9": "navigation-mechanisms-link",
-  "2.4.10": "navigation-mechanisms-headings",
-  "3.1.1": "meaning-doc-lang-id",
-  "3.1.2": "meaning-other-lang-id",
-  "3.1.3": "meaning-idioms",
-  "3.1.4": "meaning-located",
-  "3.1.5": "meaning-supplements",
-  "3.1.6": "meaning-pronunciation",
-  "3.2.1": "consistent-behavior-receive-focus",
-  "3.2.2": "consistent-behavior-unpredictable-change",
-  "3.2.3": "consistent-behavior-consistent-locations",
-  "3.2.4": "consistent-behavior-consistent-functionality",
-  "3.2.5": "consistent-behavior-no-extreme-changes-context",
-  "3.3.1": "minimize-error-identified",
-  "3.3.2": "minimize-error-cues",
-  "3.3.3": "minimize-error-suggestions",
-  "3.3.4": "minimize-error-reversible",
-  "3.3.5": "minimize-error-context-help",
-  "3.3.6": "minimize-error-reversible-all",
-  "4.1.1": "ensure-compat-parses",
-  "4.1.2": "ensure-compat-rsv"
+  "1.1.1": "non-text-content",
+  "1.2.1": "audio-only-and-video-only-prerecorded",
+  "1.2.2": "captions-prerecorded",
+  "1.2.3": "audio-description-or-media-alternative-prerecorded",
+  "1.2.4": "captions-live",
+  "1.2.5": "audio-description-prerecorded",
+  "1.3.1": "info-and-relationships",
+  "1.3.2": "meaningful-sequence",
+  "1.3.3": "sensory-characteristics",
+  "1.3.4": "orientation",
+  "1.3.5": "identify-input-purpose",
+  "1.4.1": "use-of-color",
+  "1.4.2": "audio-control",
+  "1.4.3": "contrast-minimum",
+  "1.4.4": "resize-text",
+  "1.4.5": "images-of-text",
+  "1.4.10": "reflow",
+  "1.4.11": "non-text-contrast",
+  "1.4.12": "text-spacing",
+  "1.4.13": "content-on-hover-or-focus",
+  "2.1.1": "keyboard",
+  "2.1.2": "no-keyboard-trap",
+  "2.1.4": "character-key-shortcuts",
+  "2.2.1": "timing-adjustable",
+  "2.2.2": "pause-stop-hide",
+  "2.3.1": "three-flashes-or-below-threshold",
+  "2.4.1": "bypass-blocks",
+  "2.4.2": "page-titled",
+  "2.4.3": "focus-order",
+  "2.4.4": "link-purpose-in-context",
+  "2.4.5": "multiple-ways",
+  "2.4.6": "headings-and-labels",
+  "2.4.7": "focus-visible",
+  "2.4.11": "focus-not-obscured-minimum",
+  "2.5.1": "pointer-gestures",
+  "2.5.2": "pointer-cancellation",
+  "2.5.3": "label-in-name",
+  "2.5.4": "motion-actuation",
+  "2.5.7": "dragging-movements",
+  "2.5.8": "target-size-minimum",
+  "3.1.1": "language-of-page",
+  "3.1.2": "language-of-parts",
+  "3.2.1": "on-focus",
+  "3.2.2": "on-input",
+  "3.2.3": "consistent-navigation",
+  "3.2.4": "consistent-identification",
+  "3.2.6": "consistent-help",
+  "3.3.1": "error-identification",
+  "3.3.2": "labels-or-instructions",
+  "3.3.3": "error-suggestion",
+  "3.3.4": "error-prevention-legal-financial-data",
+  "3.3.7": "redundant-entry",
+  "3.3.8": "accessible-authentication-minimum",
+  "4.1.2": "name-role-value",
+  "4.1.3": "status-messages"
 };
 
 const PUBLIC_COMPLIANCE_DOC = "https://github.com/Wizard-Gang/WizardGang/blob/main/docs/COMPLIANCE.md";
@@ -920,7 +909,7 @@ function checklistRows(criteria, className) {
   return criteria.map(([number, title, description, status, reference]) => {
     const content = `<span>${number}</span><strong>${escapeHtml(title)}</strong>`;
     const criterion = reference
-      ? `<a class="criterion" href="${escapeHtml(reference)}" target="_blank" rel="noopener noreferrer">${content}<span class="sr-only"> — corresponding clause (opens in a new tab)</span></a>`
+      ? `<a class="criterion" href="${escapeHtml(reference)}">${content}<span class="sr-only"> — corresponding clause</span></a>`
       : `<div class="criterion">${content}</div>`;
     return `<li class="compliance-item ${className}">${criterion}<p>${escapeHtml(description)}</p><span class="status status-${status}">${statusLabel(status)}</span></li>`;
   }).join("");
@@ -928,22 +917,22 @@ function checklistRows(criteria, className) {
 
 function complianceLevel({ level, criteria }) {
   const counts = criteria.reduce((result, criterion) => ({ ...result, [criterion[3]]: result[criterion[3]] + 1 }), { met: 0, partial: 0, gap: 0 });
-  const referencedCriteria = criteria.map((criterion) => [...criterion, `https://www.w3.org/TR/WCAG20/#${WCAG_CLAUSE_IDS[criterion[0]]}`]);
+  const referencedCriteria = criteria.map((criterion) => [...criterion, `https://www.w3.org/TR/WCAG22/#${WCAG_CLAUSE_IDS[criterion[0]]}`]);
   return `<section class="compliance-level" aria-labelledby="level-${level.toLowerCase()}"><header><div><p class="kicker">Level ${level}</p><h3 id="level-${level.toLowerCase()}">Level ${level}</h3></div><p class="compliance-counts"><span>✓ ${counts.met} met</span><span>◐ ${counts.partial} partial</span><span>! ${counts.gap} gap</span></p></header><ol class="compliance-list">${checklistRows(referencedCriteria, "wcag-item")}</ol></section>`;
 }
 
 function managementStandard({ id, area, name, url, criteria }) {
-  return `<section class="compliance-standard compliance-management" aria-labelledby="${id}"><header class="compliance-standard-heading"><div><p class="kicker">${escapeHtml(area)}</p><h2 id="${id}"><a href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(name)} <span aria-hidden="true">↗</span></a></h2></div>${statusSummary(criteria)}</header><ol class="compliance-list">${checklistRows(criteria, "iso-item")}</ol></section>`;
+  return `<section class="compliance-standard compliance-management" aria-labelledby="${id}"><header class="compliance-standard-heading"><div><p class="kicker">${escapeHtml(area)}</p><h2 id="${id}"><a href="${url}">${escapeHtml(name)} <span aria-hidden="true">↗</span></a></h2></div>${statusSummary(criteria)}</header><ol class="compliance-list">${checklistRows(criteria, "iso-item")}</ol></section>`;
 }
 
 function compliance(build) {
   const body = `<main class="case-main compliance-main" id="main" tabindex="-1">
-    <section class="compliance-heading"><p class="kicker">WizardGang</p><h1>Compliance.</h1><p>AI-developed. Human-reviewed. Public self-assessment—not certification.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">Report issue</a><a class="button" href="${PUBLIC_COMPLIANCE_DOC}" target="_blank" rel="noopener noreferrer">Public documentation <span aria-hidden="true">↗</span></a></div></section>
-    <section class="compliance-standard" aria-labelledby="wcag-2"><header class="compliance-standard-heading"><div><p class="kicker">Accessibility</p><h2 id="wcag-2"><a href="https://www.w3.org/TR/WCAG20/" target="_blank" rel="noopener noreferrer">WCAG 2.0 <span aria-hidden="true">↗</span></a></h2></div><p class="standard-levels">Level A · Level AA · Level AAA</p></header>${WCAG_LEVELS.map(complianceLevel).join("")}</section>
+    <section class="compliance-heading"><p class="kicker">WizardGang</p><h1>Compliance.</h1><p>AI-developed. Human-reviewed. Public self-assessment—not certification.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">Report issue</a><a class="button" href="${PUBLIC_COMPLIANCE_DOC}">Public documentation <span aria-hidden="true">↗</span></a></div></section>
+    <section class="compliance-standard" aria-labelledby="wcag-2"><header class="compliance-standard-heading"><div><p class="kicker">Accessibility target</p><h2 id="wcag-2"><a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2 AA <span aria-hidden="true">↗</span></a></h2></div><p class="standard-levels">Level A · Level AA</p></header><p class="compliance-scope">This is a route-by-route testing target and public self-assessment, not a certification or blanket conformance claim.</p>${WCAG_LEVELS.map(complianceLevel).join("")}</section>
     ${ISO_STANDARDS.map(managementStandard).join("")}
     <section class="compliance-report" aria-labelledby="compliance-report-heading"><div><p class="kicker">Security + accessibility</p><h2 id="compliance-report-heading">Report an issue.</h2></div><div><p>Email <a href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">${CONTACT_EMAIL}</a> with the affected address and steps to reproduce it. Do not include passwords, private records, or destructive proof.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=WizardGang%20compliance%20report">Report issue</a></div></div></section>
   </main>`;
-  return document({ title: "Compliance — WizardGang", description: "WizardGang public self-assessment against WCAG 2.0, ISO/IEC 27001:2022, and ISO/IEC 42001:2023 with Met, Partial, and Gap status.", path: "/compliance/", current: "compliance", body, build });
+  return document({ title: "Compliance — WizardGang", description: "WizardGang public self-assessment against WCAG 2.2 Level AA, ISO/IEC 27001:2022, and ISO/IEC 42001:2023 with Met, Partial, and Gap status.", path: "/compliance/", current: "compliance", body, build });
 }
 
 function glossary(build) {

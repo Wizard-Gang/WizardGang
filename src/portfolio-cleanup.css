@@ -79,6 +79,9 @@
 }
 
 .reference-cloud a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
   color: var(--paper);
   text-decoration-color: transparent;
   text-decoration-thickness: 1px;
@@ -318,8 +321,16 @@
   max-width: 780px;
 }
 
+.hero-identity {
+  min-width: 0;
+}
+
+.hero-role {
+  margin: 1.5rem 0 0;
+}
+
 .home-statement-card {
-  grid-column: 1 / -1;
+  margin-top: clamp(1.5rem, 4vw, 3rem);
   padding: clamp(1.25rem, 3vw, 2rem);
   border: 1px solid var(--line);
   background: linear-gradient(110deg, rgba(186,255,36,.06), transparent 55%), var(--panel);
@@ -353,7 +364,7 @@
   display: grid;
   grid-template-rows: 300px 1fr;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--line);
   background: var(--panel);
 }
@@ -422,8 +433,7 @@
   border: 0;
 }
 
-/* SharkTank: the tank itself is an SVG and scales, so only the overlays need trimming. */
-.project-card-visual .tank-board { display: none; }
+/* SharkTank: retain the compact leaderboard as context while trimming the controls. */
 
 .project-card-visual .tank-abilities {
   right: .6rem;
@@ -448,17 +458,22 @@
 .project-card-visual .tank-readout {
   top: 10px;
   left: 10px;
-  gap: 6px;
+  gap: 5px;
 }
 
 .project-card-visual .tank-card {
-  min-width: 54px;
-  padding: 5px 8px;
+  min-width: 50px;
+  padding: 4px 6px;
   border-radius: 10px;
 }
 
-.project-card-visual .tank-card span { font-size: .56rem; }
-.project-card-visual .tank-card strong { font-size: .84rem; }
+.project-card-visual .tank-card span { font-size: .52rem; }
+.project-card-visual .tank-card strong { font-size: .78rem; }
+
+.project-card-visual .tank-board {
+  transform: scale(.85);
+  transform-origin: top right;
+}
 
 /* Hexframe: keep the stage and the frame timelines; the marketing header is redundant
    beside the card copy, and the legend duplicates what the boxes already show. */
@@ -1095,6 +1110,12 @@
   margin-bottom: 1.5rem;
 }
 
+.compliance-scope {
+  max-width: 72ch;
+  margin: 0 0 clamp(2rem, 5vw, 4rem);
+  color: var(--muted);
+}
+
 .compliance-standard-heading h2,
 .compliance-level h3 {
   margin: 0;
@@ -1285,7 +1306,7 @@ a.criterion:hover strong { text-decoration: underline; text-underline-offset: .2
     content: "↓";
     transform: translateX(50%);
   }
-  .service-growth ol { grid-template-columns: repeat(5, minmax(145px, 1fr)); overflow-x: auto; }
+  .service-growth ol { grid-template-columns: 1fr; overflow-x: visible; }
 }
 
 @media (max-width: 560px) {
