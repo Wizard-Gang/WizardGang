@@ -7,6 +7,8 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/verify.mjs",
+    "secrets:cloudflare:discover": "bash scripts/discover-cloudflare-api-token-targets.sh",
+    "secrets:cloudflare:rotate": "bash scripts/rotate-cloudflare-api-token.sh",
     "dev": "npm run build && wrangler dev --port 8790",
     "deploy:staging": "npm run build && wrangler deploy --env staging",
     "deploy:production": "npm run build && wrangler deploy --env production",
