@@ -43,3 +43,19 @@ Cloudflare configuration lives in `wrangler.jsonc`. Use the production dry run b
 ```bash
 npm run deploy:production:dry-run
 ```
+
+## Shared Cloudflare token rotation
+
+Preview every active repository or protected environment that stores or references the shared GitHub Actions token:
+
+```bash
+npm run secrets:cloudflare:discover
+```
+
+Rotate all discovered targets in one interactive pass:
+
+```bash
+npm run secrets:cloudflare:rotate
+```
+
+The rotation command requires authenticated `gh`, plus `jq` and `curl`. It reads the token twice without echo, validates it with Cloudflare, displays every target, and requires an explicit `ROTATE` confirmation. The token is never written to disk or passed as a command-line argument. Use `npm run secrets:cloudflare:rotate -- --dry-run` for a read-only preview.
