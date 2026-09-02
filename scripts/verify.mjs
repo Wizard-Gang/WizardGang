@@ -52,6 +52,7 @@ for (const file of htmlFiles) {
   if (count(html, /<h1(?:\s|>)/g) !== 1) fail(`${relative}: expected exactly one h1`);
   if (!html.includes('class="skip-link"')) fail(`${relative}: missing skip link`);
   if (!html.includes('<nav class="site-nav site-nav-desktop" aria-label="Primary">')) fail(`${relative}: missing desktop primary navigation`);
+  if (!html.includes('<a class="wordmark" href="/" aria-label="WizardGang home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span></a>')) fail(`${relative}: missing current WizardGang wordmark`);
   if (!html.includes('<details class="nav-disclosure">') || !html.includes('<summary class="nav-toggle">') || !html.includes('<nav class="site-nav site-nav-mobile" aria-label="Primary mobile">')) fail(`${relative}: missing no-JavaScript mobile navigation disclosure`);
   for (const label of ["Projects", "Work", "About", "Contact", "GitHub"]) {
     if (!html.includes(`>${label}`)) fail(`${relative}: missing ${label} navigation`);
@@ -134,6 +135,13 @@ for (const file of ["README.md", "SECURITY.md", "docs/ACCESSIBILITY.md", "docs/C
 }
 
 const home = await readFile(resolve(dist, "index.html"), "utf8");
+const favicon = await readFile(resolve(dist, "favicon.svg"), "utf8");
+for (const shape of [
+  '<rect x="5" y="15" width="12" height="12" fill="#d9ff43"/>',
+  '<rect x="15" y="5" width="12" height="12" fill="#a489ff"/>'
+]) {
+  if (!favicon.includes(shape)) fail(`favicon missing current WizardGang mark shape: ${shape}`);
+}
 for (const requiredText of [
   "Jacob <span>Yongue</span>",
   "I build systems that ship.",
