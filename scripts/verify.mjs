@@ -1,7 +1,7 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PERMANENT_REDIRECTS } from "../src/worker.mjs";
+import portfolioWorker, { PERMANENT_REDIRECTS } from "../src/worker.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const dist = resolve(root, "dist");
@@ -44,7 +44,7 @@ function fragmentOf(href) {
 
 const files = await walk(dist);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
-if (htmlFiles.length !== 14) fail(`expected 14 canonical HTML pages, found ${htmlFiles.length}`);
+if (htmlFiles.length !== 13) fail(`expected 13 canonical HTML pages, found ${htmlFiles.length}`);
 
 for (const file of htmlFiles) {
   const relative = file.slice(dist.length + 1);
@@ -278,30 +278,16 @@ for (const requiredText of ["About Jacob Yongue", "Systems thinking", "Implement
   if (!about.includes(requiredText)) fail(`about page missing ${requiredText}`);
 }
 
-const compliance = await readFile(resolve(dist, "compliance/index.html"), "utf8");
-for (const requiredText of ["Compliance.", "WCAG 2.2 AA", "Level A", "Level AA", "route-by-route testing target", "not a certification or blanket conformance claim", "ISO/IEC 27001:2022", "ISO/IEC 42001:2023", "AI-developed. Human-reviewed.", "✓ Met", "◐ Partial", "Report an issue."]) {
-  if (!compliance.includes(requiredText)) fail(`compliance page missing ${requiredText}`);
-}
-if (count(compliance, /class="compliance-item wcag-item"/g) !== 55) fail("compliance page must list all 55 WCAG 2.2 Level A and AA success criteria");
-if (count(compliance, /class="compliance-item iso-item"/g) !== 16) fail("compliance page must list the 16 portfolio-wide ISO clauses and annex records");
-if (count(compliance, /status-met/g) !== 62 || count(compliance, /status-partial/g) !== 9 || count(compliance, /status-gap/g) !== 0) {
-  fail("compliance page status totals must remain 62 met, 9 partial, and 0 gaps");
-}
-if (count(compliance, /href="https:\/\/www\.w3\.org\/TR\/WCAG22\/#/g) !== 55) fail("every WCAG 2.2 A and AA checklist item must link directly to its official success criterion");
-if (count(compliance, /href="https:\/\/github\.com\/Wizard-Gang\/WizardGang\/blob\/main\/docs\/COMPLIANCE\.md#iso-/g) !== 16) fail("every ISO checklist item must link directly to its public clause record");
 const previewDefaultClaim = "Project previews play by default; pause them with the Play previews control.";
-if (!compliance.includes(previewDefaultClaim)) fail("WCAG 2.2.2 must describe the play-by-default preview behavior");
 if (!siteScript.includes(previewDefaultClaim)) fail("Preferences help must agree with the WCAG 2.2.2 preview behavior");
 const accessibilityRecord = await readFile(resolve(root, "docs/ACCESSIBILITY.md"), "utf8");
-for (const [label, contents] of [["compliance page", compliance], ["preferences script", siteScript], ["accessibility record", accessibilityRecord]]) {
+for (const [label, contents] of [["preferences script", siteScript], ["accessibility record", accessibilityRecord]]) {
   if (/paused[- ]by[- ]default|animations (?:are|están) pausad/i.test(contents)) fail(`${label} preserves the retired paused-by-default claim`);
 }
-for (const requiredText of ["Report issue", "Public documentation", "corresponding clause"]) {
-  if (!compliance.includes(requiredText)) fail(`compliance page missing direct action or accessible link text: ${requiredText}`);
-}
-for (const retiredText of ["WCAG 2.0<br><span>checklist.</span>", "Level AAA", "A concise self-assessment of the main WizardGang portfolio pages", "SharkTank", "Project evidence"]) {
-  if (compliance.includes(retiredText)) fail(`compliance page still contains retired content: ${retiredText}`);
-}
+try {
+  await access(resolve(dist, "compliance/index.html"));
+  fail("retired portfolio compliance page is still generated");
+} catch { /* Compliance is now owned by demo.wizardgang.ai/compliance. */ }
 const glossary = await readFile(resolve(dist, "glossary/index.html"), "utf8");
 for (const requiredText of ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]) {
   if (!glossary.includes(requiredText)) fail(`glossary page missing ${requiredText}`);
@@ -309,8 +295,8 @@ for (const requiredText of ["Technical terms.", "Artificial intelligence (AI)", 
 try {
   await access(resolve(dist, "security/index.html"));
   fail("retired security page is still generated");
-} catch { /* /security/ is now a redirect to Compliance. */ }
-for (const requiredText of ["Español", "document.documentElement.lang = locale", "wizardgang.preferences.v1", "Jugar", "Caso de estudio", "Contraste (mejorado)", "Contexto de la organización", "Pautas de Accesibilidad para el Contenido Web", "Informar de un problema"]) {
+} catch { /* /security/ is now a direct redirect to the demo assurance index. */ }
+for (const requiredText of ["Español", "document.documentElement.lang = locale", "wizardgang.preferences.v1", "Jugar", "Caso de estudio", "Pautas de Accesibilidad para el Contenido Web", "Informar de un problema"]) {
   if (!siteScript.includes(requiredText)) fail(`preferences script missing Spanish internationalization behavior: ${requiredText}`);
 }
 for (const removedText of ["WizardGang.ai is my personal engineering portfolio", "Let’s talk about the system", "Professional work</a>"]) {
@@ -318,17 +304,18 @@ for (const removedText of ["WizardGang.ai is my personal engineering portfolio",
 }
 
 const sitemap = await readFile(resolve(dist, "sitemap.xml"), "utf8");
-for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/services/", "/about/", "/compliance/", "/glossary/"]) {
+for (const route of ["/projects/", "/projects/sharktank/case-study/", "/projects/hexframe/case-study/", "/projects/yarreader/case-study/", "/work/", "/services/", "/about/", "/glossary/"]) {
   if (!sitemap.includes(route)) fail(`sitemap missing ${route}`);
 }
-if (sitemap.includes("/resume/") || sitemap.includes("/professional/") || sitemap.includes("/work/sharktank/") || sitemap.includes("/security/")) fail("sitemap includes a retired compatibility route");
+if (sitemap.includes("/resume/") || sitemap.includes("/professional/") || sitemap.includes("/work/sharktank/") || sitemap.includes("/security/") || sitemap.includes("/compliance/")) fail("sitemap includes a retired compatibility route");
 
 const expectedRedirects = new Map([
   ["/github", "https://github.com/Wizard-Gang"],
   ["/resume/", "/work/"],
   ["/professional/", "/work/"],
-  ["/accessibility/", "/compliance/"],
-  ["/security/", "/compliance/"],
+  ["/compliance/", "https://demo.wizardgang.ai/compliance"],
+  ["/accessibility/", "https://demo.wizardgang.ai/accessibility"],
+  ["/security/", "https://demo.wizardgang.ai/compliance"],
   ["/services/example/", "/services/"],
   ["/work/sharktank/", "/projects/sharktank/"],
   ["/work/shark-tank/", "/projects/sharktank/"],
@@ -346,9 +333,19 @@ for (const [from, to] of PERMANENT_REDIRECTS) {
   catch { fail(`${from}: redirect destination is missing ${to}`); }
 }
 
+for (const path of ["/compliance", "/compliance/"]) {
+  const response = await portfolioWorker.fetch(new Request(`https://wizardgang.ai${path}`), {});
+  if (response.status !== 308) fail(`${path}: compliance ownership redirect must be permanent`);
+  if (response.headers.get("location") !== "https://demo.wizardgang.ai/compliance") fail(`${path}: compliance ownership redirect has the wrong destination`);
+}
+
 const worker = await readFile(resolve(root, "src/worker.mjs"), "utf8");
 if (/DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/.test(worker)) fail("portfolio Worker gained a product binding or authentication concern");
 if (!worker.includes("sharktank.wizardgang.ai")) fail("compatibility Worker is missing the SharkTank boundary");
+
+const siteSource = await readFile(resolve(root, "src/site.mjs"), "utf8");
+if (/function compliance\(|compliance\/index\.html|WCAG_LEVELS|ISO_STANDARDS/.test(siteSource)) fail("retired compliance application remains in the portfolio page generator");
+if (/Compliance — WizardGang|class="compliance-/.test(siteScript)) fail("retired compliance page translation content remains in the portfolio assets");
 
 const headers = await readFile(resolve(dist, "_headers"), "utf8");
 if (!headers.includes("Cache-Control: public, max-age=0, must-revalidate, no-transform")) {
@@ -359,4 +356,4 @@ if (failures.length) {
   for (const failure of failures) console.error(`FAIL ${failure}`);
   process.exit(1);
 }
-console.log(`Verified ${htmlFiles.length} canonical HTML pages, metadata, assets, internal links, anchors, repository URLs, compliance positioning, and ${PERMANENT_REDIRECTS.size} direct compatibility redirects.`);
+console.log(`Verified ${htmlFiles.length} canonical HTML pages, metadata, assets, internal links, anchors, repository URLs, assurance ownership, and ${PERMANENT_REDIRECTS.size} direct compatibility redirects.`);

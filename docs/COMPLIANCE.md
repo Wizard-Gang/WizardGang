@@ -92,7 +92,7 @@ portfolio boundary.
 <a id="iso-27001-clause-9"></a>
 ## ISO/IEC 27001:2022 — Clause 9: performance evaluation
 
-The repository verifies canonical pages, metadata, links, assets, redirects, compliance content,
+The repository verifies canonical pages, metadata, links, assets, ownership redirects, the versioned governance record,
 motion controls, and private-information exclusions. Development deployments are checked before
 release. A scheduled internal-audit and management-review history is not yet established and
 remains a partial item.
@@ -195,8 +195,9 @@ collect submissions, make automated decisions, host an AI model, or operate cust
 
 ## Accessibility record
 
-The public checklist links each WCAG 2.2 Level A and AA item to the corresponding W3C success criterion. Scope,
-test approach, limitations, and reporting are documented in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
+The architecture demo’s [compliance and assurance index](https://demo.wizardgang.ai/compliance) links
+to its canonical working accessibility evidence. Portfolio scope, release checks, limitations, and
+reporting remain documented in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 
 ## Review and change control
 
