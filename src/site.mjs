@@ -47,7 +47,7 @@ function header(current = "") {
   ].map(([key, href, label]) => `<a href="${href}"${href === GITHUB ? ' aria-label="Visit WizardGang on GitHub"' : ""}${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
   return `<a class="skip-link" href="#main">Skip to main content</a>
     <header class="site-header">
-      <a class="wordmark" href="/" aria-label="Jacob Yongue portfolio home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>JACOB YONGUE</strong><small>wizardgang.ai</small></span></a>
+      <a class="wordmark" href="/" aria-label="WizardGang home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span></a>
       <nav class="site-nav site-nav-desktop" aria-label="Primary">${nav}</nav>
       <details class="nav-disclosure">
         <summary class="nav-toggle"><span>Menu</span><span class="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span></summary>
