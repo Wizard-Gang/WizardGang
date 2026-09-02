@@ -3,10 +3,10 @@
 Effective date: 2026-08-30 (America/New_York)
 
 Scope: canonical pages served from `wizardgang.ai`, including shared navigation, preferences,
-project previews, portfolio content, Compliance, and Glossary.
+project previews, portfolio content, and Glossary. Architecture compliance and assurance evidence is owned by [`demo.wizardgang.ai/compliance`](https://demo.wizardgang.ai/compliance).
 
-Target: WCAG 2.2 Level AA for all scoped content. The public checklist is a route-by-route
-self-assessment, not an accessibility certification or blanket conformance claim.
+Target: WCAG 2.2 Level AA for all scoped content. This is a route-by-route design and testing target,
+not an accessibility certification or blanket conformance claim.
 
 ## Release checks
 
@@ -18,7 +18,7 @@ self-assessment, not an accessibility certification or blanket conformance claim
 - minimum target size and spacing for links, controls, and disclosures;
 - English and Spanish page-language behavior;
 - canonical routes, alternate paths, sitemap, titles, and error pages; and
-- current gaps shown as Met, Partial, or Gap on the public Compliance page.
+- architecture assurance evidence linked from the dedicated demo compliance index.
 
 Automated checks support the review but do not replace keyboard, screen-reader, zoom, contrast, or
 visual inspection. Project previews are decorative and hidden from the accessibility tree; project

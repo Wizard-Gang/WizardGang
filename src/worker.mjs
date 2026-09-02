@@ -1,5 +1,6 @@
 const SHARK_ORIGIN = "https://sharktank.wizardgang.ai";
 const GITHUB_ORG = "https://github.com/Wizard-Gang";
+const DEMO_ORIGIN = "https://demo.wizardgang.ai";
 
 export const PERMANENT_REDIRECTS = new Map([
   ["/github", GITHUB_ORG],
@@ -8,10 +9,12 @@ export const PERMANENT_REDIRECTS = new Map([
   ["/resume/", "/work/"],
   ["/professional", "/work/"],
   ["/professional/", "/work/"],
-  ["/accessibility", "/compliance/"],
-  ["/accessibility/", "/compliance/"],
-  ["/security", "/compliance/"],
-  ["/security/", "/compliance/"],
+  ["/compliance", `${DEMO_ORIGIN}/compliance`],
+  ["/compliance/", `${DEMO_ORIGIN}/compliance`],
+  ["/accessibility", `${DEMO_ORIGIN}/accessibility`],
+  ["/accessibility/", `${DEMO_ORIGIN}/accessibility`],
+  ["/security", `${DEMO_ORIGIN}/compliance`],
+  ["/security/", `${DEMO_ORIGIN}/compliance`],
   ["/services/example", "/services/"],
   ["/services/example/", "/services/"],
   ["/work/shadowmoney", "/projects/hexframe/"],

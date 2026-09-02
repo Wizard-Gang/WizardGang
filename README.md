@@ -28,13 +28,14 @@ npm run check
 - `src/worker.mjs` handles static delivery and compatibility redirects.
 - `scripts/` contains build and verification commands.
 
-## Documentation
+## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
 - [Boundary migration record](docs/BOUNDARY-MIGRATION.md)
-- [Compliance management record](docs/COMPLIANCE.md)
+- [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
+- [Architecture compliance and assurance evidence](https://demo.wizardgang.ai/compliance)
 
 ## Deployment
 

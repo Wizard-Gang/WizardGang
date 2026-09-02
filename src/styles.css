@@ -189,7 +189,7 @@ body:has(#theme-light:checked) {
 }
 
 body:has(#theme-light:checked) .home-statement-card,
-body:has(#theme-light:checked) :where(.project-card, .service-package, .compliance-item, .glossary-list > div) {
+body:has(#theme-light:checked) :where(.project-card, .service-package, .glossary-list > div) {
   background: var(--panel);
 }
 
@@ -199,10 +199,6 @@ body:has(#theme-light:checked) .setting-toggle,
 body:has(#theme-light:checked) .display-settings select {
   background: #fffdf7;
 }
-
-body:has(#theme-light:checked) .status-met { background: #d8ee82; color: #172000; }
-body:has(#theme-light:checked) .status-partial { background: #a9e5f0; color: #071b20; }
-body:has(#theme-light:checked) .status-gap { background: #ffd0d0; color: #310909; }
 
 body:has(#theme-light:checked) .professional-main {
   --professional-accent: #345b50;
