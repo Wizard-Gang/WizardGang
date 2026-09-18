@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { EventEmitter } from "node:events";
 import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -6,11 +7,14 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 import {
   DEFAULT_PORT,
+  DEV_HOST,
   READINESS_TIMEOUT_MS,
   RESET_TARGETS,
   RUNTIME_STATE_RELATIVE,
+  buildWranglerArgs,
   ensurePortAvailable,
   isCheckoutRuntimeCommand,
+  openBrowser,
   readyThenOpen,
   removeRuntimeStateIfPid,
   resetDisposableState,
@@ -35,6 +39,13 @@ test("port override is honored and defaults to the existing repository port", ()
   assert.equal(DEFAULT_PORT, 8790);
   assert.equal(resolvePort({ WIZARDGANG_PORT: "9123" }), 9123);
   assert.throws(() => resolvePort({ WIZARDGANG_PORT: "nope" }), /integer between 1 and 65535/);
+});
+
+test("Wrangler and the browser use the same explicit loopback host", () => {
+  assert.equal(DEV_HOST, "127.0.0.1");
+  assert.deepEqual(buildWranglerArgs("/repo/node_modules/wrangler/bin/wrangler.js", 8790), [
+    "/repo/node_modules/wrangler/bin/wrangler.js", "dev", "--local", "--ip", "127.0.0.1", "--port", "8790"
+  ]);
 });
 
 test("checkout-owned process identification requires both checkout and Wrangler path", async () => {
@@ -139,6 +150,28 @@ test("readiness timeout is bounded", async () => {
   assert.ok(attempts >= 2);
   assert.ok(clock <= timeoutMs);
   assert.equal(READINESS_TIMEOUT_MS, 20_000);
+});
+
+test("browser opener waits for the OS command result and reports failure", async () => {
+  const calls = [];
+  const successfulSpawn = (command, args, options) => {
+    const child = new EventEmitter();
+    calls.push({ command, args, options });
+    queueMicrotask(() => child.emit("exit", 0, null));
+    return child;
+  };
+  await openBrowser("http://127.0.0.1:8790", { platform: "darwin", spawnFn: successfulSpawn });
+  assert.deepEqual(calls, [{ command: "open", args: ["http://127.0.0.1:8790"], options: { stdio: "ignore" } }]);
+
+  const failingSpawn = () => {
+    const child = new EventEmitter();
+    queueMicrotask(() => child.emit("exit", 1, null));
+    return child;
+  };
+  await assert.rejects(
+    openBrowser("http://127.0.0.1:8790", { platform: "darwin", spawnFn: failingSpawn }),
+    /Browser opener exited with status 1.*Open http:\/\/127\.0\.0\.1:8790 manually/
+  );
 });
 
 test("browser opening occurs only after readiness succeeds", async () => {
