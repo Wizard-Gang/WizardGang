@@ -233,7 +233,7 @@ test("homepage preserves the current substantive positioning and primary relatio
   assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain the organization GitHub destination");
   assert.ok(findAnchor(home, (anchor) => anchor.href === "/projects/" && /View projects/i.test(textContent(anchor.inner))));
   assert.ok(findAnchor(home, (anchor) => anchor.href === "mailto:jacob@wizardgang.ai" && /Get in touch/i.test(textContent(anchor.inner))));
-  const hero = tagBlocks(home, "section")[0];
+  const hero = tagBlocks(home, "section").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("jacob-hero"));
   assert.ok(hero, "homepage hero section is missing");
   assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/projects/", "mailto:jacob@wizardgang.ai"].sort(), "homepage hero must retain only its current two actions");
   assert.ok(home.indexOf("<h1") < home.indexOf("<h2"), "homepage h1 must precede h2 content");
@@ -481,13 +481,28 @@ test("portfolio boundary remains static and retired compliance application route
   assert.doesNotMatch(await readDist("assets/site.js"), /Compliance — WizardGang|class=["']compliance-/);
 });
 
-test("WG-037 does not introduce the frontend migration technologies", async () => {
+test("WG-038 establishes the frontend toolchain without transferring production authority", async () => {
   const pkg = JSON.parse(await readRoot("package.json"));
   const dependencies = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
-  for (const name of ["typescript", "react", "react-dom", "vite", "tailwindcss", "@tailwindcss/vite"]) {
-    assert.equal(dependencies[name], undefined, `WG-037 must not introduce ${name}`);
+  for (const name of ["typescript", "react", "react-dom", "vite", "@vitejs/plugin-react", "tailwindcss", "@tailwindcss/vite", "@types/react", "@types/react-dom"]) {
+    assert.ok(dependencies[name], `WG-038 must declare ${name}`);
   }
-  const sourceFiles = await walk(root, { ignore: new Set([".git", "dist", "node_modules", "tmp"]) });
-  const migrated = sourceFiles.filter((file) => /\.tsx?$/i.test(file));
-  assert.deepEqual(migrated, [], "WG-037 must not add .ts or .tsx files");
+  for (const name of ["react-router", "next", "remix", "@tanstack/react-start", "astro", "@cloudflare/vite-plugin"]) {
+    assert.equal(dependencies[name], undefined, `WG-038 must not introduce ${name}`);
+  }
+
+  assert.equal(pkg.scripts.build, "node scripts/build.mjs", "legacy generated-site build must remain production authority");
+  assert.equal(pkg.scripts.dev, "node scripts/dev.mjs", "normal local-development entry point must remain unchanged");
+  assert.equal(pkg.scripts["build:frontend"], "vite build --config vite.config.ts");
+  assert.match(pkg.scripts["check:frontend"] || "", /typecheck/);
+  assert.match(pkg.scripts.check || "", /check:frontend/);
+
+  assert.equal(await exists(resolve(root, "tsconfig.json")), true);
+  assert.equal(await exists(resolve(root, "vite.config.ts")), true);
+  assert.equal(await exists(resolve(root, "src/app/foundation/main.tsx")), true);
+  assert.equal(await exists(resolve(root, "src/styles/globals.css")), true);
+
+  const wrangler = await readRoot("wrangler.jsonc");
+  assert.match(wrangler, /"main":\s*"src\/worker\.mjs"/);
+  assert.match(wrangler, /"directory":\s*"\.\/dist"/);
 });
