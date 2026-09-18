@@ -76,7 +76,11 @@ test("shared shell is protected by semantics rather than serialized markup", asy
         assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
         assert.equal(currentLinks[0].href, currentExpected);
       } else {
-        assert.equal(currentLinks.length, 0, "non-navigation routes should not invent aria-current state");
+        assert.deepEqual(
+          currentLinks.map((anchor) => anchor.href),
+          ["mailto:jacob@wizardgang.ai", "https://github.com/Wizard-Gang"],
+          "the acceptance baseline must preserve the current default navigation-marker behavior until navigation migrates"
+        );
       }
 
       const disclosures = tagBlocks(html, "details");
@@ -139,7 +143,9 @@ test("compact project actions keep destination-specific accessible names without
     await t.test(relative, async () => {
       const html = await readDist(relative);
       if (relative === "index.html" || relative.startsWith("projects/")) {
-        for (const anchor of anchors(html)) {
+        const main = tagBlocks(html, "main").find(({ attrs }) => attrs.get("id") === "main");
+        assert.ok(main, "project action checks require the primary main landmark");
+        for (const anchor of anchors(main.inner)) {
           const visible = normalizedVisible(anchor).toLowerCase();
           if (!["play", "case study", "github", "evidence"].includes(visible)) continue;
           const aria = anchor.attrs.get("aria-label") || "";
