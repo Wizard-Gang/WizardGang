@@ -9,6 +9,7 @@ export const DEV_HOST = "127.0.0.1";
 export const READINESS_TIMEOUT_MS = 20_000;
 export const RUNTIME_STATE_RELATIVE = "tmp/dev/runtime.json";
 export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev"]);
+export const LOCAL_HEADERS_RELATIVE = "dist/_headers";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -137,6 +138,28 @@ export async function teardownOwnedRuntime({ checkoutRoot, runtimeFile, wrangler
   await killProcessTreeFn(state.pid, { processGroup: Boolean(state.processGroup) });
   await removeStateFn(runtimeFile);
   return { found: true, terminated: true, stale: false };
+}
+
+export function sanitizeLocalHeadersText(headers) {
+  return String(headers)
+    .replace(/^\s*Strict-Transport-Security:.*(?:\r?\n|$)/gim, "")
+    .replace(/;\s*upgrade-insecure-requests\b/gi, "");
+}
+
+export async function prepareLocalHeaders(checkoutRoot, deps = {}) {
+  const readFileFn = deps.readFileFn ?? readFile;
+  const writeFileFn = deps.writeFileFn ?? writeFile;
+  const localHeaders = resolve(checkoutRoot, LOCAL_HEADERS_RELATIVE);
+  let source;
+  try {
+    source = await readFileFn(localHeaders, "utf8");
+  } catch (error) {
+    if (error?.code === "ENOENT") return false;
+    throw error;
+  }
+  const sanitized = sanitizeLocalHeadersText(source);
+  if (sanitized !== source) await writeFileFn(localHeaders, sanitized);
+  return true;
 }
 
 export async function resetDisposableState(checkoutRoot, rmFn = rm) {
@@ -323,6 +346,10 @@ async function main() {
     phase = "build";
     console.log("[dev] build");
     runBuild(checkoutRoot);
+
+    phase = "local headers";
+    console.log("[dev] local headers");
+    await prepareLocalHeaders(checkoutRoot);
 
     phase = "bootstrap";
     console.log("[dev] bootstrap");

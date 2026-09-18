@@ -9,15 +9,18 @@ import {
   DEFAULT_PORT,
   DEV_HOST,
   READINESS_TIMEOUT_MS,
+  LOCAL_HEADERS_RELATIVE,
   RESET_TARGETS,
   RUNTIME_STATE_RELATIVE,
   buildWranglerArgs,
   ensurePortAvailable,
   isCheckoutRuntimeCommand,
   openBrowser,
+  prepareLocalHeaders,
   readyThenOpen,
   removeRuntimeStateIfPid,
   resetDisposableState,
+  sanitizeLocalHeadersText,
   resolvePort,
   teardownOwnedRuntime,
   waitForReadiness
@@ -210,6 +213,34 @@ test("runtime metadata path is ignored by repository policy", async () => {
   const ignore = await readFile(resolve(repoRoot, ".gitignore"), "utf8");
   assert.match(ignore, /^tmp\/$/m);
   assert.match(RUNTIME_STATE_RELATIVE, /^tmp\//);
+});
+
+test("local HTTP headers remove only HTTPS-only directives", () => {
+  const source = `/*\n  Content-Security-Policy: default-src 'none'; style-src 'self'; upgrade-insecure-requests\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  X-Frame-Options: DENY\n`;
+  const sanitized = sanitizeLocalHeadersText(source);
+  assert.doesNotMatch(sanitized, /Strict-Transport-Security/i);
+  assert.doesNotMatch(sanitized, /upgrade-insecure-requests/i);
+  assert.match(sanitized, /Content-Security-Policy: default-src 'none'; style-src 'self'/);
+  assert.match(sanitized, /X-Frame-Options: DENY/);
+});
+
+test("local header preparation changes only dist and preserves production source headers", async () => {
+  const { root } = await tempCheckout();
+  const publicDir = resolve(root, "public");
+  const distDir = resolve(root, "dist");
+  await mkdir(publicDir, { recursive: true });
+  await mkdir(distDir, { recursive: true });
+  const productionHeaders = `/*\n  Content-Security-Policy: default-src 'none'; upgrade-insecure-requests\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n`;
+  const sourceFile = resolve(publicDir, "_headers");
+  const localFile = resolve(root, LOCAL_HEADERS_RELATIVE);
+  await writeFile(sourceFile, productionHeaders);
+  await writeFile(localFile, productionHeaders);
+
+  assert.equal(await prepareLocalHeaders(root), true);
+  assert.equal(await readFile(sourceFile, "utf8"), productionHeaders);
+  const localHeaders = await readFile(localFile, "utf8");
+  assert.doesNotMatch(localHeaders, /Strict-Transport-Security/i);
+  assert.doesNotMatch(localHeaders, /upgrade-insecure-requests/i);
 });
 
 test("reset targets are explicitly bounded to generated output and dev runtime state", async () => {

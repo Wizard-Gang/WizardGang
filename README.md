@@ -16,10 +16,11 @@ npm run dev
 1. Stops a stale Wrangler runtime previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
 2. Resets only generated `dist/` output and `tmp/dev/` runtime metadata.
 3. Runs the existing `npm run build` build.
-4. Confirms the local Wrangler installation is available.
-5. Starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
-6. Waits until the site responds successfully at `http://127.0.0.1:8790`.
-7. Opens the local URL in the default browser and remains attached to Wrangler for watch/hot-reload behavior.
+4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
+5. Confirms the local Wrangler installation is available.
+6. Starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
+7. Waits until the site responds successfully at `http://127.0.0.1:8790`.
+8. Opens the local URL in the default browser and remains attached to Wrangler for watch/hot-reload behavior.
 
 Override the local port when needed:
 
@@ -30,6 +31,7 @@ WIZARDGANG_PORT=9123 npm run dev
 If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces the runtime previously started by the same checkout.
 
 The reset is intentionally narrow. It removes `dist/` and `tmp/dev/`; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
+Local development sanitizes only the generated `dist/_headers` file so HTTP loopback does not inherit HSTS or `upgrade-insecure-requests`. The production source file `public/_headers` is never modified.
 
 Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. If that process is terminated abruptly, the next `npm run dev` invocation recovers stale runtime metadata before starting again.
 
