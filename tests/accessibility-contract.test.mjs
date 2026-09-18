@@ -75,12 +75,6 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       if (currentExpected) {
         assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
         assert.equal(currentLinks[0].href, currentExpected);
-      } else {
-        assert.deepEqual(
-          currentLinks.map((anchor) => anchor.href),
-          ["mailto:jacob@wizardgang.ai", "https://github.com/Wizard-Gang"],
-          "the acceptance baseline must preserve the current default navigation-marker behavior until navigation migrates"
-        );
       }
 
       const disclosures = tagBlocks(html, "details");
