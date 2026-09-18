@@ -11,7 +11,27 @@ npm ci
 npm run dev
 ```
 
-The local Worker serves the generated static site on port 8790.
+`npm run dev` is the normal local-development entry point. It stays local-only and performs this checkout-scoped lifecycle:
+
+1. Stops a stale Wrangler runtime previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
+2. Resets only generated `dist/` output and `tmp/dev/` runtime metadata.
+3. Runs the existing `npm run build` build.
+4. Confirms the local Wrangler installation is available.
+5. Starts `wrangler dev --local` on port `8790` by default.
+6. Waits until the site responds successfully at `http://localhost:8790`.
+7. Opens the local URL in the default browser and remains attached to Wrangler for watch/hot-reload behavior.
+
+Override the local port when needed:
+
+```bash
+WIZARDGANG_PORT=9123 npm run dev
+```
+
+If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces the runtime previously started by the same checkout.
+
+The reset is intentionally narrow. It removes `dist/` and `tmp/dev/`; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
+
+Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. If that process is terminated abruptly, the next `npm run dev` invocation recovers stale runtime metadata before starting again.
 
 ## Verify
 
@@ -20,13 +40,16 @@ npm run build
 npm run check
 ```
 
+`npm run check` runs the existing generated-site verification and the checkout-scoped development-lifecycle tests.
+
 ## Structure
 
 - `src/site.mjs` builds the site pages.
 - `src/projects.mjs` contains project metadata.
 - `src/professional.mjs` contains professional history.
 - `src/worker.mjs` handles static delivery and compatibility redirects.
-- `scripts/` contains build and verification commands.
+- `scripts/` contains repeatable build, local-development, verification, and maintenance commands.
+- `tests/` contains automated development-control tests.
 
 ## Documentation & evidence
 
@@ -39,7 +62,7 @@ npm run check
 
 ## Deployment
 
-Cloudflare configuration lives in `wrangler.jsonc`. Use the production dry run before a release:
+Cloudflare configuration lives in `wrangler.jsonc`. Local development uses the base configuration with `wrangler dev --local`; it does not deploy or select the staging or production environments. Use the production dry run before a release:
 
 ```bash
 npm run deploy:production:dry-run
