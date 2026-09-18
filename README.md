@@ -35,6 +35,28 @@ Local development sanitizes only the generated `dist/_headers` file so HTTP loop
 
 Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. If that process is terminated abruptly, the next `npm run dev` invocation recovers stale runtime metadata before starting again.
 
+## Frontend migration foundation
+
+TypeScript, React, Vite, and Tailwind CSS are available for incremental frontend migration, but they do not own production rendering yet.
+
+The existing generated-site build remains authoritative:
+
+```bash
+npm run build
+```
+
+The isolated migration harness can be checked directly with:
+
+```bash
+npm run typecheck
+npm run build:frontend
+npm run check:frontend
+```
+
+`npm run build:frontend` builds only the migration harness under `src/app/foundation/` and writes disposable output to the gitignored `tmp/frontend-foundation/` directory. It does not write to `dist/`, does not create a public route, and is not part of the Cloudflare deployment input.
+
+Tailwind is integrated through its Vite plugin and `src/styles/globals.css`. Existing `src/styles.css` and `src/portfolio-cleanup.css` remain the styles for generated production pages. Vite is not yet wired into the normal `npm run dev` lifecycle.
+
 ## Verify
 
 ```bash
@@ -42,16 +64,20 @@ npm run build
 npm run check
 ```
 
-`npm run check` runs the existing generated-site verification and the checkout-scoped development-lifecycle tests.
+`npm run check` verifies the TypeScript/React/Vite/Tailwind foundation and then runs the generated-site, accessibility, Worker-routing, and development-lifecycle acceptance suite.
 
 ## Structure
 
-- `src/site.mjs` builds the site pages.
+- `src/site.mjs` builds the current production site pages.
 - `src/projects.mjs` contains project metadata.
 - `src/professional.mjs` contains professional history.
 - `src/worker.mjs` handles static delivery and compatibility redirects.
+- `src/app/foundation/` contains the disposable React migration harness.
+- `src/styles/globals.css` is the Tailwind entry point for new frontend code.
+- `vite.config.ts` isolates Vite output from the production `dist/` build.
+- `tsconfig.json` defines strict checking for new TypeScript and TSX sources.
 - `scripts/` contains repeatable build, local-development, verification, and maintenance commands.
-- `tests/` contains automated development-control tests.
+- `tests/` contains automated acceptance and development-control tests.
 
 ## Documentation & evidence
 
