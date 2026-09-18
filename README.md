@@ -17,8 +17,8 @@ npm run dev
 2. Resets only generated `dist/` output and `tmp/dev/` runtime metadata.
 3. Runs the existing `npm run build` build.
 4. Confirms the local Wrangler installation is available.
-5. Starts `wrangler dev --local` on port `8790` by default.
-6. Waits until the site responds successfully at `http://localhost:8790`.
+5. Starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
+6. Waits until the site responds successfully at `http://127.0.0.1:8790`.
 7. Opens the local URL in the default browser and remains attached to Wrangler for watch/hot-reload behavior.
 
 Override the local port when needed:

@@ -5,6 +5,7 @@ import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const DEFAULT_PORT = 8790;
+export const DEV_HOST = "127.0.0.1";
 export const READINESS_TIMEOUT_MS = 20_000;
 export const RUNTIME_STATE_RELATIVE = "tmp/dev/runtime.json";
 export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev"]);
@@ -150,7 +151,7 @@ export async function resetDisposableState(checkoutRoot, rmFn = rm) {
   }
 }
 
-export async function isPortAvailable(port, host = "127.0.0.1") {
+export async function isPortAvailable(port, host = DEV_HOST) {
   return await new Promise((resolvePromise, reject) => {
     const server = net.createServer();
     server.unref();
@@ -250,9 +251,12 @@ export async function openBrowser(url, options = {}) {
   else [command, args] = ["xdg-open", [url]];
 
   await new Promise((resolvePromise, reject) => {
-    const child = spawnFn(command, args, { stdio: "ignore", detached: true });
+    const child = spawnFn(command, args, { stdio: "ignore" });
     child.once("error", reject);
-    child.once("spawn", () => { child.unref?.(); resolvePromise(); });
+    child.once("exit", (code, signal) => {
+      if (code === 0) return resolvePromise();
+      reject(new Error(`Browser opener exited with status ${code ?? "unknown"}${signal ? ` (${signal})` : ""}. Open ${url} manually.`));
+    });
   });
 }
 
@@ -276,8 +280,12 @@ async function writeRuntimeState(runtimeFile, state) {
   await writeFile(runtimeFile, `${JSON.stringify(state, null, 2)}\n`, { flag: "w" });
 }
 
+export function buildWranglerArgs(wranglerCli, port) {
+  return [wranglerCli, "dev", "--local", "--ip", DEV_HOST, "--port", String(port)];
+}
+
 function spawnWrangler(checkoutRoot, wranglerCli, port) {
-  return spawn(process.execPath, [wranglerCli, "dev", "--local", "--port", String(port)], {
+  return spawn(process.execPath, buildWranglerArgs(wranglerCli, port), {
     cwd: checkoutRoot,
     env: process.env,
     stdio: "inherit",
@@ -302,7 +310,7 @@ async function main() {
 
   try {
     const port = resolvePort();
-    const url = `http://localhost:${port}`;
+    const url = `http://${DEV_HOST}:${port}`;
 
     phase = "teardown";
     console.log("[dev] teardown");
@@ -333,6 +341,7 @@ async function main() {
       checkoutRoot,
       wranglerCli,
       port,
+      host: DEV_HOST,
       url,
       processGroup: process.platform !== "win32",
       startedAt: new Date().toISOString()
