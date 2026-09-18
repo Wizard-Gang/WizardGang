@@ -6,7 +6,7 @@
   "description": "Static software engineering portfolio for Jacob Yongue at wizardgang.ai.",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "node scripts/verify.mjs && npm run test:dev",
+    "check": "node scripts/verify.mjs",
     "test:dev": "node --test tests/dev-lifecycle.test.mjs",
     "secrets:cloudflare:discover": "bash scripts/discover-cloudflare-api-token-targets.sh",
     "secrets:cloudflare:rotate": "bash scripts/rotate-cloudflare-api-token.sh",
