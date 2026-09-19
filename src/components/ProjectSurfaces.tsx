@@ -1,4 +1,4 @@
-import type { ProjectRecord } from "../data/projects";
+import { projectCaseStudyPath, projectPath, type ProjectRecord } from "../data/projects";
 import { ProjectPreview } from "./ProjectPreviews";
 
 export type ProjectActionVariant = "card" | "overview" | "case";
@@ -18,7 +18,7 @@ export function ProjectActions({
     return (
       <div className="project-card-actions">
         {project.liveUrl ? <a className="text-link" href={project.liveUrl} aria-label={`Play ${project.name}`}>Play <Arrow external /></a> : null}
-        <a className="text-link" href={`/projects/${project.slug}/case-study/`} aria-label={`Read the ${project.name} case study`}>Case study <Arrow external={false} /></a>
+        <a className="text-link" href={projectCaseStudyPath(project.slug)} aria-label={`Read the ${project.name} case study`}>Case study <Arrow external={false} /></a>
         <a className="text-link" href={project.sourceUrl} aria-label={`View ${project.name} source code on GitHub`}>GitHub <Arrow external /></a>
       </div>
     );
@@ -28,7 +28,7 @@ export function ProjectActions({
     return (
       <div className="button-row">
         {project.liveUrl ? <a className="button button-primary" href={project.liveUrl} aria-label={`Play ${project.name}`}>Play <Arrow external /></a> : null}
-        <a className={project.liveUrl ? "button" : "button button-primary"} href={`/projects/${project.slug}/case-study/`} aria-label={`Read the ${project.name} case study`}>Case study <Arrow external={false} /></a>
+        <a className={project.liveUrl ? "button" : "button button-primary"} href={projectCaseStudyPath(project.slug)} aria-label={`Read the ${project.name} case study`}>Case study <Arrow external={false} /></a>
         <a className="button" href={project.sourceUrl} aria-label={`View ${project.name} source code on GitHub`}>GitHub <Arrow external /></a>
       </div>
     );
@@ -55,7 +55,7 @@ export function ProjectCard({ project }: { project: ProjectRecord }) {
       </div>
       <div className="project-card-copy">
         <span className="project-number">{project.number} / {project.eyebrow}</span>
-        <h3><a href={`/projects/${project.slug}/`}>{project.name}</a></h3>
+        <h3><a href={projectPath(project.slug)}>{project.name}</a></h3>
         <p>{project.description}</p>
         <ProjectActions project={project} variant="card" />
       </div>

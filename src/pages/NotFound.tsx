@@ -15,7 +15,7 @@ export const NOT_FOUND_PAGE: ReactPageDefinition = {
         <h1>Nothing here.</h1>
         <p>Return to Jacob Yongue’s portfolio or inspect the project index.</p>
         <div className="button-row">
-          <a className="button button-primary" href="/projects/">View projects <span aria-hidden="true">→</span></a>
+          <a className="button button-primary" href="/software/projects/">View projects <span aria-hidden="true">→</span></a>
           <a className="button" href="/">Home</a>
         </div>
       </section>

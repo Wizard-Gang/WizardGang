@@ -41,7 +41,7 @@ for (const pageSource of [homePageSource, aboutPageSource, companyNavigationPage
   assert.match(pageSource, /metadata:/);
   assert.match(pageSource, /body:/);
 }
-for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
+for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
   assert.ok(registrySource.includes(importName), `static page registry missing ${importName}`);
 }
 assert.match(projectPagesSource, /createProjectPageDefinitions/, "React project route definitions must remain authoritative");

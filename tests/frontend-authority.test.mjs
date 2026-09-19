@@ -126,7 +126,7 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   const expected = new Set([
     "index.html",
-    "projects/index.html",
+    "software/projects/index.html",
     ...projectRoutes,
     "services/index.html",
     "about/index.html",
@@ -134,12 +134,13 @@ test("canonical page inventory remains owned by the typed React registry", async
     "about/team/index.html",
     "about/team/jacob/index.html",
     "software/index.html",
+    "software/integrations/index.html",
     "solutions/index.html",
     "glossary/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 17, "WG-052 replaces the canonical Work output with Jacob Team career authority");
+  assert.equal(expected.size, 18, "WG-053 adds Integrations while moving the existing project outputs under Software");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);

@@ -58,13 +58,13 @@ function browserModulePath(html) {
   return source.slice(1);
 }
 
-test("generated HTML inventory is the explicit 17-page staged canonical contract", async () => {
+test("generated HTML inventory is the explicit 18-page canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 17);
+  assert.equal(actual.length, 18);
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -178,7 +178,7 @@ test("every canonical page preserves document, metadata, link, and local-asset b
 });
 
 test("social preview behavior remains page-appropriate", async () => {
-  for (const relative of ["index.html", "software/index.html", "solutions/index.html"]) {
+  for (const relative of ["index.html", "software/index.html", "software/integrations/index.html", "solutions/index.html"]) {
     const html = await readDist(relative);
     assert.equal(metaContent(html, "property", "og:image"), `${ORIGIN}/og.jpg`);
     assert.equal(metaContent(html, "property", "og:image:type"), "image/jpeg");
@@ -189,7 +189,7 @@ test("social preview behavior remains page-appropriate", async () => {
     assert.equal(metaContent(html, "name", "twitter:image"), `${ORIGIN}/og.jpg`);
   }
 
-  for (const relative of canonicalFiles.filter((file) => !["index.html", "software/index.html", "solutions/index.html"].includes(file))) {
+  for (const relative of canonicalFiles.filter((file) => !["index.html", "software/index.html", "software/integrations/index.html", "solutions/index.html"].includes(file))) {
     const html = await readDist(relative);
     assert.equal(metaContent(html, "name", "twitter:card"), "summary", `${relative}: Twitter card behavior changed`);
     assert.equal(metaContent(html, "property", "og:image"), null, `${relative}: unexpected social image behavior`);
@@ -258,7 +258,7 @@ test("homepage is WizardGang-first while routing to current deeper authorities",
   assert.ok(hero, "homepage hero section is missing");
   assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/software/", "/solutions/"].sort());
 
-  for (const href of ["/software/", "/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
     assert.ok(anchorWithHref(home, href), `homepage missing current destination ${href}`);
   }
   assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain organization GitHub access through shared chrome");
@@ -272,7 +272,7 @@ test("homepage is WizardGang-first while routing to current deeper authorities",
 });
 
 test("projects preserve source, live, evidence, overview, case-study, and preview relationships", async () => {
-  const overview = await readDist("projects/index.html");
+  const overview = await readDist("software/projects/index.html");
   for (const name of ["SharkTank", "Hexframe", "YarReader"]) assert.match(overview, new RegExp(name, "i"));
   for (const label of ["Shark Tank gameplay", "Hexframe training mode", "YarReader sample library"]) {
     assert.ok(startTags(overview, "div").some(({ attrs }) => (attrs.get("aria-label") || "").includes(label)), `projects overview missing semantic preview: ${label}`);
@@ -281,10 +281,10 @@ test("projects preserve source, live, evidence, overview, case-study, and previe
   assert.equal(decorative.length, 3, "project previews must remain decorative and inert");
 
   for (const [slug, relationships] of Object.entries(PROJECT_LINKS)) {
-    const projectOverview = await readDist(`projects/${slug}/index.html`);
-    const caseStudy = await readDist(`projects/${slug}/case-study/index.html`);
-    assert.ok(anchorWithHref(projectOverview, `/projects/${slug}/case-study/`), `${slug} overview must link to its case study`);
-    assert.ok(anchorWithHref(caseStudy, `/projects/${slug}/`), `${slug} case study must link back to its overview`);
+    const projectOverview = await readDist(`software/projects/${slug}/index.html`);
+    const caseStudy = await readDist(`software/projects/${slug}/case-study/index.html`);
+    assert.ok(anchorWithHref(projectOverview, `/software/projects/${slug}/case-study/`), `${slug} overview must link to its case study`);
+    assert.ok(anchorWithHref(caseStudy, `/software/projects/${slug}/`), `${slug} case study must link back to its overview`);
     for (const html of [projectOverview, caseStudy]) assert.ok(anchorWithHref(html, relationships.source), `${slug} must expose its source repository`);
     if (relationships.live) {
       for (const html of [projectOverview, caseStudy]) assert.ok(anchorWithHref(html, relationships.live), `${slug} must expose its live application`);
@@ -311,7 +311,7 @@ test("canonical project data retains the source/live/evidence contract", () => {
 });
 
 test("SharkTank substantive case-study baseline remains intact", async () => {
-  const html = await readDist("projects/sharktank/case-study/index.html");
+  const html = await readDist("software/projects/sharktank/case-study/index.html");
   requireText(html, [
     "It starts with multiplayer gameplay",
     "ISO/IEC 27001",
@@ -333,7 +333,7 @@ test("SharkTank substantive case-study baseline remains intact", async () => {
 });
 
 test("Hexframe substantive deterministic, lab, replay, and accessibility baseline remains intact", async () => {
-  const html = await readDist("projects/hexframe/case-study/index.html");
+  const html = await readDist("software/projects/hexframe/case-study/index.html");
   requireText(html, [
     "Make every feature agree on what happened",
     "A playable training stage with one fighter and one practice dummy",
@@ -350,8 +350,8 @@ test("Hexframe substantive deterministic, lab, replay, and accessibility baselin
 });
 
 test("YarReader substantive offline, ingestion, addressing, recovery, and rebuild baseline remains intact", async () => {
-  const overview = await readDist("projects/yarreader/index.html");
-  const html = await readDist("projects/yarreader/case-study/index.html");
+  const overview = await readDist("software/projects/yarreader/index.html");
+  const html = await readDist("software/projects/yarreader/case-study/index.html");
   requireText(html, [
     "Each part has one job",
     "Do the hard work before the reader opens",
@@ -481,6 +481,16 @@ test("canonical pages do not link to career compatibility redirects", async () =
   }
 });
 
+test("canonical pages do not link through legacy project redirects", async () => {
+  for (const relative of canonicalFiles) {
+    const html = await readDist(relative);
+    for (const anchor of anchors(html)) {
+      const path = anchor.href.split(/[?#]/)[0];
+      assert.ok(path !== "/projects" && !path.startsWith("/projects/"), `${relative} links to redirect-only project route ${anchor.href}`);
+    }
+  }
+});
+
 test("canonical sitemap inventory is exact and excludes 404 and compatibility routes", async () => {
   const sitemap = await readDist("sitemap.xml");
   const routes = tagBlocks(sitemap, "loc").map(({ inner }) => {
@@ -575,7 +585,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
   assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must stay out of the React registry");

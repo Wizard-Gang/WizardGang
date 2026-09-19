@@ -41,7 +41,7 @@ test("generated homepage presents WizardGang as the subject with one clear hiera
   for (const group of systemGroups) assert.ok(plain.includes(group.title), `homepage missing system group ${group.title}`);
 
   const hrefs = new Set(anchors(html).map((anchor) => anchor.href));
-  for (const href of ["/software/", "/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "/about/company/", "/about/team/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "/about/company/", "/about/team/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
     assert.ok(hrefs.has(href), `homepage missing ${href}`);
   }
 });

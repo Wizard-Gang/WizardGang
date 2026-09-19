@@ -2,7 +2,11 @@ import type { ReactPageDefinition } from "../app/contracts";
 import { ProjectActions, ProjectCardGrid, ProjectTags, ProjectVisualFrame } from "../components/ProjectSurfaces";
 import {
   PROJECTS_INDEX_METADATA,
+  PROJECTS_ROOT_PATH,
   projectBySlug,
+  projectCaseStudyOutputPath,
+  projectOutputPath,
+  projectPath,
   projects,
   type ProjectArchitectureItem,
   type ProjectRecord
@@ -25,7 +29,7 @@ export function SelectedProjectsSection() {
     <section className="portfolio-section selected-projects" aria-labelledby="selected-projects-heading">
       <div className="section-heading">
         <div><p className="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div>
-        <a className="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a>
+        <a className="text-link" href={PROJECTS_ROOT_PATH}>All projects <span aria-hidden="true">→</span></a>
       </div>
       <ProjectCardGrid projects={projects} />
     </section>
@@ -40,7 +44,7 @@ function ProjectsIndexPage() {
         <h1>Built to be<br /><span>inspected.</span></h1>
         <p>Independent software projects with a clear path from concise overview to technical case study, running application, and source evidence.</p>
       </section>
-      <section className="projects-index" aria-label="Personal engineering projects">
+      <section className="projects-index" aria-label="WizardGang software projects">
         <ProjectCardGrid projects={projects} />
       </section>
     </main>
@@ -51,7 +55,7 @@ function ProjectOverviewPage({ project }: { project: ProjectRecord }) {
   const copy = project.narrative;
   return (
     <main className="case-main showcase-main" id="main" tabIndex={-1}>
-      <a className="crumb" href="/projects/">← Projects</a>
+      <a className="crumb" href={PROJECTS_ROOT_PATH}>← Projects</a>
       <section className="showcase-hero">
         <p className="kicker">{project.number} / {project.eyebrow}</p>
         <h1>{project.name}</h1>
@@ -106,7 +110,7 @@ const SHARKTANK_ACCESSIBILITY_CONTROLS = [
 function SharkTankCaseStudy({ project }: { project: ProjectRecord }) {
   return (
     <main className="case-main" id="main" tabIndex={-1}>
-      <a className="crumb" href="/projects/sharktank/">← SharkTank overview</a>
+      <a className="crumb" href={projectPath("sharktank")}>← SharkTank overview</a>
       <section className="case-hero">
         <div><p className="kicker">{project.number} / {project.eyebrow}</p><h1>{project.name}</h1></div>
         <div><p className="case-lede">{project.description}</p><ProjectTags project={project} /><ProjectActions project={project} variant="case" /></div>
@@ -218,7 +222,7 @@ function StandardProjectCaseStudy({ project }: { project: ProjectRecord }) {
 
   return (
     <main className="case-main" id="main" tabIndex={-1}>
-      <a className="crumb" href={`/projects/${project.slug}/`}>← {project.name} overview</a>
+      <a className="crumb" href={projectPath(project.slug)}>← {project.name} overview</a>
       <section className="case-hero">
         <div><p className="kicker">{project.number} / {project.eyebrow}</p><h1>{project.name}</h1></div>
         <div><p className="case-lede">{project.description}</p><ProjectTags project={project} /><ProjectActions project={project} variant="case" /></div>
@@ -274,7 +278,7 @@ function ProjectCaseStudyPage({ project }: { project: ProjectRecord }) {
 export function createProjectPageDefinitions(): readonly ReactPageDefinition[] {
   const definitions: ReactPageDefinition[] = [
     {
-      relative: "projects/index.html",
+      relative: "software/projects/index.html",
       metadata: PROJECTS_INDEX_METADATA,
       body: <ProjectsIndexPage />
     }
@@ -283,12 +287,12 @@ export function createProjectPageDefinitions(): readonly ReactPageDefinition[] {
   for (const project of projects) {
     definitions.push(
       {
-        relative: `projects/${project.slug}/index.html`,
+        relative: projectOutputPath(project.slug),
         metadata: project.overviewMetadata,
         body: <ProjectOverviewPage project={project} />
       },
       {
-        relative: `projects/${project.slug}/case-study/index.html`,
+        relative: projectCaseStudyOutputPath(project.slug),
         metadata: project.caseStudyMetadata,
         body: <ProjectCaseStudyPage project={project} />
       }

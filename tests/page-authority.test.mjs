@@ -18,6 +18,7 @@ test("typed React registry owns every canonical static page", async () => {
     "TEAM_PAGE",
     "JACOB_TEAM_PAGE",
     "SOFTWARE_PAGE",
+    "SOFTWARE_INTEGRATIONS_PAGE",
     "SOLUTIONS_PAGE",
     "GLOSSARY_PAGE",
     "NOT_FOUND_PAGE",
@@ -32,7 +33,7 @@ test("typed React registry owns every canonical static page", async () => {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }
 
-  assert.equal(CANONICAL_PAGES.size, 17);
+  assert.equal(CANONICAL_PAGES.size, 18);
   for (const relative of CANONICAL_PAGES.keys()) {
     const html = await readDist(relative);
     assert.equal(tagBlocks(html, "main").length, 1, `${relative} must have one React-authored main`);
@@ -47,7 +48,8 @@ test("remaining current-state pages retain substantive content after React migra
     ["about/company/index.html", ["WizardGang company", "Software with", "Software first.", "Keep ownership explicit.", "Demonstrate; do not overclaim."]],
     ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "View Jacob's profile"]],
     ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments", "Core skills"]],
-    ["software/index.html", ["Software, systems,", "Current software projects.", "Integration experience.", "View current projects"]],
+    ["software/index.html", ["Software, systems,", "Connect systems and workflows.", "WizardGang software projects.", "Explore integrations", "Explore projects"]],
+    ["software/integrations/index.html", ["Software / Integrations", "Connect systems.", "Keep ownership clear.", "Experience-backed integration areas.", "Capability and career evidence stay distinct.", "See supporting professional experience"]],
     ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
     ["services/index.html", ["Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
     ["glossary/index.html", ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]],

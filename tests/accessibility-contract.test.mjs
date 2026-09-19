@@ -141,7 +141,7 @@ test("compact project actions keep destination-specific accessible names without
   for (const relative of CANONICAL_PAGES.keys()) {
     await t.test(relative, async () => {
       const html = await readDist(relative);
-      if (relative === "index.html" || relative.startsWith("projects/")) {
+      if (relative === "index.html" || relative.startsWith("software/projects/")) {
         const main = tagBlocks(html, "main").find(({ attrs }) => attrs.get("id") === "main");
         assert.ok(main, "project action checks require the primary main landmark");
         for (const anchor of anchors(main.inner)) {
@@ -160,12 +160,12 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  for (const relative of ["index.html", "projects/index.html", "projects/sharktank/index.html", "projects/hexframe/index.html", "projects/yarreader/index.html"]) {
+  for (const relative of ["index.html", "software/projects/index.html", "software/projects/sharktank/index.html", "software/projects/hexframe/index.html", "software/projects/yarreader/index.html"]) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
-    assert.ok(decorative.length >= (relative.endsWith("index.html") && ["index.html", "projects/index.html"].includes(relative) ? 3 : 1), `${relative}: preview must remain decorative and inert`);
+    assert.ok(decorative.length >= (relative.endsWith("index.html") && ["index.html", "software/projects/index.html"].includes(relative) ? 3 : 1), `${relative}: preview must remain decorative and inert`);
   }
-  const projects = await readDist("projects/index.html");
+  const projects = await readDist("software/projects/index.html");
   assert.doesNotMatch(projects, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
   assert.doesNotMatch(projects, /<text\b/i, "decorative SVG previews must not duplicate text content");
 });

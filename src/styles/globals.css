@@ -1165,6 +1165,9 @@ h1 span { color: var(--muted); }
   .nav-disclosure .site-nav a { font-size: .7rem; }
   .hero { min-height: auto; padding: 5.5rem 0 3.8rem; }
   h1 { font-size: clamp(3.25rem, 19vw, 5.5rem); }
+  .page-hero h1 { font-size: clamp(2.5rem, 13vw, 3.4rem); overflow-wrap: anywhere; }
+  .case-hero h1 { font-size: clamp(2.6rem, 14vw, 3.7rem); overflow-wrap: anywhere; }
+  .showcase-hero h1 { font-size: clamp(2.6rem, 14vw, 3.7rem); overflow-wrap: anywhere; }
   .sim-visual > div { grid-template-columns: 1fr 1fr; }
   .archive-files > span { grid-template-columns: 4.4rem 1fr; }
   .archive-files code { grid-column: 1 / -1; }

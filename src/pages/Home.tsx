@@ -1,7 +1,7 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { CapabilityList } from "../components/ProfessionalSurfaces";
 import { ProjectCardGrid } from "../components/ProjectSurfaces";
-import { projects } from "../data/projects";
+import { PROJECTS_ROOT_PATH, projects } from "../data/projects";
 import { systemGroups } from "../data/professional-systems";
 import { CONTACT_EMAIL } from "../data/site";
 
@@ -38,7 +38,7 @@ export const HOME_PAGE: ReactPageDefinition = {
           <a className="text-link" href="/software/">Explore software <span aria-hidden="true">→</span></a>
         </div>
         <ProjectCardGrid projects={projects} />
-        <a className="text-link" href="/projects/">View all projects <span aria-hidden="true">→</span></a>
+        <a className="text-link" href={PROJECTS_ROOT_PATH}>View all projects <span aria-hidden="true">→</span></a>
       </section>
 
       <section className="about-teaser" aria-labelledby="home-systems-heading">
@@ -49,7 +49,7 @@ export const HOME_PAGE: ReactPageDefinition = {
         <div>
           <p>The systems and integration experience behind WizardGang comes from Jacob Yongue’s professional work across warehouse and fulfillment systems, logistics, public-sector workflows, and enterprise integration. Those employer and customer records remain attributed to that professional history; they are not WizardGang client claims.</p>
           <CapabilityList items={systemGroups.map((group) => group.title)} />
-          <a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a>
+          <div className="text-links"><a className="text-link" href="/software/integrations/">Explore integrations <span aria-hidden="true">→</span></a><a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
 
