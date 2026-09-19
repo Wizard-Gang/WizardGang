@@ -11,7 +11,6 @@ export const HOME_PAGE: ReactPageDefinition = {
     path: "/",
     socialImage: "/og-jacob-yongue.jpg"
   },
-  current: "",
   body: (
     <main className="site-main" id="main" tabIndex={-1}>
       <section className="hero jacob-hero">

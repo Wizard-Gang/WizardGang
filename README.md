@@ -39,7 +39,9 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated.
+React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated.
+
+The shared primary navigation is now company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. `/software/` and `/solutions/` are intentionally narrow orientation pages so global navigation never points to a dead route. Existing `/projects/`, `/work/`, and `/services/` content remains canonical until its later controlled migration under the approved information architecture.
 
 The authoritative production build remains:
 
@@ -78,13 +80,14 @@ npm run test:frontend-authority
 - `src/app/Document.tsx` owns the shared static production document and metadata composition.
 - `src/components/SiteChrome.tsx` owns Header, navigation, Preferences, and Footer markup.
 - `src/app/contracts.ts` defines the typed shell, metadata, navigation, and build contracts.
+- `src/app/navigation.ts` is the single typed primary-navigation and current-section authority.
 - `src/browser/` owns first-party browser preferences, language behavior, and mobile-navigation enhancement in TypeScript.
 - `src/data/projects.ts` owns typed project metadata and relationships.
 - `src/data/professional.ts` owns typed professional roles, project history, and skills.
 - `src/data/professional-systems.ts` owns typed systems, integrations, and deployment references.
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/pages/` owns every canonical production page body in React/TypeScript.
-- `src/app/pageRegistry.ts` is the typed output/route registry for all 13 canonical static HTML files.
+- `src/app/pageRegistry.ts` is the typed output/route registry for the current 15 canonical static HTML files.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.

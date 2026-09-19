@@ -1,16 +1,9 @@
-import type { BuildMetadata, CurrentNavSection, NavigationItem } from "../app/contracts";
+import type { BuildMetadata, CurrentNavSection } from "../app/contracts";
+import { NAVIGATION_ITEMS } from "../app/navigation";
 
 const GITHUB = "https://github.com/Wizard-Gang";
 const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacob@wizardgang.ai";
-
-export const NAVIGATION_ITEMS = [
-  { key: "projects", href: "/projects/", label: "Projects" },
-  { key: "work", href: "/work/", label: "Work" },
-  { key: "about", href: "/about/", label: "About" },
-  { href: `mailto:${CONTACT_EMAIL}`, label: "Contact" },
-  { href: GITHUB, label: "GitHub", accessibleName: "Visit WizardGang on GitHub" }
-] as const satisfies readonly NavigationItem[];
 
 interface NavigationProps {
   current: CurrentNavSection;
@@ -89,6 +82,7 @@ export function SiteFooter({ build }: { build: BuildMetadata }) {
       <span className="footer-contact">
         <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         <a href={LINKEDIN}>LinkedIn <span aria-hidden="true">↗</span></a>
+        <a href={GITHUB} aria-label="Visit WizardGang on GitHub">GitHub <span aria-hidden="true">↗</span></a>
       </span>
       <span>WizardGang.ai · <a href="/version.json">Build {build.commit}</a></span>
     </footer>

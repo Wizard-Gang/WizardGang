@@ -16,6 +16,8 @@ const professionalDataSource = await readRoot("src/data/professional.ts");
 const professionalSystemsSource = await readRoot("src/data/professional-systems.ts");
 const homePageSource = await readRoot("src/pages/Home.tsx");
 const aboutPageSource = await readRoot("src/pages/About.tsx");
+const companyNavigationPageSource = await readRoot("src/pages/CompanyNavigation.tsx");
+const navigationSource = await readRoot("src/app/navigation.ts");
 const servicesPageSource = await readRoot("src/pages/Services.tsx");
 const glossaryPageSource = await readRoot("src/pages/Glossary.tsx");
 const notFoundPageSource = await readRoot("src/pages/NotFound.tsx");
@@ -28,15 +30,19 @@ assert.doesNotMatch(documentSource, /react-dom\/client|hydrateRoot|createRoot/, 
 assert.match(chromeSource, /Skip to main content/);
 assert.match(chromeSource, /Primary mobile/);
 assert.match(chromeSource, /Preferences/);
+assert.match(chromeSource, /NAVIGATION_ITEMS/);
+assert.match(navigationSource, /About/);
+assert.match(navigationSource, /Software/);
+assert.match(navigationSource, /Solutions/);
 assert.match(chromeSource, /Software engineering portfolio/);
 
-for (const pageSource of [homePageSource, aboutPageSource, servicesPageSource, glossaryPageSource, notFoundPageSource]) {
+for (const pageSource of [homePageSource, aboutPageSource, companyNavigationPageSource, servicesPageSource, glossaryPageSource, notFoundPageSource]) {
   assert.match(pageSource, /ReactPageDefinition/);
   assert.match(pageSource, /relative:/);
   assert.match(pageSource, /metadata:/);
   assert.match(pageSource, /body:/);
 }
-for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
   assert.ok(registrySource.includes(importName), `static page registry missing ${importName}`);
 }
 assert.match(projectPagesSource, /createProjectPageDefinitions/, "React project route definitions must remain authoritative");

@@ -14,6 +14,8 @@ test("typed React registry owns every canonical static page", async () => {
     "HOME_PAGE",
     "SERVICES_PAGE",
     "ABOUT_PAGE",
+    "SOFTWARE_PAGE",
+    "SOLUTIONS_PAGE",
     "GLOSSARY_PAGE",
     "NOT_FOUND_PAGE",
     "createProjectPageDefinitions",
@@ -28,7 +30,7 @@ test("typed React registry owns every canonical static page", async () => {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }
 
-  assert.equal(CANONICAL_PAGES.size, 13);
+  assert.equal(CANONICAL_PAGES.size, 15);
   for (const relative of CANONICAL_PAGES.keys()) {
     const html = await readDist(relative);
     assert.equal(tagBlocks(html, "main").length, 1, `${relative} must have one React-authored main`);
@@ -40,6 +42,8 @@ test("remaining current-state pages retain substantive content after React migra
   const pages = [
     ["index.html", ["Jacob Yongue", "I build systems that ship.", "Selected projects", "Selected work", "Capabilities", "About"]],
     ["about/index.html", ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]],
+    ["software/index.html", ["Software, systems,", "Current software projects.", "Integration experience.", "View current projects"]],
+    ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
     ["services/index.html", ["Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
     ["glossary/index.html", ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]],
     ["404.html", ["404 / Route not found", "Nothing here.", "View projects", "Home"]]

@@ -6,12 +6,13 @@ export interface BuildMetadata {
   builtAt: string;
 }
 
-export type CurrentNavSection = "projects" | "work" | "about" | "services" | "glossary" | "";
+export type PrimaryNavigationSection = "about" | "software" | "solutions";
+export type CurrentNavSection = PrimaryNavigationSection | "";
 
 export interface NavigationItem {
   label: string;
   href: string;
-  key?: "projects" | "work" | "about";
+  key?: PrimaryNavigationSection;
   accessibleName?: string;
 }
 
@@ -25,13 +26,11 @@ export interface PageMetadata {
 
 export interface PageDefinition {
   metadata: PageMetadata;
-  current: CurrentNavSection;
   body: string;
 }
 
 export interface ReactPageDefinition {
   relative: string;
   metadata: PageMetadata;
-  current: CurrentNavSection;
   body: ReactElement;
 }

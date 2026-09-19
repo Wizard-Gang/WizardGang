@@ -1,5 +1,6 @@
 import type { ReactPageDefinition } from "./contracts";
 import { ABOUT_PAGE } from "../pages/About";
+import { SOFTWARE_PAGE, SOLUTIONS_PAGE } from "../pages/CompanyNavigation";
 import { GLOSSARY_PAGE } from "../pages/Glossary";
 import { HOME_PAGE } from "../pages/Home";
 import { NOT_FOUND_PAGE } from "../pages/NotFound";
@@ -14,6 +15,8 @@ export function createStaticPageRegistry(): readonly ReactPageDefinition[] {
     ...createWorkPageDefinitions(),
     SERVICES_PAGE,
     ABOUT_PAGE,
+    SOFTWARE_PAGE,
+    SOLUTIONS_PAGE,
     GLOSSARY_PAGE,
     NOT_FOUND_PAGE
   ];

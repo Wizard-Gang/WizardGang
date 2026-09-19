@@ -8,7 +8,6 @@ export const NOT_FOUND_PAGE: ReactPageDefinition = {
     path: "/404/",
     noIndex: true
   },
-  current: "",
   body: (
     <main className="site-main" id="main" tabIndex={-1}>
       <section className="not-found">

@@ -7,7 +7,6 @@ export const ABOUT_PAGE: ReactPageDefinition = {
     description: "About Jacob Yongue: software engineer, implementation lead, systems thinker, and project owner focused on practical systems from requirements through production.",
     path: "/about/"
   },
-  current: "about",
   body: (
     <main className="case-main about-main" id="main" tabIndex={-1}>
       <section className="page-hero about-hero">
