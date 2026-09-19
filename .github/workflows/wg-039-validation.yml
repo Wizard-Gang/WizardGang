@@ -76,7 +76,7 @@ jobs:
             DEV_PID=$!
             wait_for_url "http://127.0.0.1:$port/"
             wait_for_file_value "$BROWSER_CAPTURE" "http://127.0.0.1:$port"
-            DEV_NODE_PID=$(ps -eo pid=,args= | awk '$0 ~ /node scripts\/dev\.mjs$/ {print $1; exit}')
+            DEV_NODE_PID=$(ps -eo pid=,comm=,args= | awk '$2 == "node" && $0 ~ /node scripts\/dev\.mjs$/ {print $1; exit}')
             test -n "$DEV_NODE_PID"
             test -f tmp/dev/runtime.json
             test -f tmp/dev/frontend.json
