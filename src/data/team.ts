@@ -4,7 +4,6 @@ export interface TeamMember {
   role: string;
   summary: string;
   profilePath: string;
-  professionalPath: string;
 }
 
 export const TEAM_MEMBERS = [
@@ -13,8 +12,7 @@ export const TEAM_MEMBERS = [
     name: "Jacob Yongue",
     role: "Software engineer / implementation lead",
     summary: "Builds WizardGang software and brings professional experience across application development, integrations, QA, deployment, training, and production support.",
-    profilePath: "/about/team/jacob/",
-    professionalPath: "/work/"
+    profilePath: "/about/team/jacob/"
   }
 ] as const satisfies readonly TeamMember[];
 
