@@ -389,16 +389,16 @@ export async function waitForReadinessOrChildExit(url, childExits, options = {})
 }
 
 export async function stopManagedChildren(children, killProcessTreeFn = killProcessTree) {
-  const errors = [];
-  for (const child of [...children].reverse()) {
-    if (!child?.pid) continue;
+  const targets = [...children].reverse().filter((child) => child?.pid);
+  const results = await Promise.all(targets.map(async (child) => {
     try {
       await killProcessTreeFn(child.pid, { processGroup: Boolean(child.processGroup) });
+      return null;
     } catch (error) {
-      errors.push({ name: child.name, error });
+      return { name: child.name, error };
     }
-  }
-  return errors;
+  }));
+  return results.filter(Boolean);
 }
 
 async function main() {
