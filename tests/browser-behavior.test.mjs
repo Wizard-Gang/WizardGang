@@ -151,6 +151,9 @@ test("language translation preserves exact and dynamic current behavior", () => 
   assert.equal(translateDynamic("Projects"), "Proyectos");
   assert.equal(translateDynamic("Software"), "Software");
   assert.equal(translateDynamic("Solutions"), "Soluciones");
+  assert.equal(translateDynamic("Build software."), "Construye software.");
+  assert.equal(translateDynamic("Company & team"), "Empresa y equipo");
+  assert.equal(translateDynamic("Warehouse & Fulfillment"), "Almacén y cumplimiento");
   assert.equal(translateDynamic("Play SharkTank"), "Jugar a SharkTank");
   assert.equal(translateDynamic("Read the Hexframe case study"), "Leer el caso de estudio de Hexframe");
   assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
