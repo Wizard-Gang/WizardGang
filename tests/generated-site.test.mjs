@@ -4,7 +4,7 @@ import { extname, resolve } from "node:path";
 import test from "node:test";
 import { projects } from "../src/projects.mjs";
 import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
-import { PERMANENT_REDIRECTS } from "../src/worker.mjs";
+import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {
   CANONICAL_PAGES,
   PROJECT_LINKS,
@@ -473,7 +473,7 @@ test("local header sanitization removes only HTTPS-only directives from the prod
 test("portfolio boundary remains static and retired compliance application routes stay absent", async () => {
   assert.equal(await exists(resolve(dist, "compliance/index.html")), false);
   assert.equal(await exists(resolve(dist, "security/index.html")), false);
-  const worker = await readRoot("src/worker.mjs");
+  const worker = await readRoot("src/worker/index.ts");
   assert.doesNotMatch(worker, /DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/);
   assert.match(worker, /sharktank\.wizardgang\.ai/);
   const siteSource = await readRoot("src/site.mjs");
@@ -503,6 +503,6 @@ test("WG-038 establishes the frontend toolchain without transferring production 
   assert.equal(await exists(resolve(root, "src/styles/globals.css")), true);
 
   const wrangler = await readRoot("wrangler.jsonc");
-  assert.match(wrangler, /"main":\s*"src\/worker\.mjs"/);
+  assert.match(wrangler, /"main":\s*"src\/worker\/index\.ts"/);
   assert.match(wrangler, /"directory":\s*"\.\/dist"/);
 });

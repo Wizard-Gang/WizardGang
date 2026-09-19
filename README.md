@@ -71,7 +71,7 @@ npm run check
 - `src/site.mjs` builds the current production site pages.
 - `src/projects.mjs` contains project metadata.
 - `src/professional.mjs` contains professional history.
-- `src/worker.mjs` handles static delivery and compatibility redirects.
+- `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/app/foundation/` contains the disposable React migration harness.
 - `src/styles/globals.css` is the Tailwind entry point for new frontend code.
 - `vite.config.ts` isolates Vite output from the production `dist/` build.
