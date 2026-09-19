@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -24,9 +24,9 @@ test("typed React registry owns every canonical static page", async () => {
   assert.match(vite, /renderStaticDocuments/);
   assert.doesNotMatch(vite, /siteModule|createPageDefinitions|renderDocument\(|legacyPages/);
 
-  const legacy = await readRoot("src/site.mjs");
-  assert.match(legacy, /ownsProductionPages:\s*false/);
-  assert.doesNotMatch(legacy, /function\s+|<main\b|createPageDefinitions|metadata\s*:|body\s*:/);
+  for (const path of ["src/site.mjs", "src/projects.mjs", "src/professional.mjs", "src/professional-systems.mjs", "public/assets/site.js"]) {
+    await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
+  }
 
   assert.equal(CANONICAL_PAGES.size, 13);
   for (const relative of CANONICAL_PAGES.keys()) {

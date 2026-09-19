@@ -31,7 +31,6 @@ test("React owns shared chrome and every canonical page body", async () => {
   const documentSource = await readRoot("src/app/Document.tsx");
   const chromeSource = await readRoot("src/components/SiteChrome.tsx");
   const registrySource = await readRoot("src/app/pageRegistry.ts");
-  const legacySource = await readRoot("src/site.mjs");
 
   assert.match(documentSource, /<html lang="en">/);
   assert.match(documentSource, /<Metadata /);
@@ -49,8 +48,9 @@ test("React owns shared chrome and every canonical page body", async () => {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
-  assert.match(legacySource, /ownsProductionPages:\s*false/);
-  assert.doesNotMatch(legacySource, /createPageDefinitions|<main\b|function\s+/);
+  for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js"]) {
+    await assert.rejects(readRoot(path), { code: "ENOENT" });
+  }
 });
 
 test("the static shell loads only the generated TypeScript browser module without client React", async () => {

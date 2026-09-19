@@ -29,29 +29,12 @@ test("typed professional authorities preserve current roles, project history, sk
   assert.equal(integrationByName.get("Canbar")?.url, null);
 });
 
-test("legacy professional data and Work rendering authority are removed", async () => {
-  const site = await readFile(resolve(root, "src/site.mjs"), "utf8");
-  for (const retired of [
-    "professional.mjs",
-    "professional-systems.mjs",
-    "professionalRoles",
-    "professionalSkills",
-    "integrationGroups",
-    "systemGroups",
-    "deployments",
-    "function work()",
-    "function officialReference",
-    "function referenceGroups",
-    "function capabilityList"
-  ]) {
-    assert.ok(!site.includes(retired), `legacy professional authority remains: ${retired}`);
-  }
-
-  assert.match(site, /ownsProductionPages:\s*false/);
+test("retired professional presentation sources remain absent", async () => {
   const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
   assert.match(home, /SelectedWorkGrid/);
-  await assert.rejects(access(resolve(root, "src/professional.mjs")), { code: "ENOENT" });
-  await assert.rejects(access(resolve(root, "src/professional-systems.mjs")), { code: "ENOENT" });
+  for (const path of ["src/site.mjs", "src/professional.mjs", "src/professional-systems.mjs"]) {
+    await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
+  }
 });
 
 test("React owns the canonical Work route and shared Home professional-role projection", async () => {
