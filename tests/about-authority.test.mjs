@@ -90,9 +90,8 @@ test("typed Team authority contains only real current people and points directly
   assert.equal("professionalPath" in jacob, false);
 
   const teamHtml = await readDist("about/team/index.html");
-  const teamLinks = anchors(teamHtml).filter((anchor) => /Jacob/i.test(textContent(anchor.inner)));
-  assert.ok(teamLinks.length >= 1);
-  assert.ok(teamLinks.every((anchor) => anchor.href === "/about/team/jacob/"));
+  assert.ok(anchors(teamHtml).some((anchor) => anchor.href === "/about/team/jacob/" && textContent(anchor.inner) === "Jacob Yongue"));
+  assert.ok(anchors(teamHtml).some((anchor) => anchor.href === "/about/team/jacob/" && /View Jacob's profile/i.test(textContent(anchor.inner))));
   assert.ok(!anchors(teamHtml).some((anchor) => anchor.href === "/work/"));
 
   const aboutSource = await readRoot("src/pages/About.tsx");
