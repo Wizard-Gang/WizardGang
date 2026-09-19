@@ -8,7 +8,7 @@ import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contrac
 
 const SITE_ORIGIN = "https://wizardgang.ai";
 const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
-const SOCIAL_IMAGE_ALT = "Jacob Yongue — software engineer, systems integration, project delivery";
+const SOCIAL_IMAGE_ALT = "WizardGang — software, systems, integrations, and inspectable engineering projects";
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;

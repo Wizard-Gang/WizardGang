@@ -1,65 +1,94 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { SelectedProjectsSection } from "./Projects";
-import { SelectedWorkGrid } from "./Work";
-import { CONTACT_EMAIL, HOME_CAPABILITIES } from "../data/site";
+import { CapabilityList } from "../components/ProfessionalSurfaces";
+import { ProjectCardGrid } from "../components/ProjectSurfaces";
+import { projects } from "../data/projects";
+import { systemGroups } from "../data/professional-systems";
+import { CONTACT_EMAIL } from "../data/site";
 
 export const HOME_PAGE: ReactPageDefinition = {
   relative: "index.html",
   metadata: {
-    title: "Jacob Yongue — Software Engineer | WizardGang",
-    description: "Jacob Yongue designs, builds, integrates, and delivers software systems from requirements through production. Explore projects, professional work, and technical case studies.",
+    title: "WizardGang — Software, Systems & Integrations",
+    description: "WizardGang builds and publishes inspectable software, connects that work to clearly attributed systems and integration experience, and develops reusable engineering solutions.",
     path: "/",
-    socialImage: "/og-jacob-yongue.jpg"
+    socialImage: "/og.jpg"
   },
   body: (
     <main className="site-main" id="main" tabIndex={-1}>
-      <section className="hero jacob-hero">
+      <section className="hero">
         <div className="hero-identity">
-          <h1>Jacob <span>Yongue</span></h1>
-          <p className="kicker hero-role">Software engineer · Systems · Project delivery</p>
-          <div className="home-statement-card"><p>I build systems that ship.</p></div>
+          <p className="kicker">WizardGang</p>
+          <h1>Build software.<br /><span>Make it inspectable.</span></h1>
+          <div className="home-statement-card">
+            <p>Software projects, systems experience, and reusable engineering frameworks in one place.</p>
+          </div>
         </div>
         <div className="hero-side">
-          <p>I design, build, connect, and launch software, then help teams keep it working in production.</p>
+          <p>WizardGang builds and publishes practical software. Project source, case studies, and operating evidence stay close to the work, while professional systems experience is kept clearly attributed.</p>
           <div className="button-row">
-            <a className="button button-primary" href="/projects/">View projects</a>
-            <a className="button" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
+            <a className="button button-primary" href="/software/">Explore software</a>
+            <a className="button" href="/solutions/">View solutions</a>
           </div>
         </div>
       </section>
 
-      <SelectedProjectsSection />
-
-      <section className="portfolio-section selected-work" aria-labelledby="selected-work-heading">
+      <section className="portfolio-section selected-projects" aria-labelledby="home-software-heading">
         <div className="section-heading">
-          <div><p className="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div>
-          <a className="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a>
+          <div><p className="kicker">Software</p><h2 id="home-software-heading">Working systems with source and evidence.</h2></div>
+          <a className="text-link" href="/software/">Explore software <span aria-hidden="true">→</span></a>
         </div>
-        <SelectedWorkGrid />
+        <ProjectCardGrid projects={projects} />
       </section>
 
-      <section className="portfolio-section capabilities" aria-labelledby="capabilities-heading">
-        <div className="section-heading"><div><p className="kicker">Capabilities</p><h2 id="capabilities-heading">From idea to production.</h2></div></div>
-        <div className="capability-grid">
-          {HOME_CAPABILITIES.map((item) => (
-            <article key={item.number}><small>{item.number}</small><h3>{item.title}</h3><p>{item.copy}</p></article>
-          ))}
-        </div>
-      </section>
-
-      <section className="about-teaser" aria-labelledby="about-teaser-heading">
-        <div><p className="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div>
+      <section className="about-teaser" aria-labelledby="home-systems-heading">
         <div>
-          <p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p>
-          <a className="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a>
+          <p className="kicker">Systems &amp; integrations</p>
+          <h2 id="home-systems-heading">Experience behind the software.</h2>
+        </div>
+        <div>
+          <p>The systems and integration experience behind WizardGang comes from Jacob Yongue’s professional work across warehouse and fulfillment systems, logistics, public-sector workflows, and enterprise integration. Those employer and customer records remain attributed to that professional history; they are not WizardGang client claims.</p>
+          <CapabilityList items={systemGroups.map((group) => group.title)} />
+          <a className="text-link" href="/work/">See the supporting professional record <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
-      <section className="contact-band" aria-label="Contact">
-        <p>Need someone who can move from requirements to a working system?</p>
+      <section className="portfolio-section" aria-labelledby="home-solutions-heading">
+        <div className="section-heading">
+          <div><p className="kicker">Solutions</p><h2 id="home-solutions-heading">Reusable approaches, separate from products.</h2></div>
+          <a className="text-link" href="/solutions/">Explore solutions <span aria-hidden="true">→</span></a>
+        </div>
+        <div className="track-grid">
+          <article>
+            <span>01 / Websites</span>
+            <h3>Owner-controlled websites.</h3>
+            <p>The current fixed-scope website offering hands over source, repository, deployment, domain, and documentation.</p>
+            <a className="text-link" href="/services/">View current website offering <span aria-hidden="true">→</span></a>
+          </article>
+          <article>
+            <span>02 / Demo framework</span>
+            <h3>Architecture you can inspect.</h3>
+            <p>The WizardGang Architecture Demo remains the detailed executable and evidence surface for the reusable demo framework.</p>
+            <a className="text-link" href="https://demo.wizardgang.ai">Open architecture demo <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+      </section>
+
+      <section className="about-teaser" aria-labelledby="home-company-heading">
+        <div>
+          <p className="kicker">Company &amp; team</p>
+          <h2 id="home-company-heading">Software with clear ownership.</h2>
+        </div>
+        <div>
+          <p>WizardGang is built by Jacob Yongue, a software engineer and implementation lead. His professional background provides supporting systems and delivery context while WizardGang-owned projects remain distinct from employer work.</p>
+          <a className="text-link" href="/about/">About the engineer behind WizardGang <span aria-hidden="true">→</span></a>
+        </div>
+      </section>
+
+      <section className="contact-band" aria-label="Explore WizardGang">
+        <p>Start with the software. Go deeper when you need the evidence.</p>
         <div className="button-row">
-          <a className="button button-primary" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
-          <a className="button" href="/work/">Professional work</a>
+          <a className="button button-primary" href="/software/">Explore software</a>
+          <a className="button" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
         </div>
       </section>
     </main>

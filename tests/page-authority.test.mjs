@@ -40,7 +40,7 @@ test("typed React registry owns every canonical static page", async () => {
 
 test("remaining current-state pages retain substantive content after React migration", async () => {
   const pages = [
-    ["index.html", ["Jacob Yongue", "I build systems that ship.", "Selected projects", "Selected work", "Capabilities", "About"]],
+    ["index.html", ["WizardGang", "Build software.", "Make it inspectable.", "Working systems with source and evidence.", "Experience behind the software.", "Reusable approaches, separate from products.", "Company & team"]],
     ["about/index.html", ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"]],
     ["software/index.html", ["Software, systems,", "Current software projects.", "Integration experience.", "View current projects"]],
     ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
@@ -55,11 +55,15 @@ test("remaining current-state pages retain substantive content after React migra
   }
 });
 
-test("Home reuses typed project and professional authorities instead of duplicating facts", async () => {
+test("Home reuses typed project and systems authorities instead of duplicating facts", async () => {
   const home = await readRoot("src/pages/Home.tsx");
-  assert.match(home, /SelectedProjectsSection/);
-  assert.match(home, /SelectedWorkGrid/);
+  assert.match(home, /ProjectCardGrid/);
+  assert.match(home, /projects/);
+  assert.match(home, /CapabilityList/);
+  assert.match(home, /systemGroups/);
+  assert.doesNotMatch(home, /SelectedWorkGrid|HOME_CAPABILITIES/);
   assert.doesNotMatch(home, /University of Georgia|Supply Chain Technologies|SharkTank|Hexframe|YarReader/);
+  assert.doesNotMatch(home, /I build systems that ship|Software engineer · Systems · Project delivery|Selected work/);
 });
 
 test("structured service and glossary records are typed outside legacy rendering", async () => {

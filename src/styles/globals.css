@@ -3373,6 +3373,7 @@ html:has(#text-size-200:checked) :where(
   .hero,
   .section-heading,
   .project-card-grid,
+  .track-grid,
   .project-card,
   .selected-work-grid,
   .services-teaser-copy,

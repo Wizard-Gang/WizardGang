@@ -178,16 +178,18 @@ test("every canonical page preserves document, metadata, link, and local-asset b
 });
 
 test("social preview behavior remains page-appropriate", async () => {
-  const home = await readDist("index.html");
-  assert.equal(metaContent(home, "property", "og:image"), `${ORIGIN}/og-jacob-yongue.jpg`);
-  assert.equal(metaContent(home, "property", "og:image:type"), "image/jpeg");
-  assert.equal(metaContent(home, "property", "og:image:width"), "1200");
-  assert.equal(metaContent(home, "property", "og:image:height"), "630");
-  assert.match(metaContent(home, "property", "og:image:alt") || "", /Jacob Yongue/i);
-  assert.equal(metaContent(home, "name", "twitter:card"), "summary_large_image");
-  assert.equal(metaContent(home, "name", "twitter:image"), `${ORIGIN}/og-jacob-yongue.jpg`);
+  for (const relative of ["index.html", "software/index.html", "solutions/index.html"]) {
+    const html = await readDist(relative);
+    assert.equal(metaContent(html, "property", "og:image"), `${ORIGIN}/og.jpg`);
+    assert.equal(metaContent(html, "property", "og:image:type"), "image/jpeg");
+    assert.equal(metaContent(html, "property", "og:image:width"), "1200");
+    assert.equal(metaContent(html, "property", "og:image:height"), "630");
+    assert.match(metaContent(html, "property", "og:image:alt") || "", /WizardGang/i);
+    assert.equal(metaContent(html, "name", "twitter:card"), "summary_large_image");
+    assert.equal(metaContent(html, "name", "twitter:image"), `${ORIGIN}/og.jpg`);
+  }
 
-  for (const relative of canonicalFiles.filter((file) => file !== "index.html")) {
+  for (const relative of canonicalFiles.filter((file) => !["index.html", "software/index.html", "solutions/index.html"].includes(file))) {
     const html = await readDist(relative);
     assert.equal(metaContent(html, "name", "twitter:card"), "summary", `${relative}: Twitter card behavior changed`);
     assert.equal(metaContent(html, "property", "og:image"), null, `${relative}: unexpected social image behavior`);
@@ -216,37 +218,53 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
   assert.ok(fills.has("#a489ff"));
 });
 
-test("homepage preserves the current substantive positioning and primary relationships", async () => {
+test("homepage is WizardGang-first while routing to current deeper authorities", async () => {
   const home = await readDist("index.html");
   requireText(home, [
+    "Build software.",
+    "Make it inspectable.",
+    "Working systems with source and evidence.",
+    "Experience behind the software.",
+    "they are not WizardGang client claims.",
+    "Reusable approaches, separate from products.",
+    "Company &amp; team",
+    "Software with clear ownership.",
+    "SharkTank",
+    "Hexframe",
+    "YarReader"
+  ], "homepage");
+  rejectText(home, [
     "Jacob <span>Yongue</span>",
     "I build systems that ship.",
     "Software engineer · Systems · Project delivery",
-    "I design, build, connect, and launch software, then help teams keep it working in production.",
-    "Selected projects",
     "Selected work",
-    "Capabilities",
-    "About"
+    "Systems delivered in real operations.",
+    "From idea to production."
   ], "homepage");
-  rejectText(home, [
-    "Two bodies of work",
-    "Different contexts. Clear boundaries.",
-    "Independent build lab",
-    "About WizardGang",
-    "plain-language-summary",
-    "What I do, without the technical shorthand",
-    "selected-services",
-    "View services",
-    "services-teaser-copy"
-  ], "homepage");
-  assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain the organization GitHub destination");
-  assert.ok(findAnchor(home, (anchor) => anchor.href === "/projects/" && /View projects/i.test(textContent(anchor.inner))));
-  assert.ok(findAnchor(home, (anchor) => anchor.href === "mailto:jacob@wizardgang.ai" && /Get in touch/i.test(textContent(anchor.inner))));
-  const hero = tagBlocks(home, "section").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("jacob-hero"));
+
+  const title = textContent(tagBlocks(home, "title")[0].inner);
+  assert.match(title, /^WizardGang\b/);
+  assert.doesNotMatch(title, /Jacob Yongue/i);
+  const description = metaContent(home, "name", "description") || "";
+  assert.match(description, /^WizardGang\b/);
+  assert.doesNotMatch(description, /portfolio/i);
+  assert.equal(linkByRel(home, "canonical")?.attrs.get("href"), `${ORIGIN}/`);
+
+  const h1 = tagBlocks(home, "h1");
+  assert.equal(h1.length, 1);
+  assert.equal(textContent(h1[0].inner), "Build software. Make it inspectable.");
+
+  const hero = tagBlocks(home, "section").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("hero"));
   assert.ok(hero, "homepage hero section is missing");
-  assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/projects/", "mailto:jacob@wizardgang.ai"].sort(), "homepage hero must retain only its current two actions");
+  assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/software/", "/solutions/"].sort());
+
+  for (const href of ["/software/", "/projects/", "/work/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+    assert.ok(anchorWithHref(home, href), `homepage missing current destination ${href}`);
+  }
+  assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain organization GitHub access through shared chrome");
+  assert.doesNotMatch(home, /selected-work-grid/, "homepage must not recreate career-history cards");
+
   assert.ok(home.indexOf("<h1") < home.indexOf("<h2"), "homepage h1 must precede h2 content");
-  assert.ok(home.indexOf("<h1") < home.indexOf("I build systems that ship."), "identity h1 must precede the tagline");
   const decorative = startTags(home, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
   assert.equal(decorative.length, 3, "all three homepage project previews remain decorative and inert");
   assert.match(home, /accessible interfaces/i);

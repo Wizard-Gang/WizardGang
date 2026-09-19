@@ -1,8 +1,8 @@
 # WizardGang
 
-WizardGang is Jacob Yongue's software engineering portfolio. It publishes project overviews, case studies, professional work, and portfolio assets at [wizardgang.ai](https://wizardgang.ai).
+WizardGang publishes inspectable software projects, clearly attributed systems and integration experience, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). The Home page and global navigation are company-first; About, Work, Projects, and Services remain on their current transitional routes until their later controlled migrations.
 
-**[Live site](https://wizardgang.ai)** · **[Projects](https://wizardgang.ai/projects/)** · **[Professional work](https://wizardgang.ai/work/)**
+**[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
 
 ## Run locally
 
@@ -39,7 +39,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated.
+React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and derives its systems summary from the professional-systems authority rather than duplicating project or career facts.
 
 The shared primary navigation is now company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. `/software/` and `/solutions/` are intentionally narrow orientation pages so global navigation never points to a dead route. Existing `/projects/`, `/work/`, and `/services/` content remains canonical until its later controlled migration under the approved information architecture.
 
@@ -69,10 +69,12 @@ npm run check
 
 `npm run check` is the authoritative repository acceptance gate. It verifies TypeScript, the Vite production build, frontend authority, canonical pages, content, accessibility, browser behavior, Worker routing, the development lifecycle, security boundaries, links, and metadata.
 
-Run the focused frontend-authority contract independently with:
+Run focused authority checks independently with:
 
 ```bash
 npm run test:frontend-authority
+npm run test:navigation
+npm run test:home
 ```
 
 ## Structure
@@ -98,7 +100,7 @@ npm run test:frontend-authority
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — future-state plan; the implementation described above remains current until later WG changes land.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation and Home are implemented while deeper About/Team, Software, Solutions, and route migrations remain staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
