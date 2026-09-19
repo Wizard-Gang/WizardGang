@@ -14,10 +14,10 @@ npm run dev
 `npm run dev` is the normal local-development entry point. It stays local-only and performs this checkout-scoped lifecycle:
 
 1. Stops stale Wrangler and frontend-watch processes previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
-2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-foundation/` state.
-3. Runs the finite frontend foundation build and the existing authoritative `npm run build` site build.
+2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state.
+3. Runs the authoritative static production build. Vite compiles the server-only React shell renderer and writes the complete static site to `dist/`.
 4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Starts the Vite frontend build watcher in the background. It writes only to `tmp/frontend-foundation/` and does not expose a second browser-facing server.
+5. Starts the same Vite build in watch mode. Shared React shell edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
 6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
 7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
 8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
@@ -30,22 +30,24 @@ WIZARDGANG_PORT=9123 npm run dev
 
 If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces only stale Wrangler/frontend processes proven to belong to the same checkout; unrelated Node, Vite, Wrangler, or other processes are never intentionally killed.
 
-The reset is intentionally narrow. It removes `dist/`, `tmp/dev/`, and the disposable `tmp/frontend-foundation/` build; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
+The reset is intentionally narrow. It removes `dist/`, `tmp/dev/`, and the disposable `tmp/frontend-shell/` build; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
 Local development sanitizes only the generated `dist/_headers` file so HTTP loopback does not inherit HSTS or `upgrade-insecure-requests`. The production source file `public/_headers` is never modified.
 
 Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. The orchestrator stops both checkout-owned child processes together. If the process is terminated abruptly, the next `npm run dev` invocation recovers stale owned runtime metadata before starting again.
 
-## Frontend migration foundation
+## Frontend architecture
 
-TypeScript, React, Vite, and Tailwind CSS are available for incremental frontend migration, but they do not own production rendering yet.
+React and TypeScript now own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. Vite performs the build-time React server render; the browser receives complete static HTML and does not load or hydrate a React client application.
 
-The existing generated-site build remains authoritative:
+Page-specific bodies still come from the legacy `src/site.mjs` generator during this controlled intermediate state. The build uses one explicit trusted compatibility boundary to insert those repository-authored body strings into the React shell without adding an extra DOM wrapper. Later page migrations can remove that boundary incrementally.
+
+The authoritative production build remains:
 
 ```bash
 npm run build
 ```
 
-The isolated migration harness can still be checked directly with:
+Frontend validation can also be run directly with:
 
 ```bash
 npm run typecheck
@@ -53,9 +55,9 @@ npm run build:frontend
 npm run check:frontend
 ```
 
-`npm run build:frontend` builds only the migration harness under `src/app/foundation/` and writes disposable output to the gitignored `tmp/frontend-foundation/` directory. It does not write to `dist/`, does not create a public route, and is not part of the Cloudflare deployment input.
+`npm run build:frontend` is an alias for the same authoritative static build; there is no parallel migration site or public React test route. Vite writes only its server-side renderer artifact to the gitignored `tmp/frontend-shell/` directory while the generated production site is written to `dist/`.
 
-During normal `npm run dev`, that same Vite configuration runs in build-watch mode automatically so TypeScript/React/Tailwind source changes rebuild the disposable frontend foundation without a second terminal, server, or browser URL. Tailwind is integrated through its Vite plugin and `src/styles/globals.css`. Existing `src/styles.css` and `src/portfolio-cleanup.css` remain the styles for generated production pages.
+Tailwind remains integrated through the Vite frontend toolchain and `src/styles/globals.css`, while the React shell deliberately preserves the existing `src/styles.css` and `src/portfolio-cleanup.css` presentation for this migration slice. Browser interaction remains in `public/assets/site.js` until a later controlled change.
 
 ## Verify
 
@@ -64,17 +66,19 @@ npm run build
 npm run check
 ```
 
-`npm run check` verifies the TypeScript/React/Vite/Tailwind foundation and then runs the generated-site, accessibility, Worker-routing, and development-lifecycle acceptance suite.
+`npm run check` verifies the TypeScript/React/Vite/Tailwind production shell and then runs the generated-site, accessibility, Worker-routing, React-shell, and development-lifecycle acceptance suite.
 
 ## Structure
 
-- `src/site.mjs` builds the current production site pages.
+- `src/app/Document.tsx` owns the shared static production document and metadata composition.
+- `src/components/SiteChrome.tsx` owns Header, navigation, Preferences, and Footer markup.
+- `src/app/contracts.ts` defines the typed shell, metadata, navigation, and build contracts.
+- `src/site.mjs` temporarily generates page-specific body HTML and page definitions only.
 - `src/projects.mjs` contains project metadata.
 - `src/professional.mjs` contains professional history.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
-- `src/app/foundation/` contains the disposable React migration harness.
-- `src/styles/globals.css` is the Tailwind entry point for new frontend code.
-- `vite.config.ts` isolates Vite output from the production `dist/` build.
+- `src/styles/globals.css` is the Tailwind entry point for frontend code; existing production presentation still comes from the legacy CSS files.
+- `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
 - `tsconfig.json` defines strict checking for new TypeScript and TSX sources.
 - `scripts/` contains repeatable build, local-development, verification, and maintenance commands.
 - `tests/` contains automated acceptance and development-control tests.

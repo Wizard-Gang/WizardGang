@@ -14,6 +14,7 @@ import {
   RESET_TARGETS,
   RUNTIME_STATE_RELATIVE,
   buildFrontendWatchArgs,
+  frontendWatchEnv,
   buildWranglerArgs,
   ensurePortAvailable,
   isCheckoutRuntimeCommand,
@@ -67,6 +68,8 @@ test("Wrangler remains the single browser-facing local origin while Vite watches
   assert.deepEqual(buildFrontendWatchArgs("/repo/node_modules/vite/bin/vite.js", "/repo/vite.config.ts"), [
     "/repo/node_modules/vite/bin/vite.js", "build", "--watch", "--config", "/repo/vite.config.ts"
   ]);
+  assert.equal(frontendWatchEnv({ TEST: "1" }).TEST, "1");
+  assert.equal(frontendWatchEnv({ TEST: "1" }).WIZARDGANG_LOCAL_DEV, "1");
 });
 
 test("checkout-owned process identification requires both checkout and Wrangler path", async () => {
@@ -344,15 +347,15 @@ test("local header preparation changes only dist and preserves production source
   assert.doesNotMatch(localHeaders, /upgrade-insecure-requests/i);
 });
 
-test("reset targets are explicitly bounded to generated production, runtime, and frontend-foundation output", async () => {
+test("reset targets are explicitly bounded to generated production, runtime, and frontend-shell output", async () => {
   const { root } = await tempCheckout();
   const removed = [];
   await resetDisposableState(root, async (target, options) => removed.push({ target, options }));
-  assert.deepEqual(RESET_TARGETS, ["dist", "tmp/dev", "tmp/frontend-foundation"]);
+  assert.deepEqual(RESET_TARGETS, ["dist", "tmp/dev", "tmp/frontend-shell"]);
   assert.deepEqual(removed.map(({ target }) => target), [
     resolve(root, "dist"),
     resolve(root, "tmp/dev"),
-    resolve(root, "tmp/frontend-foundation")
+    resolve(root, "tmp/frontend-shell")
   ]);
   assert.ok(removed.every(({ target }) => target.startsWith(`${resolve(root)}/`) || process.platform === "win32"));
 });
