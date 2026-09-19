@@ -95,6 +95,7 @@ npm run test:frontend-authority
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — future-state plan; the implementation described above remains current until later WG changes land.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
