@@ -1,3 +1,4 @@
+import "../styles/globals.css";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";

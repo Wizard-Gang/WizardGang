@@ -170,22 +170,22 @@ test("CSS exposes preference behavior, mobile open state, target sizing, reduced
 
   // These control-linked selectors are intentional seams: CSS itself implements the behavior,
   // so checking the public control state is more durable than checking animation/keyframe names.
-  assert.match(styles, /\.project-visual\s+\*\s*\{[^}]*animation-play-state:\s*paused\s*!important;[^}]*\}/s);
-  assert.match(styles, /body:has\(#play-previews:checked\)\s+\.project-visual\s+\*\s*\{[^}]*animation-play-state:\s*running\s*!important;[^}]*\}/s);
+  assert.match(styles, /\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*paused\s*!important(?:;|\})/s);
+  assert.match(styles, /body:has\(#play-previews:checked\)\s+\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*running\s*!important(?:;|\})/s);
   assert.match(styles, /html:has\(#text-size-200:checked\)\s*\{[^}]*font-size:\s*200%/s);
   assert.match(styles, /body:has\(#theme-light:checked\)\s*\{/);
   assert.match(styles, /\.nav-disclosure\[open\]\s+\.site-nav\s*\{[^}]*display:\s*flex/s);
 
-  const accessibleTargets = [...styles.matchAll(/min-height:\s*(44|48)px\s*;/g)];
+  const accessibleTargets = [...styles.matchAll(/min-height:\s*(44|48)px\b/g)];
   assert.ok(accessibleTargets.length >= 6, "interactive controls should retain the current accessible target-size intent");
 
   const reducedMotionMarkers = [...styles.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)/g)];
-  assert.ok(reducedMotionMarkers.length >= 2, "global and project-preview reduced-motion behavior must remain present");
-  const previewReduced = styles.slice(reducedMotionMarkers.at(-1).index);
+  assert.ok(reducedMotionMarkers.length >= 1, "reduced-motion behavior must remain present in the emitted stylesheet");
+  const previewReduced = styles.slice(reducedMotionMarkers[0].index);
   assert.match(previewReduced, /\.tank-fish[\s\S]*animation:\s*none/);
   assert.match(previewReduced, /\.lab-playhead[\s\S]*animation:\s*none/);
 
-  const flame = styles.match(/\.tank-rocket-flame\s*\{[^}]*animation:\s*[^;]*?([\d.]+)s[^;]*;/s);
+  const flame = styles.match(/\.tank-rocket-flame\s*\{[^}]*animation:\s*[^;}]*?([\d.]+)s[^;}]*(?:;|\})/s);
   assert.ok(flame, "preview flash behavior must remain explicitly timed");
   assert.ok(Number(flame[1]) >= 1 / 3, "preview flash timing must remain below three flashes per second");
 });

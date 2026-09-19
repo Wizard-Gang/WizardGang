@@ -9,7 +9,6 @@ const readRoot = (path) => readFile(resolve(root, path), "utf8");
 const documentSource = await readRoot("src/app/Document.tsx");
 const chromeSource = await readRoot("src/components/SiteChrome.tsx");
 const registrySource = await readRoot("src/app/pageRegistry.ts");
-const legacySource = await readRoot("src/site.mjs");
 const projectPagesSource = await readRoot("src/pages/Projects.tsx");
 const projectDataSource = await readRoot("src/data/projects.ts");
 const workPagesSource = await readRoot("src/pages/Work.tsx");
@@ -30,11 +29,6 @@ assert.match(chromeSource, /Skip to main content/);
 assert.match(chromeSource, /Primary mobile/);
 assert.match(chromeSource, /Preferences/);
 assert.match(chromeSource, /Software engineering portfolio/);
-
-for (const marker of ["function ", "<main", "createPageDefinitions", "body:", "metadata:"]) {
-  assert.ok(!legacySource.includes(marker), `src/site.mjs must not retain production page authority: ${marker}`);
-}
-assert.match(legacySource, /ownsProductionPages:\s*false/);
 
 for (const pageSource of [homePageSource, aboutPageSource, servicesPageSource, glossaryPageSource, notFoundPageSource]) {
   assert.match(pageSource, /ReactPageDefinition/);
@@ -72,9 +66,12 @@ for (const path of [
   "public/assets/site.js",
   "src/projects.mjs",
   "src/professional.mjs",
-  "src/professional-systems.mjs"
+  "src/professional-systems.mjs",
+  "src/site.mjs",
+  "src/styles.css",
+  "src/portfolio-cleanup.css"
 ]) {
   await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
 }
 
-console.log("Verified React/TypeScript authority for the shared shell, all canonical page bodies, typed site data, and browser behavior.");
+console.log("Verified React/TypeScript authority and absence of retired presentation sources.");

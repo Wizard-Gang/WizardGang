@@ -39,7 +39,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated. `src/site.mjs` remains only as a minimal transition marker for WG-046 and no longer participates in production page generation.
+React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated.
 
 The authoritative production build remains:
 
@@ -51,13 +51,12 @@ Frontend validation can also be run directly with:
 
 ```bash
 npm run typecheck
-npm run build:frontend
 npm run check:frontend
 ```
 
-`npm run build:frontend` is an alias for the same authoritative static build; there is no parallel migration site or public React test route. Vite writes only its server-side renderer artifact to the gitignored `tmp/frontend-shell/` directory while the generated production site is written to `dist/`.
+There is one authoritative static build. Vite compiles the server-side React renderer, processes `src/styles/globals.css`, emits the first-party browser module and stylesheet, and publishes the generated site to `dist/` through the repository build pipeline. There is no parallel frontend build or public React test route.
 
-Tailwind remains integrated through the Vite frontend toolchain and `src/styles/globals.css`, while the current production presentation remains in `src/styles.css` and `src/portfolio-cleanup.css`. Browser behavior lives under `src/browser/`; Vite emits the hashed first-party browser module consumed by the static React document.
+Tailwind is integrated through the Vite frontend toolchain without replacing authored CSS that is clearer for project-preview animation, accessibility states, and specialized responsive layouts. Browser behavior lives under `src/browser/`; Vite emits the hashed first-party browser module consumed by the static React document.
 
 ## Verify
 
@@ -80,9 +79,8 @@ npm run check
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/pages/` owns every canonical production page body in React/TypeScript.
 - `src/app/pageRegistry.ts` is the typed output/route registry for all 13 canonical static HTML files.
-- `src/site.mjs` remains only as non-rendering transitional presentation-pipeline residue pending WG-046.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
-- `src/styles/globals.css` is the Tailwind entry point for frontend code; existing production presentation still comes from the legacy CSS files.
+- `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
 - `tsconfig.json` defines strict checking for new TypeScript and TSX sources.
 - `scripts/` contains repeatable build, local-development, verification, and maintenance commands.
@@ -91,7 +89,6 @@ npm run check
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Boundary migration record](docs/BOUNDARY-MIGRATION.md)
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
