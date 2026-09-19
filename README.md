@@ -13,14 +13,14 @@ npm run dev
 
 `npm run dev` is the normal local-development entry point. It stays local-only and performs this checkout-scoped lifecycle:
 
-1. Stops a stale Wrangler runtime previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
-2. Resets only generated `dist/` output and `tmp/dev/` runtime metadata.
-3. Runs the existing `npm run build` build.
+1. Stops stale Wrangler and frontend-watch processes previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
+2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-foundation/` state.
+3. Runs the finite frontend foundation build and the existing authoritative `npm run build` site build.
 4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Confirms the local Wrangler installation is available.
-6. Starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
-7. Waits until the site responds successfully at `http://127.0.0.1:8790`.
-8. Opens the local URL in the default browser and remains attached to Wrangler for watch/hot-reload behavior.
+5. Starts the Vite frontend build watcher in the background. It writes only to `tmp/frontend-foundation/` and does not expose a second browser-facing server.
+6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
+7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
+8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
 
 Override the local port when needed:
 
@@ -28,12 +28,12 @@ Override the local port when needed:
 WIZARDGANG_PORT=9123 npm run dev
 ```
 
-If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces the runtime previously started by the same checkout.
+If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces only stale Wrangler/frontend processes proven to belong to the same checkout; unrelated Node, Vite, Wrangler, or other processes are never intentionally killed.
 
-The reset is intentionally narrow. It removes `dist/` and `tmp/dev/`; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
+The reset is intentionally narrow. It removes `dist/`, `tmp/dev/`, and the disposable `tmp/frontend-foundation/` build; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
 Local development sanitizes only the generated `dist/_headers` file so HTTP loopback does not inherit HSTS or `upgrade-insecure-requests`. The production source file `public/_headers` is never modified.
 
-Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. If that process is terminated abruptly, the next `npm run dev` invocation recovers stale runtime metadata before starting again.
+Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. The orchestrator stops both checkout-owned child processes together. If the process is terminated abruptly, the next `npm run dev` invocation recovers stale owned runtime metadata before starting again.
 
 ## Frontend migration foundation
 
@@ -45,7 +45,7 @@ The existing generated-site build remains authoritative:
 npm run build
 ```
 
-The isolated migration harness can be checked directly with:
+The isolated migration harness can still be checked directly with:
 
 ```bash
 npm run typecheck
@@ -55,7 +55,7 @@ npm run check:frontend
 
 `npm run build:frontend` builds only the migration harness under `src/app/foundation/` and writes disposable output to the gitignored `tmp/frontend-foundation/` directory. It does not write to `dist/`, does not create a public route, and is not part of the Cloudflare deployment input.
 
-Tailwind is integrated through its Vite plugin and `src/styles/globals.css`. Existing `src/styles.css` and `src/portfolio-cleanup.css` remain the styles for generated production pages. Vite is not yet wired into the normal `npm run dev` lifecycle.
+During normal `npm run dev`, that same Vite configuration runs in build-watch mode automatically so TypeScript/React/Tailwind source changes rebuild the disposable frontend foundation without a second terminal, server, or browser URL. Tailwind is integrated through its Vite plugin and `src/styles/globals.css`. Existing `src/styles.css` and `src/portfolio-cleanup.css` remain the styles for generated production pages.
 
 ## Verify
 
