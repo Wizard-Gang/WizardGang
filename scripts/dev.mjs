@@ -8,7 +8,8 @@ export const DEFAULT_PORT = 8790;
 export const DEV_HOST = "127.0.0.1";
 export const READINESS_TIMEOUT_MS = 20_000;
 export const RUNTIME_STATE_RELATIVE = "tmp/dev/runtime.json";
-export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev"]);
+export const FRONTEND_STATE_RELATIVE = "tmp/dev/frontend.json";
+export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev", "tmp/frontend-foundation"]);
 export const LOCAL_HEADERS_RELATIVE = "dist/_headers";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -137,6 +138,28 @@ export async function teardownOwnedRuntime({ checkoutRoot, runtimeFile, wrangler
 
   await killProcessTreeFn(state.pid, { processGroup: Boolean(state.processGroup) });
   await removeStateFn(runtimeFile);
+  return { found: true, terminated: true, stale: false };
+}
+
+export async function teardownOwnedFrontend({ checkoutRoot, frontendFile, frontendCli, getProcessInfoFn = getProcessInfo, killProcessTreeFn = killProcessTree, removeStateFn = removeRuntimeState }) {
+  const state = await readRuntimeState(frontendFile);
+  if (!state) {
+    await removeStateFn(frontendFile);
+    return { found: false, terminated: false, stale: false };
+  }
+
+  const info = await getProcessInfoFn(state.pid);
+  const metadataMatches = normalizePath(state.checkoutRoot) === normalizePath(checkoutRoot)
+    && normalizePath(state.frontendCli) === normalizePath(frontendCli);
+  const owned = info && metadataMatches && isCheckoutRuntimeCommand(info.command, checkoutRoot, frontendCli);
+
+  if (!owned) {
+    await removeStateFn(frontendFile);
+    return { found: true, terminated: false, stale: true };
+  }
+
+  await killProcessTreeFn(state.pid, { processGroup: Boolean(state.processGroup) });
+  await removeStateFn(frontendFile);
   return { found: true, terminated: true, stale: false };
 }
 
@@ -291,11 +314,19 @@ export async function readyThenOpen(url, options = {}) {
   await openBrowserFn(url);
 }
 
-function runBuild(checkoutRoot) {
+function runNpmScript(checkoutRoot, script) {
   const npm = process.platform === "win32" ? "npm.cmd" : "npm";
-  const result = spawnSync(npm, ["run", "build"], { cwd: checkoutRoot, stdio: "inherit", env: process.env });
+  const result = spawnSync(npm, ["run", script], { cwd: checkoutRoot, stdio: "inherit", env: process.env });
   if (result.error) throw result.error;
-  if (result.status !== 0) throw new Error(`npm run build exited with status ${result.status}.`);
+  if (result.status !== 0) throw new Error(`npm run ${script} exited with status ${result.status}.`);
+}
+
+function runBuild(checkoutRoot) {
+  runNpmScript(checkoutRoot, "build");
+}
+
+function runFrontendBuild(checkoutRoot) {
+  runNpmScript(checkoutRoot, "build:frontend");
 }
 
 async function writeRuntimeState(runtimeFile, state) {
@@ -307,8 +338,12 @@ export function buildWranglerArgs(wranglerCli, port) {
   return [wranglerCli, "dev", "--local", "--ip", DEV_HOST, "--port", String(port)];
 }
 
-function spawnWrangler(checkoutRoot, wranglerCli, port) {
-  return spawn(process.execPath, buildWranglerArgs(wranglerCli, port), {
+export function buildFrontendWatchArgs(frontendCli, viteConfig) {
+  return [frontendCli, "build", "--watch", "--config", viteConfig];
+}
+
+function spawnManagedNode(checkoutRoot, args) {
+  return spawn(process.execPath, args, {
     cwd: checkoutRoot,
     env: process.env,
     stdio: "inherit",
@@ -316,20 +351,93 @@ function spawnWrangler(checkoutRoot, wranglerCli, port) {
   });
 }
 
+function spawnWrangler(checkoutRoot, wranglerCli, port) {
+  return spawnManagedNode(checkoutRoot, buildWranglerArgs(wranglerCli, port));
+}
+
+function spawnFrontendWatcher(checkoutRoot, frontendCli, viteConfig) {
+  return spawnManagedNode(checkoutRoot, buildFrontendWatchArgs(frontendCli, viteConfig));
+}
+
+export function observeRequiredChild(name, child) {
+  return new Promise((resolvePromise) => {
+    let settled = false;
+    const settle = (result) => {
+      if (settled) return;
+      settled = true;
+      resolvePromise({ name, ...result });
+    };
+    child.once("error", (error) => settle({ error }));
+    child.once("exit", (code, signal) => settle({ code, signal }));
+  });
+}
+
+export function requiredChildExitError(exit) {
+  if (exit.error) return new Error(`${exit.name} failed: ${exit.error.message || exit.error}`);
+  return new Error(`${exit.name} exited unexpectedly with status ${exit.code ?? "unknown"}${exit.signal ? ` (${exit.signal})` : ""}.`);
+}
+
+export async function waitForReadinessOrChildExit(url, childExits, options = {}) {
+  const waitForReadinessFn = options.waitForReadinessFn ?? waitForReadiness;
+  const readinessOptions = options.readinessOptions ?? {};
+  const result = await Promise.race([
+    waitForReadinessFn(url, readinessOptions).then((status) => ({ type: "ready", status })),
+    ...childExits.map((exitPromise) => exitPromise.then((exit) => ({ type: "child", exit })))
+  ]);
+  if (result.type === "ready") return result.status;
+  throw requiredChildExitError(result.exit);
+}
+
+export async function stopManagedChildren(children, killProcessTreeFn = killProcessTree) {
+  const errors = [];
+  for (const child of [...children].reverse()) {
+    if (!child?.pid) continue;
+    try {
+      await killProcessTreeFn(child.pid, { processGroup: Boolean(child.processGroup) });
+    } catch (error) {
+      errors.push({ name: child.name, error });
+    }
+  }
+  return errors;
+}
+
 async function main() {
   const checkoutRoot = root;
   const wranglerCli = resolve(checkoutRoot, "node_modules/wrangler/bin/wrangler.js");
+  const frontendCli = resolve(checkoutRoot, "node_modules/vite/bin/vite.js");
+  const viteConfig = resolve(checkoutRoot, "vite.config.ts");
   const runtimeFile = resolve(checkoutRoot, RUNTIME_STATE_RELATIVE);
-  let runtime = null;
+  const frontendFile = resolve(checkoutRoot, FRONTEND_STATE_RELATIVE);
+  const children = [];
+  const childExits = [];
   let phase = "configuration";
   let stopping = false;
+  let signalReceived = null;
+  let cleanupPromise = null;
 
-  const stopRuntime = async () => {
-    if (!runtime?.pid || stopping) return;
+  const cleanup = async () => {
+    if (cleanupPromise) return cleanupPromise;
     stopping = true;
-    try { await killProcessTree(runtime.pid, { processGroup: process.platform !== "win32" }); }
-    catch (error) { console.error(`[dev] cleanup warning: ${error.message}`); }
+    cleanupPromise = (async () => {
+      const errors = await stopManagedChildren(children);
+      for (const { name, error } of errors) console.error(`[dev] cleanup warning (${name}): ${error.message}`);
+      const frontend = children.find((child) => child.name === "frontend");
+      const wrangler = children.find((child) => child.name === "wrangler");
+      if (frontend?.pid) await removeRuntimeStateIfPid(frontendFile, frontend.pid);
+      else await removeRuntimeState(frontendFile);
+      if (wrangler?.pid) await removeRuntimeStateIfPid(runtimeFile, wrangler.pid);
+      else await removeRuntimeState(runtimeFile);
+    })();
+    return cleanupPromise;
   };
+
+  const onSignal = (signal) => {
+    signalReceived = signal;
+    void cleanup();
+  };
+
+  process.once("SIGINT", onSignal);
+  process.once("SIGTERM", onSignal);
 
   try {
     const port = resolvePort();
@@ -337,11 +445,23 @@ async function main() {
 
     phase = "teardown";
     console.log("[dev] teardown");
+    await teardownOwnedFrontend({ checkoutRoot, frontendFile, frontendCli });
     await teardownOwnedRuntime({ checkoutRoot, runtimeFile, wranglerCli });
 
     phase = "reset";
     console.log("[dev] reset");
     await resetDisposableState(checkoutRoot);
+
+    phase = "bootstrap";
+    console.log("[dev] bootstrap");
+    for (const [label, executable] of [["Vite", frontendCli], ["Wrangler", wranglerCli]]) {
+      try { await access(executable); }
+      catch { throw new Error(`Local ${label} is not installed. Run npm ci before npm run dev.`); }
+    }
+
+    phase = "frontend build";
+    console.log("[dev] frontend build");
+    runFrontendBuild(checkoutRoot);
 
     phase = "build";
     console.log("[dev] build");
@@ -351,18 +471,35 @@ async function main() {
     console.log("[dev] local headers");
     await prepareLocalHeaders(checkoutRoot);
 
-    phase = "bootstrap";
-    console.log("[dev] bootstrap");
-    try { await access(wranglerCli); }
-    catch { throw new Error("Local Wrangler is not installed. Run npm ci before npm run dev."); }
+    phase = "frontend watch";
+    console.log("[dev] frontend watch");
+    const frontend = spawnFrontendWatcher(checkoutRoot, frontendCli, viteConfig);
+    if (!frontend.pid) throw new Error("Frontend watcher did not start with a process ID.");
+    children.push({ name: "frontend", pid: frontend.pid, processGroup: process.platform !== "win32" });
+    childExits.push(observeRequiredChild("frontend watcher", frontend));
+    await writeRuntimeState(frontendFile, {
+      pid: frontend.pid,
+      checkoutRoot,
+      frontendCli,
+      processGroup: process.platform !== "win32",
+      startedAt: new Date().toISOString()
+    });
+
+    if (stopping) throw new Error("Development lifecycle was interrupted.");
 
     phase = "port check";
     await ensurePortAvailable({ port, checkoutRoot, wranglerCli });
 
+    if (frontend.exitCode !== null || frontend.signalCode !== null) {
+      throw new Error(`Frontend watcher exited before Wrangler startup with status ${frontend.exitCode ?? "unknown"}${frontend.signalCode ? ` (${frontend.signalCode})` : ""}.`);
+    }
+
     phase = "start";
-    console.log("[dev] start");
-    runtime = spawnWrangler(checkoutRoot, wranglerCli, port);
+    console.log("[dev] start Wrangler");
+    const runtime = spawnWrangler(checkoutRoot, wranglerCli, port);
     if (!runtime.pid) throw new Error("Wrangler did not start with a process ID.");
+    children.push({ name: "wrangler", pid: runtime.pid, processGroup: process.platform !== "win32" });
+    childExits.push(observeRequiredChild("Wrangler", runtime));
     await writeRuntimeState(runtimeFile, {
       pid: runtime.pid,
       checkoutRoot,
@@ -374,13 +511,11 @@ async function main() {
       startedAt: new Date().toISOString()
     });
 
-    const onSignal = () => { void stopRuntime(); };
-    process.once("SIGINT", onSignal);
-    process.once("SIGTERM", onSignal);
+    if (stopping) throw new Error("Development lifecycle was interrupted.");
 
     phase = "readiness";
     console.log(`[dev] waiting for ${url}`);
-    await waitForReadiness(url);
+    await waitForReadinessOrChildExit(url, childExits);
     console.log("[dev] ready");
 
     phase = "browser";
@@ -388,22 +523,18 @@ async function main() {
     await openBrowser(url);
 
     phase = "runtime";
-    const exit = await new Promise((resolvePromise) => {
-      runtime.once("error", (error) => resolvePromise({ error }));
-      runtime.once("exit", (code, signal) => resolvePromise({ code, signal }));
-    });
+    const exit = await Promise.race(childExits);
+    if (!signalReceived) throw requiredChildExitError(exit);
+  } catch (error) {
+    await cleanup();
+    if (!signalReceived) {
+      console.error(`[dev] ${phase} failed: ${error?.message || error}`);
+      process.exitCode = 1;
+    }
+  } finally {
     process.removeListener("SIGINT", onSignal);
     process.removeListener("SIGTERM", onSignal);
-    await removeRuntimeStateIfPid(runtimeFile, runtime.pid);
-
-    if (exit.error) throw exit.error;
-    if (!stopping && exit.code !== 0) throw new Error(`Wrangler exited with status ${exit.code ?? "unknown"}${exit.signal ? ` (${exit.signal})` : ""}.`);
-  } catch (error) {
-    await stopRuntime();
-    if (runtime?.pid) await removeRuntimeStateIfPid(runtimeFile, runtime.pid);
-    else await removeRuntimeState(runtimeFile);
-    console.error(`[dev] ${phase} failed: ${error?.message || error}`);
-    process.exitCode = 1;
+    await cleanup();
   }
 }
 
