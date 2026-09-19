@@ -1168,6 +1168,10 @@ h1 span { color: var(--muted); }
   .page-hero h1 { font-size: clamp(2.5rem, 13vw, 3.4rem); overflow-wrap: anywhere; }
   .case-hero h1 { font-size: clamp(2.6rem, 14vw, 3.7rem); overflow-wrap: anywhere; }
   .showcase-hero h1 { font-size: clamp(2.6rem, 14vw, 3.7rem); overflow-wrap: anywhere; }
+  .project-card-actions,
+  .project-facts,
+  .project-primary-capability { min-width: 0; }
+  .project-card-actions .text-link { white-space: normal; overflow-wrap: anywhere; }
   .sim-visual > div { grid-template-columns: 1fr 1fr; }
   .archive-files > span { grid-template-columns: 4.4rem 1fr; }
   .archive-files code { grid-column: 1 / -1; }
@@ -2713,6 +2717,7 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   margin-bottom: 1.25rem;
 }
 
+.project-card-copy h2,
 .project-card-copy h3 {
   margin: 0 0 .8rem;
   font-size: clamp(2rem, 3.5vw, 3.25rem);
@@ -2720,10 +2725,12 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   letter-spacing: -.055em;
 }
 
+.project-card-copy h2 a,
 .project-card-copy h3 a {
   text-decoration: none;
 }
 
+.project-card-copy h2 a:hover,
 .project-card-copy h3 a:hover {
   color: var(--acid);
 }
@@ -2732,6 +2739,60 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   margin: 0 0 1.5rem;
   color: var(--muted);
   font-size: .94rem;
+}
+
+.project-card-no-preview { grid-template-rows: 1fr; }
+
+.project-card-capability,
+.project-primary-capability {
+  display: grid;
+  gap: .35rem;
+  color: var(--paper) !important;
+  font-weight: 800;
+}
+
+.project-card-capability span,
+.project-primary-capability span,
+.project-fact dt {
+  color: var(--quiet);
+  font: 800 .66rem/1.3 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.project-facts {
+  display: grid;
+  gap: .9rem;
+  margin: 0 0 1.6rem;
+}
+
+.project-fact {
+  min-width: 0;
+}
+
+.project-fact dt,
+.project-fact dd {
+  margin: 0;
+}
+
+.project-fact-primary dd {
+  margin-top: .35rem;
+  font-weight: 800;
+}
+
+.project-fact .tags {
+  margin: .45rem 0 0;
+}
+
+.project-card .tags,
+.project-fact .tags {
+  max-width: 100%;
+}
+
+.project-card .tags li,
+.project-fact .tags li {
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .project-card-copy .text-link {
@@ -2747,6 +2808,10 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
 
 .project-card-actions .text-link {
   margin-top: 0;
+}
+
+.project-card-actions [data-primary="true"] {
+  color: var(--paper);
 }
 
 /* The cards show the same animated previews the case studies use. The previews are

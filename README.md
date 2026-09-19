@@ -85,13 +85,14 @@ npm run test:about
 - `src/app/contracts.ts` defines the typed shell, metadata, navigation, and build contracts.
 - `src/app/navigation.ts` is the single typed primary-navigation and current-section authority.
 - `src/browser/` owns first-party browser preferences, language behavior, and mobile-navigation enhancement in TypeScript.
-- `src/data/projects.ts` owns typed project metadata and relationships.
+- `src/data/projects.ts` owns canonical project facts, slugs, route helpers, action destinations, preview/case-study availability, and generated project metadata.
 - `src/data/professional.ts` owns typed professional roles, project history, and skills.
 - `src/data/integrations.ts` owns the typed WizardGang-facing integration taxonomy, capability identifiers, and evidence relationships.
 - `src/data/professional-systems.ts` owns employer/customer deployment and historical professional-system references; production company UI does not consume it as a second integration catalog.
 - `src/data/team.ts` owns the current typed WizardGang team-member relationship.
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
-- `src/pages/` owns every canonical production page body in React/TypeScript.
+- `src/components/ProjectSurfaces.tsx` owns the common project-card, header, action, fact, architecture, and preview-frame presentation contract; project-specific previews and long-form case-study narrative remain separate.
+- `src/pages/` owns every canonical production page body in React/TypeScript, including project-specific technical narrative.
 - `src/app/pageRegistry.ts` is the typed output/route registry for the current 18 canonical static HTML files.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
@@ -103,7 +104,7 @@ npm run test:about
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects and the canonical integration-content model are implemented. Solutions and later route cleanup remain staged.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, and the standardized project-presentation contract are implemented. Solutions and later route cleanup remain staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)

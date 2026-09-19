@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { projectRoutes, projects } from "../src/data/projects.ts";
+import { projectCaseStudyMetadata, projectOverviewMetadata, projectRoutes, projects } from "../src/data/projects.ts";
 import { professionalProjects, professionalRoles, professionalSkills } from "../src/data/professional.ts";
 import { deployments, professionalIntegrationEvidence, professionalSystemEvidence } from "../src/data/professional-systems.ts";
 import { CANONICAL_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
@@ -206,7 +206,10 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
 test("typed data and styling authorities remain singular and internally valid", async () => {
   const slugs = projects.map((project) => project.slug);
   assert.equal(new Set(slugs).size, slugs.length, "project slugs must be unique");
-  const projectMetadataPaths = projects.flatMap((project) => [project.overviewMetadata.path, project.caseStudyMetadata.path]);
+  const projectMetadataPaths = projects.flatMap((project) => {
+    const caseStudy = projectCaseStudyMetadata(project);
+    return [projectOverviewMetadata(project).path, ...(caseStudy ? [caseStudy.path] : [])];
+  });
   assert.equal(new Set(projectMetadataPaths).size, projectMetadataPaths.length, "project metadata paths must be unique");
   for (const project of projects) {
     assertHttpsUrl(project.sourceUrl, `${project.slug} sourceUrl`);
