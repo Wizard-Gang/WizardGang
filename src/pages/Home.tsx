@@ -48,7 +48,7 @@ export const HOME_PAGE: ReactPageDefinition = {
         <div>
           <p>The systems and integration experience behind WizardGang comes from Jacob Yongue’s professional work across warehouse and fulfillment systems, logistics, public-sector workflows, and enterprise integration. Those employer and customer records remain attributed to that professional history; they are not WizardGang client claims.</p>
           <CapabilityList items={systemGroups.map((group) => group.title)} />
-          <a className="text-link" href="/work/">See the supporting professional record <span aria-hidden="true">→</span></a>
+          <a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
