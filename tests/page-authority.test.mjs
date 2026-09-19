@@ -45,7 +45,7 @@ test("remaining current-state pages retain substantive content after React migra
     ["index.html", ["WizardGang", "Build software.", "Make it inspectable.", "Working systems with source and evidence.", "Experience behind the software.", "Reusable approaches, separate from products.", "Company & team"]],
     ["about/index.html", ["About WizardGang", "Company and people,", "Two clear authorities.", "About the company", "Meet the team"]],
     ["about/company/index.html", ["WizardGang company", "Software with", "Software first.", "Keep ownership explicit.", "Demonstrate; do not overclaim."]],
-    ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "View Jacob’s profile"]],
+    ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "View Jacob's profile"]],
     ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments", "Core skills"]],
     ["software/index.html", ["Software, systems,", "Current software projects.", "Integration experience.", "View current projects"]],
     ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
