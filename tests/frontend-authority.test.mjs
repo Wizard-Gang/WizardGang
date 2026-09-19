@@ -111,7 +111,7 @@ test("canonical page inventory remains owned by the typed React registry", async
     assert.ok(registry.includes(authority), `typed page registry is missing ${authority}`);
   }
   assert.match(registry, /Duplicate generated route/, "typed registry must reject duplicate output locations");
-  assert.doesNotMatch(registry, /createWorkPageDefinitions|pages\\/Work/, "redirect-only Work must not return as a canonical renderer");
+  assert.doesNotMatch(registry, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must not return as a canonical renderer");
 
   assert.match(document, /renderToStaticMarkup/, "canonical documents must be complete static React HTML");
   assert.match(document, /createStaticPageRegistry/, "Document must render from the typed page registry");
