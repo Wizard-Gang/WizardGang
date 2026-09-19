@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import worker from "../src/worker.mjs";
+import worker from "../src/worker/index.ts";
 
 const SITE = "https://wizardgang.ai";
 const SHARK = "https://sharktank.wizardgang.ai";
@@ -239,4 +239,53 @@ test("ordinary canonical pages and static assets fall through untouched to ASSET
     assert.equal(calls[0].method, method);
     assert.equal(calls[0].headers.get("x-fallback-proof"), "1");
   }
+});
+
+test("machine proxy retains request bodies while preserving method and headers", async () => {
+  const originalFetch = globalThis.fetch;
+  let captured;
+  globalThis.fetch = async (request) => {
+    captured = request;
+    return new Response("proxied", { status: 202 });
+  };
+
+  try {
+    const response = await worker.fetch(new Request(`${SITE}/api/widgets?source=wg040`, {
+      method: "POST",
+      headers: {
+        Origin: SITE,
+        "content-type": "application/json",
+        "x-client-proof": "body-present"
+      },
+      body: JSON.stringify({ source: "wg040" })
+    }), assetEnv());
+
+    assert.equal(response.status, 202);
+    assert.equal(captured.url, `${SHARK}/api/widgets?source=wg040`);
+    assert.equal(captured.method, "POST");
+    assert.equal(captured.headers.get("content-type"), "application/json");
+    assert.equal(captured.headers.get("x-client-proof"), "body-present");
+    assert.equal(captured.headers.get("origin"), SHARK);
+    assert.equal(captured.headers.get("x-wizardgang-migration-proxy"), "1");
+    assert.equal(captured.redirect, "manual");
+    assert.deepEqual(await captured.json(), { source: "wg040" });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("unknown non-intercepted routes fall through to ASSETS unchanged", async () => {
+  const calls = [];
+  const env = assetEnv(calls);
+  const request = new Request(`${SITE}/not-a-worker-route?source=wg040`, {
+    headers: { "x-fallback-proof": "unknown-route" }
+  });
+  const response = await worker.fetch(request, env);
+
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-asset-fallback"), "1");
+  assert.equal(calls.length, 1);
+  assert.strictEqual(calls[0], request);
+  assert.equal(calls[0].url, request.url);
+  assert.equal(calls[0].headers.get("x-fallback-proof"), "unknown-route");
 });

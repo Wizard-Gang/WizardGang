@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "wizardgang-portfolio",
-  "main": "src/worker.mjs",
+  "main": "src/worker/index.ts",
   "compatibility_date": "2026-08-28",
   // Let normal asset matching happen first. When no asset matches, invoke the stateless
   // compatibility Worker instead of treating browser navigations as automatic 404 pages.
@@ -28,4 +28,3 @@
     }
   }
 }
-
