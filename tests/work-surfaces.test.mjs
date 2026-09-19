@@ -29,42 +29,50 @@ test("typed professional authorities preserve current roles, project history, sk
   assert.equal(integrationByName.get("Canbar")?.url, null);
 });
 
-test("retired professional presentation sources remain absent", async () => {
-  const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
-  assert.match(home, /SelectedWorkGrid/);
-  for (const path of ["src/site.mjs", "src/professional.mjs", "src/professional-systems.mjs"]) {
+test("retired professional presentation sources remain absent, including the old Work page renderer", async () => {
+  for (const path of ["src/site.mjs", "src/professional.mjs", "src/professional-systems.mjs", "src/pages/Work.tsx"]) {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }
 });
 
-test("React owns the canonical Work route and shared Home professional-role projection", async () => {
-  const pageSource = await readFile(resolve(root, "src/pages/Work.tsx"), "utf8");
+test("Jacob Team page consumes the existing professional TypeScript authorities", async () => {
+  const pageSource = await readFile(resolve(root, "src/pages/About.tsx"), "utf8");
   const componentSource = await readFile(resolve(root, "src/components/ProfessionalSurfaces.tsx"), "utf8");
-  const homeSource = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
   const registrySource = await readFile(resolve(root, "src/app/pageRegistry.ts"), "utf8");
 
-  assert.match(pageSource, /createWorkPageDefinitions/);
-  assert.match(pageSource, /relative: "work\/index\.html"/);
-  assert.match(pageSource, /ProfessionalRoleGrid/);
-  assert.match(pageSource, /SystemGroups/);
-  assert.match(pageSource, /IntegrationGroups/);
-  assert.match(pageSource, /ReferenceList/);
+  for (const authority of ["professionalRoles", "professionalSkills", "deployments", "integrationGroups", "systemGroups"]) {
+    assert.ok(pageSource.includes(authority), `Jacob Team source missing typed authority ${authority}`);
+  }
+  for (const component of ["ProfessionalRoleGrid", "SystemGroups", "IntegrationGroups", "ReferenceList", "SkillList"]) {
+    assert.ok(pageSource.includes(component), `Jacob Team source missing presentation component ${component}`);
+  }
   assert.match(componentSource, /ExternalOrganizationLink/);
-  assert.match(homeSource, /SelectedWorkGrid/);
-  assert.match(registrySource, /createWorkPageDefinitions/);
+  assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/);
+  assert.match(registrySource, /JACOB_TEAM_PAGE/);
 });
 
-test("generated Work output preserves metadata, professional ordering, semantics, references, and skills", async () => {
-  const html = await readDist("work/index.html");
+test("generated Jacob Team page preserves professional ordering, evidence, semantics, and canonical metadata", async () => {
+  const html = await readDist("about/team/jacob/index.html");
   const plain = textContent(html);
   const h1s = tagBlocks(html, "h1");
   assert.equal(h1s.length, 1);
-  assert.match(textContent(h1s[0].inner), /Production work\. Operational stakes\./);
+  assert.equal(textContent(h1s[0].inner), "Build the whole path. Own the outcome.");
 
   const title = tagBlocks(html, "title")[0];
   assert.ok(title);
-  assert.equal(textContent(title.inner), "Work — Jacob Yongue | Professional Portfolio");
-  assert.equal(linkByRel(html, "canonical")?.attrs.get("href"), "https://wizardgang.ai/work/");
+  assert.equal(textContent(title.inner), "Jacob Yongue — Professional Background | WizardGang Team");
+  assert.equal(linkByRel(html, "canonical")?.attrs.get("href"), "https://wizardgang.ai/about/team/jacob/");
+
+  for (const phrase of [
+    "Professional background",
+    "Production work. Operational stakes.",
+    "Career history",
+    "Systems delivered",
+    "Integrations",
+    "Deployments",
+    "Core skills",
+    "prior employers and their customers is not presented as WizardGang client work"
+  ]) assert.ok(plain.toLowerCase().includes(phrase.toLowerCase()), `Jacob page missing ${phrase}`);
 
   let cursor = -1;
   for (const role of professionalRoles) {
@@ -99,16 +107,14 @@ test("generated Work output preserves metadata, professional ordering, semantics
   assert.ok(startTags(html, "ul").some(({ attrs }) => attrs.get("aria-label") === "Development &amp; data"));
 });
 
-test("Home React composition projects the same typed professional roles", async () => {
-  const html = await readDist("index.html");
-  assert.doesNotMatch(html, /data-wizardgang-selected-work/);
-  const selected = tagBlocks(html, "section").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("selected-work"));
-  assert.ok(selected);
-  const plain = textContent(selected.inner);
-  let cursor = -1;
-  for (const role of professionalRoles) {
-    const index = plain.indexOf(role.organization, cursor + 1);
-    assert.ok(index > cursor, `Home role order changed for ${role.organization}`);
-    cursor = index;
+test("Work no longer generates canonical HTML and current first-party career links target Jacob directly", async () => {
+  await assert.rejects(readDist("work/index.html"), { code: "ENOENT" });
+
+  for (const relative of ["index.html", "software/index.html", "about/team/index.html", "about/team/jacob/index.html"]) {
+    const html = await readDist(relative);
+    assert.ok(!anchors(html).some((anchor) => anchor.href === "/work/"), `${relative} must not link to redirect-only /work/`);
   }
+
+  const home = await readDist("index.html");
+  assert.ok(anchors(home).some((anchor) => anchor.href === "/about/team/jacob/" && /supporting professional record/i.test(textContent(anchor.inner))));
 });
