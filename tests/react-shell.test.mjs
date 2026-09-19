@@ -27,11 +27,11 @@ test("every canonical page is complete static HTML composed through the React sh
   }
 });
 
-test("React owns shared chrome and project surfaces while legacy code owns only remaining page bodies", async () => {
+test("React owns shared chrome and every canonical page body", async () => {
   const documentSource = await readRoot("src/app/Document.tsx");
   const chromeSource = await readRoot("src/components/SiteChrome.tsx");
+  const registrySource = await readRoot("src/app/pageRegistry.ts");
   const legacySource = await readRoot("src/site.mjs");
-  const projectPages = await readRoot("src/pages/Projects.tsx");
 
   assert.match(documentSource, /<html lang="en">/);
   assert.match(documentSource, /<Metadata /);
@@ -39,15 +39,18 @@ test("React owns shared chrome and project surfaces while legacy code owns only 
   assert.match(documentSource, /<Preferences \/>/);
   assert.match(documentSource, /<SiteFooter /);
   assert.match(documentSource, /renderToStaticMarkup/);
+  assert.match(documentSource, /createStaticPageRegistry/);
 
   for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "play-previews", "Software engineering portfolio", "/version.json"]) {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  assert.match(legacySource, /createPageDefinitions/);
-  assert.match(legacySource, /<main\b/);
-  assert.doesNotMatch(legacySource, /function\s+(?:header|displaySettings|footer|document)\b/);
-  assert.doesNotMatch(legacySource, /class=["'](?:site-header|display-settings|site-footer)/);
+  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+    assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
+  }
+
+  assert.match(legacySource, /ownsProductionPages:\s*false/);
+  assert.doesNotMatch(legacySource, /createPageDefinitions|<main\b|function\s+/);
 });
 
 test("the static shell loads only the generated TypeScript browser module without client React", async () => {
@@ -82,17 +85,16 @@ test("build metadata remains visible in the React footer and version record", as
   assert.equal(textContent(buildLink.inner), `Build ${version.commit}`);
 });
 
-test("the transitional body seam is singular and documented rather than spread through components", async () => {
+test("the static React document has no legacy body injection seam", async () => {
   const documentSource = await readRoot("src/app/Document.tsx");
   const chromeSource = await readRoot("src/components/SiteChrome.tsx");
   const combined = `${documentSource}\n${chromeSource}`;
 
-  assert.equal((combined.match(/data-wizardgang-legacy-body/g) || []).length, 2, "placeholder declaration and template marker should be the only body-boundary references");
+  assert.doesNotMatch(combined, /data-wizardgang-legacy-body|data-wizardgang-selected-projects|data-wizardgang-selected-work/);
   assert.doesNotMatch(combined, /dangerouslySetInnerHTML/);
-  assert.match(documentSource, /Remaining legacy page bodies are trusted repository-authored HTML/);
-  assert.match(documentSource, /data-wizardgang-selected-projects/);
+  assert.match(documentSource, /createStaticPageRegistry/);
+  assert.match(documentSource, /renderStaticDocuments/);
 });
-
 
 test("watch publication preserves the Wrangler asset root while replacing complete staged output", async () => {
   const viteSource = await readRoot("vite.config.ts");

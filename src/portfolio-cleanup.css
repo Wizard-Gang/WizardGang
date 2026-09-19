@@ -8,6 +8,20 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+  contain: strict;
+}
+
+.sr-only table {
+  width: 1px !important;
+  max-width: 1px !important;
+  table-layout: fixed;
+}
+
+.sr-only :where(caption, th, td) {
+  max-width: 1px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .professional-proof,
@@ -1246,6 +1260,98 @@ html:has(#text-size-200:checked) :where(
   .experience-grid article > strong,
   .experience-grid article > p
 ) {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+html:has(#text-size-200:checked) :where(
+  .button,
+  .text-link,
+  .button-row,
+  .project-card-actions,
+  .project-card-copy,
+  .selected-work-grid article,
+  .capabilities .capability-grid article,
+  .about-teaser > *,
+  .contact-band > *
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html:has(#text-size-200:checked) :where(
+  .button,
+  .text-link,
+  .services-hero h1 span
+) {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+html:has(#text-size-200:checked) :where(
+  .hero-identity,
+  .hero-side,
+  .home-statement-card,
+  .selected-work-grid article,
+  .capabilities .capability-grid article,
+  .contact-band
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html:has(#text-size-200:checked) :where(
+  .home-statement-card > p,
+  .hero-side > p,
+  .selected-work-grid p,
+  .selected-work-grid strong,
+  .capabilities .capability-grid p,
+  .contact-band > p,
+  .project-card-copy p
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+
+/* At 200% text, translated Services copy must be allowed to contribute a
+   shrinkable min-content width instead of widening the root layout. */
+html:has(#text-size-200:checked) :where(
+  .services-main,
+  .service-packages,
+  .service-ownership,
+  .service-handoff,
+  .service-process,
+  .service-growth,
+  .service-notes,
+  .service-package-grid,
+  .service-process-grid,
+  .service-package,
+  .service-package header,
+  .service-package ul,
+  .service-package li,
+  .service-statement,
+  .service-stack,
+  .service-stack article,
+  .service-cost
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html:has(#text-size-200:checked) .services-main :where(
+  p,
+  li,
+  h1,
+  h2,
+  h3,
+  strong,
+  span
+) {
+  min-width: 0;
+  max-width: 100%;
   overflow-wrap: anywhere;
   white-space: normal;
 }

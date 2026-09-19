@@ -20,7 +20,8 @@
     "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production",
     "test:browser": "node --test tests/browser-behavior.test.mjs",
     "test:projects": "node --test tests/project-surfaces.test.mjs",
-    "test:work": "node --test tests/work-surfaces.test.mjs"
+    "test:work": "node --test tests/work-surfaces.test.mjs",
+    "test:pages": "node --test tests/page-authority.test.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

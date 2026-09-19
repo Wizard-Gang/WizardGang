@@ -5,7 +5,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
-import type { BuildMetadata, PageDefinition } from "./src/app/contracts";
+import type { BuildMetadata } from "./src/app/contracts";
 import { sanitizeLocalHeadersText } from "./scripts/local-headers.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -13,7 +13,6 @@ const dist = resolve(root, "dist");
 const shellOut = resolve(root, "tmp/frontend-shell");
 const publishOut = resolve(root, "tmp/frontend-publish");
 const rendererFile = resolve(shellOut, "render.mjs");
-const siteModule = resolve(root, "src/site.mjs");
 const browserEntry = resolve(root, "src/browser/index.ts");
 
 type TreeSnapshot = {
@@ -107,7 +106,10 @@ function staticSitePlugin(): Plugin {
   let generation = 0;
   let browserReferenceId = "";
   const watched = [
-    siteModule,
+    resolve(root, "src/app/pageRegistry.ts"),
+    resolve(root, "src/data/site.ts"),
+    resolve(root, "src/data/services.ts"),
+    resolve(root, "src/data/glossary.ts"),
     resolve(root, "src/data/projects.ts"),
     resolve(root, "src/components/ProjectPreviews.tsx"),
     resolve(root, "src/components/ProjectSurfaces.tsx"),
@@ -116,6 +118,11 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/data/professional-systems.ts"),
     resolve(root, "src/components/ProfessionalSurfaces.tsx"),
     resolve(root, "src/pages/Work.tsx"),
+    resolve(root, "src/pages/Home.tsx"),
+    resolve(root, "src/pages/About.tsx"),
+    resolve(root, "src/pages/Services.tsx"),
+    resolve(root, "src/pages/Glossary.tsx"),
+    resolve(root, "src/pages/NotFound.tsx"),
     resolve(root, "src/styles.css"),
     resolve(root, "src/portfolio-cleanup.css")
   ];
@@ -139,14 +146,8 @@ function staticSitePlugin(): Plugin {
       }
 
       const rendererUrl = `${pathToFileURL(rendererFile).href}?generation=${generation}`;
-      const siteUrl = `${pathToFileURL(siteModule).href}?generation=${generation}`;
       const renderer = await import(rendererUrl) as {
-        renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string;
-        renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
-        renderWorkDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
-      };
-      const legacy = await import(siteUrl) as {
-        createPageDefinitions(): Map<string, PageDefinition>;
+        renderStaticDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
       };
 
       const build: BuildMetadata = {
@@ -176,22 +177,7 @@ function staticSitePlugin(): Plugin {
         await writeFile(resolve(publishOut, "assets/styles.css"), `${baseStyles.trim()}\n\n${portfolioStyles.trim()}\n`);
 
         const browserAssetPath = `/${browserFileName}`;
-        const legacyPages = legacy.createPageDefinitions();
-        const projectPages = renderer.renderProjectDocuments(build, browserAssetPath);
-        const workPages = renderer.renderWorkDocuments(build, browserAssetPath);
-        const pages = new Map<string, string>();
-
-        for (const [relativePath, page] of legacyPages) {
-          pages.set(relativePath, renderer.renderDocument(page, build, browserAssetPath));
-        }
-        for (const [relativePath, html] of projectPages) {
-          if (pages.has(relativePath)) throw new Error(`Duplicate generated route: ${relativePath}`);
-          pages.set(relativePath, html);
-        }
-        for (const [relativePath, html] of workPages) {
-          if (pages.has(relativePath)) throw new Error(`Duplicate generated route: ${relativePath}`);
-          pages.set(relativePath, html);
-        }
+        const pages = renderer.renderStaticDocuments(build, browserAssetPath);
 
         for (const [relativePath, html] of pages) {
           const target = resolve(publishOut, relativePath);

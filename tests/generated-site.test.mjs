@@ -518,11 +518,14 @@ test("React frontend toolchain owns the shared production shell without becoming
   assert.doesNotMatch(documentSource, /react-dom\/client|hydrateRoot|createRoot/);
 
   const siteSource = await readRoot("src/site.mjs");
-  for (const legacyFunction of ["header", "displaySettings", "footer", "document"]) {
-    assert.doesNotMatch(siteSource, new RegExp(`function\\s+${legacyFunction}\\b`), `legacy ${legacyFunction}() must not remain authoritative`);
+  assert.match(siteSource, /ownsProductionPages:\s*false/);
+  assert.doesNotMatch(siteSource, /createPageDefinitions|function\\s+|<main\\b|<!doctype html>|<html\\b|<head\\b/);
+
+  const registrySource = await readRoot("src/app/pageRegistry.ts");
+  assert.match(registrySource, /createStaticPageRegistry/);
+  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+    assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
-  assert.match(siteSource, /createPageDefinitions/);
-  assert.doesNotMatch(siteSource, /<!doctype html>|<html\b|<head\b|class=["']site-header|class=["']display-settings|class=["']site-footer/);
 
   const vite = await readRoot("vite.config.ts");
   assert.match(vite, /ssr:\s*"src\/app\/Document\.tsx"/);
