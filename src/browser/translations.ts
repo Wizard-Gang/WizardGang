@@ -90,7 +90,7 @@ export const SPANISH_TRANSLATIONS = new Map<string, string>([
     ["Systems", "Sistemas"],
     ["Integration experience.", "Experiencia de integración."],
     ["View professional work", "Ver trabajo profesional"],
-    ["Professional systems and integration experience remains attributed in the current Work record.", "La experiencia profesional en sistemas e integraciones sigue atribuida en el registro actual de Trayectoria."],
+    ["Professional systems and integration experience remains attributed in Jacob's Team record.", "La experiencia profesional en sistemas e integraciones sigue atribuida en el registro de Equipo de Jacob."],
     ["Reusable approaches", "Enfoques reutilizables"],
     ["for software delivery.", "para la entrega de software."],
     ["WizardGang solutions organize repeatable delivery approaches without duplicating the software catalog.", "Las soluciones de WizardGang organizan enfoques repetibles de entrega sin duplicar el catálogo de software."],
