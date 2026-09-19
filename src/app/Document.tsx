@@ -1,11 +1,14 @@
+import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { SelectedProjectsSection, createProjectPageDefinitions } from "../pages/Projects";
 import type { BuildMetadata, PageDefinition, PageMetadata } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
 const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
 const SOCIAL_IMAGE_ALT = "Jacob Yongue — software engineer, systems integration, project delivery";
 const LEGACY_BODY_PLACEHOLDER = '<template data-wizardgang-legacy-body=""></template>';
+const SELECTED_PROJECTS_PLACEHOLDER = '<template data-wizardgang-selected-projects=""></template>';
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;
@@ -54,31 +57,73 @@ function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadat
   );
 }
 
-export function Document({ page, build, browserAssetPath }: { page: PageDefinition; build: BuildMetadata; browserAssetPath: string }) {
+export function Document({
+  page,
+  build,
+  browserAssetPath,
+  children
+}: {
+  page: Pick<PageDefinition, "metadata" | "current">;
+  build: BuildMetadata;
+  browserAssetPath: string;
+  children: ReactNode;
+}) {
   return (
     <html lang="en">
       <Metadata metadata={page.metadata} build={build} browserAssetPath={browserAssetPath} />
       <body>
         <SiteHeader current={page.current} />
         <Preferences />
-        <template data-wizardgang-legacy-body=""></template>
+        {children}
         <SiteFooter build={build} />
       </body>
     </html>
   );
 }
 
+function renderStaticDocument(
+  page: Pick<PageDefinition, "metadata" | "current">,
+  body: ReactNode,
+  build: BuildMetadata,
+  browserAssetPath: string
+): string {
+  return `<!doctype html>\n${renderToStaticMarkup(
+    <Document page={page} build={build} browserAssetPath={browserAssetPath}>{body}</Document>
+  )}`;
+}
+
 export function renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string {
-  const shell = renderToStaticMarkup(<Document page={page} build={build} browserAssetPath={browserAssetPath} />);
+  let legacyBody = page.body;
+  if (legacyBody.includes(SELECTED_PROJECTS_PLACEHOLDER)) {
+    legacyBody = legacyBody.replace(
+      SELECTED_PROJECTS_PLACEHOLDER,
+      renderToStaticMarkup(<SelectedProjectsSection />)
+    );
+  }
+
+  const shell = renderStaticDocument(
+    page,
+    <template data-wizardgang-legacy-body=""></template>,
+    build,
+    browserAssetPath
+  );
   if (!shell.includes(LEGACY_BODY_PLACEHOLDER)) {
     throw new Error("React shell did not emit the legacy body compatibility boundary.");
   }
 
-  // WG-041 transitional boundary: every page body is trusted repository-authored HTML
-  // from src/site.mjs. Replacing one exact inert placeholder preserves the existing DOM
-  // shape without spreading raw-HTML injection across React components. Later WG changes
-  // will replace these body strings with React page components.
-  return `<!doctype html>\n${shell.replace(LEGACY_BODY_PLACEHOLDER, page.body)}`;
+  // Remaining legacy page bodies are trusted repository-authored HTML from src/site.mjs.
+  // Project surfaces are React-owned; Home receives only the shared React project section
+  // through one exact build-time slot until the rest of Home migrates in a later WG change.
+  return shell.replace(LEGACY_BODY_PLACEHOLDER, legacyBody);
+}
+
+export function renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
+  return new Map(
+    createProjectPageDefinitions().map((page) => [
+      page.relative,
+      renderStaticDocument(page, page.body, build, browserAssetPath)
+    ])
+  );
 }
 
 export const SOCIAL_IMAGE = DEFAULT_SOCIAL_IMAGE;

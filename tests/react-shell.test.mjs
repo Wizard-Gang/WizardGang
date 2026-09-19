@@ -27,10 +27,11 @@ test("every canonical page is complete static HTML composed through the React sh
   }
 });
 
-test("React owns Header, navigation, Preferences, Footer, and metadata while legacy code owns page bodies only", async () => {
+test("React owns shared chrome and project surfaces while legacy code owns only remaining page bodies", async () => {
   const documentSource = await readRoot("src/app/Document.tsx");
   const chromeSource = await readRoot("src/components/SiteChrome.tsx");
   const legacySource = await readRoot("src/site.mjs");
+  const projectPages = await readRoot("src/pages/Projects.tsx");
 
   assert.match(documentSource, /<html lang="en">/);
   assert.match(documentSource, /<Metadata /);
@@ -88,5 +89,21 @@ test("the transitional body seam is singular and documented rather than spread t
 
   assert.equal((combined.match(/data-wizardgang-legacy-body/g) || []).length, 2, "placeholder declaration and template marker should be the only body-boundary references");
   assert.doesNotMatch(combined, /dangerouslySetInnerHTML/);
-  assert.match(documentSource, /WG-041 transitional boundary/);
+  assert.match(documentSource, /Remaining legacy page bodies are trusted repository-authored HTML/);
+  assert.match(documentSource, /data-wizardgang-selected-projects/);
+});
+
+
+test("watch publication preserves the Wrangler asset root while replacing complete staged output", async () => {
+  const viteSource = await readRoot("vite.config.ts");
+
+  assert.match(viteSource, /const publishOut = resolve\(root, "tmp\/frontend-publish"\)/);
+  assert.match(viteSource, /await publishStaticTree\(publishOut, dist\)/);
+  assert.match(viteSource, /await rename\(temporaryFile, targetFile\)/);
+  assert.match(viteSource, /if \(!source\.files\.has\(file\)\) await rm/);
+  assert.doesNotMatch(
+    viteSource,
+    /await rm\(dist,\s*\{\s*recursive:\s*true,\s*force:\s*true\s*\}\)/,
+    "watch rebuilds must never remove Wrangler's configured dist asset root"
+  );
 });
