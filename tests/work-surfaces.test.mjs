@@ -62,6 +62,9 @@ test("generated Jacob Team page preserves professional ordering, evidence, seman
   assert.ok(title);
   assert.equal(textContent(title.inner), "Jacob Yongue — Professional Background | WizardGang Team");
   assert.equal(linkByRel(html, "canonical")?.attrs.get("href"), "https://wizardgang.ai/about/team/jacob/");
+  const roleList = startTags(html, "div").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("experience-grid"));
+  assert.equal(roleList?.attrs.get("role"), "list");
+  assert.equal(startTags(html, "article").filter(({ attrs }) => attrs.get("role") === "listitem").length, professionalRoles.length);
 
   for (const phrase of [
     "Professional background",
