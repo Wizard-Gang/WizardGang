@@ -258,7 +258,7 @@ test("homepage is WizardGang-first while routing to current deeper authorities",
   assert.ok(hero, "homepage hero section is missing");
   assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/software/", "/solutions/"].sort());
 
-  for (const href of ["/software/", "/projects/", "/work/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+  for (const href of ["/software/", "/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
     assert.ok(anchorWithHref(home, href), `homepage missing current destination ${href}`);
   }
   assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain organization GitHub access through shared chrome");
@@ -367,9 +367,10 @@ test("YarReader substantive offline, ingestion, addressing, recovery, and rebuil
   rejectText(html, ["A complete path, not an isolated component", "Explicit ownership at every boundary", "The part worth looking at twice", "What exists now"], "YarReader case study");
 });
 
-test("work page preserves career, systems, integrations, deployments, and named examples", async () => {
-  const work = await readDist("work/index.html");
-  requireText(work, [
+test("Jacob Team page preserves career, systems, integrations, deployments, and named examples", async () => {
+  const jacob = await readDist("about/team/jacob/index.html");
+  requireText(jacob, [
+    "Professional background",
     "Career history",
     "Systems delivered",
     "Integrations",
@@ -390,11 +391,11 @@ test("work page preserves career, systems, integrations, deployments, and named 
     "Shadow Money Wizard Gang",
     "Sep 2024 - Apr 2026",
     "Jun 2023 - Aug 2024"
-  ], "work page");
+  ], "Jacob Team page");
   for (const href of ["https://www.axon.com/", "https://www.lexisnexis.com/en-us/", "https://cloudimsystems.com/"]) {
-    assert.ok(anchorWithHref(work, href), `work page missing integration relationship ${href}`);
+    assert.ok(anchorWithHref(jacob, href), `Jacob Team page missing integration relationship ${href}`);
   }
-  rejectText(work, [
+  rejectText(jacob, [
     "Grouped by the problem and operating environment",
     "Selected examples from each category",
     "Selected deployment context from Jacob’s employment history",
@@ -407,7 +408,8 @@ test("work page preserves career, systems, integrations, deployments, and named 
     "Independent venture",
     "Oct 2024 - Apr 2026",
     "Nov 2023 - Sep 2024"
-  ], "work page");
+  ], "Jacob Team page");
+  assert.equal(await exists(resolve(dist, "work/index.html")), false, "redirect-only /work/ must not generate HTML");
 });
 
 test("services page preserves the current package, ownership, and handoff model", async () => {
@@ -459,12 +461,11 @@ test("About hierarchy and glossary retain their current substantive roles", asyn
   rejectText(company, ["University of Georgia", "Supply Chain Technologies", "Career history", "Deployments"], "company page");
 
   const team = await readDist("about/team/index.html");
-  requireText(team, ["WizardGang team", "One real member. No placeholders.", "Jacob Yongue", "Professional work"], "team page");
+  requireText(team, ["WizardGang team", "One real member. No placeholders.", "Jacob Yongue", "View Jacob"], "team page");
   rejectText(team, ["Career history", "Systems delivered", "Deployments"], "team page");
 
   const jacob = await readDist("about/team/jacob/index.html");
-  requireText(jacob, ["Team / Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional work remains separately attributed."], "Jacob team page");
-  rejectText(jacob, ["University of Georgia", "Supply Chain Technologies", "Career history", "Deployments"], "Jacob team page");
+  requireText(jacob, ["Team / Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments"], "Jacob team page");
 
   const glossary = await readDist("glossary/index.html");
   requireText(glossary, ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"], "glossary page");
@@ -563,9 +564,10 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
+  assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must stay out of the React registry");
 
   const vite = await readRoot("vite.config.ts");
   assert.match(vite, /ssr:\s*"src\/app\/Document\.tsx"/);
