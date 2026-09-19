@@ -3,6 +3,24 @@ import type { PageMetadata } from "../app/contracts";
 export type ProjectSlug = "sharktank" | "hexframe" | "yarreader";
 export type ProjectArchitectureItem = readonly [name: string, detail: string];
 
+export const PROJECTS_ROOT_PATH = "/software/projects/" as const;
+
+export function projectPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/` {
+  return `/software/projects/${slug}/`;
+}
+
+export function projectCaseStudyPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/case-study/` {
+  return `/software/projects/${slug}/case-study/`;
+}
+
+export function projectOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/index.html` {
+  return `software/projects/${slug}/index.html`;
+}
+
+export function projectCaseStudyOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/case-study/index.html` {
+  return `software/projects/${slug}/case-study/index.html`;
+}
+
 export interface ProjectNarrative {
   tagline: string;
   what: string;
@@ -70,14 +88,14 @@ export const projects = [
       highlights: ["Realtime multiplayer shark gameplay", "A codebase written entirely by AI", "ISO/IEC 27001-aligned security and operating controls", "ISO/IEC 42001-aligned management of AI development", "Metered billable actions with a hard spending limit"]
     },
     overviewMetadata: {
-      title: "SharkTank — Project by Jacob Yongue",
+      title: "SharkTank — WizardGang Project",
       description: "A multiplayer shark game built entirely with AI-generated code. Players swim through a shared tank, eat food, dash forward, fire rockets, and compete for score. The live game also includes security checks, billable-action limits, status monitoring, backups, recovery tools, and public operating records.",
-      path: "/projects/sharktank/"
+      path: projectPath("sharktank")
     },
     caseStudyMetadata: {
       title: "SharkTank — AI-Developed Multiplayer Game Case Study | WizardGang",
       description: "A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.",
-      path: "/projects/sharktank/case-study/"
+      path: projectCaseStudyPath("sharktank")
     }
   },
   {
@@ -116,14 +134,14 @@ export const projects = [
       highlights: ["A playable stage with a practice dummy", "Pause-on-contact and frame-by-frame controls", "Hitbox, hurtbox, pushbox, and state inspection", "Saved positions and repeatable scenario replays", "Keyboard, gamepad, and accessible display settings"]
     },
     overviewMetadata: {
-      title: "Hexframe — Project by Jacob Yongue",
+      title: "Hexframe — WizardGang Project",
       description: "Fighting-game systems made deterministic and inspectable. A browser-based fighting-game system and engineering laboratory built around fixed-step combat, authored frame data, replayable state, rollback-ready boundaries, keyboard and gamepad parity, semantic menus, and accessible training tools.",
-      path: "/projects/hexframe/"
+      path: projectPath("hexframe")
     },
     caseStudyMetadata: {
       title: "Hexframe — Deterministic Fighting Game Systems | WizardGang",
       description: "A browser fighting game where every hit has one repeatable result. It includes accessible controls, training tools, replays, computer players, and a foundation for future online play.",
-      path: "/projects/hexframe/case-study/"
+      path: projectCaseStudyPath("hexframe")
     }
   },
   {
@@ -161,14 +179,14 @@ export const projects = [
       highlights: ["CBZ, CBR, EPUB, PDF, and image adapters", "Content-addressed normalization", "Crash-recoverable transactions", "Immutable static exports with an offline reader"]
     },
     overviewMetadata: {
-      title: "YarReader — Project by Jacob Yongue",
+      title: "YarReader — WizardGang Project",
       description: "A portable media library that works without a server. A browser-based reading experience backed by a crash-recoverable pipeline that converts mixed publication formats into a verified, self-contained offline library.",
-      path: "/projects/yarreader/"
+      path: projectPath("yarreader")
     },
     caseStudyMetadata: {
       title: "YarReader — Portable Media Pipeline | WizardGang",
       description: "An offline comic and book library that turns mixed files into a checked, portable reader and can safely continue after a crash or interrupted copy.",
-      path: "/projects/yarreader/case-study/"
+      path: projectCaseStudyPath("yarreader")
     }
   }
 ] as const satisfies readonly ProjectRecord[];
@@ -178,12 +196,12 @@ export const projectBySlug = new Map<ProjectSlug, ProjectRecord>(
 );
 
 export const projectRoutes = projects.flatMap((project) => [
-  `projects/${project.slug}/index.html`,
-  `projects/${project.slug}/case-study/index.html`
+  projectOutputPath(project.slug),
+  projectCaseStudyOutputPath(project.slug)
 ]);
 
 export const PROJECTS_INDEX_METADATA: PageMetadata = {
-  title: "Projects — Jacob Yongue",
-  description: "Personal engineering projects by Jacob Yongue: SharkTank, Hexframe, and YarReader, with technical case studies and live proof.",
-  path: "/projects/"
+  title: "Projects — WizardGang Software",
+  description: "WizardGang software projects: SharkTank, Hexframe, and YarReader, with technical case studies, source, and live proof where available.",
+  path: PROJECTS_ROOT_PATH
 };
