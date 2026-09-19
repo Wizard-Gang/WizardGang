@@ -1,0 +1,156 @@
+name: WG-039 lifecycle validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    if: github.head_ref == 'wg-039-integrate-frontend-local-development'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out WG-039
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate syntax
+        run: node --check scripts/dev.mjs && node --check tests/dev-lifecycle.test.mjs
+
+      - name: Build authoritative site
+        run: npm run build
+
+      - name: Run full checks
+        run: npm run check
+
+      - name: Exercise unified local lifecycle
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p "$RUNNER_TEMP/fake-bin"
+          cat > "$RUNNER_TEMP/fake-bin/xdg-open" <<'SH'
+          #!/usr/bin/env bash
+          printf '%s\n' "$1" > "$BROWSER_CAPTURE"
+          SH
+          chmod +x "$RUNNER_TEMP/fake-bin/xdg-open"
+          export PATH="$RUNNER_TEMP/fake-bin:$PATH"
+          export BROWSER_CAPTURE="$RUNNER_TEMP/browser-url.txt"
+
+          wait_for_url() {
+            local url="$1"
+            for _ in $(seq 1 80); do
+              if curl --silent --fail --max-time 1 "$url" >/dev/null 2>&1; then
+                return 0
+              fi
+              sleep 0.25
+            done
+            return 1
+          }
+
+          wait_for_file_value() {
+            local file="$1"
+            local expected="$2"
+            for _ in $(seq 1 40); do
+              if [[ -f "$file" ]] && grep -Fxq "$expected" "$file"; then
+                return 0
+              fi
+              sleep 0.25
+            done
+            return 1
+          }
+
+          start_dev() {
+            local port="$1"
+            rm -f "$BROWSER_CAPTURE"
+            setsid env WIZARDGANG_PORT="$port" npm run dev >"$RUNNER_TEMP/dev-$port.log" 2>&1 &
+            DEV_PID=$!
+            wait_for_url "http://127.0.0.1:$port/"
+            wait_for_file_value "$BROWSER_CAPTURE" "http://127.0.0.1:$port"
+            test -f tmp/dev/runtime.json
+            test -f tmp/dev/frontend.json
+            WRANGLER_PID=$(node -p "JSON.parse(require('fs').readFileSync('tmp/dev/runtime.json','utf8')).pid")
+            FRONTEND_PID=$(node -p "JSON.parse(require('fs').readFileSync('tmp/dev/frontend.json','utf8')).pid")
+            kill -0 "$WRANGLER_PID"
+            kill -0 "$FRONTEND_PID"
+          }
+
+          stop_dev() {
+            kill -INT "$DEV_PID"
+            wait "$DEV_PID"
+            for _ in $(seq 1 40); do
+              [[ ! -e tmp/dev/runtime.json && ! -e tmp/dev/frontend.json ]] && break
+              sleep 0.25
+            done
+            test ! -e tmp/dev/runtime.json
+            test ! -e tmp/dev/frontend.json
+            if kill -0 "$WRANGLER_PID" 2>/dev/null; then
+              echo "Wrangler child remained alive after Ctrl-C" >&2
+              exit 1
+            fi
+            if kill -0 "$FRONTEND_PID" 2>/dev/null; then
+              echo "Frontend watcher remained alive after Ctrl-C" >&2
+              exit 1
+            fi
+          }
+
+          start_dev 8790
+
+          grep -q "Strict-Transport-Security" public/_headers
+          ! grep -q "Strict-Transport-Security" dist/_headers
+          grep -q "upgrade-insecure-requests" public/_headers
+          ! grep -q "upgrade-insecure-requests" dist/_headers
+
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("src/app/foundation/foundation.tsx")
+          text = path.read_text()
+          old = "Disposable build proof only."
+          new = "Disposable watch proof only."
+          if old not in text:
+              raise SystemExit("foundation proof text not found")
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+          WATCH_REBUILT=0
+          for _ in $(seq 1 80); do
+            if grep -Rqs "Disposable watch proof only." tmp/frontend-foundation/assets; then
+              WATCH_REBUILT=1
+              break
+            fi
+            sleep 0.25
+          done
+          test "$WATCH_REBUILT" -eq 1
+          git checkout -- src/app/foundation/foundation.tsx
+
+          stop_dev
+
+          start_dev 8791
+          stop_dev
+
+          python3 -m http.server 8792 --bind 127.0.0.1 >"$RUNNER_TEMP/unrelated.log" 2>&1 &
+          OTHER_PID=$!
+          trap 'kill "$OTHER_PID" 2>/dev/null || true' EXIT
+          sleep 0.5
+          if WIZARDGANG_PORT=8792 npm run dev >"$RUNNER_TEMP/dev-8792.log" 2>&1; then
+            echo "dev unexpectedly started on unrelated occupied port" >&2
+            exit 1
+          fi
+          kill -0 "$OTHER_PID"
+          test ! -e tmp/dev/runtime.json
+          test ! -e tmp/dev/frontend.json
+          kill "$OTHER_PID"
+          wait "$OTHER_PID" || true
+          trap - EXIT
+
+          npm run build
+          git diff --exit-code
