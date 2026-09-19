@@ -17,7 +17,7 @@ export function Navigation({ current, mobile = false }: NavigationProps) {
         <a
           key={item.href}
           href={item.href}
-          aria-label={"accessibleName" in item ? item.accessibleName : undefined}
+          aria-label={"accessibleName" in item && typeof item.accessibleName === "string" ? item.accessibleName : undefined}
           aria-current={"key" in item && current === item.key ? "page" : undefined}
         >
           {item.label}

@@ -14,7 +14,6 @@ export const CANONICAL_PAGES = new Map([
   ["projects/sharktank/case-study/index.html", "/projects/sharktank/case-study/"],
   ["projects/hexframe/case-study/index.html", "/projects/hexframe/case-study/"],
   ["projects/yarreader/case-study/index.html", "/projects/yarreader/case-study/"],
-  ["work/index.html", "/work/"],
   ["services/index.html", "/services/"],
   ["about/index.html", "/about/"],
   ["about/company/index.html", "/about/company/"],
@@ -35,7 +34,6 @@ export const SITEMAP_ROUTES = [
   "/projects/hexframe/case-study/",
   "/projects/yarreader/",
   "/projects/yarreader/case-study/",
-  "/work/",
   "/services/",
   "/about/",
   "/about/company/",
@@ -77,6 +75,15 @@ export async function walk(directory, { ignore = new Set() } = {}) {
 export const readDist = (path) => readFile(resolve(dist, path), "utf8");
 export const readRoot = (path) => readFile(resolve(root, path), "utf8");
 
+function decodeHtmlEntities(value) {
+  return value
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#(?:39|x27);/gi, "'");
+}
+
 export function attributes(source = "") {
   const result = new Map();
   const pattern = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
@@ -112,7 +119,8 @@ export function textContent(source) {
 
 export function metaContent(html, attribute, value) {
   const tag = startTags(html, "meta").find(({ attrs }) => attrs.get(attribute) === value);
-  return tag?.attrs.get("content") ?? null;
+  const content = tag?.attrs.get("content");
+  return content === undefined ? null : decodeHtmlEntities(content);
 }
 
 export function linkByRel(html, rel) {

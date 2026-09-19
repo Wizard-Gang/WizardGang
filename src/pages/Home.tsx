@@ -38,6 +38,7 @@ export const HOME_PAGE: ReactPageDefinition = {
           <a className="text-link" href="/software/">Explore software <span aria-hidden="true">→</span></a>
         </div>
         <ProjectCardGrid projects={projects} />
+        <a className="text-link" href="/projects/">View all projects <span aria-hidden="true">→</span></a>
       </section>
 
       <section className="about-teaser" aria-labelledby="home-systems-heading">
@@ -48,7 +49,7 @@ export const HOME_PAGE: ReactPageDefinition = {
         <div>
           <p>The systems and integration experience behind WizardGang comes from Jacob Yongue’s professional work across warehouse and fulfillment systems, logistics, public-sector workflows, and enterprise integration. Those employer and customer records remain attributed to that professional history; they are not WizardGang client claims.</p>
           <CapabilityList items={systemGroups.map((group) => group.title)} />
-          <a className="text-link" href="/work/">See the supporting professional record <span aria-hidden="true">→</span></a>
+          <a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a>
         </div>
       </section>
 

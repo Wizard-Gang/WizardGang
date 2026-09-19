@@ -1,5 +1,14 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { JACOB_TEAM_MEMBER, TEAM_MEMBERS } from "../data/team";
+import {
+  IntegrationGroups,
+  ProfessionalRoleGrid,
+  ReferenceList,
+  SkillList,
+  SystemGroups
+} from "../components/ProfessionalSurfaces";
+import { professionalRoles, professionalSkills } from "../data/professional";
+import { deployments, integrationGroups, systemGroups } from "../data/professional-systems";
+import { TEAM_MEMBERS } from "../data/team";
 
 type AboutLocalSection = "about" | "company" | "team";
 
@@ -104,7 +113,7 @@ export const COMPANY_PAGE: ReactPageDefinition = {
         <div className="case-label">Claims &amp; evidence</div>
         <div>
           <h2>Keep ownership explicit.</h2>
-          <p>Project claims stay tied to project source, case studies, live surfaces, or published evidence. Professional experience belongs to Team and Work. Employer and customer history is not presented as WizardGang client work.</p>
+          <p>Project claims stay tied to project source, case studies, live surfaces, or published evidence. Jacob&apos;s professional experience belongs to his Team profile. Employer and customer history is not presented as WizardGang client work.</p>
           <a className="text-link" href="/about/team/">Meet the team <span aria-hidden="true">→</span></a>
         </div>
       </section>
@@ -145,10 +154,7 @@ export const TEAM_PAGE: ReactPageDefinition = {
               <span>{member.role}</span>
               <h3><a href={member.profilePath}>{member.name}</a></h3>
               <p>{member.summary}</p>
-              <div className="text-links">
-                <a className="text-link" href={member.profilePath}>View Jacob&apos;s profile <span aria-hidden="true">→</span></a>
-                <a className="text-link" href={member.professionalPath}>Professional work <span aria-hidden="true">→</span></a>
-              </div>
+              <a className="text-link" href={member.profilePath}>View Jacob&apos;s profile <span aria-hidden="true">→</span></a>
             </article>
           ))}
         </div>
@@ -160,12 +166,12 @@ export const TEAM_PAGE: ReactPageDefinition = {
 export const JACOB_TEAM_PAGE: ReactPageDefinition = {
   relative: "about/team/jacob/index.html",
   metadata: {
-    title: "Jacob Yongue — WizardGang Team",
-    description: "Jacob Yongue is the software engineer and implementation lead behind WizardGang. Read a concise profile and follow the current professional record.",
+    title: "Jacob Yongue — Professional Background | WizardGang Team",
+    description: "Jacob Yongue's professional background: career history, systems, integrations, deployments, and skills, clearly attributed to his experience.",
     path: "/about/team/jacob/"
   },
   body: (
-    <main className="case-main about-main" id="main" tabIndex={-1}>
+    <main className="case-main about-main professional-main" id="main" tabIndex={-1}>
       <section className="page-hero about-hero">
         <p className="kicker">Team / Jacob Yongue</p>
         <h1>Build the whole path.<br /><span>Own the outcome.</span></h1>
@@ -184,14 +190,57 @@ export const JACOB_TEAM_PAGE: ReactPageDefinition = {
           <article><span>04</span><h3>Learning velocity</h3><p>Reduce unfamiliar technology to explicit contracts, inspectable behavior, and small verifiable steps.</p></article>
         </div>
       </section>
-      <section className="case-section">
-        <div className="case-label">Career detail</div>
+
+      <section className="case-section" aria-labelledby="professional-background-heading">
+        <div className="case-label">Professional background</div>
         <div>
-          <h2>Professional work remains separately attributed.</h2>
-          <p>Detailed roles, projects, systems, integrations, deployments, and skills remain on the professional Work surface so this Team profile stays concise and attribution remains clear.</p>
-          <a className="text-link" href={JACOB_TEAM_MEMBER.professionalPath}>View professional work <span aria-hidden="true">→</span></a>
+          <h2 id="professional-background-heading">Production work. Operational stakes.</h2>
+          <p>AI, supply-chain, fulfillment, and public-sector systems delivered from discovery through production.</p>
+          <p>These roles, systems, integrations, and deployments describe Jacob&apos;s professional experience. Work completed for prior employers and their customers is not presented as WizardGang client work.</p>
         </div>
       </section>
+
+      <section className="professional-experience" aria-labelledby="experience-heading">
+        <div className="professional-section-heading">
+          <div><p className="kicker">Career history</p><h2 id="experience-heading">Roles across the delivery path.</h2></div>
+          <p>What I owned, what I delivered, and the operating context around each role.</p>
+        </div>
+        <ProfessionalRoleGrid roles={professionalRoles} className="experience-grid" />
+      </section>
+
+      <section className="systems-resume-section" aria-labelledby="work-systems">
+        <header>
+          <div><p className="kicker">Systems delivered</p><h2 id="work-systems">Real systems in real operations.</h2></div>
+          <p>Systems organized by what they do.</p>
+        </header>
+        <div className="systems-resume-grid"><SystemGroups groups={systemGroups} /></div>
+      </section>
+
+      <section className="systems-resume-section" aria-labelledby="work-integrations">
+        <header>
+          <div><p className="kicker">Integrations</p><h2 id="work-integrations">Connected business operations.</h2></div>
+          <p>Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.</p>
+        </header>
+        <div className="systems-resume-grid"><IntegrationGroups groups={integrationGroups} /></div>
+      </section>
+
+      <section className="systems-resume-section" aria-labelledby="work-deployments">
+        <header>
+          <div><p className="kicker">Deployments</p><h2 id="work-deployments">Organizations and environments.</h2></div>
+          <p>Organization links are provided for identification only.</p>
+        </header>
+        <ReferenceList items={deployments} />
+      </section>
+
+      <section className="professional-skills" aria-labelledby="skills-heading">
+        <div className="professional-section-heading">
+          <div><p className="kicker">Core skills</p><h2 id="skills-heading">The delivery stack.</h2></div>
+          <p>The languages, platforms, and practices behind this professional record.</p>
+        </div>
+        <div className="skill-columns">{professionalSkills.map((group) => <SkillList key={group.label} group={group} />)}</div>
+      </section>
+
+      <p className="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
     </main>
   )
 };

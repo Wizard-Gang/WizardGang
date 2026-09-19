@@ -37,7 +37,7 @@ test("typed project routes cover the exact canonical project outputs", () => {
 
 test("retired project presentation sources remain absent", async () => {
   const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
-  assert.match(home, /SelectedProjectsSection/);
+  assert.match(home, /ProjectCardGrid/);
   for (const path of ["src/site.mjs", "src/projects.mjs"]) {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }

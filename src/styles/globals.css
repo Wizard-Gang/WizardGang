@@ -2602,6 +2602,10 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
 }
 
 @media (max-width: 560px) {
+  .systems-resume-section h2 {
+    font-size: clamp(2.25rem, 12vw, 2.7rem);
+  }
+
   .experience-list {
     grid-template-columns: 1fr;
   }

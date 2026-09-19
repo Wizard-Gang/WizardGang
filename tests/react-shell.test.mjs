@@ -40,15 +40,17 @@ test("React owns shared chrome and every canonical page body", async () => {
   assert.match(documentSource, /renderToStaticMarkup/);
   assert.match(documentSource, /createStaticPageRegistry/);
 
-  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "play-previews", "Software engineering portfolio", "/version.json"]) {
+  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "play-previews", "WizardGang · Software, systems &amp; integrations", "/version.json"]) {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
-  for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js"]) {
+  assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must stay out of the React registry");
+
+  for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js", "src/pages/Work.tsx"]) {
     await assert.rejects(readRoot(path), { code: "ENOENT" });
   }
 });

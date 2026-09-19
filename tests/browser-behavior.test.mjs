@@ -156,7 +156,7 @@ test("language translation preserves exact and dynamic current behavior", () => 
   assert.equal(translateDynamic("Company"), "Empresa");
   assert.equal(translateDynamic("Team"), "Equipo");
   assert.equal(translateDynamic("About section"), "Sección Acerca de");
-  assert.equal(translateDynamic("Professional work remains separately attributed."), "El trabajo profesional permanece atribuido por separado.");
+  assert.equal(translateDynamic("Professional systems and integration experience remains attributed in Jacob's Team record."), "La experiencia profesional en sistemas e integraciones sigue atribuida en el registro de Equipo de Jacob.");
   assert.equal(translateDynamic("Warehouse & Fulfillment"), "Almacén y cumplimiento");
   assert.equal(translateDynamic("Play SharkTank"), "Jugar a SharkTank");
   assert.equal(translateDynamic("Read the Hexframe case study"), "Leer el caso de estudio de Hexframe");

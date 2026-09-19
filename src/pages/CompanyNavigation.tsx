@@ -27,8 +27,8 @@ export const SOFTWARE_PAGE: ReactPageDefinition = {
         <div className="case-label">Systems</div>
         <div>
           <h2>Integration experience.</h2>
-          <p>Professional systems and integration experience remains attributed in the current Work record.</p>
-          <a className="text-link" href="/work/">View professional work <span aria-hidden="true">→</span></a>
+          <p>Professional systems and integration experience remains attributed in Jacob's Team record.</p>
+          <a className="text-link" href="/about/team/jacob/">View professional work <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </main>

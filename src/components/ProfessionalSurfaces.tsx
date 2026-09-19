@@ -9,9 +9,9 @@ export function ProfessionalRoleGrid({
   className: "selected-work-grid" | "experience-grid";
 }) {
   return (
-    <div className={className}>
+    <div className={className} role="list">
       {roles.map((role) => (
-        <article key={`${role.organization}-${role.role}-${role.dates}`}>
+        <article role="listitem" key={`${role.organization}-${role.role}-${role.dates}`}>
           <span>{role.dates}</span>
           <h3>{role.organization}</h3>
           <strong>{role.role}</strong>
