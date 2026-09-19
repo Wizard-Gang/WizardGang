@@ -435,9 +435,11 @@ async function main() {
     signalReceived = signal;
     void cleanup();
   };
+  const onSigint = () => onSignal("SIGINT");
+  const onSigterm = () => onSignal("SIGTERM");
 
-  process.once("SIGINT", onSignal);
-  process.once("SIGTERM", onSignal);
+  process.once("SIGINT", onSigint);
+  process.once("SIGTERM", onSigterm);
 
   try {
     const port = resolvePort();
@@ -532,8 +534,8 @@ async function main() {
       process.exitCode = 1;
     }
   } finally {
-    process.removeListener("SIGINT", onSignal);
-    process.removeListener("SIGTERM", onSignal);
+    process.removeListener("SIGINT", onSigint);
+    process.removeListener("SIGTERM", onSigterm);
     await cleanup();
   }
 }
