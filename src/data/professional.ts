@@ -1,3 +1,32 @@
+export interface ProfessionalRole {
+  organization: string;
+  role: string;
+  dates: string;
+  summary: string;
+}
+
+export interface ProfessionalProject {
+  name: string;
+  organization: string;
+  company: string;
+  dates: string;
+  role: string;
+  method: string;
+  team: string;
+  budget: string;
+  category: string;
+  logo?: string;
+  logoAlt?: string;
+  logoClass?: string;
+  logoText?: string;
+  outcome: string;
+}
+
+export interface ProfessionalSkillGroup {
+  label: string;
+  items: readonly string[];
+}
+
 // Titles, dates, and figures below are the canonical professional-history source.
 // Keep them factual when the professional record changes.
 // Ordered most-recent-first.
@@ -32,7 +61,7 @@ export const professionalRoles = [
     dates: "Jul 2019 - May 2023",
     summary: "Built and supported .NET fulfillment systems, extract-transform-load (ETL) data pipelines, warehouse management system (WMS) integrations, and migrations without planned downtime."
   }
-];
+] as const satisfies readonly ProfessionalRole[];
 
 export const professionalProjects = [
   {
@@ -258,7 +287,7 @@ export const professionalProjects = [
     logoClass: "logo-wide",
     outcome: "Delivered an RMA workflow inside the existing RF application, enabling returned goods to be received, tracked, and returned to inventory through standard operations."
   }
-];
+] as const satisfies readonly ProfessionalProject[];
 
 // Straight from the resume's core-skills block: this is the billable, paid-work stack,
 // distinct from the TypeScript/Cloudflare surface the independent lab runs on.
@@ -279,4 +308,4 @@ export const professionalSkills = [
     label: "Delivery & support",
     items: ["Jira", "QA/UAT", "Regression testing", "Upgrades, migrations & cutovers", "Technical documentation", "End-user training"]
   }
-];
+] as const satisfies readonly ProfessionalSkillGroup[];

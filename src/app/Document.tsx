@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { SelectedProjectsSection, createProjectPageDefinitions } from "../pages/Projects";
+import { SelectedWorkGrid, createWorkPageDefinitions } from "../pages/Work";
 import type { BuildMetadata, PageDefinition, PageMetadata } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
@@ -9,6 +10,7 @@ const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
 const SOCIAL_IMAGE_ALT = "Jacob Yongue — software engineer, systems integration, project delivery";
 const LEGACY_BODY_PLACEHOLDER = '<template data-wizardgang-legacy-body=""></template>';
 const SELECTED_PROJECTS_PLACEHOLDER = '<template data-wizardgang-selected-projects=""></template>';
+const SELECTED_WORK_PLACEHOLDER = '<template data-wizardgang-selected-work=""></template>';
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;
@@ -100,6 +102,12 @@ export function renderDocument(page: PageDefinition, build: BuildMetadata, brows
       renderToStaticMarkup(<SelectedProjectsSection />)
     );
   }
+  if (legacyBody.includes(SELECTED_WORK_PLACEHOLDER)) {
+    legacyBody = legacyBody.replace(
+      SELECTED_WORK_PLACEHOLDER,
+      renderToStaticMarkup(<SelectedWorkGrid />)
+    );
+  }
 
   const shell = renderStaticDocument(
     page,
@@ -112,14 +120,23 @@ export function renderDocument(page: PageDefinition, build: BuildMetadata, brows
   }
 
   // Remaining legacy page bodies are trusted repository-authored HTML from src/site.mjs.
-  // Project surfaces are React-owned; Home receives only the shared React project section
-  // through one exact build-time slot until the rest of Home migrates in a later WG change.
+  // Project and Work surfaces are React-owned. Home stays legacy while receiving shared
+  // React project and professional-role sections through exact build-time slots.
   return shell.replace(LEGACY_BODY_PLACEHOLDER, legacyBody);
 }
 
 export function renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
   return new Map(
     createProjectPageDefinitions().map((page) => [
+      page.relative,
+      renderStaticDocument(page, page.body, build, browserAssetPath)
+    ])
+  );
+}
+
+export function renderWorkDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
+  return new Map(
+    createWorkPageDefinitions().map((page) => [
       page.relative,
       renderStaticDocument(page, page.body, build, browserAssetPath)
     ])

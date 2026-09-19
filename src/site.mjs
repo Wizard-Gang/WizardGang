@@ -1,5 +1,3 @@
-import { professionalRoles, professionalSkills } from "./professional.mjs";
-import { deployments, integrationGroups, systemGroups } from "./professional-systems.mjs";
 
 const CONTACT_EMAIL = "jacob@wizardgang.ai";
 const WEBSITE_PACKAGES = [
@@ -47,11 +45,6 @@ function page({ title, description, path, current = "", body, social = false, no
   };
 }
 
-const tags = (items, label = "Technologies") => `<ul class="tags" aria-label="${escapeHtml(label)}">${items.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>`;
-
-function selectedWork() {
-  return `<div class="selected-work-grid">${professionalRoles.map((role) => `<article><span>${escapeHtml(role.dates)}</span><h3>${escapeHtml(role.organization)}</h3><strong>${escapeHtml(role.role)}</strong><p>${escapeHtml(role.summary)}</p></article>`).join("")}</div>`;
-}
 
 function capabilityGrid() {
   const items = [
@@ -68,25 +61,12 @@ function home() {
   const body = `<main class="site-main" id="main" tabindex="-1">
     <section class="hero jacob-hero"><div class="hero-identity"><h1>Jacob <span>Yongue</span></h1><p class="kicker hero-role">Software engineer · Systems · Project delivery</p><div class="home-statement-card"><p>I build systems that ship.</p></div></div><div class="hero-side"><p>I design, build, connect, and launch software, then help teams keep it working in production.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects</a><a class="button" href="mailto:${CONTACT_EMAIL}">Get in touch</a></div></div></section>
     <template data-wizardgang-selected-projects=""></template>
-    <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div>${selectedWork()}</section>
+    <section class="portfolio-section selected-work" aria-labelledby="selected-work-heading"><div class="section-heading"><div><p class="kicker">Selected work</p><h2 id="selected-work-heading">Systems delivered in real operations.</h2></div><a class="text-link" href="/work/">Professional portfolio <span aria-hidden="true">→</span></a></div><template data-wizardgang-selected-work=""></template></section>
     <section class="portfolio-section capabilities" aria-labelledby="capabilities-heading"><div class="section-heading"><div><p class="kicker">Capabilities</p><h2 id="capabilities-heading">From idea to production.</h2></div></div>${capabilityGrid()}</section>
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
     <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
   </main>`;
   return page({ title: "Jacob Yongue — Software Engineer | WizardGang", description: "Jacob Yongue designs, builds, integrates, and delivers software systems from requirements through production. Explore projects, professional work, and technical case studies.", path: "/", body, social: true });
-}
-
-function work() {
-  const body = `<main class="case-main professional-main" id="main" tabindex="-1">
-    <section class="professional-hero"><div><p class="kicker">Work / professional portfolio</p><h1>Production work.<br><span>Operational stakes.</span></h1></div><div class="professional-hero-copy"><p>AI, supply-chain, fulfillment, and public-sector systems delivered from discovery through production.</p></div></section>
-    <section class="professional-experience" aria-labelledby="experience-heading"><div class="professional-section-heading"><div><p class="kicker">Career history</p><h2 id="experience-heading">Roles across the delivery path.</h2></div><p>What I owned, what I delivered, and the operating context around each role.</p></div><div class="experience-grid">${professionalRoles.map((item) => `<article><span>${escapeHtml(item.dates)}</span><h3>${escapeHtml(item.organization)}</h3><strong>${escapeHtml(item.role)}</strong><p>${escapeHtml(item.summary)}</p></article>`).join("")}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-systems"><header><div><p class="kicker">Systems delivered</p><h2 id="work-systems">Real systems in real operations.</h2></div><p>Systems organized by what they do.</p></header><div class="systems-resume-grid">${systemGroups.map((group) => `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${capabilityList(group.items)}</article>`).join("")}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-integrations"><header><div><p class="kicker">Integrations</p><h2 id="work-integrations">Connected business operations.</h2></div><p>Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.</p></header><div class="systems-resume-grid">${referenceGroups(integrationGroups)}</div></section>
-    <section class="systems-resume-section" aria-labelledby="work-deployments"><header><div><p class="kicker">Deployments</p><h2 id="work-deployments">Organizations and environments.</h2></div><p>Organization links are provided for identification only.</p></header>${referenceList(deployments)}</section>
-    <section class="professional-skills" aria-labelledby="skills-heading"><div class="professional-section-heading"><div><p class="kicker">Core skills</p><h2 id="skills-heading">The delivery stack.</h2></div><p>The languages, platforms, and practices behind this professional record.</p></div><div class="skill-columns">${professionalSkills.map((group) => `<div><strong>${escapeHtml(group.label)}</strong>${tags(group.items, group.label)}</div>`).join("")}</div></section>
-    <p class="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
-  </main>`;
-  return page({ title: "Work — Jacob Yongue | Professional Portfolio", description: "Jacob Yongue's professional portfolio: systems delivered, deployments, integrations, career history, QA, implementation, and production support from 2019 through 2026.", path: "/work/", current: "work", body});
 }
 
 function services() {
@@ -109,26 +89,6 @@ function about() {
     <section class="about-principles" aria-labelledby="approach-heading"><div><p class="kicker">Approach</p><h2 id="approach-heading">Practical systems over isolated artifacts.</h2></div><div class="principle-grid"><article><span>01</span><h3>Systems thinking</h3><p>Model the workflow, failure modes, ownership, and operating environment before optimizing an isolated component.</p></article><article><span>02</span><h3>Implementation depth</h3><p>Stay hands-on through the code, integration, testing, deployment, adoption, and the edge cases production reveals.</p></article><article><span>03</span><h3>Project ownership</h3><p>Make scope, risk, decisions, and handoff legible so progress survives team and technology boundaries.</p></article><article><span>04</span><h3>Learning velocity</h3><p>Reduce unfamiliar technology to explicit contracts, inspectable behavior, and small verifiable steps.</p></article></div></section>
   </main>`;
   return page({ title: "About Jacob Yongue — Software Engineer", description: "About Jacob Yongue: software engineer, implementation lead, systems thinker, and project owner focused on practical systems from requirements through production.", path: "/about/", current: "about", body});
-}
-
-function officialReference(item) {
-  if (!item.url) return escapeHtml(item.name);
-  return `<a href="${escapeHtml(item.url)}">${escapeHtml(item.name)}</a>`;
-}
-
-function referenceList(items) {
-  return `<ul class="reference-cloud">${items.map((item) => `<li>${officialReference(item)}</li>`).join("")}</ul>`;
-}
-
-function referenceGroups(groups, limit) {
-  return groups.map((group) => {
-    const items = Number.isInteger(limit) ? group.items.slice(0, limit) : group.items;
-    return `<article class="proof-group"><h3>${escapeHtml(group.title)}</h3>${referenceList(items)}</article>`;
-  }).join("");
-}
-
-function capabilityList(items) {
-  return `<ul class="capability-cloud">${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
 }
 
 const GLOSSARY = [
@@ -167,7 +127,6 @@ function notFound() {
 export function createPageDefinitions() {
   return new Map([
     ["index.html", home()],
-    ["work/index.html", work()],
     ["services/index.html", services()],
     ["about/index.html", about()],
     ["glossary/index.html", glossary()],

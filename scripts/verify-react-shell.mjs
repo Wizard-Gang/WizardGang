@@ -11,6 +11,9 @@ const chromeSource = await readRoot("src/components/SiteChrome.tsx");
 const legacySource = await readRoot("src/site.mjs");
 const projectPagesSource = await readRoot("src/pages/Projects.tsx");
 const projectDataSource = await readRoot("src/data/projects.ts");
+const workPagesSource = await readRoot("src/pages/Work.tsx");
+const professionalDataSource = await readRoot("src/data/professional.ts");
+const professionalSystemsSource = await readRoot("src/data/professional-systems.ts");
 const home = await readRoot("dist/index.html");
 
 assert.match(documentSource, /renderToStaticMarkup/, "React server rendering must own static document composition");
@@ -29,6 +32,12 @@ for (const projectLegacyMarker of ["projects.mjs", "projectCard(", "sharkTankVis
 }
 assert.match(projectPagesSource, /createProjectPageDefinitions/, "React project route definitions must remain authoritative");
 assert.match(projectDataSource, /export const projects/, "TypeScript project data must remain authoritative");
+assert.match(workPagesSource, /createWorkPageDefinitions/, "React Work route definition must remain authoritative");
+assert.match(professionalDataSource, /export const professionalRoles/, "TypeScript professional role data must remain authoritative");
+assert.match(professionalDataSource, /export const professionalSkills/, "TypeScript professional skill data must remain authoritative");
+assert.match(professionalSystemsSource, /export const integrationGroups/, "TypeScript integration data must remain authoritative");
+assert.match(professionalSystemsSource, /export const systemGroups/, "TypeScript system data must remain authoritative");
+assert.match(professionalSystemsSource, /export const deployments/, "TypeScript deployment data must remain authoritative");
 
 for (const legacyShellMarker of ["site-header", "display-settings", "site-footer", "<!doctype html>", "<html", "<head>"]) {
   assert.ok(!legacySource.includes(legacyShellMarker), `src/site.mjs still contains shared-shell marker: ${legacyShellMarker}`);
@@ -50,5 +59,7 @@ await assert.rejects(access(resolve(root, "src/app/foundation/main.tsx")), { cod
 await assert.rejects(access(resolve(root, "scripts/verify-frontend-foundation.mjs")), { code: "ENOENT" });
 await assert.rejects(access(resolve(root, "public/assets/site.js")), { code: "ENOENT" });
 await assert.rejects(access(resolve(root, "src/projects.mjs")), { code: "ENOENT" });
+await assert.rejects(access(resolve(root, "src/professional.mjs")), { code: "ENOENT" });
+await assert.rejects(access(resolve(root, "src/professional-systems.mjs")), { code: "ENOENT" });
 
-console.log("Verified React shell, project surfaces, TypeScript project data, and browser authority.");
+console.log("Verified React shell, project and Work surfaces, typed project/professional data, and browser authority.");
