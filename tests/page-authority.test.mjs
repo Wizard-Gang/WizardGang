@@ -21,8 +21,7 @@ test("typed React registry owns every canonical static page", async () => {
     "SOLUTIONS_PAGE",
     "GLOSSARY_PAGE",
     "NOT_FOUND_PAGE",
-    "createProjectPageDefinitions",
-    "createWorkPageDefinitions"
+    "createProjectPageDefinitions"
   ]) assert.ok(registry.includes(authority), `missing page authority ${authority}`);
 
   const vite = await readRoot("vite.config.ts");
@@ -33,7 +32,7 @@ test("typed React registry owns every canonical static page", async () => {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }
 
-  assert.equal(CANONICAL_PAGES.size, 18);
+  assert.equal(CANONICAL_PAGES.size, 17);
   for (const relative of CANONICAL_PAGES.keys()) {
     const html = await readDist(relative);
     assert.equal(tagBlocks(html, "main").length, 1, `${relative} must have one React-authored main`);
@@ -46,8 +45,8 @@ test("remaining current-state pages retain substantive content after React migra
     ["index.html", ["WizardGang", "Build software.", "Make it inspectable.", "Working systems with source and evidence.", "Experience behind the software.", "Reusable approaches, separate from products.", "Company & team"]],
     ["about/index.html", ["About WizardGang", "Company and people,", "Two clear authorities.", "About the company", "Meet the team"]],
     ["about/company/index.html", ["WizardGang company", "Software with", "Software first.", "Keep ownership explicit.", "Demonstrate; do not overclaim."]],
-    ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "Professional work"]],
-    ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional work remains separately attributed."]],
+    ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "View Jacob’s profile"]],
+    ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments", "Core skills"]],
     ["software/index.html", ["Software, systems,", "Current software projects.", "Integration experience.", "View current projects"]],
     ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
     ["services/index.html", ["Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
