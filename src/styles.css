@@ -2218,7 +2218,7 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   .lab-pelvis,
   .lab-hit-window,
   .lab-hp-p2,
-  .lab-health-number { animation: none; }
+  .lab-health-number { animation: none !important; }
 
   .tank-fish-you { transform: translate(42px, -8px); }
   .tank-dash-trail { opacity: .72; transform: translateX(-20px); }

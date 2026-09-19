@@ -9,6 +9,8 @@ const readRoot = (path) => readFile(resolve(root, path), "utf8");
 const documentSource = await readRoot("src/app/Document.tsx");
 const chromeSource = await readRoot("src/components/SiteChrome.tsx");
 const legacySource = await readRoot("src/site.mjs");
+const projectPagesSource = await readRoot("src/pages/Projects.tsx");
+const projectDataSource = await readRoot("src/data/projects.ts");
 const home = await readRoot("dist/index.html");
 
 assert.match(documentSource, /renderToStaticMarkup/, "React server rendering must own static document composition");
@@ -22,6 +24,12 @@ assert.match(chromeSource, /Software engineering portfolio/);
 for (const legacyFunction of ["header", "displaySettings", "footer", "document"]) {
   assert.doesNotMatch(legacySource, new RegExp(`function\\s+${legacyFunction}\\b`), `legacy ${legacyFunction}() must not remain authoritative`);
 }
+for (const projectLegacyMarker of ["projects.mjs", "projectCard(", "sharkTankVisual(", "hexframeVisual(", "yarReaderVisual(", "projectShowcase(", "projectCaseStudy(", "projectsIndex("]) {
+  assert.ok(!legacySource.includes(projectLegacyMarker), `src/site.mjs still contains project authority: ${projectLegacyMarker}`);
+}
+assert.match(projectPagesSource, /createProjectPageDefinitions/, "React project route definitions must remain authoritative");
+assert.match(projectDataSource, /export const projects/, "TypeScript project data must remain authoritative");
+
 for (const legacyShellMarker of ["site-header", "display-settings", "site-footer", "<!doctype html>", "<html", "<head>"]) {
   assert.ok(!legacySource.includes(legacyShellMarker), `src/site.mjs still contains shared-shell marker: ${legacyShellMarker}`);
 }
@@ -41,5 +49,6 @@ assert.doesNotMatch(browserBundle, /react-dom|hydrateRoot|createRoot/, "browser 
 await assert.rejects(access(resolve(root, "src/app/foundation/main.tsx")), { code: "ENOENT" });
 await assert.rejects(access(resolve(root, "scripts/verify-frontend-foundation.mjs")), { code: "ENOENT" });
 await assert.rejects(access(resolve(root, "public/assets/site.js")), { code: "ENOENT" });
+await assert.rejects(access(resolve(root, "src/projects.mjs")), { code: "ENOENT" });
 
-console.log("Verified React static shell and TypeScript browser authority.");
+console.log("Verified React shell, project surfaces, TypeScript project data, and browser authority.");

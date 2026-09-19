@@ -17,7 +17,7 @@ npm run dev
 2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state.
 3. Runs the authoritative static production build. Vite compiles the server-only React shell renderer and writes the complete static site to `dist/`.
 4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Starts the same Vite build in watch mode. Shared React shell or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
+5. Starts the same Vite build in watch mode. Shared React shell, typed project data/project React surfaces, or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
 6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
 7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
 8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
@@ -39,7 +39,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-Page-specific bodies still come from the legacy `src/site.mjs` generator during this controlled intermediate state. The build uses one explicit trusted compatibility boundary to insert those repository-authored body strings into the React shell without adding an extra DOM wrapper. Later page migrations can remove that boundary incrementally.
+React/TypeScript also owns the project catalog, typed project data, project cards/actions/previews, the Projects index, all three project overviews, and all three project case studies. Remaining unmigrated page bodies still come from `src/site.mjs` through one explicit trusted build-time compatibility boundary. Home remains legacy except for its selected-project grid, which is rendered from the same React project components so there is only one project presentation authority.
 
 The authoritative production build remains:
 

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import test from "node:test";
-import { projects } from "../src/projects.mjs";
+import { projects } from "../src/data/projects.ts";
 import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
 import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {

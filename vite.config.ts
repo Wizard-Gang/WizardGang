@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { cp, mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -11,9 +11,88 @@ import { sanitizeLocalHeadersText } from "./scripts/local-headers.mjs";
 const root = dirname(fileURLToPath(import.meta.url));
 const dist = resolve(root, "dist");
 const shellOut = resolve(root, "tmp/frontend-shell");
+const publishOut = resolve(root, "tmp/frontend-publish");
 const rendererFile = resolve(shellOut, "render.mjs");
 const siteModule = resolve(root, "src/site.mjs");
 const browserEntry = resolve(root, "src/browser/index.ts");
+
+type TreeSnapshot = {
+  files: Set<string>;
+  directories: Set<string>;
+};
+
+async function snapshotTree(base: string): Promise<TreeSnapshot> {
+  const files = new Set<string>();
+  const directories = new Set<string>();
+
+  async function visit(directory: string) {
+    let entries;
+    try {
+      entries = await readdir(directory, { withFileTypes: true });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+      throw error;
+    }
+
+    for (const entry of entries) {
+      const absolute = resolve(directory, entry.name);
+      const rel = relative(base, absolute);
+      if (entry.isDirectory()) {
+        directories.add(rel);
+        await visit(absolute);
+      } else if (entry.isFile() || entry.isSymbolicLink()) {
+        files.add(rel);
+      } else {
+        throw new Error(`Unsupported publish entry: ${absolute}`);
+      }
+    }
+  }
+
+  await visit(base);
+  return { files, directories };
+}
+
+function pathDepth(value: string): number {
+  return value.split(/[\\/]/).length;
+}
+
+async function publishStaticTree(sourceRoot: string, targetRoot: string): Promise<void> {
+  await mkdir(targetRoot, { recursive: true });
+
+  const source = await snapshotTree(sourceRoot);
+  const previous = await snapshotTree(targetRoot);
+
+  for (const directory of [...source.directories].sort((a, b) => pathDepth(a) - pathDepth(b))) {
+    const target = resolve(targetRoot, directory);
+    if (previous.files.has(directory)) await rm(target, { force: true });
+    await mkdir(target, { recursive: true });
+  }
+
+  let sequence = 0;
+  for (const file of [...source.files].sort()) {
+    const sourceFile = resolve(sourceRoot, file);
+    const targetFile = resolve(targetRoot, file);
+    if (previous.directories.has(file)) await rm(targetFile, { recursive: true, force: true });
+    await mkdir(dirname(targetFile), { recursive: true });
+
+    const temporaryFile = resolve(
+      dirname(targetFile),
+      `.${file.split(/[\\/]/).at(-1)}.wizardgang-publish-${process.pid}-${sequence += 1}`
+    );
+    await rm(temporaryFile, { recursive: true, force: true });
+    await cp(sourceFile, temporaryFile, { dereference: false });
+    await rename(temporaryFile, targetFile);
+  }
+
+  for (const file of previous.files) {
+    if (!source.files.has(file)) await rm(resolve(targetRoot, file), { force: true });
+  }
+  for (const directory of [...previous.directories].sort((a, b) => pathDepth(b) - pathDepth(a))) {
+    if (!source.directories.has(directory)) {
+      await rm(resolve(targetRoot, directory), { recursive: true, force: true });
+    }
+  }
+}
 
 function gitCommit(): string {
   if (process.env.BUILD_COMMIT) return process.env.BUILD_COMMIT.slice(0, 12);
@@ -29,7 +108,10 @@ function staticSitePlugin(): Plugin {
   let browserReferenceId = "";
   const watched = [
     siteModule,
-    resolve(root, "src/projects.mjs"),
+    resolve(root, "src/data/projects.ts"),
+    resolve(root, "src/components/ProjectPreviews.tsx"),
+    resolve(root, "src/components/ProjectSurfaces.tsx"),
+    resolve(root, "src/pages/Projects.tsx"),
     resolve(root, "src/professional.mjs"),
     resolve(root, "src/professional-systems.mjs"),
     resolve(root, "src/styles.css"),
@@ -58,6 +140,7 @@ function staticSitePlugin(): Plugin {
       const siteUrl = `${pathToFileURL(siteModule).href}?generation=${generation}`;
       const renderer = await import(rendererUrl) as {
         renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string;
+        renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
       };
       const legacy = await import(siteUrl) as {
         createPageDefinitions(): Map<string, PageDefinition>;
@@ -69,32 +152,55 @@ function staticSitePlugin(): Plugin {
         builtAt: new Date().toISOString()
       };
 
-      await rm(dist, { recursive: true, force: true });
-      await mkdir(dist, { recursive: true });
-      await cp(resolve(root, "public"), dist, { recursive: true });
-      if (process.env.WIZARDGANG_LOCAL_DEV === "1") {
-        const headersPath = resolve(dist, "_headers");
-        const headers = await readFile(headersPath, "utf8");
-        await writeFile(headersPath, sanitizeLocalHeadersText(headers));
+      await rm(publishOut, { recursive: true, force: true });
+      await mkdir(publishOut, { recursive: true });
+
+      try {
+        await cp(resolve(root, "public"), publishOut, { recursive: true });
+        if (process.env.WIZARDGANG_LOCAL_DEV === "1") {
+          const headersPath = resolve(publishOut, "_headers");
+          const headers = await readFile(headersPath, "utf8");
+          await writeFile(headersPath, sanitizeLocalHeadersText(headers));
+        }
+
+        await mkdir(resolve(publishOut, "assets"), { recursive: true });
+        const browserTarget = resolve(publishOut, browserFileName);
+        await mkdir(dirname(browserTarget), { recursive: true });
+        await cp(resolve(shellOut, browserFileName), browserTarget);
+
+        const baseStyles = await readFile(resolve(root, "src/styles.css"), "utf8");
+        const portfolioStyles = await readFile(resolve(root, "src/portfolio-cleanup.css"), "utf8");
+        await writeFile(resolve(publishOut, "assets/styles.css"), `${baseStyles.trim()}\n\n${portfolioStyles.trim()}\n`);
+
+        const browserAssetPath = `/${browserFileName}`;
+        const legacyPages = legacy.createPageDefinitions();
+        const projectPages = renderer.renderProjectDocuments(build, browserAssetPath);
+        const pages = new Map<string, string>();
+
+        for (const [relativePath, page] of legacyPages) {
+          pages.set(relativePath, renderer.renderDocument(page, build, browserAssetPath));
+        }
+        for (const [relativePath, html] of projectPages) {
+          if (pages.has(relativePath)) throw new Error(`Duplicate generated route: ${relativePath}`);
+          pages.set(relativePath, html);
+        }
+
+        for (const [relativePath, html] of pages) {
+          const target = resolve(publishOut, relativePath);
+          await mkdir(dirname(target), { recursive: true });
+          await writeFile(target, html);
+        }
+
+        await writeFile(resolve(publishOut, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
+
+        // Keep Wrangler's configured asset root alive across watch rebuilds. The next
+        // complete tree is staged first; files are then atomically replaced in-place
+        // before stale files/directories are pruned.
+        await publishStaticTree(publishOut, dist);
+        console.log(`Built ${pages.size} React-shell HTML pages at ${build.commit}.`);
+      } finally {
+        await rm(publishOut, { recursive: true, force: true });
       }
-      await mkdir(resolve(dist, "assets"), { recursive: true });
-      const browserTarget = resolve(dist, browserFileName);
-      await mkdir(dirname(browserTarget), { recursive: true });
-      await cp(resolve(shellOut, browserFileName), browserTarget);
-
-      const baseStyles = await readFile(resolve(root, "src/styles.css"), "utf8");
-      const portfolioStyles = await readFile(resolve(root, "src/portfolio-cleanup.css"), "utf8");
-      await writeFile(resolve(dist, "assets/styles.css"), `${baseStyles.trim()}\n\n${portfolioStyles.trim()}\n`);
-
-      const pages = legacy.createPageDefinitions();
-      for (const [relative, page] of pages) {
-        const target = resolve(dist, relative);
-        await mkdir(dirname(target), { recursive: true });
-        await writeFile(target, renderer.renderDocument(page, build, `/${browserFileName}`));
-      }
-
-      await writeFile(resolve(dist, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
-      console.log(`Built ${pages.size} React-shell HTML pages at ${build.commit}.`);
     }
   };
 }
