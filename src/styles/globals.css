@@ -2429,10 +2429,19 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   background: var(--ink);
 }
 
+.proof-group h3,
 .proof-group h4 {
   margin: 0 0 .85rem;
   color: var(--paper);
   font-size: .95rem;
+}
+
+.proof-group p {
+  color: var(--muted);
+}
+
+.integration-grid > :only-child {
+  grid-column: 1 / -1;
 }
 
 .proof-group .reference-cloud,

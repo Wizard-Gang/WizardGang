@@ -1,5 +1,5 @@
 import type { ProfessionalRole, ProfessionalSkillGroup } from "../data/professional";
-import type { ExternalReference, IntegrationGroup, SystemGroup } from "../data/professional-systems";
+import type { ExternalReference } from "../data/professional-systems";
 
 export function ProfessionalRoleGrid({
   roles,
@@ -46,31 +46,5 @@ export function ReferenceList({ items }: { items: readonly ExternalReference[] }
     <ul className="reference-cloud">
       {items.map((item) => <li key={item.name}><ExternalOrganizationLink item={item} /></li>)}
     </ul>
-  );
-}
-
-export function IntegrationGroups({ groups }: { groups: readonly IntegrationGroup[] }) {
-  return (
-    <>
-      {groups.map((group) => (
-        <article className="proof-group" key={group.title}>
-          <h3>{group.title}</h3>
-          <ReferenceList items={group.items} />
-        </article>
-      ))}
-    </>
-  );
-}
-
-export function SystemGroups({ groups }: { groups: readonly SystemGroup[] }) {
-  return (
-    <>
-      {groups.map((group) => (
-        <article className="proof-group" key={group.title}>
-          <h3>{group.title}</h3>
-          <CapabilityList items={group.items} />
-        </article>
-      ))}
-    </>
   );
 }

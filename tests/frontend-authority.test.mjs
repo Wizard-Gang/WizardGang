@@ -5,7 +5,7 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { projectRoutes, projects } from "../src/data/projects.ts";
 import { professionalProjects, professionalRoles, professionalSkills } from "../src/data/professional.ts";
-import { deployments, integrationGroups, systemGroups } from "../src/data/professional-systems.ts";
+import { deployments, professionalIntegrationEvidence, professionalSystemEvidence } from "../src/data/professional-systems.ts";
 import { CANONICAL_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -217,10 +217,10 @@ test("typed data and styling authorities remain singular and internally valid", 
   assert.ok(professionalRoles.length > 0);
   assert.ok(professionalProjects.length > 0);
   assert.ok(professionalSkills.length > 0);
-  assert.equal(new Set(integrationGroups.map((group) => group.title)).size, integrationGroups.length, "integration group titles must be unique");
-  assert.equal(new Set(systemGroups.map((group) => group.title)).size, systemGroups.length, "system group titles must be unique");
+  assert.equal(new Set(professionalIntegrationEvidence.map((group) => group.title)).size, professionalIntegrationEvidence.length, "integration group titles must be unique");
+  assert.equal(new Set(professionalSystemEvidence.map((group) => group.title)).size, professionalSystemEvidence.length, "system group titles must be unique");
   for (const deployment of deployments) assertHttpsUrl(deployment.url, `deployment ${deployment.name}`);
-  for (const group of integrationGroups) {
+  for (const group of professionalIntegrationEvidence) {
     for (const item of group.items) if (item.url) assertHttpsUrl(item.url, `${group.title}: ${item.name}`);
   }
 

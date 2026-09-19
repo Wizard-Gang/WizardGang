@@ -7,18 +7,18 @@ export interface DeploymentReference extends ExternalReference {
   url: string;
 }
 
-export interface IntegrationGroup {
+export interface ProfessionalIntegrationEvidenceGroup {
   title: string;
   items: readonly ExternalReference[];
 }
 
-export interface SystemGroup {
+export interface ProfessionalSystemEvidenceGroup {
   title: string;
   items: readonly string[];
 }
 
-// Canonical homepage proof points for professional delivery.
-// Keep this file factual: do not infer deployments, integrations, or capabilities.
+// Canonical professional evidence for employer/customer systems, integrations, and deployments.
+// Keep this file factual and attributed; it is not the WizardGang company-facing integration taxonomy.
 // External references are intentionally centralized so links can be audited in one place.
 
 export const deployments: readonly DeploymentReference[] = [
@@ -46,7 +46,7 @@ export const deployments: readonly DeploymentReference[] = [
   ["Seeds 'N Such", "https://seedsnsuch.com/"]
 ].map(([name, url]): DeploymentReference => ({ name: String(name), url: String(url) }));
 
-export const integrationGroups: readonly IntegrationGroup[] = [
+export const professionalIntegrationEvidence: readonly ProfessionalIntegrationEvidenceGroup[] = [
   {
     title: "ERP Integrations",
     items: [
@@ -127,7 +127,7 @@ export const integrationGroups: readonly IntegrationGroup[] = [
     : { name: item, url: null })
 }));
 
-export const systemGroups: readonly SystemGroup[] = [
+export const professionalSystemEvidence: readonly ProfessionalSystemEvidenceGroup[] = [
   {
     title: "Warehouse & Fulfillment",
     items: ["Fulfillment", "Inventory", "Lot Tracking", "Barcode Workflows", "Warehouse Automation", "Quality Control", "Shipping", "RMA"]

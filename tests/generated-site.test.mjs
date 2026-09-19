@@ -224,8 +224,8 @@ test("homepage is WizardGang-first while routing to current deeper authorities",
     "Build software.",
     "Make it inspectable.",
     "Working systems with source and evidence.",
-    "Experience behind the software.",
-    "they are not WizardGang client claims.",
+    "Integration capability with clear attribution.",
+    "employer and customer evidence remains attributed",
     "Reusable approaches, separate from products.",
     "Company &amp; team",
     "Software with clear ownership.",
@@ -367,18 +367,30 @@ test("YarReader substantive offline, ingestion, addressing, recovery, and rebuil
   rejectText(html, ["A complete path, not an isolated component", "Explicit ownership at every boundary", "The part worth looking at twice", "What exists now"], "YarReader case study");
 });
 
-test("Jacob Team page preserves career, systems, integrations, deployments, and named examples", async () => {
+test("Jacob Team page preserves attributed career and integration evidence without duplicating the company catalog", async () => {
   const jacob = await readDist("about/team/jacob/index.html");
   requireText(jacob, [
     "Professional background",
     "Career history",
-    "Systems delivered",
-    "Integrations",
+    "Professional integration evidence",
+    "Experience stays attributed to the roles that produced it.",
+    "ERP and WMS integration work",
+    "REST/JSON APIs",
+    "SAML/SSO",
+    "EDI",
+    "ETL and data pipelines",
     "Deployments",
-    "Real systems in real operations.",
-    "Systems organized by what they do.",
-    "Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.",
     "Organization links are provided for identification only.",
+    "Shadow Money Wizard Gang",
+    "Sep 2024 - Apr 2026",
+    "Jun 2023 - Aug 2024",
+    "Explore WizardGang integration capability"
+  ], "Jacob Team page");
+  rejectText(jacob, [
+    "NetSuite",
+    "Microsoft Dynamics",
+    "Fishbowl",
+    "Blue Yonder",
     "Axon",
     "LexisNexis",
     "CIMS WMS",
@@ -388,27 +400,14 @@ test("Jacob Team page preserves career, systems, integrations, deployments, and 
     "Carrier Integrations",
     "EDI &amp; B2B",
     "Justice &amp; Legal",
-    "Shadow Money Wizard Gang",
-    "Sep 2024 - Apr 2026",
-    "Jun 2023 - Aug 2024"
-  ], "Jacob Team page");
-  for (const href of ["https://www.axon.com/", "https://www.lexisnexis.com/en-us/", "https://cloudimsystems.com/"]) {
-    assert.ok(anchorWithHref(jacob, href), `Jacob Team page missing integration relationship ${href}`);
-  }
-  rejectText(jacob, [
-    "Grouped by the problem and operating environment",
-    "Selected examples from each category",
-    "Selected deployment context from Jacob’s employment history",
     "All integrations",
-    "All deployments",
-    "All core skills",
     "work-disclosure",
     "Education &amp; certification",
     "Clemson University",
-    "Independent venture",
     "Oct 2024 - Apr 2026",
     "Nov 2023 - Sep 2024"
   ], "Jacob Team page");
+  assert.ok(anchorWithHref(jacob, "/software/integrations/"), "Jacob Team page must link to the canonical integration capability");
   assert.equal(await exists(resolve(dist, "work/index.html")), false, "redirect-only /work/ must not generate HTML");
 });
 
@@ -465,7 +464,7 @@ test("About hierarchy and glossary retain their current substantive roles", asyn
   rejectText(team, ["Career history", "Systems delivered", "Deployments"], "team page");
 
   const jacob = await readDist("about/team/jacob/index.html");
-  requireText(jacob, ["Team / Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments"], "Jacob team page");
+  requireText(jacob, ["Team / Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Professional integration evidence", "Deployments"], "Jacob team page");
 
   const glossary = await readDist("glossary/index.html");
   requireText(glossary, ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"], "glossary page");

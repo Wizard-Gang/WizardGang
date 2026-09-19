@@ -71,8 +71,7 @@ test("Company and Team stay concise while Jacob owns the attributed professional
     "software engineer with an implementation background",
     "Professional background",
     "Career history",
-    "Systems delivered",
-    "Integrations",
+    "Professional integration evidence",
     "Deployments",
     "University of Georgia",
     "Supply Chain Technologies",
@@ -97,7 +96,8 @@ test("typed Team authority contains only real current people and points directly
   const aboutSource = await readRoot("src/pages/About.tsx");
   assert.match(aboutSource, /TEAM_MEMBERS/);
   assert.match(aboutSource, /from "\.\.\/data\/professional"/);
-  assert.match(aboutSource, /from "\.\.\/data\/professional-systems"/);
+  assert.match(aboutSource, /import \{ deployments \} from "\.\.\/data\/professional-systems"/);
+  assert.doesNotMatch(aboutSource, /IntegrationGroups|SystemGroups|integrationGroups|systemGroups/);
 });
 
 test("About metadata has distinct responsibilities and Jacob metadata owns the career canonical", async () => {

@@ -4,12 +4,12 @@ import { resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { professionalProjects, professionalRoles, professionalSkills } from "../src/data/professional.ts";
-import { deployments, integrationGroups, systemGroups } from "../src/data/professional-systems.ts";
+import { deployments, professionalIntegrationEvidence, professionalSystemEvidence } from "../src/data/professional-systems.ts";
 import { anchors, linkByRel, readDist, startTags, tagBlocks, textContent } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-test("typed professional authorities preserve current roles, project history, skills, systems, integrations, and deployments", () => {
+test("typed professional authorities preserve current roles, project history, skills, attributed system/integration evidence, and deployments", () => {
   assert.deepEqual(
     professionalRoles.map((role) => role.organization),
     ["University of Georgia", "Supply Chain Technologies", "Spartan Technology Solutions", "Shadow Money Wizard Gang", "FastFetch Corp"]
@@ -18,11 +18,11 @@ test("typed professional authorities preserve current roles, project history, sk
   assert.equal(professionalRoles[1].dates, "Sep 2024 - Apr 2026");
   assert.equal(professionalProjects.length, 15);
   assert.equal(professionalSkills.length, 4);
-  assert.equal(systemGroups.length, 5);
-  assert.equal(integrationGroups.length, 8);
+  assert.equal(professionalSystemEvidence.length, 5);
+  assert.equal(professionalIntegrationEvidence.length, 8);
   assert.equal(deployments.length, 22);
 
-  const integrationByName = new Map(integrationGroups.flatMap((group) => group.items.map((item) => [item.name, item])));
+  const integrationByName = new Map(professionalIntegrationEvidence.flatMap((group) => group.items.map((item) => [item.name, item])));
   assert.equal(integrationByName.get("Axon")?.url, "https://www.axon.com/");
   assert.equal(integrationByName.get("LexisNexis")?.url, "https://www.lexisnexis.com/en-us/");
   assert.equal(integrationByName.get("CIMS WMS")?.url, "https://cloudimsystems.com/");
@@ -40,12 +40,16 @@ test("Jacob Team page consumes the existing professional TypeScript authorities"
   const componentSource = await readFile(resolve(root, "src/components/ProfessionalSurfaces.tsx"), "utf8");
   const registrySource = await readFile(resolve(root, "src/app/pageRegistry.ts"), "utf8");
 
-  for (const authority of ["professionalRoles", "professionalSkills", "deployments", "integrationGroups", "systemGroups"]) {
+  for (const authority of ["professionalRoles", "professionalSkills", "deployments"]) {
     assert.ok(pageSource.includes(authority), `Jacob Team source missing typed authority ${authority}`);
   }
-  for (const component of ["ProfessionalRoleGrid", "SystemGroups", "IntegrationGroups", "ReferenceList", "SkillList"]) {
+  for (const authority of ["professionalIntegrationEvidence", "professionalSystemEvidence"]) {
+    assert.ok(!pageSource.includes(authority), `Jacob Team must not render the full professional evidence catalog: ${authority}`);
+  }
+  for (const component of ["ProfessionalRoleGrid", "ReferenceList", "SkillList"]) {
     assert.ok(pageSource.includes(component), `Jacob Team source missing presentation component ${component}`);
   }
+  assert.doesNotMatch(componentSource, /IntegrationGroups|SystemGroups/);
   assert.match(componentSource, /ExternalOrganizationLink/);
   assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/);
   assert.match(registrySource, /JACOB_TEAM_PAGE/);
@@ -70,8 +74,8 @@ test("generated Jacob Team page preserves professional ordering, evidence, seman
     "Professional background",
     "Production work. Operational stakes.",
     "Career history",
-    "Systems delivered",
-    "Integrations",
+    "Professional integration evidence",
+    "Experience stays attributed to the roles that produced it.",
     "Deployments",
     "Core skills",
     "prior employers and their customers is not presented as WizardGang client work"
@@ -85,18 +89,13 @@ test("generated Jacob Team page preserves professional ordering, evidence, seman
     for (const value of [role.dates, role.role, role.summary]) assert.ok(plain.includes(value), `missing role value ${value}`);
   }
 
-  for (const group of systemGroups) {
-    assert.ok(plain.includes(group.title));
-    for (const item of group.items) assert.ok(plain.includes(item), `missing system item ${item}`);
-  }
-
   const hrefs = new Set(anchors(html).map((anchor) => anchor.href));
-  for (const group of integrationGroups) {
-    assert.ok(plain.includes(group.title));
-    for (const item of group.items) {
-      assert.ok(plain.includes(item.name), `missing integration ${item.name}`);
-      if (item.url) assert.ok(hrefs.has(item.url), `missing integration URL ${item.url}`);
-    }
+  for (const phrase of ["ERP and WMS integration work", "REST/JSON APIs", "SAML/SSO", "EDI", "ETL and data pipelines"]) {
+    assert.ok(plain.includes(phrase), `missing attributed professional integration evidence ${phrase}`);
+  }
+  assert.ok(hrefs.has("/software/integrations/"), "Jacob page must link to the canonical WizardGang integration capability");
+  for (const vendor of ["NetSuite", "Microsoft Dynamics", "Fishbowl", "Blue Yonder", "Axon", "LexisNexis"]) {
+    assert.ok(!plain.includes(vendor), `Jacob page must not duplicate the full integration vendor catalog: ${vendor}`);
   }
   for (const deployment of deployments) {
     assert.ok(plain.includes(deployment.name), `missing deployment ${deployment.name}`);

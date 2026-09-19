@@ -1,13 +1,7 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import {
-  IntegrationGroups,
-  ProfessionalRoleGrid,
-  ReferenceList,
-  SkillList,
-  SystemGroups
-} from "../components/ProfessionalSurfaces";
+import { ProfessionalRoleGrid, ReferenceList, SkillList } from "../components/ProfessionalSurfaces";
 import { professionalRoles, professionalSkills } from "../data/professional";
-import { deployments, integrationGroups, systemGroups } from "../data/professional-systems";
+import { deployments } from "../data/professional-systems";
 import { TEAM_MEMBERS } from "../data/team";
 
 type AboutLocalSection = "about" | "company" | "team";
@@ -208,20 +202,14 @@ export const JACOB_TEAM_PAGE: ReactPageDefinition = {
         <ProfessionalRoleGrid roles={professionalRoles} className="experience-grid" />
       </section>
 
-      <section className="systems-resume-section" aria-labelledby="work-systems">
-        <header>
-          <div><p className="kicker">Systems delivered</p><h2 id="work-systems">Real systems in real operations.</h2></div>
-          <p>Systems organized by what they do.</p>
-        </header>
-        <div className="systems-resume-grid"><SystemGroups groups={systemGroups} /></div>
-      </section>
-
-      <section className="systems-resume-section" aria-labelledby="work-integrations">
-        <header>
-          <div><p className="kicker">Integrations</p><h2 id="work-integrations">Connected business operations.</h2></div>
-          <p>Enterprise, warehouse, logistics, commerce, development, and automation platforms integrated into production workflows.</p>
-        </header>
-        <div className="systems-resume-grid"><IntegrationGroups groups={integrationGroups} /></div>
+      <section className="case-section" id="work-integrations" aria-labelledby="work-integrations-heading">
+        <div className="case-label">Professional integration evidence</div>
+        <div>
+          <h2 id="work-integrations-heading">Experience stays attributed to the roles that produced it.</h2>
+          <p>Jacob&apos;s professional record includes ERP and WMS integration work, fulfillment and carrier workflows, REST/JSON APIs, OAuth 2.0, SAML/SSO, SOAP, EDI, SQL/T-SQL, ETL and data pipelines, interface and data mapping, QA/UAT, cutovers, and production support.</p>
+          <p>The company-facing capability taxonomy lives under Software rather than being duplicated here as a second integration catalog.</p>
+          <a className="text-link" href="/software/integrations/">Explore WizardGang integration capability <span aria-hidden="true">→</span></a>
+        </div>
       </section>
 
       <section className="systems-resume-section" aria-labelledby="work-deployments">
