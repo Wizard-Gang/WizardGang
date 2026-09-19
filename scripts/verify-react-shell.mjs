@@ -33,8 +33,13 @@ assert.match(home, /<footer\b[^>]*class="site-footer"/i);
 assert.match(home, /<main\b[^>]*id="main"/i);
 assert.doesNotMatch(home, /data-wizardgang-legacy-body/, "the build must replace the compatibility placeholder");
 assert.doesNotMatch(home, /id="root"|react-dom\/client|hydrateRoot|createRoot/, "production HTML must not expose a React client mount contract");
+const browserModule = home.match(/<script\b[^>]*type="module"[^>]*src="([^"]+)"/i)?.[1] ?? "";
+assert.match(browserModule, /^\/assets\/browser-[A-Za-z0-9_-]+\.js$/, "production HTML must reference the Vite browser entry");
+const browserBundle = await readRoot(`dist/${browserModule.slice(1)}`);
+assert.doesNotMatch(browserBundle, /react-dom|hydrateRoot|createRoot/, "browser behavior must remain independent of React runtime");
 
 await assert.rejects(access(resolve(root, "src/app/foundation/main.tsx")), { code: "ENOENT" });
 await assert.rejects(access(resolve(root, "scripts/verify-frontend-foundation.mjs")), { code: "ENOENT" });
+await assert.rejects(access(resolve(root, "public/assets/site.js")), { code: "ENOENT" });
 
-console.log("Verified React static shell authority and retired WG-038 proof harness.");
+console.log("Verified React static shell and TypeScript browser authority.");

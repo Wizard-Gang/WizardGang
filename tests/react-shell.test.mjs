@@ -23,7 +23,6 @@ test("every canonical page is complete static HTML composed through the React sh
       assert.equal(startTags(html, "main").filter(({ attrs }) => attrs.get("id") === "main").length, 1);
       assert.doesNotMatch(html, /data-wizardgang-legacy-body/);
       assert.doesNotMatch(html, /id=["']root["']|react-dom\/client|hydrateRoot|createRoot/);
-      assert.doesNotMatch(html, /<script\b[^>]*type=["']module["'][^>]*>/i);
     });
   }
 });
@@ -50,13 +49,15 @@ test("React owns Header, navigation, Preferences, Footer, and metadata while leg
   assert.doesNotMatch(legacySource, /class=["'](?:site-header|display-settings|site-footer)/);
 });
 
-test("the static shell keeps the legacy browser behavior contract without loading React in the browser", async () => {
+test("the static shell loads only the generated TypeScript browser module without client React", async () => {
   const html = await readDist("index.html");
   const scriptTags = startTags(html, "script");
-  assert.equal(scriptTags.length, 1, "shared shell should load only the existing browser behavior script");
-  assert.match(scriptTags[0].attrs.get("src") || "", /^\/assets\/site\.js\?v=/);
-  assert.ok(scriptTags[0].attrs.has("defer"));
-  assert.ok(!scriptTags[0].attrs.has("type"));
+  assert.equal(scriptTags.length, 1, "shared shell should load only the generated browser behavior module");
+  const source = scriptTags[0].attrs.get("src") || "";
+  assert.match(source, /^\/assets\/browser-[A-Za-z0-9_-]+\.js$/);
+  assert.equal(scriptTags[0].attrs.get("type"), "module");
+  const browserBundle = await readDist(source.slice(1));
+  assert.doesNotMatch(browserBundle, /react-dom|hydrateRoot|createRoot/);
 
   for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200", "play-previews", "motion-setting-help"]) {
     assert.equal(startTags(html, "input").concat(startTags(html, "select"), startTags(html, "small")).some(({ attrs }) => attrs.get("id") === id), true, `missing browser-script control ${id}`);

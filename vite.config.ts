@@ -13,6 +13,7 @@ const dist = resolve(root, "dist");
 const shellOut = resolve(root, "tmp/frontend-shell");
 const rendererFile = resolve(shellOut, "render.mjs");
 const siteModule = resolve(root, "src/site.mjs");
+const browserEntry = resolve(root, "src/browser/index.ts");
 
 function gitCommit(): string {
   if (process.env.BUILD_COMMIT) return process.env.BUILD_COMMIT.slice(0, 12);
@@ -25,6 +26,7 @@ function gitCommit(): string {
 
 function staticSitePlugin(): Plugin {
   let generation = 0;
+  let browserReferenceId = "";
   const watched = [
     siteModule,
     resolve(root, "src/projects.mjs"),
@@ -37,15 +39,25 @@ function staticSitePlugin(): Plugin {
   return {
     name: "wizardgang-static-react-shell",
     buildStart() {
+      browserReferenceId = this.emitFile({ type: "chunk", id: browserEntry, name: "browser" });
       for (const file of watched) this.addWatchFile(file);
     },
-    async writeBundle() {
+    async writeBundle(_options, bundle) {
       generation += 1;
+
+      const browserFileName = this.getFileName(browserReferenceId);
+      const browserChunk = bundle[browserFileName];
+      if (!browserChunk || browserChunk.type !== "chunk") {
+        throw new Error("Vite did not emit the TypeScript browser entry.");
+      }
+      if (browserChunk.imports.length > 0 || browserChunk.dynamicImports.length > 0) {
+        throw new Error("Browser entry unexpectedly depends on additional chunks.");
+      }
 
       const rendererUrl = `${pathToFileURL(rendererFile).href}?generation=${generation}`;
       const siteUrl = `${pathToFileURL(siteModule).href}?generation=${generation}`;
       const renderer = await import(rendererUrl) as {
-        renderDocument(page: PageDefinition, build: BuildMetadata): string;
+        renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string;
       };
       const legacy = await import(siteUrl) as {
         createPageDefinitions(): Map<string, PageDefinition>;
@@ -66,6 +78,9 @@ function staticSitePlugin(): Plugin {
         await writeFile(headersPath, sanitizeLocalHeadersText(headers));
       }
       await mkdir(resolve(dist, "assets"), { recursive: true });
+      const browserTarget = resolve(dist, browserFileName);
+      await mkdir(dirname(browserTarget), { recursive: true });
+      await cp(resolve(shellOut, browserFileName), browserTarget);
 
       const baseStyles = await readFile(resolve(root, "src/styles.css"), "utf8");
       const portfolioStyles = await readFile(resolve(root, "src/portfolio-cleanup.css"), "utf8");
@@ -75,7 +90,7 @@ function staticSitePlugin(): Plugin {
       for (const [relative, page] of pages) {
         const target = resolve(dist, relative);
         await mkdir(dirname(target), { recursive: true });
-        await writeFile(target, renderer.renderDocument(page, build));
+        await writeFile(target, renderer.renderDocument(page, build, `/${browserFileName}`));
       }
 
       await writeFile(resolve(dist, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
@@ -95,7 +110,8 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       output: {
-        entryFileNames: "render.mjs"
+        entryFileNames: (chunk) => chunk.name === "browser" ? "assets/browser-[hash].js" : "render.mjs",
+        chunkFileNames: (chunk) => chunk.name === "browser" ? "assets/browser-[hash].js" : "assets/chunk-[name]-[hash].js"
       }
     }
   }

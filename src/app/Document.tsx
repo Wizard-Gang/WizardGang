@@ -7,7 +7,7 @@ const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
 const SOCIAL_IMAGE_ALT = "Jacob Yongue — software engineer, systems integration, project delivery";
 const LEGACY_BODY_PLACEHOLDER = '<template data-wizardgang-legacy-body=""></template>';
 
-function Metadata({ metadata, build }: { metadata: PageMetadata; build: BuildMetadata }) {
+function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;
   const assetVersion = encodeURIComponent(`${build.commit}-${Date.parse(build.builtAt)}`);
   const socialImage = metadata.socialImage ? new URL(metadata.socialImage, SITE_ORIGIN).toString() : null;
@@ -49,15 +49,15 @@ function Metadata({ metadata, build }: { metadata: PageMetadata; build: BuildMet
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link rel="manifest" href="/site.webmanifest" />
       <link rel="stylesheet" href={`/assets/styles.css?v=${assetVersion}`} />
-      <script src={`/assets/site.js?v=${assetVersion}`} defer></script>
+      <script type="module" src={browserAssetPath}></script>
     </head>
   );
 }
 
-export function Document({ page, build }: { page: PageDefinition; build: BuildMetadata }) {
+export function Document({ page, build, browserAssetPath }: { page: PageDefinition; build: BuildMetadata; browserAssetPath: string }) {
   return (
     <html lang="en">
-      <Metadata metadata={page.metadata} build={build} />
+      <Metadata metadata={page.metadata} build={build} browserAssetPath={browserAssetPath} />
       <body>
         <SiteHeader current={page.current} />
         <Preferences />
@@ -68,8 +68,8 @@ export function Document({ page, build }: { page: PageDefinition; build: BuildMe
   );
 }
 
-export function renderDocument(page: PageDefinition, build: BuildMetadata): string {
-  const shell = renderToStaticMarkup(<Document page={page} build={build} />);
+export function renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string {
+  const shell = renderToStaticMarkup(<Document page={page} build={build} browserAssetPath={browserAssetPath} />);
   if (!shell.includes(LEGACY_BODY_PLACEHOLDER)) {
     throw new Error("React shell did not emit the legacy body compatibility boundary.");
   }
