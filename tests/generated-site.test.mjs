@@ -471,6 +471,16 @@ test("About hierarchy and glossary retain their current substantive roles", asyn
   requireText(glossary, ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"], "glossary page");
 });
 
+test("canonical pages do not link to career compatibility redirects", async () => {
+  for (const relative of canonicalFiles) {
+    const html = await readDist(relative);
+    for (const anchor of anchors(html)) {
+      const path = anchor.href.split(/[?#]/)[0];
+      assert.ok(!["/work", "/work/", "/resume", "/resume/", "/professional", "/professional/"].includes(path), `${relative} links to redirect-only career route ${anchor.href}`);
+    }
+  }
+});
+
 test("canonical sitemap inventory is exact and excludes 404 and compatibility routes", async () => {
   const sitemap = await readDist("sitemap.xml");
   const routes = tagBlocks(sitemap, "loc").map(({ inner }) => {
