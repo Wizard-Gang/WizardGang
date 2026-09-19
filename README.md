@@ -65,7 +65,13 @@ npm run build
 npm run check
 ```
 
-`npm run check` verifies the TypeScript/React/Vite/Tailwind production shell and every React-authored canonical page, then runs the generated-site, accessibility, Worker-routing, React-shell, and development-lifecycle acceptance suite.
+`npm run check` is the authoritative repository acceptance gate. It verifies TypeScript, the Vite production build, frontend authority, canonical pages, content, accessibility, browser behavior, Worker routing, the development lifecycle, security boundaries, links, and metadata.
+
+Run the focused frontend-authority contract independently with:
+
+```bash
+npm run test:frontend-authority
+```
 
 ## Structure
 
