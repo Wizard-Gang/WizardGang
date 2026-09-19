@@ -3,13 +3,16 @@ import { access, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import net from "node:net";
 import { dirname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { sanitizeLocalHeadersText } from "./local-headers.mjs";
+
+export { sanitizeLocalHeadersText };
 
 export const DEFAULT_PORT = 8790;
 export const DEV_HOST = "127.0.0.1";
 export const READINESS_TIMEOUT_MS = 20_000;
 export const RUNTIME_STATE_RELATIVE = "tmp/dev/runtime.json";
 export const FRONTEND_STATE_RELATIVE = "tmp/dev/frontend.json";
-export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev", "tmp/frontend-foundation"]);
+export const RESET_TARGETS = Object.freeze(["dist", "tmp/dev", "tmp/frontend-shell"]);
 export const LOCAL_HEADERS_RELATIVE = "dist/_headers";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -161,12 +164,6 @@ export async function teardownOwnedFrontend({ checkoutRoot, frontendFile, fronte
   await killProcessTreeFn(state.pid, { processGroup: Boolean(state.processGroup) });
   await removeStateFn(frontendFile);
   return { found: true, terminated: true, stale: false };
-}
-
-export function sanitizeLocalHeadersText(headers) {
-  return String(headers)
-    .replace(/^\s*Strict-Transport-Security:.*(?:\r?\n|$)/gim, "")
-    .replace(/;\s*upgrade-insecure-requests\b/gi, "");
 }
 
 export async function prepareLocalHeaders(checkoutRoot, deps = {}) {
@@ -325,10 +322,6 @@ function runBuild(checkoutRoot) {
   runNpmScript(checkoutRoot, "build");
 }
 
-function runFrontendBuild(checkoutRoot) {
-  runNpmScript(checkoutRoot, "build:frontend");
-}
-
 async function writeRuntimeState(runtimeFile, state) {
   await mkdir(dirname(runtimeFile), { recursive: true });
   await writeFile(runtimeFile, `${JSON.stringify(state, null, 2)}\n`, { flag: "w" });
@@ -342,10 +335,14 @@ export function buildFrontendWatchArgs(frontendCli, viteConfig) {
   return [frontendCli, "build", "--watch", "--config", viteConfig];
 }
 
-function spawnManagedNode(checkoutRoot, args) {
+export function frontendWatchEnv(env = process.env) {
+  return { ...env, WIZARDGANG_LOCAL_DEV: "1" };
+}
+
+function spawnManagedNode(checkoutRoot, args, env = process.env) {
   return spawn(process.execPath, args, {
     cwd: checkoutRoot,
-    env: process.env,
+    env,
     stdio: "inherit",
     detached: process.platform !== "win32"
   });
@@ -356,7 +353,7 @@ function spawnWrangler(checkoutRoot, wranglerCli, port) {
 }
 
 function spawnFrontendWatcher(checkoutRoot, frontendCli, viteConfig) {
-  return spawnManagedNode(checkoutRoot, buildFrontendWatchArgs(frontendCli, viteConfig));
+  return spawnManagedNode(checkoutRoot, buildFrontendWatchArgs(frontendCli, viteConfig), frontendWatchEnv());
 }
 
 export function observeRequiredChild(name, child) {
@@ -460,10 +457,6 @@ async function main() {
       try { await access(executable); }
       catch { throw new Error(`Local ${label} is not installed. Run npm ci before npm run dev.`); }
     }
-
-    phase = "frontend build";
-    console.log("[dev] frontend build");
-    runFrontendBuild(checkoutRoot);
 
     phase = "build";
     console.log("[dev] build");

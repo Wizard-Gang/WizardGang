@@ -2,9 +2,6 @@ import { projects } from "./projects.mjs";
 import { professionalRoles, professionalSkills } from "./professional.mjs";
 import { deployments, integrationGroups, systemGroups } from "./professional-systems.mjs";
 
-const SITE_ORIGIN = "https://wizardgang.ai";
-const GITHUB = "https://github.com/Wizard-Gang";
-const LINKEDIN = "https://www.linkedin.com/in/jacob-yongue";
 const CONTACT_EMAIL = "jacob@wizardgang.ai";
 const WEBSITE_PACKAGES = [
   {
@@ -37,87 +34,18 @@ const escapeHtml = (value) => String(value).replace(/[&<>\"]/g, (character) => (
   "\"": "&quot;"
 })[character]);
 
-function header(current = "") {
-  const nav = [
-    ["projects", "/projects/", "Projects"],
-    ["work", "/work/", "Work"],
-    ["about", "/about/", "About"],
-    ["", `mailto:${CONTACT_EMAIL}`, "Contact"],
-    ["", GITHUB, "GitHub"]
-  ].map(([key, href, label]) => `<a href="${href}"${href === GITHUB ? ' aria-label="Visit WizardGang on GitHub"' : ""}${current === key ? ' aria-current="page"' : ""}>${label}</a>`).join("");
-  return `<a class="skip-link" href="#main">Skip to main content</a>
-    <header class="site-header">
-      <a class="wordmark" href="/" aria-label="WizardGang home"><span class="wordmark-mark" aria-hidden="true"></span><span class="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span></a>
-      <nav class="site-nav site-nav-desktop" aria-label="Primary">${nav}</nav>
-      <details class="nav-disclosure">
-        <summary class="nav-toggle"><span>Menu</span><span class="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span></summary>
-        <nav class="site-nav site-nav-mobile" aria-label="Primary mobile">${nav}</nav>
-      </details>
-    </header>`;
-}
-
-function displaySettings() {
-  return `<details class="display-settings">
-    <summary>Preferences</summary>
-    <section class="settings-toolbar" aria-label="Language, display, and motion preferences">
-      <label class="setting-language"><span>Language</span><select id="page-language" autocomplete="off"><option value="en">English</option><option value="es">Español</option></select></label>
-      <fieldset class="setting-theme">
-        <legend>Theme</legend>
-        <label><input type="radio" name="page-theme" id="theme-dark" checked> Dark</label>
-        <label><input type="radio" name="page-theme" id="theme-light"> Light</label>
-      </fieldset>
-      <label class="setting-toggle"><input type="checkbox" id="reading-layout" checked><span>Readable layout</span></label>
-      <label class="setting-toggle"><input type="checkbox" id="text-size-200"><span>200% text</span></label>
-      <label class="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" checked><span>Play previews</span></label>
-      <small class="sr-only" id="motion-setting-help">Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.</small>
-    </section>
-  </details>`;
-}
-
-function footer(build, current = "") {
-  const contact = `<span class="footer-contact"><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a><a href="${LINKEDIN}">LinkedIn <span aria-hidden="true">↗</span></a></span>`;
-  return `<footer class="site-footer"><span>Jacob Yongue · Software engineering portfolio</span>${contact}<span>WizardGang.ai · <a href="/version.json">Build ${escapeHtml(build.commit)}</a></span></footer>`;
-}
-
-function document({ title, description, path, current, body, build, social = false, noindex = false }) {
-  const canonical = `${SITE_ORIGIN}${path}`;
-  // The visible build label remains the Git hash, while the asset key also changes for
-  // verified deployments made from an intentionally dirty working tree.
-  const assetVersion = encodeURIComponent(`${build.commit}-${Date.parse(build.builtAt)}`);
-  const identity = noindex
-    ? '<meta name="robots" content="noindex">'
-    : `<link rel="canonical" href="${canonical}"><meta property="og:url" content="${canonical}">`;
-  const socialImage = social
-    ? `<meta property="og:image" content="${SITE_ORIGIN}/og-jacob-yongue.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Jacob Yongue — software engineer, systems integration, project delivery"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="${SITE_ORIGIN}/og-jacob-yongue.jpg">`
-    : `<meta name="twitter:card" content="summary">`;
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="#08080b">
-    <title>${escapeHtml(title)}</title>
-    <meta name="description" content="${escapeHtml(description)}">
-    ${identity}
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="WizardGang">
-    <meta property="og:title" content="${escapeHtml(title)}">
-    <meta property="og:description" content="${escapeHtml(description)}">
-    <meta name="twitter:title" content="${escapeHtml(title)}">
-    <meta name="twitter:description" content="${escapeHtml(description)}">
-    ${socialImage}
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/assets/styles.css?v=${assetVersion}">
-    <script src="/assets/site.js?v=${assetVersion}" defer></script>
-  </head>
-  <body>
-    ${header(current)}
-    ${displaySettings()}
-    ${body}
-    ${footer(build, current)}
-  </body>
-</html>`;
+function page({ title, description, path, current = "", body, social = false, noindex = false }) {
+  return {
+    metadata: {
+      title,
+      description,
+      path,
+      noIndex: noindex,
+      socialImage: social ? "/og-jacob-yongue.jpg" : undefined
+    },
+    current,
+    body
+  };
 }
 
 const tags = (items, label = "Technologies") => `<ul class="tags" aria-label="${escapeHtml(label)}">${items.map((tag) => `<li>${escapeHtml(tag)}</li>`).join("")}</ul>`;
@@ -502,7 +430,7 @@ function capabilityGrid() {
   return `<div class="capability-grid">${items.map(([number, title, copy]) => `<article><small>${number}</small><h3>${title}</h3><p>${copy}</p></article>`).join("")}</div>`;
 }
 
-function home(build) {
+function home() {
   const body = `<main class="site-main" id="main" tabindex="-1">
     <section class="hero jacob-hero"><div class="hero-identity"><h1>Jacob <span>Yongue</span></h1><p class="kicker hero-role">Software engineer · Systems · Project delivery</p><div class="home-statement-card"><p>I build systems that ship.</p></div></div><div class="hero-side"><p>I design, build, connect, and launch software, then help teams keep it working in production.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects</a><a class="button" href="mailto:${CONTACT_EMAIL}">Get in touch</a></div></div></section>
     <section class="portfolio-section selected-projects" aria-labelledby="selected-projects-heading"><div class="section-heading"><div><p class="kicker">Selected projects</p><h2 id="selected-projects-heading">Independent systems, shipped.</h2></div><a class="text-link" href="/projects/">All projects <span aria-hidden="true">→</span></a></div><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section>
@@ -511,15 +439,15 @@ function home(build) {
     <section class="about-teaser" aria-labelledby="about-teaser-heading"><div><p class="kicker">About</p><h2 id="about-teaser-heading">Practical systems. Full ownership.</h2></div><div><p>I’m a software engineer and implementation lead who works comfortably across code, operations, and delivery. I learn unfamiliar domains quickly, make system boundaries explicit, and stay with the work through production.</p><a class="text-link" href="/about/">About Jacob <span aria-hidden="true">→</span></a></div></section>
     <section class="contact-band" aria-label="Contact"><p>Need someone who can move from requirements to a working system?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}">Get in touch</a><a class="button" href="/work/">Professional work</a></div></section>
   </main>`;
-  return document({ title: "Jacob Yongue — Software Engineer | WizardGang", description: "Jacob Yongue designs, builds, integrates, and delivers software systems from requirements through production. Explore projects, professional work, and technical case studies.", path: "/", body, build, social: true });
+  return page({ title: "Jacob Yongue — Software Engineer | WizardGang", description: "Jacob Yongue designs, builds, integrates, and delivers software systems from requirements through production. Explore projects, professional work, and technical case studies.", path: "/", body, social: true });
 }
 
-function projectsIndex(build) {
+function projectsIndex() {
   const body = `<main class="case-main" id="main" tabindex="-1"><section class="page-hero"><p class="kicker">Projects</p><h1>Built to be<br><span>inspected.</span></h1><p>Independent software projects with a clear path from concise overview to technical case study, running application, and source evidence.</p></section><section class="projects-index" aria-label="Personal engineering projects"><div class="project-card-grid">${projects.map(projectCard).join("")}</div></section></main>`;
-  return document({ title: "Projects — Jacob Yongue", description: "Personal engineering projects by Jacob Yongue: SharkTank, Hexframe, and YarReader, with technical case studies and live proof.", path: "/projects/", current: "projects", body, build });
+  return page({ title: "Projects — Jacob Yongue", description: "Personal engineering projects by Jacob Yongue: SharkTank, Hexframe, and YarReader, with technical case studies and live proof.", path: "/projects/", current: "projects", body});
 }
 
-function work(build) {
+function work() {
   const body = `<main class="case-main professional-main" id="main" tabindex="-1">
     <section class="professional-hero"><div><p class="kicker">Work / professional portfolio</p><h1>Production work.<br><span>Operational stakes.</span></h1></div><div class="professional-hero-copy"><p>AI, supply-chain, fulfillment, and public-sector systems delivered from discovery through production.</p></div></section>
     <section class="professional-experience" aria-labelledby="experience-heading"><div class="professional-section-heading"><div><p class="kicker">Career history</p><h2 id="experience-heading">Roles across the delivery path.</h2></div><p>What I owned, what I delivered, and the operating context around each role.</p></div><div class="experience-grid">${professionalRoles.map((item) => `<article><span>${escapeHtml(item.dates)}</span><h3>${escapeHtml(item.organization)}</h3><strong>${escapeHtml(item.role)}</strong><p>${escapeHtml(item.summary)}</p></article>`).join("")}</div></section>
@@ -529,10 +457,10 @@ function work(build) {
     <section class="professional-skills" aria-labelledby="skills-heading"><div class="professional-section-heading"><div><p class="kicker">Core skills</p><h2 id="skills-heading">The delivery stack.</h2></div><p>The languages, platforms, and practices behind this professional record.</p></div><div class="skill-columns">${professionalSkills.map((group) => `<div><strong>${escapeHtml(group.label)}</strong>${tags(group.items, group.label)}</div>`).join("")}</div></section>
     <p class="logo-disclaimer">Company and product marks are shown only to identify project context. All marks remain the property of their respective owners; no endorsement is implied.</p>
   </main>`;
-  return document({ title: "Work — Jacob Yongue | Professional Portfolio", description: "Jacob Yongue's professional portfolio: systems delivered, deployments, integrations, career history, QA, implementation, and production support from 2019 through 2026.", path: "/work/", current: "work", body, build });
+  return page({ title: "Work — Jacob Yongue | Professional Portfolio", description: "Jacob Yongue's professional portfolio: systems delivered, deployments, integrations, career history, QA, implementation, and production support from 2019 through 2026.", path: "/work/", current: "work", body});
 }
 
-function services(build) {
+function services() {
   const packageCards = WEBSITE_PACKAGES.map((item, index) => `<article class="service-package${index === 2 ? " service-package-featured" : ""}"><header><span>${String(index + 1).padStart(2, "0")} / ${escapeHtml(item.name)}</span><strong>${escapeHtml(item.price)}</strong></header><h3>${escapeHtml(item.pages)}</h3><p>${escapeHtml(item.description)}</p><ul>${item.features.map((feature) => `<li>${escapeHtml(feature)}</li>`).join("")}</ul></article>`).join("");
   const body = `<main class="case-main services-main" id="main" tabindex="-1">
     <section class="services-hero"><div><p class="kicker">Services / small-business websites</p><h1><span class="services-hero-line-primary">Launch the site.</span><span>Keep the keys.</span></h1></div><div class="services-hero-copy"><p>I don’t sell you a website subscription. I build you a small piece of software and hand you the keys.</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Start a project</a></div></div></section>
@@ -544,7 +472,7 @@ function services(build) {
     <section class="service-notes"><div><p class="kicker">Scope</p><h2>Clear package boundaries.</h2></div><p>Domain purchases, paid third-party services, custom application features, ecommerce, and large copy or content migrations are quoted separately before work begins.</p></section>
     <section class="contact-band" aria-label="Website service contact"><p>Ready to own the website you pay for?</p><div class="button-row"><a class="button button-primary" href="mailto:${CONTACT_EMAIL}?subject=Website%20package%20inquiry">Get in touch</a></div></section>
   </main>`;
-  return document({ title: "Website Services — Jacob Yongue | WizardGang", description: "Fixed-scope small-business websites with owner-controlled source code, GitHub repository, Cloudflare deployment, domain, and documented handoff.", path: "/services/", current: "services", body, build });
+  return page({ title: "Website Services — Jacob Yongue | WizardGang", description: "Fixed-scope small-business websites with owner-controlled source code, GitHub repository, Cloudflare deployment, domain, and documented handoff.", path: "/services/", current: "services", body});
 }
 
 function architecture(items) {
@@ -572,7 +500,7 @@ const projectNarrative = {
   }
 };
 
-function projectShowcase(project, build) {
+function projectShowcase(project) {
   const copy = projectNarrative[project.slug];
   const playAction = project.liveUrl ? `<a class="button button-primary" href="${project.liveUrl}" aria-label="Play ${escapeHtml(project.name)}">Play <span aria-hidden="true">↗</span></a>` : "";
   const caseStudyAction = `<a class="button${project.liveUrl ? "" : " button-primary"}" href="/projects/${project.slug}/case-study/" aria-label="Read the ${escapeHtml(project.name)} case study">Case study <span aria-hidden="true">→</span></a>`;
@@ -585,10 +513,10 @@ function projectShowcase(project, build) {
     <section class="case-section"><div class="case-label">Engineering highlights</div><div><h2>What the project demonstrates.</h2><ul class="built-list">${copy.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div></section>
     <section class="project-depth"><div><p class="kicker">Go deeper</p><h2>Overview first. Evidence when you want it.</h2></div><div><p>The case study explains the architecture, boundaries, tradeoffs, and current state. The running application and repository provide the proof.</p><div class="button-row">${caseStudyAction}${playAction}${githubAction}</div></div></section>
   </main>`;
-  return document({ title: `${project.name} — Project by Jacob Yongue`, description: `${copy.tagline} ${copy.what}`, path: `/projects/${project.slug}/`, current: "projects", body, build });
+  return page({ title: `${project.name} — Project by Jacob Yongue`, description: `${copy.tagline} ${copy.what}`, path: `/projects/${project.slug}/`, current: "projects", body});
 }
 
-function sharkTankCaseStudy(project, build) {
+function sharkTankCaseStudy(project) {
   const operatingControls = [
     "Public input is checked before the game accepts it",
     "Operator controls are protected and leave a record when they are used",
@@ -636,18 +564,17 @@ function sharkTankCaseStudy(project, build) {
     <section class="case-section"><div class="case-label">10 — Architecture</div><div><h2>Each service has one job.</h2>${architecture(project.architecture)}<p>The browser shows the game and public records. The Worker checks requests and serves those pages. Durable Objects keep live matches, logs, and operator records. R2 stores separate backup copies for recovery tests.</p></div></section>
     <section class="case-section"><div class="case-label">11 — Result</div><div><h2>A game first, with its controls built in.</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
-  return document({
+  return page({
     title: "SharkTank — AI-Developed Multiplayer Game Case Study | WizardGang",
     description: project.description,
     path: "/projects/sharktank/case-study/",
     current: "projects",
-    body,
-    build
+    body
   });
 }
 
-function projectCaseStudy(project, build) {
-  if (project.slug === "sharktank") return sharkTankCaseStudy(project, build);
+function projectCaseStudy(project) {
+  if (project.slug === "sharktank") return sharkTankCaseStudy(project);
 
   const title = project.slug === "hexframe"
     ? "Hexframe — Deterministic Fighting Game Systems | WizardGang"
@@ -670,14 +597,14 @@ function projectCaseStudy(project, build) {
     ${accessibility}
     <section class="case-section"><div class="case-label">${resultNumber} — What works today</div><div><h2>${resultHeading}</h2><p>${escapeHtml(project.result)}</p>${actions(project)}</div></section>
   </main>`;
-  return document({ title, description: project.description, path: `/projects/${project.slug}/case-study/`, current: "projects", body, build });
+  return page({ title, description: project.description, path: `/projects/${project.slug}/case-study/`, current: "projects", body});
 }
 
-function about(build) {
+function about() {
   const body = `<main class="case-main about-main" id="main" tabindex="-1"><section class="page-hero about-hero"><p class="kicker">About Jacob Yongue</p><h1>Build the whole path.<br><span>Own the outcome.</span></h1><div class="prose"><p>I’m a software engineer with an implementation background and a systems view of delivery. My work spans requirements, architecture, application development, integrations, QA, deployment, training, operational handoff, and production support.</p><p>I’m most useful when the problem crosses boundaries: code and workflow, product and operations, technical design and project delivery. I make those boundaries explicit, learn the unfamiliar parts quickly, and keep evidence close enough that another person can understand what the system actually does.</p></div></section>
     <section class="about-principles" aria-labelledby="approach-heading"><div><p class="kicker">Approach</p><h2 id="approach-heading">Practical systems over isolated artifacts.</h2></div><div class="principle-grid"><article><span>01</span><h3>Systems thinking</h3><p>Model the workflow, failure modes, ownership, and operating environment before optimizing an isolated component.</p></article><article><span>02</span><h3>Implementation depth</h3><p>Stay hands-on through the code, integration, testing, deployment, adoption, and the edge cases production reveals.</p></article><article><span>03</span><h3>Project ownership</h3><p>Make scope, risk, decisions, and handoff legible so progress survives team and technology boundaries.</p></article><article><span>04</span><h3>Learning velocity</h3><p>Reduce unfamiliar technology to explicit contracts, inspectable behavior, and small verifiable steps.</p></article></div></section>
   </main>`;
-  return document({ title: "About Jacob Yongue — Software Engineer", description: "About Jacob Yongue: software engineer, implementation lead, systems thinker, and project owner focused on practical systems from requirements through production.", path: "/about/", current: "about", body, build });
+  return page({ title: "About Jacob Yongue — Software Engineer", description: "About Jacob Yongue: software engineer, implementation lead, systems thinker, and project owner focused on practical systems from requirements through production.", path: "/about/", current: "about", body});
 }
 
 function officialReference(item) {
@@ -722,27 +649,27 @@ const GLOSSARY = [
     ["Billable cloud action", "An application action that uses a measured online service and can add to its operating cost."]
 ];
 
-function glossary(build) {
+function glossary() {
   const glossaryMarkup = GLOSSARY.map(([term, definition]) => `<div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(definition)}</dd></div>`).join("");
   const body = `<main class="case-main accessibility-main" id="main" tabindex="-1"><section class="page-hero"><p class="kicker">Glossary</p><h1>Technical terms.<br><span>Clear definitions.</span></h1><p>Definitions for the specialized language used throughout the portfolio.</p></section><section class="accessibility-section" id="glossary" aria-labelledby="glossary-heading"><div><p class="kicker">A–Z</p><h2 id="glossary-heading">Terms used on this site.</h2></div><dl class="glossary-list">${glossaryMarkup}</dl></section></main>`;
-  return document({ title: "Glossary — WizardGang", description: "Clear definitions for technical terms and abbreviations used throughout Jacob Yongue's software engineering portfolio.", path: "/glossary/", current: "glossary", body, build });
+  return page({ title: "Glossary — WizardGang", description: "Clear definitions for technical terms and abbreviations used throughout Jacob Yongue's software engineering portfolio.", path: "/glossary/", current: "glossary", body});
 }
 
-function notFound(build) {
+function notFound() {
   const body = `<main class="site-main" id="main" tabindex="-1"><section class="not-found"><p class="kicker">404 / Route not found</p><h1>Nothing here.</h1><p>Return to Jacob Yongue’s portfolio or inspect the project index.</p><div class="button-row"><a class="button button-primary" href="/projects/">View projects <span aria-hidden="true">→</span></a><a class="button" href="/">Home</a></div></section></main>`;
-  return document({ title: "Not Found — WizardGang", description: "That WizardGang portfolio page does not exist.", path: "/404/", body, build, noindex: true });
+  return page({ title: "Not Found — WizardGang", description: "That WizardGang portfolio page does not exist.", path: "/404/", body, noindex: true });
 }
 
-export function createPages(build) {
+export function createPageDefinitions() {
   return new Map([
-    ["index.html", home(build)],
-    ["projects/index.html", projectsIndex(build)],
-    ...projects.map((project) => [`projects/${project.slug}/index.html`, projectShowcase(project, build)]),
-    ...projects.map((project) => [`projects/${project.slug}/case-study/index.html`, projectCaseStudy(project, build)]),
-    ["work/index.html", work(build)],
-    ["services/index.html", services(build)],
-    ["about/index.html", about(build)],
-    ["glossary/index.html", glossary(build)],
-    ["404.html", notFound(build)]
+    ["index.html", home()],
+    ["projects/index.html", projectsIndex()],
+    ...projects.map((project) => [`projects/${project.slug}/index.html`, projectShowcase(project)]),
+    ...projects.map((project) => [`projects/${project.slug}/case-study/index.html`, projectCaseStudy(project)]),
+    ["work/index.html", work()],
+    ["services/index.html", services()],
+    ["about/index.html", about()],
+    ["glossary/index.html", glossary()],
+    ["404.html", notFound()]
   ]);
 }

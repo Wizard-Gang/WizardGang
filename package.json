@@ -6,9 +6,9 @@
   "description": "Static software engineering portfolio for Jacob Yongue at wizardgang.ai.",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:frontend": "vite build --config vite.config.ts",
+    "build:frontend": "npm run build",
     "typecheck": "tsc --project tsconfig.json --noEmit",
-    "check:frontend": "npm run typecheck && npm run build:frontend && node scripts/verify-frontend-foundation.mjs",
+    "check:frontend": "npm run typecheck && npm run build && node scripts/verify-react-shell.mjs",
     "check": "npm run check:frontend && node scripts/verify.mjs",
     "test:dev": "node --test tests/dev-lifecycle.test.mjs",
     "secrets:cloudflare:discover": "bash scripts/discover-cloudflare-api-token-targets.sh",

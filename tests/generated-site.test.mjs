@@ -481,26 +481,43 @@ test("portfolio boundary remains static and retired compliance application route
   assert.doesNotMatch(await readDist("assets/site.js"), /Compliance — WizardGang|class=["']compliance-/);
 });
 
-test("WG-038 establishes the frontend toolchain without transferring production authority", async () => {
+test("React frontend toolchain owns the shared production shell without becoming an SPA", async () => {
   const pkg = JSON.parse(await readRoot("package.json"));
   const dependencies = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}) };
   for (const name of ["typescript", "react", "react-dom", "vite", "@vitejs/plugin-react", "tailwindcss", "@tailwindcss/vite", "@types/react", "@types/react-dom"]) {
-    assert.ok(dependencies[name], `WG-038 must declare ${name}`);
+    assert.ok(dependencies[name], `frontend toolchain must retain ${name}`);
   }
   for (const name of ["react-router", "next", "remix", "@tanstack/react-start", "astro", "@cloudflare/vite-plugin"]) {
-    assert.equal(dependencies[name], undefined, `WG-038 must not introduce ${name}`);
+    assert.equal(dependencies[name], undefined, `WG-041 must not introduce ${name}`);
   }
 
-  assert.equal(pkg.scripts.build, "node scripts/build.mjs", "legacy generated-site build must remain production authority");
-  assert.equal(pkg.scripts.dev, "node scripts/dev.mjs", "normal local-development entry point must remain unchanged");
-  assert.equal(pkg.scripts["build:frontend"], "vite build --config vite.config.ts");
+  assert.equal(pkg.scripts.build, "node scripts/build.mjs");
+  assert.equal(pkg.scripts.dev, "node scripts/dev.mjs");
+  assert.equal(pkg.scripts["build:frontend"], "npm run build", "frontend build must be the same authoritative static production build");
   assert.match(pkg.scripts["check:frontend"] || "", /typecheck/);
+  assert.match(pkg.scripts["check:frontend"] || "", /verify-react-shell/);
   assert.match(pkg.scripts.check || "", /check:frontend/);
 
-  assert.equal(await exists(resolve(root, "tsconfig.json")), true);
-  assert.equal(await exists(resolve(root, "vite.config.ts")), true);
-  assert.equal(await exists(resolve(root, "src/app/foundation/main.tsx")), true);
-  assert.equal(await exists(resolve(root, "src/styles/globals.css")), true);
+  for (const file of ["tsconfig.json", "vite.config.ts", "src/app/Document.tsx", "src/app/contracts.ts", "src/components/SiteChrome.tsx", "src/styles/globals.css"]) {
+    assert.equal(await exists(resolve(root, file)), true, `missing frontend authority ${file}`);
+  }
+  assert.equal(await exists(resolve(root, "src/app/foundation/main.tsx")), false, "WG-038 proof harness must be retired");
+
+  const documentSource = await readRoot("src/app/Document.tsx");
+  assert.match(documentSource, /renderToStaticMarkup/);
+  assert.doesNotMatch(documentSource, /react-dom\/client|hydrateRoot|createRoot/);
+
+  const siteSource = await readRoot("src/site.mjs");
+  for (const legacyFunction of ["header", "displaySettings", "footer", "document"]) {
+    assert.doesNotMatch(siteSource, new RegExp(`function\\s+${legacyFunction}\\b`), `legacy ${legacyFunction}() must not remain authoritative`);
+  }
+  assert.match(siteSource, /createPageDefinitions/);
+  assert.doesNotMatch(siteSource, /<!doctype html>|<html\b|<head\b|class=["']site-header|class=["']display-settings|class=["']site-footer/);
+
+  const vite = await readRoot("vite.config.ts");
+  assert.match(vite, /ssr:\s*"src\/app\/Document\.tsx"/);
+  assert.match(vite, /wizardgang-static-react-shell/);
+  assert.match(vite, /tmp\/frontend-shell/);
 
   const wrangler = await readRoot("wrangler.jsonc");
   assert.match(wrangler, /"main":\s*"src\/worker\/index\.ts"/);
