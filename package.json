@@ -17,7 +17,8 @@
     "deploy:staging": "npm run build && wrangler deploy --env staging",
     "deploy:production": "npm run build && wrangler deploy --env production",
     "deploy:staging:dry-run": "npm run build && wrangler deploy --dry-run --env staging",
-    "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production"
+    "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production",
+    "test:browser": "node --test tests/browser-behavior.test.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

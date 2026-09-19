@@ -17,7 +17,7 @@ npm run dev
 2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state.
 3. Runs the authoritative static production build. Vite compiles the server-only React shell renderer and writes the complete static site to `dist/`.
 4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Starts the same Vite build in watch mode. Shared React shell edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
+5. Starts the same Vite build in watch mode. Shared React shell or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
 6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
 7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
 8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
@@ -37,7 +37,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 ## Frontend architecture
 
-React and TypeScript now own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. Vite performs the build-time React server render; the browser receives complete static HTML and does not load or hydrate a React client application.
+React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
 Page-specific bodies still come from the legacy `src/site.mjs` generator during this controlled intermediate state. The build uses one explicit trusted compatibility boundary to insert those repository-authored body strings into the React shell without adding an extra DOM wrapper. Later page migrations can remove that boundary incrementally.
 
@@ -57,7 +57,7 @@ npm run check:frontend
 
 `npm run build:frontend` is an alias for the same authoritative static build; there is no parallel migration site or public React test route. Vite writes only its server-side renderer artifact to the gitignored `tmp/frontend-shell/` directory while the generated production site is written to `dist/`.
 
-Tailwind remains integrated through the Vite frontend toolchain and `src/styles/globals.css`, while the React shell deliberately preserves the existing `src/styles.css` and `src/portfolio-cleanup.css` presentation for this migration slice. Browser interaction remains in `public/assets/site.js` until a later controlled change.
+Tailwind remains integrated through the Vite frontend toolchain and `src/styles/globals.css`, while the current production presentation remains in `src/styles.css` and `src/portfolio-cleanup.css`. Browser behavior lives under `src/browser/`; Vite emits the hashed first-party browser module consumed by the static React document.
 
 ## Verify
 
@@ -73,6 +73,7 @@ npm run check
 - `src/app/Document.tsx` owns the shared static production document and metadata composition.
 - `src/components/SiteChrome.tsx` owns Header, navigation, Preferences, and Footer markup.
 - `src/app/contracts.ts` defines the typed shell, metadata, navigation, and build contracts.
+- `src/browser/` owns first-party browser preferences, language behavior, and mobile-navigation enhancement in TypeScript.
 - `src/site.mjs` temporarily generates page-specific body HTML and page definitions only.
 - `src/projects.mjs` contains project metadata.
 - `src/professional.mjs` contains professional history.

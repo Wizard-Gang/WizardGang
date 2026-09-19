@@ -205,8 +205,8 @@ test("dark and light preference palettes retain readable text and visible focus 
   }
 });
 
-test("browser script preserves language and persisted display/motion behavior", async () => {
-  const script = await readDist("assets/site.js");
+test("TypeScript browser source preserves language and persisted display/motion behavior", async () => {
+  const script = [await readRoot("src/browser/preferences.ts"), await readRoot("src/browser/navigation.ts"), await readRoot("src/browser/index.ts"), await readRoot("src/browser/translations.ts")].join("\n");
   for (const signal of [
     "wizardgang.preferences.v1",
     "Español",
@@ -216,18 +216,18 @@ test("browser script preserves language and persisted display/motion behavior", 
     "Informar de un problema"
   ]) assert.match(script, new RegExp(signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
-  assert.match(script, /localStorage\.getItem\(storageKey\)/);
-  assert.match(script, /localStorage\.setItem\(storageKey/);
-  assert.match(script, /document\.documentElement\.lang\s*=\s*locale/);
-  assert.match(script, /event\.key\s*===\s*["']Escape["']/);
-  assert.match(script, /event\.target\.closest\(["']a["']\)/);
-  assert.ok((script.match(/setNavigationOpen\(false\)/g) || []).length >= 2, "Escape and link activation must close mobile navigation");
+  assert.match(script, /storage\.getItem\(STORAGE_KEY\)/);
+  assert.match(script, /storage\.setItem\(STORAGE_KEY/);
+  assert.match(script, /documentRoot\.documentElement\.lang\s*=\s*locale/);
+  assert.match(script, /shouldCloseForEscape\(event\.key, disclosure\.open\)/);
+  assert.match(script, /isAnchorActivationTarget\(event\.target\)/);
+  assert.ok((script.match(/setNavigationOpen\(disclosure, false\)/g) || []).length >= 2, "Escape and link activation must close mobile navigation");
   for (const key of ["language", "theme", "reading", "text", "motion", "motionExplicit"]) assert.match(script, new RegExp(`\\b${key}\\b`));
   assert.match(script, /controls\.motion\.addEventListener\(["']change["'][\s\S]*motionExplicit\s*=\s*true/);
 });
 
 test("preview-motion documentation and browser help agree on play-by-default behavior", async () => {
-  const script = await readDist("assets/site.js");
+  const script = await readRoot("src/browser/translations.ts");
   const record = await readRoot("docs/ACCESSIBILITY.md");
   assert.match(script, /Project previews play by default; pause them with the Play previews control\./);
   assert.match(record, /play-by-default preview motion/i);

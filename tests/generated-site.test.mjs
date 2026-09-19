@@ -50,6 +50,14 @@ function anchorWithHref(html, href) {
   return anchors(html).find((anchor) => anchor.href === href);
 }
 
+function browserModulePath(html) {
+  const modules = startTags(html, "script").filter(({ attrs }) => attrs.get("type") === "module");
+  assert.equal(modules.length, 1, "page must load exactly one TypeScript browser module");
+  const source = modules[0].attrs.get("src") || "";
+  assert.match(source, /^\/assets\/browser-[A-Za-z0-9_-]+\.js$/, "browser module must use the Vite hashed asset contract");
+  return source.slice(1);
+}
+
 test("generated HTML inventory is the explicit 13-page canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
@@ -63,7 +71,6 @@ test("all required public build artifacts and public records exist", async () =>
   const artifacts = [
     "_headers",
     "assets/styles.css",
-    "assets/site.js",
     "favicon.svg",
     "site.webmanifest",
     "sitemap.xml",
@@ -76,6 +83,10 @@ test("all required public build artifacts and public records exist", async () =>
     "yarreader-library-art.jpg"
   ];
   for (const file of artifacts) assert.equal(await exists(resolve(dist, file)), true, `missing build artifact ${file}`);
+  const browserAssets = (await walk(resolve(dist, "assets")))
+    .map(relativeFromDist)
+    .filter((file) => /^assets\/browser-[A-Za-z0-9_-]+\.js$/.test(file));
+  assert.equal(browserAssets.length, 1, "build must emit exactly one hashed TypeScript browser entry");
   for (const file of ["README.md", "SECURITY.md", "docs/ACCESSIBILITY.md", "docs/COMPLIANCE.md"]) {
     assert.equal(await exists(resolve(root, file)), true, `missing public record ${file}`);
   }
@@ -116,12 +127,10 @@ test("every canonical page preserves document, metadata, link, and local-asset b
       assert.match(stylesheet, /^\/assets\/styles\.css\?v=.+/);
 
       const scripts = tagBlocks(html, "script");
-      assert.ok(scripts.length >= 1, "must load the first-party browser script");
-      for (const script of scripts) {
-        assert.match(script.attrs.get("src") || "", /^\/assets\//, "scripts must remain first-party assets");
-        assert.equal(textContent(script.inner), "", "inline JavaScript is not allowed");
-      }
-      assert.ok(scripts.some((script) => /^\/assets\/site\.js\?v=/.test(script.attrs.get("src") || "")));
+      assert.equal(scripts.length, 1, "must load exactly one first-party browser module");
+      assert.equal(scripts[0].attrs.get("type"), "module");
+      assert.equal(scripts[0].attrs.get("src"), `/${browserModulePath(html)}`);
+      assert.equal(textContent(scripts[0].inner), "", "inline JavaScript is not allowed");
       assert.equal(startTags(html, "style").length, 0, "inline style elements are not allowed");
       assert.doesNotMatch(html, /\sstyle\s*=/i, "inline style attributes are not allowed");
       assert.doesNotMatch(html, /\starget\s*=\s*["']_blank["']/i, "links must not force a new tab");
@@ -478,7 +487,8 @@ test("portfolio boundary remains static and retired compliance application route
   assert.match(worker, /sharktank\.wizardgang\.ai/);
   const siteSource = await readRoot("src/site.mjs");
   assert.doesNotMatch(siteSource, /function compliance\(|compliance\/index\.html|WCAG_LEVELS|ISO_STANDARDS/);
-  assert.doesNotMatch(await readDist("assets/site.js"), /Compliance — WizardGang|class=["']compliance-/);
+  const home = await readDist("index.html");
+  assert.doesNotMatch(await readDist(browserModulePath(home)), /Compliance — WizardGang|class=["']compliance-/);
 });
 
 test("React frontend toolchain owns the shared production shell without becoming an SPA", async () => {

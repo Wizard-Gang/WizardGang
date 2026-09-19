@@ -1,8 +1,6 @@
-(() => {
-  "use strict";
+import type { LanguagePreference } from "./preferences";
 
-  const storageKey = "wizardgang.preferences.v1";
-  const spanish = new Map([
+export const SPANISH_TRANSLATIONS = new Map<string, string>([
     ["Skip to main content", "Saltar al contenido principal"],
     ["Projects", "Proyectos"],
     ["Work", "Trayectoria"],
@@ -211,136 +209,48 @@
     ["Return to Jacob Yongue’s portfolio or inspect the project index.", "Vuelve al portafolio de Jacob Yongue o consulta el índice de proyectos."]
   ]);
 
-  const textRecords = [];
-  const attributeRecords = [];
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-  while (walker.nextNode()) {
-    const node = walker.currentNode;
-    if (node.parentElement?.closest("script, style")) continue;
-    textRecords.push({ node, english: node.nodeValue });
+type TranslationReplacement = string | ((...match: string[]) => string);
+
+const DYNAMIC_TRANSLATIONS: ReadonlyArray<readonly [RegExp, TranslationReplacement]> = [
+  [/^Play (.+)$/, "Jugar a $1"],
+  [/^Read the (.+) case study$/, "Leer el caso de estudio de $1"],
+  [/^View (.+) source code on GitHub$/, "Ver el código fuente de $1 en GitHub"],
+  [/^View (.+) operating evidence$/, "Ver la evidencia operativa de $1"],
+  [/^View (.+) operations$/, "Ver las operaciones de $1"],
+  [/^Visit WizardGang on GitHub$/, "Visitar WizardGang en GitHub"],
+  [/^← Projects$/, "← Proyectos"],
+  [/^← (.+) overview$/, "← Resumen de $1"],
+  [/^(.+) overview$/, "Resumen de $1"],
+  [/^(\d+) — (.+)$/, (_match, number, label) => `${number} — ${SPANISH_TRANSLATIONS.get(label) || label}`],
+  [/^(\d+) \/ (.+)$/, (_match, number, label) => `${number} / ${SPANISH_TRANSLATIONS.get(label) || label}`],
+  [/^Level (A|AA|AAA)$/, "Nivel $1"],
+  [/^Level A · Level AA$/, "Nivel A · Nivel AA"],
+  [/^Level A · Level AA · Level AAA$/, "Nivel A · Nivel AA · Nivel AAA"],
+  [/^(\d+) units$/, "$1 unidades"],
+  [/^(\d+) damage · ([\d.]+) pushback · (\d+) frames active$/, "$1 de daño · $2 de empuje · $3 fotogramas activos"],
+  [/^(\d+) fictional series · (\d+) chapters · Original demo artwork$/, "$1 series ficticias · $2 capítulos · Arte original de demostración"],
+  [/^(\d+) sample series$/, "$1 series de muestra"],
+  [/^(Comic|Manga|Webtoon|Webtoons) · (.+)$/, (_match, genre, issue) => `${SPANISH_TRANSLATIONS.get(genre) || genre} · ${issue}`],
+  [/^(.+) — Project by Jacob Yongue$/, "$1 — Proyecto de Jacob Yongue"],
+  [/^✓ (\d+) met$/, "✓ $1 cumplidos"],
+  [/^◐ (\d+) partial$/, "◐ $1 parciales"],
+  [/^! (\d+) gap$/, "! $1 pendientes"]
+];
+
+export function translateDynamic(value: string): string {
+  for (const [pattern, replacement] of DYNAMIC_TRANSLATIONS) {
+    if (!pattern.test(value)) continue;
+    return typeof replacement === "string"
+      ? value.replace(pattern, replacement)
+      : value.replace(pattern, (...match) => replacement(...match.map(String)));
   }
-  for (const element of document.querySelectorAll("[aria-label], [title], [placeholder]")) {
-    for (const name of ["aria-label", "title", "placeholder"]) {
-      if (element.hasAttribute(name)) attributeRecords.push({ element, name, english: element.getAttribute(name) });
-    }
-  }
-  const englishTitle = document.title;
+  return SPANISH_TRANSLATIONS.get(value) || value;
+}
 
-  function translateDynamic(value) {
-    const rules = [
-      [/^Play (.+)$/, "Jugar a $1"],
-      [/^Read the (.+) case study$/, "Leer el caso de estudio de $1"],
-      [/^View (.+) source code on GitHub$/, "Ver el código fuente de $1 en GitHub"],
-      [/^View (.+) operating evidence$/, "Ver la evidencia operativa de $1"],
-      [/^View (.+) operations$/, "Ver las operaciones de $1"],
-      [/^Visit WizardGang on GitHub$/, "Visitar WizardGang en GitHub"],
-      [/^← Projects$/, "← Proyectos"],
-      [/^← (.+) overview$/, "← Resumen de $1"],
-      [/^(.+) overview$/, "Resumen de $1"],
-      [/^(\d+) — (.+)$/, (_, number, label) => `${number} — ${spanish.get(label) || label}`],
-      [/^(\d+) \/ (.+)$/, (_, number, label) => `${number} / ${spanish.get(label) || label}`],
-      [/^Level (A|AA|AAA)$/, "Nivel $1"],
-      [/^Level A · Level AA$/, "Nivel A · Nivel AA"],
-      [/^Level A · Level AA · Level AAA$/, "Nivel A · Nivel AA · Nivel AAA"],
-      [/^(\d+) units$/, "$1 unidades"],
-      [/^(\d+) damage · ([\d.]+) pushback · (\d+) frames active$/, "$1 de daño · $2 de empuje · $3 fotogramas activos"],
-      [/^(\d+) fictional series · (\d+) chapters · Original demo artwork$/, "$1 series ficticias · $2 capítulos · Arte original de demostración"],
-      [/^(\d+) sample series$/, "$1 series de muestra"],
-      [/^(Comic|Manga|Webtoon|Webtoons) · (.+)$/, (_, genre, issue) => `${spanish.get(genre) || genre} · ${issue}`],
-      [/^(.+) — Project by Jacob Yongue$/, "$1 — Proyecto de Jacob Yongue"],
-      [/^✓ (\d+) met$/, "✓ $1 cumplidos"],
-      [/^◐ (\d+) partial$/, "◐ $1 parciales"],
-      [/^! (\d+) gap$/, "! $1 pendientes"]
-    ];
-    for (const [pattern, replacement] of rules) if (pattern.test(value)) return value.replace(pattern, replacement);
-    return spanish.get(value) || value;
-  }
-
-  function translateText(value, locale) {
-    if (locale !== "es" || !value?.trim()) return value;
-    const leading = value.match(/^\s*/)[0];
-    const trailing = value.match(/\s*$/)[0];
-    const key = value.trim().replace(/\s+/g, " ");
-    return `${leading}${translateDynamic(key)}${trailing}`;
-  }
-
-  function readPreferences() {
-    try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
-    catch { return {}; }
-  }
-
-  function writePreferences(preferences) {
-    try { localStorage.setItem(storageKey, JSON.stringify(preferences)); }
-    catch { /* Preferences still work for the current page. */ }
-  }
-
-  const controls = {
-    language: document.querySelector("#page-language"),
-    dark: document.querySelector("#theme-dark"),
-    light: document.querySelector("#theme-light"),
-    reading: document.querySelector("#reading-layout"),
-    text: document.querySelector("#text-size-200"),
-    motion: document.querySelector("#play-previews")
-  };
-  const navDisclosure = document.querySelector(".nav-disclosure");
-  const navToggle = navDisclosure?.querySelector(".nav-toggle");
-  const siteNav = navDisclosure?.querySelector(".site-nav-mobile");
-
-  function setNavigationOpen(open) {
-    if (!navDisclosure) return;
-    navDisclosure.toggleAttribute("open", open);
-  }
-
-  siteNav?.addEventListener("click", (event) => {
-    if (event.target.closest("a")) setNavigationOpen(false);
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && navDisclosure?.open) {
-      setNavigationOpen(false);
-      navToggle?.focus();
-    }
-  });
-  const mobileNavigation = matchMedia("(max-width: 760px)");
-  mobileNavigation.addEventListener("change", (event) => {
-    if (!event.matches) setNavigationOpen(false);
-  });
-
-  const saved = readPreferences();
-  // Earlier builds stored the old paused default whenever any setting changed, so a
-  // saved `false` did not necessarily mean the visitor had chosen to pause previews.
-  // From this release onward, only an explicit motion-control change is authoritative.
-  let motionExplicit = saved.motionExplicit === true || saved.motion === true;
-  const initialLocale = saved.language || (navigator.language?.toLowerCase().startsWith("es") ? "es" : "en");
-
-  function applyLocale(locale) {
-    document.documentElement.lang = locale;
-    controls.language.value = locale;
-    for (const record of textRecords) record.node.nodeValue = translateText(record.english, locale);
-    for (const record of attributeRecords) record.element.setAttribute(record.name, locale === "es" ? translateDynamic(record.english) : record.english);
-    document.title = locale === "es" ? translateDynamic(englishTitle) : englishTitle;
-  }
-
-  if (saved.theme === "light") controls.light.checked = true;
-  else if (saved.theme === "dark") controls.dark.checked = true;
-  if (typeof saved.reading === "boolean") controls.reading.checked = saved.reading;
-  if (typeof saved.text === "boolean") controls.text.checked = saved.text;
-  if (motionExplicit && typeof saved.motion === "boolean") controls.motion.checked = saved.motion;
-  applyLocale(initialLocale);
-
-  function persist() {
-    writePreferences({
-      language: controls.language.value,
-      theme: controls.light.checked ? "light" : "dark",
-      reading: controls.reading.checked,
-      text: controls.text.checked,
-      motion: controls.motion.checked,
-      motionExplicit
-    });
-  }
-
-  controls.language.addEventListener("change", () => { applyLocale(controls.language.value); persist(); });
-  for (const control of [controls.dark, controls.light, controls.reading, controls.text]) {
-    control.addEventListener("change", persist);
-  }
-  controls.motion.addEventListener("change", () => { motionExplicit = true; persist(); });
-})();
+export function translateText(value: string | null, locale: LanguagePreference): string | null {
+  if (locale !== "es" || !value?.trim()) return value;
+  const leading = value.match(/^\s*/)?.[0] ?? "";
+  const trailing = value.match(/\s*$/)?.[0] ?? "";
+  const key = value.trim().replace(/\s+/g, " ");
+  return `${leading}${translateDynamic(key)}${trailing}`;
+}
