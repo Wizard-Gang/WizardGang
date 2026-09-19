@@ -1,6 +1,6 @@
 # WizardGang
 
-WizardGang publishes inspectable software projects, clearly attributed systems and integration experience, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). The Home page, global navigation, and About → Company / Team hierarchy are company-first. Detailed career content remains on `/work/`, while Projects and Services remain on their current transitional routes until later controlled migrations.
+WizardGang publishes inspectable software projects, clearly attributed systems and integration experience, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). The Home page, global navigation, and About → Company / Team hierarchy are company-first. Jacob's detailed professional background is canonical at `/about/team/jacob/`; `/work/`, `/resume`, and `/professional` are permanent compatibility redirects, while Projects and Services remain on their current transitional routes until later controlled migrations.
 
 **[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
 
@@ -39,9 +39,9 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and derives its systems summary from the professional-systems authority rather than duplicating project or career facts.
+React/TypeScript owns every canonical production page body, including Home, Projects and case studies, About and Team/Jacob professional detail, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and derives its systems summary from the professional-systems authority rather than duplicating project or career facts.
 
-The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About now owns `/about/`, `/about/company/`, `/about/team/`, and the concise `/about/team/jacob/` profile; detailed professional history intentionally remains canonical at `/work/` until its next controlled migration. `/software/` and `/solutions/` remain narrow transitional orientation pages, while `/projects/` and `/services/` remain canonical until their later migrations.
+The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About owns `/about/`, `/about/company/`, `/about/team/`, and `/about/team/jacob/`; Jacob's Team page is the canonical professional-history authority, while `/work/`, `/resume`, and `/professional` are compatibility redirects. `/software/` and `/solutions/` remain narrow transitional orientation pages, while `/projects/` and `/services/` remain canonical until their later migrations.
 
 The authoritative production build remains:
 
@@ -91,7 +91,7 @@ npm run test:about
 - `src/data/team.ts` owns the current typed WizardGang team-member relationship.
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/pages/` owns every canonical production page body in React/TypeScript.
-- `src/app/pageRegistry.ts` is the typed output/route registry for the current 18 canonical static HTML files.
+- `src/app/pageRegistry.ts` is the typed output/route registry for the current 17 canonical static HTML files.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
@@ -102,7 +102,7 @@ npm run test:about
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, and About → Company / Team are implemented. Career detail remains transitional at `/work/`; Software, Solutions, and later route migrations remain staged.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, and Jacob's career move into Team are implemented. Software, Solutions, and later route migrations remain staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)

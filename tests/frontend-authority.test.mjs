@@ -21,7 +21,8 @@ const retiredAuthorities = [
   "src/styles.css",
   "src/portfolio-cleanup.css",
   "src/app/foundation/main.tsx",
-  "scripts/verify-frontend-foundation.mjs"
+  "scripts/verify-frontend-foundation.mjs",
+  "src/pages/Work.tsx"
 ];
 
 const sourceFiles = (await walk(resolve(root, "src"))).map(repoPath).sort();
@@ -97,7 +98,6 @@ test("canonical page inventory remains owned by the typed React registry", async
   for (const authority of [
     "HOME_PAGE",
     "createProjectPageDefinitions",
-    "createWorkPageDefinitions",
     "SERVICES_PAGE",
     "ABOUT_PAGE",
     "COMPANY_PAGE",
@@ -111,6 +111,7 @@ test("canonical page inventory remains owned by the typed React registry", async
     assert.ok(registry.includes(authority), `typed page registry is missing ${authority}`);
   }
   assert.match(registry, /Duplicate generated route/, "typed registry must reject duplicate output locations");
+  assert.doesNotMatch(registry, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must not return as a canonical renderer");
 
   assert.match(document, /renderToStaticMarkup/, "canonical documents must be complete static React HTML");
   assert.match(document, /createStaticPageRegistry/, "Document must render from the typed page registry");
@@ -127,7 +128,6 @@ test("canonical page inventory remains owned by the typed React registry", async
     "index.html",
     "projects/index.html",
     ...projectRoutes,
-    "work/index.html",
     "services/index.html",
     "about/index.html",
     "about/company/index.html",
@@ -138,8 +138,8 @@ test("canonical page inventory remains owned by the typed React registry", async
     "glossary/index.html",
     "404.html"
   ]);
-  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 canonical inventory and current typed route authority have drifted");
-  assert.equal(expected.size, 18, "WG-051 adds only the approved Company, Team, and Jacob Team child routes");
+  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
+  assert.equal(expected.size, 17, "WG-052 replaces the canonical Work output with Jacob Team career authority");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);

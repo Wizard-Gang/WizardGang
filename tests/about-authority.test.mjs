@@ -55,7 +55,7 @@ test("About local navigation keeps Company and Team subordinate to About", async
   assert.equal(team?.attrs.get("aria-current"), "location");
 });
 
-test("Company, Team, and Jacob keep ownership boundaries explicit", async () => {
+test("Company and Team stay concise while Jacob owns the attributed professional record", async () => {
   const company = textContent(await readDist("about/company/index.html"));
   assert.match(company, /WizardGang is a software organization/);
   assert.match(company, /Employer and customer history is not presented as WizardGang client work/);
@@ -67,35 +67,45 @@ test("Company, Team, and Jacob keep ownership boundaries explicit", async () => 
   assert.doesNotMatch(team, /University of Georgia|Supply Chain Technologies|FastFetch Corp|Career history|Deployments/);
 
   const jacob = textContent(await readDist("about/team/jacob/index.html"));
-  assert.match(jacob, /software engineer with an implementation background/i);
-  assert.match(jacob, /Professional work remains separately attributed/);
-  assert.doesNotMatch(jacob, /University of Georgia|Supply Chain Technologies|FastFetch Corp|Career history|Deployments/);
-
-  const work = textContent(await readDist("work/index.html"));
-  for (const phrase of ["Career history", "Systems delivered", "Integrations", "Deployments", "University of Georgia", "Supply Chain Technologies"]) {
-    assert.ok(work.includes(phrase), `Work lost current career authority: ${phrase}`);
-  }
+  for (const phrase of [
+    "software engineer with an implementation background",
+    "Professional background",
+    "Career history",
+    "Systems delivered",
+    "Integrations",
+    "Deployments",
+    "University of Georgia",
+    "Supply Chain Technologies",
+    "FastFetch Corp"
+  ]) assert.ok(jacob.includes(phrase), `Jacob career authority missing ${phrase}`);
+  assert.match(jacob, /not presented as WizardGang client work/i);
 });
 
-test("typed Team authority contains only real current people and links to current career authority", async () => {
+test("typed Team authority contains only real current people and points directly to Jacob's canonical profile", async () => {
   assert.equal(TEAM_MEMBERS.length, 1);
   assert.deepEqual(TEAM_MEMBERS.map((member) => member.slug), ["jacob"]);
   const jacob = TEAM_MEMBERS[0];
   assert.equal(jacob.name, "Jacob Yongue");
   assert.equal(jacob.profilePath, "/about/team/jacob/");
-  assert.equal(jacob.professionalPath, "/work/");
+  assert.equal("professionalPath" in jacob, false);
+
+  const teamHtml = await readDist("about/team/index.html");
+  assert.ok(anchors(teamHtml).some((anchor) => anchor.href === "/about/team/jacob/" && textContent(anchor.inner) === "Jacob Yongue"));
+  assert.ok(anchors(teamHtml).some((anchor) => anchor.href === "/about/team/jacob/" && /View Jacob's profile/i.test(textContent(anchor.inner))));
+  assert.ok(!anchors(teamHtml).some((anchor) => anchor.href === "/work/"));
 
   const aboutSource = await readRoot("src/pages/About.tsx");
   assert.match(aboutSource, /TEAM_MEMBERS/);
-  assert.doesNotMatch(aboutSource, /from "\.\.\/data\/professional(?:-systems)?"/, "About surfaces must not import the full professional or systems authorities");
+  assert.match(aboutSource, /from "\.\.\/data\/professional"/);
+  assert.match(aboutSource, /from "\.\.\/data\/professional-systems"/);
 });
 
-test("About metadata has distinct responsibilities and canonical URLs", async () => {
+test("About metadata has distinct responsibilities and Jacob metadata owns the career canonical", async () => {
   const expected = new Map([
     ["about/index.html", ["About — WizardGang", "/about/"]],
     ["about/company/index.html", ["Company — WizardGang", "/about/company/"]],
     ["about/team/index.html", ["Team — WizardGang", "/about/team/"]],
-    ["about/team/jacob/index.html", ["Jacob Yongue — WizardGang Team", "/about/team/jacob/"]]
+    ["about/team/jacob/index.html", ["Jacob Yongue — Professional Background | WizardGang Team", "/about/team/jacob/"]]
   ]);
 
   const descriptions = new Set();
@@ -107,6 +117,11 @@ test("About metadata has distinct responsibilities and canonical URLs", async ()
     descriptions.add(description);
     assert.equal(linkByRel(html, "canonical")?.attrs.get("href"), ORIGIN + route);
     assert.equal(metaContent(html, "property", "og:url"), ORIGIN + route);
+    assert.equal(metaContent(html, "property", "og:title"), title);
+    assert.equal(metaContent(html, "property", "og:description"), description);
   }
   assert.equal(descriptions.size, expected.size, "About pages must not share duplicate metadata descriptions");
+
+  const jacob = await readDist("about/team/jacob/index.html");
+  assert.doesNotMatch(metaContent(jacob, "name", "robots") || "", /noindex/i);
 });

@@ -6,13 +6,11 @@ import { HOME_PAGE } from "../pages/Home";
 import { NOT_FOUND_PAGE } from "../pages/NotFound";
 import { createProjectPageDefinitions } from "../pages/Projects";
 import { SERVICES_PAGE } from "../pages/Services";
-import { createWorkPageDefinitions } from "../pages/Work";
 
 export function createStaticPageRegistry(): readonly ReactPageDefinition[] {
   const pages = [
     HOME_PAGE,
     ...createProjectPageDefinitions(),
-    ...createWorkPageDefinitions(),
     SERVICES_PAGE,
     ABOUT_PAGE,
     COMPANY_PAGE,
