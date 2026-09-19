@@ -4,7 +4,6 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { projects } from "../src/data/projects.ts";
-import { systemGroups } from "../src/data/professional-systems.ts";
 import { anchors, linkByRel, metaContent, readDist, tagBlocks, textContent } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -14,14 +13,13 @@ test("homepage source is company-first and consumes existing typed authorities",
   const source = await readSource("src/pages/Home.tsx");
 
   assert.match(source, /ProjectCardGrid projects=\{projects\}/);
-  assert.match(source, /systemGroups\.map\(\(group\) => group\.title\)/);
-  assert.match(source, /CapabilityList/);
+  assert.match(source, /INTEGRATIONS_PATH/);
+  assert.doesNotMatch(source, /professional-systems|systemGroups|integrationGroups|CapabilityList/);
   assert.doesNotMatch(source, /SelectedWorkGrid|HOME_CAPABILITIES/);
   assert.doesNotMatch(source, /SharkTank|Hexframe|YarReader|University of Georgia|Supply Chain Technologies/);
   assert.doesNotMatch(source, /I build systems that ship|Software engineer · Systems · Project delivery|Selected work/);
 
   assert.equal(projects.length, 3, "homepage project examples must continue to come from the canonical project authority");
-  assert.ok(systemGroups.length > 0, "homepage systems summary requires the canonical professional-systems authority");
 });
 
 test("generated homepage presents WizardGang as the subject with one clear hierarchy", async () => {
@@ -32,13 +30,12 @@ test("generated homepage presents WizardGang as the subject with one clear hiera
 
   const plain = textContent(html);
   assert.match(plain, /WizardGang builds and publishes practical software/);
-  assert.match(plain, /they are not WizardGang client claims/);
+  assert.match(plain, /employer and customer evidence remains attributed/i);
   assert.match(plain, /Reusable approaches, separate from products/);
   assert.match(plain, /WizardGang is built by Jacob Yongue/);
   assert.doesNotMatch(plain, /I build systems that ship|Software engineer · Systems · Project delivery|Selected work/);
 
   for (const project of projects) assert.ok(plain.includes(project.name), `homepage missing project ${project.name}`);
-  for (const group of systemGroups) assert.ok(plain.includes(group.title), `homepage missing system group ${group.title}`);
 
   const hrefs = new Set(anchors(html).map((anchor) => anchor.href));
   for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "/about/company/", "/about/team/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {

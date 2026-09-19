@@ -1,9 +1,7 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { CapabilityList } from "../components/ProfessionalSurfaces";
-import { integrationGroups } from "../data/professional-systems";
+import { IntegrationCatalog } from "../components/IntegrationSurfaces";
+import { INTEGRATIONS_PATH, integrationCategories } from "../data/integrations";
 import { PROJECTS_ROOT_PATH } from "../data/projects";
-
-const integrationCapabilityAreas = integrationGroups.map((group) => group.title);
 
 export const SOFTWARE_PAGE: ReactPageDefinition = {
   relative: "software/index.html",
@@ -24,8 +22,8 @@ export const SOFTWARE_PAGE: ReactPageDefinition = {
         <div className="case-label">Integrations</div>
         <div>
           <h2>Connect systems and workflows.</h2>
-          <p>Explore the current integration capability areas and the professional experience that supports them without presenting prior employer work as WizardGang client history.</p>
-          <a className="text-link" href="/software/integrations/">Explore integrations <span aria-hidden="true">→</span></a>
+          <p>Explore the canonical WizardGang integration capability model, with professional evidence kept separately attributed.</p>
+          <a className="text-link" href={INTEGRATIONS_PATH}>Explore integrations <span aria-hidden="true">→</span></a>
         </div>
       </section>
       <section className="case-section">
@@ -44,8 +42,8 @@ export const SOFTWARE_INTEGRATIONS_PAGE: ReactPageDefinition = {
   relative: "software/integrations/index.html",
   metadata: {
     title: "Integrations — WizardGang Software",
-    description: "WizardGang integration capability across enterprise systems, commerce and fulfillment, warehouse automation, carriers, EDI, workflow platforms, and related software boundaries.",
-    path: "/software/integrations/",
+    description: "WizardGang integration capability across APIs, enterprise systems, identity, data automation, and operational interfaces, with supporting evidence clearly attributed.",
+    path: INTEGRATIONS_PATH,
     socialImage: "/og.jpg"
   },
   body: (
@@ -54,29 +52,36 @@ export const SOFTWARE_INTEGRATIONS_PAGE: ReactPageDefinition = {
       <section className="page-hero">
         <p className="kicker">Software / Integrations</p>
         <h1>Connect systems.<br /><span>Keep ownership clear.</span></h1>
-        <p>WizardGang integration capability is grounded in practical experience connecting applications, data, platforms, and operational workflows. Prior employer and customer work remains attributed to Jacob&apos;s professional record rather than presented as WizardGang client delivery.</p>
+        <p>WizardGang presents integration capability as clear system, interface, and data boundaries. Professional experience supports that capability without turning prior employer or customer work into WizardGang client history.</p>
       </section>
-      <section className="case-section">
-        <div className="case-label">Capability areas</div>
+      <section className="case-section" aria-labelledby="integration-groups-heading">
+        <div className="case-label">Capability model</div>
         <div>
-          <h2>Experience-backed integration areas.</h2>
-          <p>The current experience-backed integration record supplies these capability areas without duplicating platform-by-platform career evidence.</p>
-          <CapabilityList items={integrationCapabilityAreas} />
+          <h2 id="integration-groups-heading">Five durable integration groups.</h2>
+          <p>Capability is grouped by the kind of boundary being connected, not by a wall of vendor names or unrelated acronyms.</p>
+          <nav aria-label="Integration capability groups">
+            <ul className="reference-cloud">
+              {integrationCategories.map((category) => (
+                <li key={category.id}><a href={`#${category.id}`}>{category.name}</a></li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </section>
+      <IntegrationCatalog categories={integrationCategories} />
       <section className="case-section">
         <div className="case-label">Attribution</div>
         <div>
           <h2>Capability and career evidence stay distinct.</h2>
-          <p>Specific employer deployments, customer environments, and professional integration records remain on Jacob&apos;s Team page. This Software route describes company-facing capability without reassigning ownership of that work.</p>
+          <p>Specific employer deployments, customer environments, vendor implementations, and professional outcomes remain on Jacob&apos;s Team profile. This page owns the WizardGang-facing capability model; Team owns the career record that supports it.</p>
           <a className="text-link" href="/about/team/jacob/#work-integrations">See supporting professional experience <span aria-hidden="true">→</span></a>
         </div>
       </section>
       <section className="case-section">
         <div className="case-label">Software projects</div>
         <div>
-          <h2>See the capability in context.</h2>
-          <p>WizardGang projects remain the clearest direct evidence of software the organization builds and maintains.</p>
+          <h2>Project evidence stays with the project.</h2>
+          <p>WizardGang-owned projects keep their detailed technical evidence on their canonical project surfaces instead of duplicating it into this catalog.</p>
           <a className="text-link" href={PROJECTS_ROOT_PATH}>Explore projects <span aria-hidden="true">→</span></a>
         </div>
       </section>

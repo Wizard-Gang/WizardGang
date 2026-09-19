@@ -43,13 +43,13 @@ test("typed React registry owns every canonical static page", async () => {
 
 test("remaining current-state pages retain substantive content after React migration", async () => {
   const pages = [
-    ["index.html", ["WizardGang", "Build software.", "Make it inspectable.", "Working systems with source and evidence.", "Experience behind the software.", "Reusable approaches, separate from products.", "Company & team"]],
+    ["index.html", ["WizardGang", "Build software.", "Make it inspectable.", "Working systems with source and evidence.", "Integration capability with clear attribution.", "Reusable approaches, separate from products.", "Company & team"]],
     ["about/index.html", ["About WizardGang", "Company and people,", "Two clear authorities.", "About the company", "Meet the team"]],
     ["about/company/index.html", ["WizardGang company", "Software with", "Software first.", "Keep ownership explicit.", "Demonstrate; do not overclaim."]],
     ["about/team/index.html", ["WizardGang team", "People behind", "One real member. No placeholders.", "Jacob Yongue", "View Jacob's profile"]],
-    ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Systems delivered", "Integrations", "Deployments", "Core skills"]],
+    ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Professional integration evidence", "Experience stays attributed to the roles that produced it.", "Deployments", "Core skills"]],
     ["software/index.html", ["Software, systems,", "Connect systems and workflows.", "WizardGang software projects.", "Explore integrations", "Explore projects"]],
-    ["software/integrations/index.html", ["Software / Integrations", "Connect systems.", "Keep ownership clear.", "Experience-backed integration areas.", "Capability and career evidence stay distinct.", "See supporting professional experience"]],
+    ["software/integrations/index.html", ["Software / Integrations", "Connect systems.", "Keep ownership clear.", "Five durable integration groups.", "APIs & Services", "Enterprise Systems", "Identity & Access", "Data & Automation", "Operational Interfaces", "Capability and career evidence stay distinct."]],
     ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
     ["services/index.html", ["Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
     ["glossary/index.html", ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]],
@@ -66,8 +66,8 @@ test("Home reuses typed project and systems authorities instead of duplicating f
   const home = await readRoot("src/pages/Home.tsx");
   assert.match(home, /ProjectCardGrid/);
   assert.match(home, /projects/);
-  assert.match(home, /CapabilityList/);
-  assert.match(home, /systemGroups/);
+  assert.match(home, /INTEGRATIONS_PATH/);
+  assert.doesNotMatch(home, /professional-systems|CapabilityList|systemGroups|integrationGroups/);
   assert.doesNotMatch(home, /SelectedWorkGrid|HOME_CAPABILITIES/);
   assert.doesNotMatch(home, /University of Georgia|Supply Chain Technologies|SharkTank|Hexframe|YarReader/);
   assert.doesNotMatch(home, /I build systems that ship|Software engineer · Systems · Project delivery|Selected work/);

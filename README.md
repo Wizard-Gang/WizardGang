@@ -39,7 +39,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Software → Integrations / Projects and project case studies, About and Team/Jacob professional detail, Services, the staged Solutions landing, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and derives its systems summary from the professional-systems authority rather than duplicating project or career facts.
+React/TypeScript owns every canonical production page body, including Home, Software → Integrations / Projects and project case studies, About and Team/Jacob professional detail, Services, the staged Solutions landing, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and links to the canonical typed integration authority rather than duplicating project, integration, or career catalogs.
 
 The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About owns `/about/`, `/about/company/`, `/about/team/`, and `/about/team/jacob/`; Jacob's Team page is the canonical professional-history authority. Software owns `/software/`, `/software/integrations/`, `/software/projects/`, and all project descendants. Legacy `/work/*` and `/projects/*` routes are permanent compatibility redirects. `/solutions/` and `/services/` remain separate until the later Solutions migration.
 
@@ -87,7 +87,8 @@ npm run test:about
 - `src/browser/` owns first-party browser preferences, language behavior, and mobile-navigation enhancement in TypeScript.
 - `src/data/projects.ts` owns typed project metadata and relationships.
 - `src/data/professional.ts` owns typed professional roles, project history, and skills.
-- `src/data/professional-systems.ts` owns typed systems, integrations, and deployment references.
+- `src/data/integrations.ts` owns the typed WizardGang-facing integration taxonomy, capability identifiers, and evidence relationships.
+- `src/data/professional-systems.ts` owns employer/customer deployment and historical professional-system references; production company UI does not consume it as a second integration catalog.
 - `src/data/team.ts` owns the current typed WizardGang team-member relationship.
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/pages/` owns every canonical production page body in React/TypeScript.
@@ -102,7 +103,7 @@ npm run test:about
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects are implemented. Solutions and later route cleanup remain staged.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects and the canonical integration-content model are implemented. Solutions and later route cleanup remain staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)

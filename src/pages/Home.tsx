@@ -1,15 +1,14 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { CapabilityList } from "../components/ProfessionalSurfaces";
 import { ProjectCardGrid } from "../components/ProjectSurfaces";
+import { INTEGRATIONS_PATH } from "../data/integrations";
 import { PROJECTS_ROOT_PATH, projects } from "../data/projects";
-import { systemGroups } from "../data/professional-systems";
 import { CONTACT_EMAIL } from "../data/site";
 
 export const HOME_PAGE: ReactPageDefinition = {
   relative: "index.html",
   metadata: {
     title: "WizardGang — Software, Systems & Integrations",
-    description: "WizardGang builds and publishes inspectable software, connects that work to clearly attributed systems and integration experience, and develops reusable engineering solutions.",
+    description: "WizardGang builds and publishes inspectable software, presents clearly attributed integration capability, and develops reusable engineering solutions.",
     path: "/",
     socialImage: "/og.jpg"
   },
@@ -20,11 +19,11 @@ export const HOME_PAGE: ReactPageDefinition = {
           <p className="kicker">WizardGang</p>
           <h1>Build software.<br /><span>Make it inspectable.</span></h1>
           <div className="home-statement-card">
-            <p>Software projects, systems experience, and reusable engineering frameworks in one place.</p>
+            <p>Software projects, integration capability, and reusable engineering frameworks in one place.</p>
           </div>
         </div>
         <div className="hero-side">
-          <p>WizardGang builds and publishes practical software. Project source, case studies, and operating evidence stay close to the work, while professional systems experience is kept clearly attributed.</p>
+          <p>WizardGang builds and publishes practical software. Project source, case studies, and operating evidence stay close to the work, while supporting professional experience stays clearly attributed.</p>
           <div className="button-row">
             <a className="button button-primary" href="/software/">Explore software</a>
             <a className="button" href="/solutions/">View solutions</a>
@@ -44,12 +43,11 @@ export const HOME_PAGE: ReactPageDefinition = {
       <section className="about-teaser" aria-labelledby="home-systems-heading">
         <div>
           <p className="kicker">Systems &amp; integrations</p>
-          <h2 id="home-systems-heading">Experience behind the software.</h2>
+          <h2 id="home-systems-heading">Integration capability with clear attribution.</h2>
         </div>
         <div>
-          <p>The systems and integration experience behind WizardGang comes from Jacob Yongue’s professional work across warehouse and fulfillment systems, logistics, public-sector workflows, and enterprise integration. Those employer and customer records remain attributed to that professional history; they are not WizardGang client claims.</p>
-          <CapabilityList items={systemGroups.map((group) => group.title)} />
-          <div className="text-links"><a className="text-link" href="/software/integrations/">Explore integrations <span aria-hidden="true">→</span></a><a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a></div>
+          <p>WizardGang works across APIs, enterprise systems, identity, data automation, and operational interfaces. The detailed capability model lives in Software; employer and customer evidence remains attributed to Jacob&apos;s professional record.</p>
+          <div className="text-links"><a className="text-link" href={INTEGRATIONS_PATH}>Explore integrations <span aria-hidden="true">→</span></a><a className="text-link" href="/about/team/jacob/">See the supporting professional record <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
 
