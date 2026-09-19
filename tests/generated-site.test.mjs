@@ -293,7 +293,7 @@ test("projects preserve source, live, evidence, overview, case-study, and previe
       assert.ok(anchorWithHref(caseStudy, relationships.evidence), `${slug} case study must expose its operating evidence`);
     }
     if (!relationships.live) {
-      assert.ok(!anchors(projectOverview).some((anchor) => /^Play\b/i.test(textContent(anchor.inner))), `${slug} must not invent a live URL`);
+      assert.ok(!anchors(projectOverview).some((anchor) => /^Open live demo\b/i.test(textContent(anchor.inner))), `${slug} must not invent a live URL`);
     }
   }
 });

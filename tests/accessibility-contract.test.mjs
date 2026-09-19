@@ -146,13 +146,14 @@ test("compact project actions keep destination-specific accessible names without
         assert.ok(main, "project action checks require the primary main landmark");
         for (const anchor of anchors(main.inner)) {
           const visible = normalizedVisible(anchor).toLowerCase();
-          if (!["play", "case study", "github", "evidence"].includes(visible)) continue;
+          if (!["view project", "open live demo", "view case study", "view source", "explore evidence"].includes(visible)) continue;
           const aria = anchor.attrs.get("aria-label") || "";
           assert.ok(aria.length > visible.length + 4, `${visible} action must identify its destination`);
-          if (visible === "play") assert.match(aria, /^Play .+/i);
-          if (visible === "case study") assert.match(aria, /case study/i);
-          if (visible === "github") assert.match(aria, /source code on GitHub/i);
-          if (visible === "evidence") assert.match(aria, /evidence|operations/i);
+          if (visible === "view project") assert.match(aria, /^View .+ project$/i);
+          if (visible === "open live demo") assert.match(aria, /^Open .+ live demo$/i);
+          if (visible === "view case study") assert.match(aria, /^View .+ case study$/i);
+          if (visible === "view source") assert.match(aria, /^View .+ source on GitHub$/i);
+          if (visible === "explore evidence") assert.match(aria, /^Explore .+ operating evidence$/i);
         }
       }
     });
@@ -164,6 +165,10 @@ test("project previews remain excluded from the accessibility tree while useful 
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
     assert.ok(decorative.length >= (relative.endsWith("index.html") && ["index.html", "software/projects/index.html"].includes(relative) ? 3 : 1), `${relative}: preview must remain decorative and inert`);
+    for (const preview of decorative.filter(({ attrs }) => attrs.has("data-preview-id"))) {
+      assert.ok(["motion-controlled", "static"].includes(preview.attrs.get("data-preview-kind")), `${relative}: preview kind must be explicit`);
+      assert.ok(["product-recreation", "synthetic-demo"].includes(preview.attrs.get("data-preview-fixture")), `${relative}: preview fixture must be explicit`);
+    }
   }
   const projects = await readDist("software/projects/index.html");
   assert.doesNotMatch(projects, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
