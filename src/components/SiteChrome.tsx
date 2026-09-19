@@ -78,7 +78,7 @@ export function Preferences() {
 export function SiteFooter({ build }: { build: BuildMetadata }) {
   return (
     <footer className="site-footer">
-      <span>Jacob Yongue · Software engineering portfolio</span>
+      <span>WizardGang · Software, systems &amp; integrations</span>
       <span className="footer-contact">
         <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         <a href={LINKEDIN}>LinkedIn <span aria-hidden="true">↗</span></a>

@@ -18,6 +18,7 @@ test("typed company navigation is exact and current-section matching is centrali
     ["/", ""],
     ["/about/", "about"],
     ["/about/company/", "about"],
+    ["/about/team/", "about"],
     ["/about/team/jacob/", "about"],
     ["/software/", "software"],
     ["/software/integrations/", "software"],

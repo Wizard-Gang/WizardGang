@@ -58,13 +58,13 @@ function browserModulePath(html) {
   return source.slice(1);
 }
 
-test("generated HTML inventory is the explicit 15-page staged canonical contract", async () => {
+test("generated HTML inventory is the explicit 18-page staged canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 15);
+  assert.equal(actual.length, 18);
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -450,10 +450,21 @@ test("services page preserves the current package, ownership, and handoff model"
   ], "services page");
 });
 
-test("about and glossary retain their current substantive roles", async () => {
+test("About hierarchy and glossary retain their current substantive roles", async () => {
   const about = await readDist("about/index.html");
-  requireText(about, ["About Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity"], "about page");
-  rejectText(about, ["WizardGang.ai is my personal engineering portfolio", "Let’s talk about the system", "Professional work</a>"], "about page");
+  requireText(about, ["About WizardGang", "Company and people,", "About the company", "Meet the team"], "about landing");
+
+  const company = await readDist("about/company/index.html");
+  requireText(company, ["WizardGang company", "Software first.", "Keep ownership explicit.", "Demonstrate; do not overclaim."], "company page");
+  rejectText(company, ["University of Georgia", "Supply Chain Technologies", "Career history", "Deployments"], "company page");
+
+  const team = await readDist("about/team/index.html");
+  requireText(team, ["WizardGang team", "One real member. No placeholders.", "Jacob Yongue", "Professional work"], "team page");
+  rejectText(team, ["Career history", "Systems delivered", "Deployments"], "team page");
+
+  const jacob = await readDist("about/team/jacob/index.html");
+  requireText(jacob, ["Team / Jacob Yongue", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional work remains separately attributed."], "Jacob team page");
+  rejectText(jacob, ["University of Georgia", "Supply Chain Technologies", "Career history", "Deployments"], "Jacob team page");
 
   const glossary = await readDist("glossary/index.html");
   requireText(glossary, ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"], "glossary page");
@@ -552,7 +563,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
 
