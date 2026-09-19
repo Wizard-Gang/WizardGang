@@ -35,24 +35,12 @@ test("typed project routes cover the exact canonical project outputs", () => {
   for (const relative of expected) assert.equal(CANONICAL_PAGES.has(relative), true, `unexpected project route ${relative}`);
 });
 
-test("legacy project authority is removed from site.mjs and projects.mjs is deleted", async () => {
-  const site = await readFile(resolve(root, "src/site.mjs"), "utf8");
-  for (const retired of [
-    "projects.mjs",
-    "projectCard(",
-    "projectCardActions(",
-    "sharkTankVisual(",
-    "hexframeVisual(",
-    "yarReaderVisual(",
-    "projectShowcase(",
-    "projectCaseStudy(",
-    "projectsIndex("
-  ]) assert.ok(!site.includes(retired), `legacy project authority remains: ${retired}`);
-
-  assert.match(site, /ownsProductionPages:\s*false/);
+test("retired project presentation sources remain absent", async () => {
   const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
   assert.match(home, /SelectedProjectsSection/);
-  await assert.rejects(access(resolve(root, "src/projects.mjs")), { code: "ENOENT" });
+  for (const path of ["src/site.mjs", "src/projects.mjs"]) {
+    await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
+  }
 });
 
 test("React source owns project cards, actions, previews, and project pages", async () => {

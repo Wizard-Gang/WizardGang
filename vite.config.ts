@@ -123,8 +123,7 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/pages/Services.tsx"),
     resolve(root, "src/pages/Glossary.tsx"),
     resolve(root, "src/pages/NotFound.tsx"),
-    resolve(root, "src/styles.css"),
-    resolve(root, "src/portfolio-cleanup.css")
+    resolve(root, "src/styles/globals.css")
   ];
 
   return {
@@ -167,14 +166,12 @@ function staticSitePlugin(): Plugin {
           await writeFile(headersPath, sanitizeLocalHeadersText(headers));
         }
 
-        await mkdir(resolve(publishOut, "assets"), { recursive: true });
-        const browserTarget = resolve(publishOut, browserFileName);
-        await mkdir(dirname(browserTarget), { recursive: true });
-        await cp(resolve(shellOut, browserFileName), browserTarget);
-
-        const baseStyles = await readFile(resolve(root, "src/styles.css"), "utf8");
-        const portfolioStyles = await readFile(resolve(root, "src/portfolio-cleanup.css"), "utf8");
-        await writeFile(resolve(publishOut, "assets/styles.css"), `${baseStyles.trim()}\n\n${portfolioStyles.trim()}\n`);
+        for (const output of Object.values(bundle)) {
+          if (!output.fileName.startsWith("assets/")) continue;
+          const target = resolve(publishOut, output.fileName);
+          await mkdir(dirname(target), { recursive: true });
+          await cp(resolve(shellOut, output.fileName), target);
+        }
 
         const browserAssetPath = `/${browserFileName}`;
         const pages = renderer.renderStaticDocuments(build, browserAssetPath);
@@ -205,13 +202,15 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), staticSitePlugin()],
   build: {
     ssr: "src/app/Document.tsx",
+    ssrEmitAssets: true,
     outDir: shellOut,
     emptyOutDir: true,
     assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         entryFileNames: (chunk) => chunk.name === "browser" ? "assets/browser-[hash].js" : "render.mjs",
-        chunkFileNames: (chunk) => chunk.name === "browser" ? "assets/browser-[hash].js" : "assets/chunk-[name]-[hash].js"
+        chunkFileNames: (chunk) => chunk.name === "browser" ? "assets/browser-[hash].js" : "assets/chunk-[name]-[hash].js",
+        assetFileNames: (asset) => asset.name?.endsWith(".css") ? "assets/styles.css" : "assets/[name]-[hash][extname]"
       }
     }
   }

@@ -345,7 +345,7 @@ test("YarReader substantive offline, ingestion, addressing, recovery, and rebuil
   ], "YarReader case study");
   assert.ok(startTags(overview, "div").some(({ attrs }) => attrs.get("data-fixture") === "synthetic"));
   assert.match(overview, /Original demo artwork/);
-  assert.match(await readDist("assets/styles.css"), /url\(["']\/yarreader-library-art\.jpg["']\)/);
+  assert.match(await readDist("assets/styles.css"), /url\((?:["'])?\/yarreader-library-art\.jpg(?:["'])?\)/);
   rejectText(html, ["A complete path, not an isolated component", "Explicit ownership at every boundary", "The part worth looking at twice", "What exists now"], "YarReader case study");
 });
 
@@ -485,8 +485,7 @@ test("portfolio boundary remains static and retired compliance application route
   const worker = await readRoot("src/worker/index.ts");
   assert.doesNotMatch(worker, /DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/);
   assert.match(worker, /sharktank\.wizardgang\.ai/);
-  const siteSource = await readRoot("src/site.mjs");
-  assert.doesNotMatch(siteSource, /function compliance\(|compliance\/index\.html|WCAG_LEVELS|ISO_STANDARDS/);
+  assert.equal(await exists(resolve(root, "src/site.mjs")), false);
   const home = await readDist("index.html");
   assert.doesNotMatch(await readDist(browserModulePath(home)), /Compliance — WizardGang|class=["']compliance-/);
 });
@@ -503,7 +502,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   assert.equal(pkg.scripts.build, "node scripts/build.mjs");
   assert.equal(pkg.scripts.dev, "node scripts/dev.mjs");
-  assert.equal(pkg.scripts["build:frontend"], "npm run build", "frontend build must be the same authoritative static production build");
+  assert.equal(pkg.scripts["build:frontend"], undefined, "duplicate frontend build alias must stay retired");
   assert.match(pkg.scripts["check:frontend"] || "", /typecheck/);
   assert.match(pkg.scripts["check:frontend"] || "", /verify-react-shell/);
   assert.match(pkg.scripts.check || "", /check:frontend/);
@@ -517,9 +516,21 @@ test("React frontend toolchain owns the shared production shell without becoming
   assert.match(documentSource, /renderToStaticMarkup/);
   assert.doesNotMatch(documentSource, /react-dom\/client|hydrateRoot|createRoot/);
 
-  const siteSource = await readRoot("src/site.mjs");
-  assert.match(siteSource, /ownsProductionPages:\s*false/);
-  assert.doesNotMatch(siteSource, /createPageDefinitions|function\\s+|<main\\b|<!doctype html>|<html\\b|<head\\b/);
+  for (const path of [
+    "src/site.mjs",
+    "src/projects.mjs",
+    "src/professional.mjs",
+    "src/professional-systems.mjs",
+    "public/assets/site.js",
+    "src/styles.css",
+    "src/portfolio-cleanup.css"
+  ]) {
+    assert.equal(await exists(resolve(root, path)), false, `retired frontend source returned: ${path}`);
+  }
+
+  const stylesSource = await readRoot("src/styles/globals.css");
+  assert.match(stylesSource, /tailwindcss\/theme\.css/);
+  assert.match(stylesSource, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);

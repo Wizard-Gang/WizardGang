@@ -180,10 +180,7 @@ test("navigation enhancement initialization is optional when shell markup is abs
 });
 
 test("reduced motion remains the CSS accessibility boundary and overrides preview animation", async () => {
-  const styles = [
-    await readFile(resolve(root, "src/styles.css"), "utf8"),
-    await readFile(resolve(root, "src/portfolio-cleanup.css"), "utf8")
-  ].join("\n");
+  const styles = await readFile(resolve(root, "src/styles/globals.css"), "utf8");
   assert.match(styles, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   const reduced = styles.slice(styles.lastIndexOf("@media (prefers-reduced-motion: reduce)"));
   assert.match(reduced, /\.tank-fish[\s\S]*animation:\s*none/);
