@@ -58,13 +58,13 @@ function browserModulePath(html) {
   return source.slice(1);
 }
 
-test("generated HTML inventory is the explicit 18-page staged canonical contract", async () => {
+test("generated HTML inventory is the explicit 17-page staged canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 18);
+  assert.equal(actual.length, 17);
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -563,7 +563,8 @@ test("React frontend toolchain owns the shared production shell without becoming
     "src/professional-systems.mjs",
     "public/assets/site.js",
     "src/styles.css",
-    "src/portfolio-cleanup.css"
+    "src/portfolio-cleanup.css",
+    "src/pages/Work.tsx"
   ]) {
     assert.equal(await exists(resolve(root, path)), false, `retired frontend source returned: ${path}`);
   }
