@@ -1,16 +1,12 @@
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
-import { SelectedProjectsSection, createProjectPageDefinitions } from "../pages/Projects";
-import { SelectedWorkGrid, createWorkPageDefinitions } from "../pages/Work";
-import type { BuildMetadata, PageDefinition, PageMetadata } from "./contracts";
+import { createStaticPageRegistry } from "./pageRegistry";
+import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
 const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
 const SOCIAL_IMAGE_ALT = "Jacob Yongue — software engineer, systems integration, project delivery";
-const LEGACY_BODY_PLACEHOLDER = '<template data-wizardgang-legacy-body=""></template>';
-const SELECTED_PROJECTS_PLACEHOLDER = '<template data-wizardgang-selected-projects=""></template>';
-const SELECTED_WORK_PLACEHOLDER = '<template data-wizardgang-selected-work=""></template>';
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;
@@ -65,7 +61,7 @@ export function Document({
   browserAssetPath,
   children
 }: {
-  page: Pick<PageDefinition, "metadata" | "current">;
+  page: Pick<ReactPageDefinition, "metadata" | "current">;
   build: BuildMetadata;
   browserAssetPath: string;
   children: ReactNode;
@@ -84,7 +80,7 @@ export function Document({
 }
 
 function renderStaticDocument(
-  page: Pick<PageDefinition, "metadata" | "current">,
+  page: Pick<ReactPageDefinition, "metadata" | "current">,
   body: ReactNode,
   build: BuildMetadata,
   browserAssetPath: string
@@ -94,49 +90,9 @@ function renderStaticDocument(
   )}`;
 }
 
-export function renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string {
-  let legacyBody = page.body;
-  if (legacyBody.includes(SELECTED_PROJECTS_PLACEHOLDER)) {
-    legacyBody = legacyBody.replace(
-      SELECTED_PROJECTS_PLACEHOLDER,
-      renderToStaticMarkup(<SelectedProjectsSection />)
-    );
-  }
-  if (legacyBody.includes(SELECTED_WORK_PLACEHOLDER)) {
-    legacyBody = legacyBody.replace(
-      SELECTED_WORK_PLACEHOLDER,
-      renderToStaticMarkup(<SelectedWorkGrid />)
-    );
-  }
-
-  const shell = renderStaticDocument(
-    page,
-    <template data-wizardgang-legacy-body=""></template>,
-    build,
-    browserAssetPath
-  );
-  if (!shell.includes(LEGACY_BODY_PLACEHOLDER)) {
-    throw new Error("React shell did not emit the legacy body compatibility boundary.");
-  }
-
-  // Remaining legacy page bodies are trusted repository-authored HTML from src/site.mjs.
-  // Project and Work surfaces are React-owned. Home stays legacy while receiving shared
-  // React project and professional-role sections through exact build-time slots.
-  return shell.replace(LEGACY_BODY_PLACEHOLDER, legacyBody);
-}
-
-export function renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
+export function renderStaticDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
   return new Map(
-    createProjectPageDefinitions().map((page) => [
-      page.relative,
-      renderStaticDocument(page, page.body, build, browserAssetPath)
-    ])
-  );
-}
-
-export function renderWorkDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string> {
-  return new Map(
-    createWorkPageDefinitions().map((page) => [
+    createStaticPageRegistry().map((page) => [
       page.relative,
       renderStaticDocument(page, page.body, build, browserAssetPath)
     ])
@@ -144,4 +100,4 @@ export function renderWorkDocuments(build: BuildMetadata, browserAssetPath: stri
 }
 
 export const SOCIAL_IMAGE = DEFAULT_SOCIAL_IMAGE;
-export type { BuildMetadata, PageDefinition, PageMetadata } from "./contracts";
+export type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";

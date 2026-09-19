@@ -49,7 +49,9 @@ test("legacy project authority is removed from site.mjs and projects.mjs is dele
     "projectsIndex("
   ]) assert.ok(!site.includes(retired), `legacy project authority remains: ${retired}`);
 
-  assert.match(site, /data-wizardgang-selected-projects/);
+  assert.match(site, /ownsProductionPages:\s*false/);
+  const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
+  assert.match(home, /SelectedProjectsSection/);
   await assert.rejects(access(resolve(root, "src/projects.mjs")), { code: "ENOENT" });
 });
 

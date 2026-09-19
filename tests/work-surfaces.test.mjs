@@ -47,7 +47,9 @@ test("legacy professional data and Work rendering authority are removed", async 
     assert.ok(!site.includes(retired), `legacy professional authority remains: ${retired}`);
   }
 
-  assert.match(site, /data-wizardgang-selected-work/);
+  assert.match(site, /ownsProductionPages:\s*false/);
+  const home = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
+  assert.match(home, /SelectedWorkGrid/);
   await assert.rejects(access(resolve(root, "src/professional.mjs")), { code: "ENOENT" });
   await assert.rejects(access(resolve(root, "src/professional-systems.mjs")), { code: "ENOENT" });
 });
@@ -55,7 +57,8 @@ test("legacy professional data and Work rendering authority are removed", async 
 test("React owns the canonical Work route and shared Home professional-role projection", async () => {
   const pageSource = await readFile(resolve(root, "src/pages/Work.tsx"), "utf8");
   const componentSource = await readFile(resolve(root, "src/components/ProfessionalSurfaces.tsx"), "utf8");
-  const documentSource = await readFile(resolve(root, "src/app/Document.tsx"), "utf8");
+  const homeSource = await readFile(resolve(root, "src/pages/Home.tsx"), "utf8");
+  const registrySource = await readFile(resolve(root, "src/app/pageRegistry.ts"), "utf8");
 
   assert.match(pageSource, /createWorkPageDefinitions/);
   assert.match(pageSource, /relative: "work\/index\.html"/);
@@ -64,8 +67,8 @@ test("React owns the canonical Work route and shared Home professional-role proj
   assert.match(pageSource, /IntegrationGroups/);
   assert.match(pageSource, /ReferenceList/);
   assert.match(componentSource, /ExternalOrganizationLink/);
-  assert.match(documentSource, /SelectedWorkGrid/);
-  assert.match(documentSource, /renderWorkDocuments/);
+  assert.match(homeSource, /SelectedWorkGrid/);
+  assert.match(registrySource, /createWorkPageDefinitions/);
 });
 
 test("generated Work output preserves metadata, professional ordering, semantics, references, and skills", async () => {
@@ -113,7 +116,7 @@ test("generated Work output preserves metadata, professional ordering, semantics
   assert.ok(startTags(html, "ul").some(({ attrs }) => attrs.get("aria-label") === "Development &amp; data"));
 });
 
-test("Home retains legacy composition while projecting the same typed professional roles", async () => {
+test("Home React composition projects the same typed professional roles", async () => {
   const html = await readDist("index.html");
   assert.doesNotMatch(html, /data-wizardgang-selected-work/);
   const selected = tagBlocks(html, "section").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("selected-work"));

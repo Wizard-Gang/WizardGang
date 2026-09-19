@@ -17,7 +17,7 @@ npm run dev
 2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state.
 3. Runs the authoritative static production build. Vite compiles the server-only React shell renderer and writes the complete static site to `dist/`.
 4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Starts the same Vite build in watch mode. Shared React shell, typed project/professional data, React project/Work surfaces, or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
+5. Starts the same Vite build in watch mode. React page, typed site/project/professional data, shared component, or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
 6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
 7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
 8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
@@ -39,7 +39,7 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript also owns the project catalog, typed project data, project cards/actions/previews, the Projects index, all three project overviews, all three project case studies, typed professional data, and the canonical Work page. Remaining unmigrated page bodies still come from `src/site.mjs` through one explicit trusted build-time compatibility boundary. Home remains legacy except for its selected-project grid and selected-work role grid, which are rendered from the same React/TypeScript authorities used by their canonical surfaces.
+React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the same React project components and typed professional authority used by Projects and Work, so shared facts are not duplicated. `src/site.mjs` remains only as a minimal transition marker for WG-046 and no longer participates in production page generation.
 
 The authoritative production build remains:
 
@@ -66,7 +66,7 @@ npm run build
 npm run check
 ```
 
-`npm run check` verifies the TypeScript/React/Vite/Tailwind production shell, project and Work surfaces, and then runs the generated-site, accessibility, Worker-routing, React-shell, and development-lifecycle acceptance suite.
+`npm run check` verifies the TypeScript/React/Vite/Tailwind production shell and every React-authored canonical page, then runs the generated-site, accessibility, Worker-routing, React-shell, and development-lifecycle acceptance suite.
 
 ## Structure
 
@@ -77,8 +77,10 @@ npm run check
 - `src/data/projects.ts` owns typed project metadata and relationships.
 - `src/data/professional.ts` owns typed professional roles, project history, and skills.
 - `src/data/professional-systems.ts` owns typed systems, integrations, and deployment references.
-- `src/pages/Projects.tsx` and `src/pages/Work.tsx` own the migrated React page bodies.
-- `src/site.mjs` temporarily generates only the remaining unmigrated page bodies and page definitions.
+- `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
+- `src/pages/` owns every canonical production page body in React/TypeScript.
+- `src/app/pageRegistry.ts` is the typed output/route registry for all 13 canonical static HTML files.
+- `src/site.mjs` remains only as non-rendering transitional presentation-pipeline residue pending WG-046.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the Tailwind entry point for frontend code; existing production presentation still comes from the legacy CSS files.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
