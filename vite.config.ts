@@ -112,8 +112,10 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/components/ProjectPreviews.tsx"),
     resolve(root, "src/components/ProjectSurfaces.tsx"),
     resolve(root, "src/pages/Projects.tsx"),
-    resolve(root, "src/professional.mjs"),
-    resolve(root, "src/professional-systems.mjs"),
+    resolve(root, "src/data/professional.ts"),
+    resolve(root, "src/data/professional-systems.ts"),
+    resolve(root, "src/components/ProfessionalSurfaces.tsx"),
+    resolve(root, "src/pages/Work.tsx"),
     resolve(root, "src/styles.css"),
     resolve(root, "src/portfolio-cleanup.css")
   ];
@@ -141,6 +143,7 @@ function staticSitePlugin(): Plugin {
       const renderer = await import(rendererUrl) as {
         renderDocument(page: PageDefinition, build: BuildMetadata, browserAssetPath: string): string;
         renderProjectDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
+        renderWorkDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
       };
       const legacy = await import(siteUrl) as {
         createPageDefinitions(): Map<string, PageDefinition>;
@@ -175,12 +178,17 @@ function staticSitePlugin(): Plugin {
         const browserAssetPath = `/${browserFileName}`;
         const legacyPages = legacy.createPageDefinitions();
         const projectPages = renderer.renderProjectDocuments(build, browserAssetPath);
+        const workPages = renderer.renderWorkDocuments(build, browserAssetPath);
         const pages = new Map<string, string>();
 
         for (const [relativePath, page] of legacyPages) {
           pages.set(relativePath, renderer.renderDocument(page, build, browserAssetPath));
         }
         for (const [relativePath, html] of projectPages) {
+          if (pages.has(relativePath)) throw new Error(`Duplicate generated route: ${relativePath}`);
+          pages.set(relativePath, html);
+        }
+        for (const [relativePath, html] of workPages) {
           if (pages.has(relativePath)) throw new Error(`Duplicate generated route: ${relativePath}`);
           pages.set(relativePath, html);
         }

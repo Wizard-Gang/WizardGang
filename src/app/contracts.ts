@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 export interface BuildMetadata {
   product: string;
   commit: string;
@@ -25,4 +27,11 @@ export interface PageDefinition {
   metadata: PageMetadata;
   current: CurrentNavSection;
   body: string;
+}
+
+export interface ReactPageDefinition {
+  relative: string;
+  metadata: PageMetadata;
+  current: CurrentNavSection;
+  body: ReactElement;
 }

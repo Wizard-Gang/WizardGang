@@ -1209,3 +1209,43 @@ html:has(#text-size-200:checked) .skill-columns,
 html:has(#text-size-200:checked) .principle-grid {
   grid-template-columns: 1fr;
 }
+
+html:has(#text-size-200:checked) :where(
+  .reference-cloud li,
+  .capability-cloud li,
+  .reference-cloud a,
+  .skill-columns .tags li
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+html:has(#text-size-200:checked) :where(
+  .settings-toolbar,
+  .display-settings fieldset,
+  .display-settings label,
+  .setting-language,
+  .experience-grid,
+  .experience-grid article
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html:has(#text-size-200:checked) .display-settings fieldset {
+  flex-wrap: wrap;
+}
+
+html:has(#text-size-200:checked) :where(
+  .display-settings fieldset label,
+  .setting-toggle,
+  .setting-language,
+  .experience-grid article > span,
+  .experience-grid article > strong,
+  .experience-grid article > p
+) {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}

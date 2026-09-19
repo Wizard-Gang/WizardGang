@@ -1,5 +1,4 @@
-import type { ReactElement } from "react";
-import type { CurrentNavSection, PageMetadata } from "../app/contracts";
+import type { ReactPageDefinition } from "../app/contracts";
 import { ProjectActions, ProjectCardGrid, ProjectTags, ProjectVisualFrame } from "../components/ProjectSurfaces";
 import {
   PROJECTS_INDEX_METADATA,
@@ -8,13 +7,6 @@ import {
   type ProjectArchitectureItem,
   type ProjectRecord
 } from "../data/projects";
-
-export interface ReactPageDefinition {
-  relative: string;
-  metadata: PageMetadata;
-  current: CurrentNavSection;
-  body: ReactElement;
-}
 
 function Architecture({ items }: { items: readonly ProjectArchitectureItem[] }) {
   return (

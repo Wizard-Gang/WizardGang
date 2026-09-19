@@ -1,8 +1,27 @@
+export interface ExternalReference {
+  name: string;
+  url: string | null;
+}
+
+export interface DeploymentReference extends ExternalReference {
+  url: string;
+}
+
+export interface IntegrationGroup {
+  title: string;
+  items: readonly ExternalReference[];
+}
+
+export interface SystemGroup {
+  title: string;
+  items: readonly string[];
+}
+
 // Canonical homepage proof points for professional delivery.
 // Keep this file factual: do not infer deployments, integrations, or capabilities.
 // External references are intentionally centralized so links can be audited in one place.
 
-export const deployments = [
+export const deployments: readonly DeploymentReference[] = [
   ["SpartanNash", "https://www.spartannash.com/"],
   ["Dot Foods", "https://www.dotfoods.com/"],
   ["Snap-on Tools", "https://www.snapon.com/"],
@@ -25,9 +44,9 @@ export const deployments = [
   ["Waytek Wire", "https://www.waytekwire.com/"],
   ["Obermeyer", "https://obermeyer.com/"],
   ["Seeds 'N Such", "https://seedsnsuch.com/"]
-].map(([name, url]) => ({ name, url }));
+].map(([name, url]): DeploymentReference => ({ name: String(name), url: String(url) }));
 
-export const integrationGroups = [
+export const integrationGroups: readonly IntegrationGroup[] = [
   {
     title: "ERP Integrations",
     items: [
@@ -103,10 +122,12 @@ export const integrationGroups = [
   }
 ].map((group) => ({
   ...group,
-  items: group.items.map((item) => Array.isArray(item) ? { name: item[0], url: item[1] } : { name: item, url: null })
+  items: group.items.map((item): ExternalReference => Array.isArray(item)
+    ? { name: String(item[0]), url: item[1] ? String(item[1]) : null }
+    : { name: item, url: null })
 }));
 
-export const systemGroups = [
+export const systemGroups: readonly SystemGroup[] = [
   {
     title: "Warehouse & Fulfillment",
     items: ["Fulfillment", "Inventory", "Lot Tracking", "Barcode Workflows", "Warehouse Automation", "Quality Control", "Shipping", "RMA"]
