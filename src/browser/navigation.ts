@@ -25,6 +25,12 @@ export function initializeNavigation(
 
   const toggle = disclosure.querySelector<HTMLElement>(".nav-toggle");
   const mobileNav = disclosure.querySelector<HTMLElement>(".site-nav-mobile");
+  const syncExpandedState = (): void => {
+    toggle?.setAttribute("aria-expanded", disclosure.open ? "true" : "false");
+  };
+
+  syncExpandedState();
+  disclosure.addEventListener("toggle", syncExpandedState);
 
   mobileNav?.addEventListener("click", (event) => {
     if (isAnchorActivationTarget(event.target)) setNavigationOpen(disclosure, false);

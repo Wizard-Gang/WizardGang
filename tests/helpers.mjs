@@ -17,6 +17,8 @@ export const CANONICAL_PAGES = new Map([
   ["work/index.html", "/work/"],
   ["services/index.html", "/services/"],
   ["about/index.html", "/about/"],
+  ["software/index.html", "/software/"],
+  ["solutions/index.html", "/solutions/"],
   ["glossary/index.html", "/glossary/"],
   ["404.html", null]
 ]);
@@ -33,6 +35,8 @@ export const SITEMAP_ROUTES = [
   "/work/",
   "/services/",
   "/about/",
+  "/software/",
+  "/solutions/",
   "/glossary/"
 ];
 

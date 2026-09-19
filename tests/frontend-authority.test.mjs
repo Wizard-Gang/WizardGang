@@ -100,6 +100,8 @@ test("canonical page inventory remains owned by the typed React registry", async
     "createWorkPageDefinitions",
     "SERVICES_PAGE",
     "ABOUT_PAGE",
+    "SOFTWARE_PAGE",
+    "SOLUTIONS_PAGE",
     "GLOSSARY_PAGE",
     "NOT_FOUND_PAGE"
   ]) {
@@ -125,11 +127,13 @@ test("canonical page inventory remains owned by the typed React registry", async
     "work/index.html",
     "services/index.html",
     "about/index.html",
+    "software/index.html",
+    "solutions/index.html",
     "glossary/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 canonical inventory and current typed route authority have drifted");
-  assert.equal(expected.size, 13, "WG-047 must not change the canonical route inventory");
+  assert.equal(expected.size, 15, "WG-049 adds only the two valid company-navigation landing routes");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
@@ -141,15 +145,21 @@ test("canonical page inventory remains owned by the typed React registry", async
 test("shared shell, metadata, navigation, browser enhancement, and CSP-safe output have one authority", async () => {
   const document = await readRoot("src/app/Document.tsx");
   const chrome = await readRoot("src/components/SiteChrome.tsx");
+  const navigation = await readRoot("src/app/navigation.ts");
   const browser = await readRoot("src/browser/index.ts");
 
   assert.match(document, /function Metadata\(/, "shared Document must own page metadata");
   assert.match(document, /<SiteHeader current=/);
   assert.match(document, /<Preferences \/>/);
   assert.match(document, /<SiteFooter build=/);
-  assert.match(chrome, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
-  for (const label of ["Projects", "Work", "About", "Contact", "GitHub"]) {
-    assert.ok(chrome.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
+  assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/, "shared chrome must consume the typed navigation authority");
+  assert.match(navigation, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
+  assert.match(navigation, /navigationSectionForPath/, "current-section matching must remain centralized");
+  for (const label of ["About", "Software", "Solutions"]) {
+    assert.ok(navigation.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
+  }
+  for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
+    assert.ok(!navigation.includes(`label: "${retiredLabel}"`), `retired top-level navigation item restored: ${retiredLabel}`);
   }
   assert.match(browser, /initializeBrowserBehavior/);
 

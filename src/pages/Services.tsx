@@ -9,7 +9,6 @@ export const SERVICES_PAGE: ReactPageDefinition = {
     description: "Fixed-scope small-business websites with owner-controlled source code, GitHub repository, Cloudflare deployment, domain, and documented handoff.",
     path: "/services/"
   },
-  current: "services",
   body: (
     <main className="case-main services-main" id="main" tabIndex={-1}>
       <section className="services-hero">

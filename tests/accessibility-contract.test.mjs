@@ -12,11 +12,9 @@ import {
 } from "./helpers.mjs";
 
 const navDestinations = new Map([
-  ["Projects", "/projects/"],
-  ["Work", "/work/"],
   ["About", "/about/"],
-  ["Contact", "mailto:jacob@wizardgang.ai"],
-  ["GitHub", "https://github.com/Wizard-Gang"]
+  ["Software", "/software/"],
+  ["Solutions", "/solutions/"]
 ]);
 
 function normalizedVisible(anchor) {
@@ -24,9 +22,9 @@ function normalizedVisible(anchor) {
 }
 
 function currentNavDestination(relative) {
-  if (relative.startsWith("projects/")) return "/projects/";
-  if (relative === "work/index.html") return "/work/";
-  if (relative === "about/index.html") return "/about/";
+  if (relative.startsWith("about/")) return "/about/";
+  if (relative.startsWith("software/")) return "/software/";
+  if (relative.startsWith("solutions/")) return "/solutions/";
   return null;
 }
 
@@ -75,12 +73,18 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       if (currentExpected) {
         assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
         assert.equal(currentLinks[0].href, currentExpected);
+      } else {
+        assert.equal(currentLinks.length, 0, "legacy routes must not claim a company section before they move");
+      }
+
+      for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
+        assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
       }
 
       const disclosures = tagBlocks(html, "details");
       const mobileDisclosure = disclosures.find(({ inner }) => tagBlocks(inner, "nav").some(({ attrs }) => attrs.get("aria-label") === "Primary mobile"));
       assert.ok(mobileDisclosure, "mobile navigation must remain a native keyboard-operable disclosure");
-      assert.ok(tagBlocks(mobileDisclosure.inner, "summary").some(({ inner }) => /Menu/i.test(textContent(inner))), "mobile navigation disclosure needs a summary control");
+      assert.ok(tagBlocks(mobileDisclosure.inner, "summary").some(({ inner }) => /Menu/i.test(textContent(inner))), "mobile navigation disclosure needs a native summary control");
       const mobile = tagBlocks(mobileDisclosure.inner, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary mobile");
       for (const [, href] of navDestinations) assert.ok(anchors(mobile.inner).some((anchor) => anchor.href === href), `mobile navigation missing ${href}`);
 
@@ -91,6 +95,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       assert.equal(footer.length, 1, "page must expose one footer landmark");
       assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "mailto:jacob@wizardgang.ai" && /jacob@wizardgang\.ai/i.test(normalizedVisible(anchor))));
       assert.ok(findAnchor(footer[0].inner, (anchor) => /linkedin\.com\/in\/jacob-yongue/i.test(anchor.href) && /LinkedIn/i.test(normalizedVisible(anchor))));
+      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang" && anchor.attrs.get("aria-label") === "Visit WizardGang on GitHub"));
       assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "/version.json" && /^Build /i.test(normalizedVisible(anchor))));
 
       for (const retired of ["Website services", "Compliance", "Glossary"]) {

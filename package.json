@@ -21,7 +21,8 @@
     "test:projects": "node --test tests/project-surfaces.test.mjs",
     "test:work": "node --test tests/work-surfaces.test.mjs",
     "test:pages": "node --test tests/page-authority.test.mjs",
-    "test:frontend-authority": "node --test tests/frontend-authority.test.mjs"
+    "test:frontend-authority": "node --test tests/frontend-authority.test.mjs",
+    "test:navigation": "node --test tests/navigation-authority.test.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

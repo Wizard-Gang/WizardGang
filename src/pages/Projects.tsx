@@ -276,7 +276,6 @@ export function createProjectPageDefinitions(): readonly ReactPageDefinition[] {
     {
       relative: "projects/index.html",
       metadata: PROJECTS_INDEX_METADATA,
-      current: "projects",
       body: <ProjectsIndexPage />
     }
   ];
@@ -286,13 +285,11 @@ export function createProjectPageDefinitions(): readonly ReactPageDefinition[] {
       {
         relative: `projects/${project.slug}/index.html`,
         metadata: project.overviewMetadata,
-        current: "projects",
         body: <ProjectOverviewPage project={project} />
       },
       {
         relative: `projects/${project.slug}/case-study/index.html`,
         metadata: project.caseStudyMetadata,
-        current: "projects",
         body: <ProjectCaseStudyPage project={project} />
       }
     );

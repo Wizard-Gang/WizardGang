@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { createStaticPageRegistry } from "./pageRegistry";
+import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
@@ -62,7 +63,7 @@ export function Document({
   browserAssetPath,
   children
 }: {
-  page: Pick<ReactPageDefinition, "metadata" | "current">;
+  page: Pick<ReactPageDefinition, "metadata">;
   build: BuildMetadata;
   browserAssetPath: string;
   children: ReactNode;
@@ -71,7 +72,7 @@ export function Document({
     <html lang="en">
       <Metadata metadata={page.metadata} build={build} browserAssetPath={browserAssetPath} />
       <body>
-        <SiteHeader current={page.current} />
+        <SiteHeader current={navigationSectionForPath(page.metadata.path)} />
         <Preferences />
         {children}
         <SiteFooter build={build} />
@@ -81,7 +82,7 @@ export function Document({
 }
 
 function renderStaticDocument(
-  page: Pick<ReactPageDefinition, "metadata" | "current">,
+  page: Pick<ReactPageDefinition, "metadata">,
   body: ReactNode,
   build: BuildMetadata,
   browserAssetPath: string

@@ -149,6 +149,8 @@ test("missing preference controls fail closed without throwing", () => {
 
 test("language translation preserves exact and dynamic current behavior", () => {
   assert.equal(translateDynamic("Projects"), "Proyectos");
+  assert.equal(translateDynamic("Software"), "Software");
+  assert.equal(translateDynamic("Solutions"), "Soluciones");
   assert.equal(translateDynamic("Play SharkTank"), "Jugar a SharkTank");
   assert.equal(translateDynamic("Read the Hexframe case study"), "Leer el caso de estudio de Hexframe");
   assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
@@ -177,6 +179,47 @@ test("navigation helpers preserve link-close and Escape semantics", () => {
 
 test("navigation enhancement initialization is optional when shell markup is absent", () => {
   assert.equal(initializeNavigation({ querySelector() { return null; } }, undefined), false);
+});
+
+test("navigation enhancement synchronizes aria-expanded while native details remain the no-JavaScript authority", () => {
+  const disclosureListeners = new Map();
+  const documentListeners = new Map();
+  const attributes = new Map();
+  const toggle = {
+    setAttribute(name, value) { attributes.set(name, value); },
+    focus() {}
+  };
+  const mobileNav = { addEventListener() {} };
+  const disclosure = {
+    open: false,
+    querySelector(selector) {
+      if (selector === ".nav-toggle") return toggle;
+      if (selector === ".site-nav-mobile") return mobileNav;
+      return null;
+    },
+    addEventListener(type, listener) { disclosureListeners.set(type, listener); },
+    toggleAttribute(name, force) {
+      assert.equal(name, "open");
+      this.open = force;
+    }
+  };
+  const documentRoot = {
+    querySelector(selector) { return selector === ".nav-disclosure" ? disclosure : null; },
+    addEventListener(type, listener) { documentListeners.set(type, listener); }
+  };
+
+  assert.equal(initializeNavigation(documentRoot, undefined), true);
+  assert.equal(attributes.get("aria-expanded"), "false");
+  assert.equal(typeof disclosureListeners.get("toggle"), "function");
+  assert.equal(typeof documentListeners.get("keydown"), "function");
+
+  disclosure.open = true;
+  disclosureListeners.get("toggle")();
+  assert.equal(attributes.get("aria-expanded"), "true");
+
+  disclosure.open = false;
+  disclosureListeners.get("toggle")();
+  assert.equal(attributes.get("aria-expanded"), "false");
 });
 
 test("reduced motion remains the CSS accessibility boundary and overrides preview animation", async () => {

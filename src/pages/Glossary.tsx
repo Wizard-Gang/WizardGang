@@ -8,7 +8,6 @@ export const GLOSSARY_PAGE: ReactPageDefinition = {
     description: "Clear definitions for technical terms and abbreviations used throughout Jacob Yongue's software engineering portfolio.",
     path: "/glossary/"
   },
-  current: "glossary",
   body: (
     <main className="case-main accessibility-main" id="main" tabIndex={-1}>
       <section className="page-hero">

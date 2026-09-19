@@ -81,7 +81,6 @@ export function createWorkPageDefinitions(): readonly ReactPageDefinition[] {
   return [{
     relative: "work/index.html",
     metadata: WORK_METADATA,
-    current: "work",
     body: <WorkPage />
   }];
 }

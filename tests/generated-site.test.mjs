@@ -58,13 +58,13 @@ function browserModulePath(html) {
   return source.slice(1);
 }
 
-test("generated HTML inventory is the explicit 13-page canonical contract", async () => {
+test("generated HTML inventory is the explicit 15-page staged canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 13);
+  assert.equal(actual.length, 15);
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -534,7 +534,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "SOFTWARE_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions", "createWorkPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
 
