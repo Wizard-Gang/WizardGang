@@ -80,7 +80,7 @@ export const HOME_PAGE: ReactPageDefinition = {
         </div>
         <div>
           <p>WizardGang is built by Jacob Yongue, a software engineer and implementation lead. His professional background provides supporting systems and delivery context while WizardGang-owned projects remain distinct from employer work.</p>
-          <a className="text-link" href="/about/">About the engineer behind WizardGang <span aria-hidden="true">→</span></a>
+          <div className="text-links"><a className="text-link" href="/about/company/">About WizardGang <span aria-hidden="true">→</span></a><a className="text-link" href="/about/team/">Meet the team <span aria-hidden="true">→</span></a></div>
         </div>
       </section>
 

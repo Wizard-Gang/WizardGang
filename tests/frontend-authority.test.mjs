@@ -100,6 +100,9 @@ test("canonical page inventory remains owned by the typed React registry", async
     "createWorkPageDefinitions",
     "SERVICES_PAGE",
     "ABOUT_PAGE",
+    "COMPANY_PAGE",
+    "TEAM_PAGE",
+    "JACOB_TEAM_PAGE",
     "SOFTWARE_PAGE",
     "SOLUTIONS_PAGE",
     "GLOSSARY_PAGE",
@@ -127,13 +130,16 @@ test("canonical page inventory remains owned by the typed React registry", async
     "work/index.html",
     "services/index.html",
     "about/index.html",
+    "about/company/index.html",
+    "about/team/index.html",
+    "about/team/jacob/index.html",
     "software/index.html",
     "solutions/index.html",
     "glossary/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 canonical inventory and current typed route authority have drifted");
-  assert.equal(expected.size, 15, "WG-049 adds only the two valid company-navigation landing routes");
+  assert.equal(expected.size, 18, "WG-051 adds only the approved Company, Team, and Jacob Team child routes");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);

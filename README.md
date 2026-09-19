@@ -1,6 +1,6 @@
 # WizardGang
 
-WizardGang publishes inspectable software projects, clearly attributed systems and integration experience, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). The Home page and global navigation are company-first; About, Work, Projects, and Services remain on their current transitional routes until their later controlled migrations.
+WizardGang publishes inspectable software projects, clearly attributed systems and integration experience, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). The Home page, global navigation, and About → Company / Team hierarchy are company-first. Detailed career content remains on `/work/`, while Projects and Services remain on their current transitional routes until later controlled migrations.
 
 **[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
 
@@ -41,7 +41,7 @@ React and TypeScript own the shared production document shell: document/head met
 
 React/TypeScript owns every canonical production page body, including Home, Projects and case studies, Work, About, Services, the staged Software and Solutions navigation landings, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and derives its systems summary from the professional-systems authority rather than duplicating project or career facts.
 
-The shared primary navigation is now company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. `/software/` and `/solutions/` are intentionally narrow orientation pages so global navigation never points to a dead route. Existing `/projects/`, `/work/`, and `/services/` content remains canonical until its later controlled migration under the approved information architecture.
+The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About now owns `/about/`, `/about/company/`, `/about/team/`, and the concise `/about/team/jacob/` profile; detailed professional history intentionally remains canonical at `/work/` until its next controlled migration. `/software/` and `/solutions/` remain narrow transitional orientation pages, while `/projects/` and `/services/` remain canonical until their later migrations.
 
 The authoritative production build remains:
 
@@ -75,6 +75,7 @@ Run focused authority checks independently with:
 npm run test:frontend-authority
 npm run test:navigation
 npm run test:home
+npm run test:about
 ```
 
 ## Structure
@@ -87,9 +88,10 @@ npm run test:home
 - `src/data/projects.ts` owns typed project metadata and relationships.
 - `src/data/professional.ts` owns typed professional roles, project history, and skills.
 - `src/data/professional-systems.ts` owns typed systems, integrations, and deployment references.
+- `src/data/team.ts` owns the current typed WizardGang team-member relationship.
 - `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/pages/` owns every canonical production page body in React/TypeScript.
-- `src/app/pageRegistry.ts` is the typed output/route registry for the current 15 canonical static HTML files.
+- `src/app/pageRegistry.ts` is the typed output/route registry for the current 18 canonical static HTML files.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
@@ -100,7 +102,7 @@ npm run test:home
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation and Home are implemented while deeper About/Team, Software, Solutions, and route migrations remain staged.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, and About → Company / Team are implemented. Career detail remains transitional at `/work/`; Software, Solutions, and later route migrations remain staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)

@@ -1,5 +1,5 @@
 import type { ReactPageDefinition } from "./contracts";
-import { ABOUT_PAGE } from "../pages/About";
+import { ABOUT_PAGE, COMPANY_PAGE, JACOB_TEAM_PAGE, TEAM_PAGE } from "../pages/About";
 import { SOFTWARE_PAGE, SOLUTIONS_PAGE } from "../pages/CompanyNavigation";
 import { GLOSSARY_PAGE } from "../pages/Glossary";
 import { HOME_PAGE } from "../pages/Home";
@@ -15,6 +15,9 @@ export function createStaticPageRegistry(): readonly ReactPageDefinition[] {
     ...createWorkPageDefinitions(),
     SERVICES_PAGE,
     ABOUT_PAGE,
+    COMPANY_PAGE,
+    TEAM_PAGE,
+    JACOB_TEAM_PAGE,
     SOFTWARE_PAGE,
     SOLUTIONS_PAGE,
     GLOSSARY_PAGE,
