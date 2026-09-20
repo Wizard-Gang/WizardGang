@@ -1,139 +1,164 @@
 # WizardGang
 
-WizardGang publishes inspectable software projects, clearly attributed systems and integration capability, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). Software is canonical at `/software/`, with Integrations at `/software/integrations/` and WizardGang projects at `/software/projects/`. Jacob's detailed professional background remains canonical at `/about/team/jacob/`. Solutions is canonical at `/solutions/`, with Websites at `/solutions/websites/` and Demo Framework at `/solutions/demo-framework/`; former `/work/*`, `/projects/*`, and `/services/*` locations are compatibility-only.
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. It presents WizardGang software, integration capability, reusable solutions, and the people behind the work without treating prior-employer experience as WizardGang client work.
+
+The public site is company-first:
+
+```text
+/
+├── about/
+│   ├── company/
+│   └── team/
+│       └── jacob/
+├── software/
+│   ├── integrations/
+│   └── projects/
+│       ├── sharktank/
+│       ├── hexframe/
+│       └── yarreader/
+├── solutions/
+│   ├── websites/
+│   └── demo-framework/
+└── glossary/
+```
+
+Project case studies live beneath their project routes. The generated 404 is noindex and is not a sitemap entry. The authoritative route inventory is the typed page registry; compatibility-only paths are handled by the Worker rather than generated as duplicate pages.
 
 **[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
 
+## Architecture
+
+WizardGang.ai is a static-first React and TypeScript application:
+
+```text
+React + TypeScript page composition
+→ typed page registry
+→ Vite static build
+→ complete HTML + generated CSS/browser module
+→ Cloudflare assets + TypeScript Worker
+```
+
+React renders complete static documents during the build. There is no client React hydration and no SPA router. Browser TypeScript progressively enhances language, display preferences, and mobile navigation.
+
+The TypeScript Worker owns runtime routing that cannot be expressed as static assets alone, including supported compatibility redirects and product-boundary routing. Wrangler owns local runtime and Cloudflare deployment configuration.
+
+Styling is built through Vite with Tailwind available in the toolchain and authored production CSS in `src/styles/globals.css`.
+
+## Content ownership
+
+- Home — WizardGang orientation.
+- About / Company — company identity, principles, and public claims.
+- About / Team — people and professional background. `/about/team/jacob/` is the professional-history authority.
+- Software / Integrations — the single company-facing integration capability catalog.
+- Software / Projects — WizardGang-owned project facts, project pages, and case studies.
+- Solutions — reusable approaches. Demo Framework is explained on the main site; the detailed executable/evidence application lives at [demo.wizardgang.ai](https://demo.wizardgang.ai).
+- Glossary — supporting technical definitions.
+
+Typed domain data lives under `src/data/`. Employer/customer evidence remains attributed to professional data and must not be presented as WizardGang client work.
+
 ## Run locally
+
+Install the locked dependencies and start the normal local environment:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-`npm run dev` is the normal local-development entry point. It stays local-only and performs this checkout-scoped lifecycle:
+`npm run dev` is checkout-scoped. It:
 
-1. Stops stale Wrangler and frontend-watch processes previously started by this checkout, using ignored PID/process metadata under `tmp/dev/`.
-2. Resets only generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state.
-3. Runs the authoritative static production build. Vite compiles the server-only React shell renderer and writes the complete static site to `dist/`.
-4. Removes HTTPS-only directives from the generated `dist/_headers` copy for plain-HTTP local development while leaving `public/_headers` unchanged for deployment.
-5. Starts the same Vite build in watch mode. React page, typed site/project/professional data, shared component, or browser TypeScript edits regenerate `dist/` without exposing a second browser-facing server, and watched local rebuilds keep the HTTP-only header sanitization intact.
-6. Safely validates the requested public port, then starts `wrangler dev --local --ip 127.0.0.1` on port `8790` by default.
-7. Waits until the actual Wrangler-served WizardGang site responds successfully at `http://127.0.0.1:8790`.
-8. Opens that URL in the default browser and supervises both required child processes until the environment is stopped.
+1. stops stale Wrangler/Vite processes only when their saved process metadata proves they belong to this checkout;
+2. resets generated `dist/`, `tmp/dev/`, and `tmp/frontend-shell/` state;
+3. runs the production static build;
+4. sanitizes only the generated local `dist/_headers` copy for plain HTTP;
+5. starts Vite build watch;
+6. starts `wrangler dev --local` at `http://127.0.0.1:8790`;
+7. waits for the Wrangler-served site to respond;
+8. opens the local URL and remains attached to both required child processes.
 
-Override the local port when needed:
+Use another port when needed:
 
 ```bash
 WIZARDGANG_PORT=9123 npm run dev
 ```
 
-If the requested port belongs to an unrelated process, startup fails with the port and available process information rather than terminating it. Running `npm run dev` again safely replaces only stale Wrangler/frontend processes proven to belong to the same checkout; unrelated Node, Vite, Wrangler, or other processes are never intentionally killed.
+If a requested port belongs to an unrelated process, startup fails rather than terminating that process. Stop the environment with `Ctrl-C`.
 
-The reset is intentionally narrow. It removes `dist/`, `tmp/dev/`, and the disposable `tmp/frontend-shell/` build; it preserves source files, `public/`, documentation, `node_modules/`, `.dev.vars`, `.env`, `.wrangler/`, credentials, developer-authored fixtures, and anything outside this checkout. The repository currently has no disposable local database bootstrap or migration step.
-Local development sanitizes only the generated `dist/_headers` file so HTTP loopback does not inherit HSTS or `upgrade-insecure-requests`. The production source file `public/_headers` is never modified.
+Production security policy remains in `public/_headers`. Local development removes HSTS and `upgrade-insecure-requests` only from the generated `dist/_headers` copy; do not weaken `public/_headers` to make localhost work.
 
-Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. The orchestrator stops both checkout-owned child processes together. If the process is terminated abruptly, the next `npm run dev` invocation recovers stale owned runtime metadata before starting again.
+## Build and verify
 
-## Frontend architecture
-
-React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
-
-React/TypeScript owns every canonical production page body, including Home, Software → Integrations / Projects and project case studies, About and Team/Jacob professional detail, Solutions → Websites / Demo Framework, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and links to the canonical typed integration authority rather than duplicating project, integration, or career catalogs.
-
-The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About owns `/about/`, `/about/company/`, `/about/team/`, and `/about/team/jacob/`; Jacob's Team page is the canonical professional-history authority. Software owns `/software/`, `/software/integrations/`, `/software/projects/`, and all project descendants. Legacy `/work/*`, `/projects/*`, and `/services/*` routes are permanent compatibility redirects. Solutions owns `/solutions/websites/` and `/solutions/demo-framework/`; the detailed executable Demo Framework surface remains external at `https://demo.wizardgang.ai`.
-
-The authoritative production build remains:
+Build the complete static site:
 
 ```bash
 npm run build
 ```
 
-Frontend validation can also be run directly with:
+The build emits the static HTML pages, public assets, generated CSS/browser JavaScript, and `version.json` into `dist/`.
+
+The authoritative repository acceptance gate is:
 
 ```bash
-npm run typecheck
-npm run check:frontend
-```
-
-There is one authoritative static build. Vite compiles the server-side React renderer, processes `src/styles/globals.css`, emits the first-party browser module and stylesheet, and publishes the generated site to `dist/` through the repository build pipeline. There is no parallel frontend build or public React test route.
-
-Tailwind is integrated through the Vite frontend toolchain without replacing authored CSS that is clearer for project-preview animation, accessibility states, and specialized responsive layouts. Browser behavior lives under `src/browser/`; Vite emits the hashed first-party browser module consumed by the static React document.
-
-## Verify
-
-```bash
-npm run build
 npm run check
 ```
 
-`npm run check` is the authoritative repository acceptance gate. It verifies TypeScript, the Vite production build, frontend authority, canonical pages, content, accessibility, browser behavior, Worker routing, the development lifecycle, security boundaries, links, and metadata.
+It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, company-first IA, accessibility, browser behavior, project/integration/solution ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
 
-Run focused authority checks independently with:
+Useful focused checks include:
 
 ```bash
-npm run test:frontend-authority
-npm run test:accessibility
 npm run test:company-ia
-npm run test:navigation
-npm run test:home
-npm run test:about
-npm run test:route-retirement
+npm run test:accessibility
+npm run test:frontend-authority
+npm run test:docs
 ```
 
-## Structure
+## Source layout
 
-- `src/app/Document.tsx` owns the shared static production document and metadata composition.
-- `src/components/SiteChrome.tsx` owns Header, navigation, Preferences, and Footer markup.
-- `src/app/contracts.ts` defines the typed shell, metadata, navigation, and build contracts.
-- `src/app/navigation.ts` is the single typed primary-navigation and current-section authority.
-- `src/browser/` owns first-party browser preferences, language behavior, and mobile-navigation enhancement in TypeScript.
-- `src/data/projects.ts` owns canonical project facts, slugs, route helpers, action destinations, preview/case-study availability, and generated project metadata.
-- `src/data/professional.ts` owns typed professional roles, project history, and skills.
-- `src/data/integrations.ts` owns the typed WizardGang-facing integration taxonomy, capability identifiers, and evidence relationships.
-- `src/data/professional-systems.ts` owns employer/customer deployment and historical professional-system references; production company UI does not consume it as a second integration catalog.
-- `src/data/team.ts` owns the current typed WizardGang team-member relationship.
-- `src/data/solutions.ts` owns canonical Solutions facts, website packages, the Demo Framework process model, and the external demo boundary.
-- `src/data/site.ts` and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
-- `src/components/ProjectSurfaces.tsx` owns the common project-card, header, action, fact, architecture, and preview-frame presentation contract; project-specific previews and long-form case-study narrative remain separate.
-- `src/pages/` owns every canonical production page body in React/TypeScript, including project-specific technical narrative.
-- `src/app/pageRegistry.ts` is the typed output/route registry for the current 19 canonical static HTML files.
-- `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
-- `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
-- `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
-- `tsconfig.json` defines strict checking for new TypeScript and TSX sources.
-- `scripts/` contains repeatable build, local-development, verification, and maintenance commands.
-- `tests/` contains automated acceptance and development-control tests.
+```text
+src/
+  app/         document, contracts, navigation, canonical page registry
+  browser/     progressive enhancement
+  components/  shared presentation
+  data/        typed content authorities
+  pages/       canonical React page bodies
+  styles/      production CSS
+  worker/      Cloudflare runtime routing
+scripts/       build, local development, verification, maintenance
+tests/         repository acceptance
+public/        deployable static assets and production headers
+docs/          current operating and architecture documentation
+```
 
-## Documentation & evidence
+Key authorities:
 
-- [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, standardized project presentation, Solutions → Websites / Demo Framework, and the WG-048 route-retirement policy are implemented.
-- [Governance record](docs/COMPLIANCE.md)
-- [Accessibility record](docs/ACCESSIBILITY.md)
-- [Security reporting](SECURITY.md)
-- [Architecture and assurance evidence](https://demo.wizardgang.ai/assurance)
+- `src/app/pageRegistry.ts` — generated page inventory.
+- `src/app/navigation.ts` — primary navigation and current-section model.
+- `src/data/projects.ts` — project facts, routes, actions, and metadata.
+- `src/data/integrations.ts` — company integration capability.
+- `src/data/team.ts`, `src/data/professional.ts`, and `src/data/professional-systems.ts` — people, career history, and attributed professional evidence.
+- `src/data/solutions.ts` — Websites and Demo Framework solution data.
+- `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
+- `src/app/Document.tsx` — static document and metadata composition.
+- `src/worker/index.ts` — compatibility/runtime routing.
+- `vite.config.ts` — static build pipeline.
+- `wrangler.jsonc` — local/staging/production Cloudflare configuration.
+
+## Documentation
+
+- [Current information and technical architecture](docs/INFORMATION-ARCHITECTURE.md)
+- [Source and system ownership](docs/OWNERSHIP.md)
+- [Accessibility](docs/ACCESSIBILITY.md)
+- [Compliance management record](docs/COMPLIANCE.md)
+- [Security policy](SECURITY.md)
 
 ## Deployment
 
-Cloudflare configuration lives in `wrangler.jsonc`. Local development uses the base configuration with `wrangler dev --local`; it does not deploy or select the staging or production environments. Use the production dry run before a release:
+Cloudflare environments are defined in `wrangler.jsonc`. Validate deploy packaging without publishing:
 
 ```bash
+npm run deploy:staging:dry-run
 npm run deploy:production:dry-run
 ```
 
-## Shared Cloudflare token rotation
-
-Preview every active repository or protected environment that stores or references the shared GitHub Actions token:
-
-```bash
-npm run secrets:cloudflare:discover
-```
-
-Rotate all discovered targets in one interactive pass:
-
-```bash
-npm run secrets:cloudflare:rotate
-```
-
-The rotation command requires authenticated `gh`, plus `jq` and `curl`. It reads the token twice without echo, validates it with Cloudflare, displays every target, and requires an explicit `ROTATE` confirmation. The token is never written to disk or passed as a command-line argument. Use `npm run secrets:cloudflare:rotate -- --dry-run` for a read-only preview.
+Real staging or production deployment is a separate release action and is not part of `npm run check`.

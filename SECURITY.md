@@ -2,23 +2,22 @@
 
 ## Supported surface
 
-Security reports for the current `wizardgang.ai` site and its stateless compatibility Worker
-are accepted. SharkTank, Hexframe, and YarReader are separate products; report product-specific
-issues through their canonical public repositories or operating sites.
+Security reports are accepted for the current `wizardgang.ai` site and its stateless TypeScript compatibility Worker.
+
+SharkTank, Hexframe, YarReader, and the detailed Demo Framework application are separate system boundaries. Report product-specific issues through the owning repository or operating surface.
 
 ## Report privately
 
-Email `jacob@wizardgang.ai` with the affected URL, impact, and minimal reproduction steps.
-Please do not open a public issue for an unpatched vulnerability and do not include passwords,
-private records, credentials, destructive proof, or data belonging to another person.
+Email `jacob@wizardgang.ai` with the affected URL, impact, and minimal safe reproduction steps.
 
-Reports are reviewed by Jacob Yongue. A useful report identifies the affected surface, explains the
-expected and observed behavior, and includes a safe proof when one is available.
+Do not open a public issue for an unpatched vulnerability. Do not include passwords, credentials, private records, destructive proof, or data belonging to another person.
 
 ## Site boundary
 
-The site serves generated HTML, CSS, a first-party preferences script, and public media through
-Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, or form submissions.
-Security headers, automated release checks, a development deployment, versioned source, and rollback
-reduce the public attack surface. These controls reduce risk; they do not guarantee that defects or
-incidents cannot occur.
+WizardGang.ai serves generated static HTML, CSS, a first-party browser module, public media, and `version.json` through Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, or form submissions.
+
+`public/_headers` is the production HTTP-header authority. It includes the production Content Security Policy and HTTPS-only controls. Local HTTP development never edits that source file; the dev lifecycle sanitizes only the generated `dist/_headers` copy by removing HSTS and `upgrade-insecure-requests`.
+
+The browser architecture does not require inline application scripts or React hydration. First-party browser behavior is emitted as a Vite module from `src/browser/`.
+
+Automated checks, source review, dry-run/staging validation, versioned source, and rollback options reduce risk but do not guarantee that defects or incidents cannot occur.

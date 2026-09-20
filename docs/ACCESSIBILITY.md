@@ -1,42 +1,47 @@
-# WizardGang accessibility record
+# WizardGang accessibility
 
-Effective date: 2026-08-30 (America/New_York)
+Scope: canonical pages served from `wizardgang.ai`, including shared navigation, display preferences, project previews, site content, and Glossary. Detailed architecture/assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
 
-Scope: canonical pages served from `wizardgang.ai`, including shared navigation, preferences,
-project previews, site content, and Glossary. Architecture compliance and assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
+Target: WCAG 2.2 Level AA for scoped content. This is a design and testing target, not an accessibility certification or blanket conformance claim.
 
-Target: WCAG 2.2 Level AA for all scoped content. This is a route-by-route design and testing target,
-not an accessibility certification or blanket conformance claim.
+## Current contract
 
-## Release checks
+The site is expected to preserve:
 
-- semantic landmarks, heading order, lists, tables, labels, and link names;
-- keyboard navigation, skip link, focus order, visible focus, and button-controlled mobile navigation with an available no-JavaScript fallback;
-- dark and light contrast, color-independent meaning, and 200% text and 400% browser-zoom reflow;
-- decorative-preview exclusion from the accessibility tree and adjacent project descriptions;
-- play-by-default preview motion, a persistent pause/play control, operating-system reduced-motion behavior, and flash rate;
-- minimum target size and spacing for links, controls, and disclosures;
-- English and Spanish page-language behavior;
-- canonical routes, alternate paths, sitemap, titles, and error pages; and
-- architecture assurance evidence linked from the dedicated demo compliance index.
+- semantic landmarks and logical heading order;
+- one meaningful H1 and a usable `main` landmark per generated page;
+- keyboard-operable navigation and controls;
+- early skip navigation and visible focus;
+- a real button-controlled mobile menu when JavaScript is active;
+- primary mobile navigation that remains usable when JavaScript is unavailable;
+- descriptive link/control names and current-section navigation state;
+- dark/light display support and color-independent meaning;
+- 200% text support and responsive reflow;
+- play-by-default preview motion, reduced-motion handling, and a persistent project-preview motion preference;
+- decorative project previews excluded from the accessibility tree while adjacent text/links carry the meaning;
+- explicit image alternative-text semantics;
+- English/Spanish page-language behavior;
+- stable metadata, error-page, and canonical-route semantics.
 
-Run the focused deterministic accessibility contract with `npm run test:accessibility`; `npm run check`
-also includes it through the complete acceptance corpus. The structural contract is applied to the generated
-HTML inventory so new canonical output automatically receives the baseline checks.
+Run the deterministic accessibility acceptance directly with:
 
-Automated checks support the review but do not replace keyboard, screen-reader, zoom, contrast, or
-visual inspection. Project previews are decorative and hidden from the accessibility tree; project
-names, descriptions, and destination-specific links carry the useful content.
+```bash
+npm run test:accessibility
+```
+
+`npm run check` includes the same contract as part of the complete repository acceptance suite. Structural checks run across the generated HTML inventory so new generated pages receive the baseline automatically.
+
+Automated tests do not replace keyboard, screen-reader, zoom/reflow, contrast, and visual review.
+
+## Current limitations and follow-up
+
+Known areas for continued content/accessibility improvement include:
+
+- completing Spanish translation and explicit language marking for remaining technical names;
+- adding first-use glossary links for unusual technical terms where useful;
+- providing simpler alternatives for advanced professional and case-study passages; and
+- adding pronunciation help when a name or term cannot reasonably be inferred from spelling.
 
 ## Reporting
 
-Report an accessibility problem by emailing `jacob@wizardgang.ai` with the affected page,
-browser or assistive technology when relevant, the observed problem, and reproduction steps. Do not
-include passwords or private records.
-
-## Known open work
-
-- complete Spanish translation and explicit language marking for remaining technical names;
-- more first-use links from unusual technical terms to the glossary;
-- simpler alternatives for advanced professional and case-study passages; and
-- pronunciation help where a name or term cannot be inferred from spelling.
+Report an accessibility problem to `jacob@wizardgang.ai`. Include the affected page, browser or assistive technology when relevant, observed behavior, and safe reproduction steps. Do not include passwords, credentials, or private records.
