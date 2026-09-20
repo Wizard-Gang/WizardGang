@@ -54,6 +54,11 @@ function WorkEntry({ project }: { project: ProjectRecord }) {
       </section>
 
       <section className="case-section">
+        <div className="case-label">Approach</div>
+        <div><p>{project.engineering}</p></div>
+      </section>
+
+      <section className="case-section">
         <div className="case-label">Result</div>
         <div>
           <p>{project.result}</p>

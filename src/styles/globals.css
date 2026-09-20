@@ -186,11 +186,22 @@ body:has(#theme-light:checked) {
     var(--ink);
 }
 
+body:has(#theme-light:checked) .home-statement-card,
+body:has(#theme-light:checked) :where(.project-card, .service-package, .glossary-list > div) {
+  background: var(--panel);
+}
+
 body:has(#theme-light:checked) .button:not(.button-primary),
 body:has(#theme-light:checked) .display-settings fieldset label,
 body:has(#theme-light:checked) .setting-toggle,
 body:has(#theme-light:checked) .display-settings select {
   background: #fffdf7;
+}
+
+body:has(#theme-light:checked) .professional-main {
+  --professional-accent: #345b50;
+  --professional-panel: #f2f6f5;
+  --professional-line: #56666a;
 }
 
 .wordmark {
@@ -532,7 +543,7 @@ h1 span { color: var(--muted); }
   .case-visual { margin-bottom: 4rem; }
   .case-section { padding: 3.4rem 0; }
   .built-list,
-  .architecture { grid-template-columns: 1fr; }
+.architecture { grid-template-columns: 1fr; }
   .site-footer { display: block; }
   .site-footer span { display: block; margin-bottom: .35rem; }
 }
@@ -1612,22 +1623,22 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
 
 @media (prefers-reduced-motion: reduce) {
   .tank-fish,
-  .tank-food-eat,
-  .tank-rocket-shot,
-  .tank-rocket-burst,
-  .tank-dash-trail,
-  .tank-rocket-flame,
-  .tank-ability,
-  .lab-playhead,
-  .lab-idle,
-  .lab-dummy,
-  .lab-dummy-body,
-  .lab-contact,
-  .lab-bone,
-  .lab-pelvis,
-  .lab-hit-window,
-  .lab-hp-p2,
-  .lab-health-number { animation: none !important; }
+.tank-food-eat,
+.tank-rocket-shot,
+.tank-rocket-burst,
+.tank-dash-trail,
+.tank-rocket-flame,
+.tank-ability,
+.lab-playhead,
+.lab-idle,
+.lab-dummy,
+.lab-dummy-body,
+.lab-contact,
+.lab-bone,
+.lab-pelvis,
+.lab-hit-window,
+.lab-hp-p2,
+.lab-health-number { animation: none !important; }
 
   .tank-fish-you { transform: translate(42px, -8px); }
   .tank-dash-trail { opacity: .72; transform: translateX(-20px); }
@@ -1638,7 +1649,7 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   .lab-contact { opacity: 1; transform: scale(1); }
   .lab-hp-p2 { width: 97%; }
   .lab-health-1000,
-  .lab-health-950 { opacity: 0; }
+.lab-health-950 { opacity: 0; }
   .lab-health-970 { opacity: 1; }
 
   /* The two takes cross-fade on a shared cycle; with the animation stopped they would
@@ -1673,6 +1684,26 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   white-space: normal;
 }
 
+.reference-cloud li:not(:last-child)::after,
+.capability-cloud li:not(:last-child)::after {
+  content: "·";
+  margin-left: 1.05rem;
+  color: var(--quiet);
+}
+
+.proof-group .reference-cloud li:not(:last-child)::after,
+.proof-group .capability-cloud li:not(:last-child)::after {
+  margin-left: .75rem;
+}
+
+@media (max-width: 560px) {
+
+  .reference-cloud li:not(:last-child)::after,
+.capability-cloud li:not(:last-child)::after {
+    margin-left: .7rem;
+  }
+}
+
 /* Company-first site structure */
 .wordmark-copy {
   display: grid;
@@ -1691,17 +1722,29 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
 }
 
 /* The cards show the same animated previews the case studies use. The previews are
-   authored for a full-width stage {
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-  border-bottom: 1px solid var(--line);
-}
+   authored for a full-width stage, so inside a card the dense chrome that would be
+   unreadable at this size is dropped and the moving part is what stays. */
+
+/* SharkTank: retain the compact leaderboard as context while trimming the controls. */
 
 /* Hexframe: keep the stage and the frame timelines; the marketing header is redundant
-   beside the card copy { grid-template-rows: minmax(0, 1fr) auto auto; }
+   beside the card copy, and the legend duplicates what the boxes already show. */
 
-/* Five roles: three on the first row { grid-column: span 3; }
+/* The health bars are sized for a full-width stage; at card width they would run into
+   the readouts beside them. */
+
+/* YarReader: the library grid is the point; the filter rows are not readable this small. */
+
+/* Five roles: three on the first row, two stretched across the second so no cell is
+   left showing the grid line. Revisit the spans if the role count changes. */
+
+.showcase-hero > p:not(.kicker) {
+  max-width: 800px;
+  margin: 0 0 2rem;
+  color: var(--muted);
+  font-size: var(--text-h2);
+  line-height: 1.25;
+}
 
 .service-packages {
   padding: clamp(4rem, 8vw, 7rem) 0;
@@ -1731,6 +1774,23 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   color: var(--muted);
 }
 
+.service-stack article:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -1rem;
+  z-index: 2;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--ink);
+  color: var(--acid);
+  content: "→";
+  font-weight: 900;
+  transform: translateY(-50%);
+}
+
 .yar-art {
   --cover-x: 0%;
   --cover-y: 0%;
@@ -1758,14 +1818,21 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
 
 @media (max-width: 760px) {
   .service-packages > header { grid-template-columns: 1fr; }
+  .service-stack article:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -1rem;
+    content: "↓";
+    transform: translateX(50%);
+  }
 }
 
-body:has(#reading-layout:checked) :where(.site-main {
+body:has(#reading-layout:checked) :where(.site-main, .case-main) p {
   max-width: 72ch;
   line-height: 1.7;
 }
 
-body:has(#reading-layout:checked) :where(.site-main {
+body:has(#reading-layout:checked) :where(.site-main, .case-main) p + p {
   margin-top: 1.5em;
 }
 
@@ -1777,16 +1844,46 @@ html:has(#text-size-200:checked) :where(h1, h2, h3) {
 
 html:has(#text-size-200:checked) :where(
   .site-header,
-.settings-toolbar,
-.site-footer,
-.case-section,
-.experience-grid,
-.service-packages > header {
+  .settings-toolbar,
+  .hero,
+  .section-heading,
+  .project-card-grid,
+  .track-grid,
+  .project-card,
+  .selected-work-grid,
+  .services-teaser-copy,
+  .service-package-grid,
+  .capabilities .capability-grid,
+  .about-teaser,
+  .contact-band,
+  .site-footer,
+  .case-hero,
+  .showcase-overview,
+  .case-section,
+  .project-depth,
+  .professional-hero,
+  .professional-section-heading,
+  .experience-grid,
+  .systems-resume-section > header,
+  .systems-resume-grid,
+  .services-hero,
+  .service-packages > header,
+  .service-ownership > header,
+  .service-cost,
+  .service-handoff,
+  .service-process > header,
+  .service-package-grid,
+  .service-process-grid,
+  .service-stack,
+  .service-growth,
+  .about-principles,
+  .accessibility-section,
+  .glossary-list > div
+) {
   grid-template-columns: 1fr;
 }
 
-html:has(#text-size-200:checked) :where(.site-header,
-.site-footer) {
+html:has(#text-size-200:checked) :where(.site-header, .section-heading, .services-teaser-copy, .contact-band, .site-footer) {
   align-items: flex-start;
   flex-direction: column;
 }
@@ -1796,9 +1893,30 @@ html:has(#text-size-200:checked) .settings-toolbar {
   flex-direction: column;
 }
 
+html:has(#text-size-200:checked) .section-heading > div {
+  width: 100%;
+  min-width: 0;
+}
+
 html:has(#text-size-200:checked) .site-nav {
   max-width: none;
   justify-content: flex-start;
+}
+
+html:has(#text-size-200:checked) .hero,
+html:has(#text-size-200:checked) .professional-hero,
+html:has(#text-size-200:checked) .services-hero {
+  min-height: auto;
+}
+
+html:has(#text-size-200:checked) .project-card {
+  grid-template-rows: 22rem auto;
+}
+
+html:has(#text-size-200:checked) .project-card-visual {
+  min-height: 22rem;
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
 }
 
 html:has(#text-size-200:checked) .yar-grid {
@@ -1811,9 +1929,37 @@ html:has(#text-size-200:checked) .yar-body span {
   white-space: normal;
 }
 
+html:has(#text-size-200:checked) .service-package {
+  min-width: 0;
+}
+
+html:has(#text-size-200:checked) .service-package header {
+  flex-wrap: wrap;
+}
+
+html:has(#text-size-200:checked) .selected-work-grid article,
+html:has(#text-size-200:checked) .selected-work-grid article:nth-child(4),
+html:has(#text-size-200:checked) .selected-work-grid article:nth-child(5) {
+  grid-column: auto;
+}
+
 html:has(#text-size-200:checked) .architecture,
-html:has(#text-size-200:checked) .built-list {
+html:has(#text-size-200:checked) .built-list,
+html:has(#text-size-200:checked) .skill-columns,
+html:has(#text-size-200:checked) .principle-grid {
   grid-template-columns: 1fr;
+}
+
+html:has(#text-size-200:checked) :where(
+  .reference-cloud li,
+  .capability-cloud li,
+  .reference-cloud a,
+  .skill-columns .tags li
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 html:has(#text-size-200:checked) :where(
@@ -1846,36 +1992,104 @@ html:has(#text-size-200:checked) :where(
 
 html:has(#text-size-200:checked) :where(
   .button,
-.text-link,
-.button-row {
+  .text-link,
+  .button-row,
+  .about-local-nav,
+  .team-grid,
+  .team-card,
+  .project-card-actions,
+  .project-card-copy,
+  .selected-work-grid article,
+  .capabilities .capability-grid article,
+  .about-teaser > *,
+  .contact-band > *
+) {
   min-width: 0;
   max-width: 100%;
 }
 
 html:has(#text-size-200:checked) :where(
   .button,
-.text-link {
+  .text-link,
+  .services-hero h1 span
+) {
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
-/* At 200% text,
-.service-packages {
+html:has(#text-size-200:checked) :where(
+  .hero-identity,
+  .hero-side,
+  .home-statement-card,
+  .selected-work-grid article,
+  .capabilities .capability-grid article,
+  .contact-band
+) {
   min-width: 0;
   max-width: 100%;
 }
 
-li,
-h1,
-h2,
-h3,
-strong,
-span
+html:has(#text-size-200:checked) :where(
+  .home-statement-card > p,
+  .hero-side > p,
+  .selected-work-grid p,
+  .selected-work-grid strong,
+  .capabilities .capability-grid p,
+  .contact-band > p,
+  .project-card-copy p
 ) {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
   white-space: normal;
+}
+
+/* At 200% text, translated Services copy must be allowed to contribute a
+   shrinkable min-content width instead of widening the root layout. */
+html:has(#text-size-200:checked) :where(
+  .services-main,
+  .service-packages,
+  .service-ownership,
+  .service-handoff,
+  .service-process,
+  .service-growth,
+  .service-notes,
+  .service-package-grid,
+  .service-process-grid,
+  .service-package,
+  .service-package header,
+  .service-package ul,
+  .service-package li,
+  .service-statement,
+  .service-stack,
+  .service-stack article,
+  .service-cost
+) {
+  min-width: 0;
+  max-width: 100%;
+}
+
+html:has(#text-size-200:checked) .services-main :where(
+  p,
+  li,
+  h1,
+  h2,
+  h3,
+  strong,
+  span
+) {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+/* Solutions presentation. The company site stays explanatory; the external architecture demo owns the interactive depth. */
+
+html:has(#text-size-200:checked) .solution-card-grid,
+html:has(#text-size-200:checked) .solution-process-list,
+html:has(#text-size-200:checked) .solution-area-grid {
+  grid-template-columns: 1fr;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2020,6 +2234,10 @@ span
 
 :where(.button, .nav-toggle, .display-settings select, .display-settings fieldset label, .setting-toggle) {
   border-radius: var(--radius-sm);
+}
+
+:where(.project-card, .track-grid article, .capability-grid article, .team-card, .service-package, .glossary-list > div) {
+  border-radius: var(--radius-md);
 }
 
 @media (max-width: 760px) {

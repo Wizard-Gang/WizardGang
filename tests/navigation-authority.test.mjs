@@ -6,9 +6,10 @@ import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigatio
 import { CANONICAL_PAGES, anchors, generatedHtmlFiles, linkByRel, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expectedNavigation = [
+  { key: "work", href: "/work/", label: "Work" },
+  { key: "services", href: "/services/", label: "Services" },
   { key: "about", href: "/about/", label: "About" },
-  { key: "software", href: "/software/", label: "Software" },
-  { key: "solutions", href: "/solutions/", label: "Solutions" }
+  { key: "contact", href: "/contact/", label: "Contact" }
 ];
 
 test("typed company navigation is exact and current-section matching is centralized", () => {
@@ -16,20 +17,15 @@ test("typed company navigation is exact and current-section matching is centrali
 
   const cases = new Map([
     ["/", ""],
+    ["/work/", "work"],
+    ["/services/", "services"],
     ["/about/", "about"],
-    ["/about/company/", "about"],
-    ["/about/team/", "about"],
+    ["/contact/", "contact"],
+    ["/software/", ""],
+    ["/software/projects/sharktank/", ""],
+    ["/solutions/", ""],
     ["/about/team/jacob/", "about"],
-    ["/software/", "software"],
-    ["/software/integrations/", "software"],
-    ["/software/projects/sharktank/", "software"],
-    ["/solutions/", "solutions"],
-    ["/solutions/websites/", "solutions"],
-    ["/solutions/demo-framework/", "solutions"],
     ["/projects/", ""],
-    ["/projects/sharktank/", ""],
-    ["/work/", ""],
-    ["/services/", ""],
     ["/glossary/", ""]
   ]);
 

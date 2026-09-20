@@ -12,9 +12,10 @@ import {
 } from "./helpers.mjs";
 
 const navDestinations = new Map([
+  ["Work", "/work/"],
+  ["Services", "/services/"],
   ["About", "/about/"],
-  ["Software", "/software/"],
-  ["Solutions", "/solutions/"]
+  ["Contact", "/contact/"]
 ]);
 
 function normalizedVisible(anchor) {
@@ -22,9 +23,10 @@ function normalizedVisible(anchor) {
 }
 
 function currentNavDestination(relative) {
+  if (relative.startsWith("work/")) return "/work/";
+  if (relative.startsWith("services/")) return "/services/";
   if (relative.startsWith("about/")) return "/about/";
-  if (relative.startsWith("software/")) return "/software/";
-  if (relative.startsWith("solutions/")) return "/solutions/";
+  if (relative.startsWith("contact/")) return "/contact/";
   return null;
 }
 
@@ -149,10 +151,10 @@ test("shared shell is protected by semantics rather than serialized markup", asy
         assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
         assert.equal(currentLinks[0].href, currentExpected);
       } else {
-        assert.equal(currentLinks.length, 0, "pages outside the three primary sections must not claim a current company section");
+        assert.equal(currentLinks.length, 0, "a page outside the primary sections must not claim one");
       }
 
-      for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
+      for (const retiredLabel of ["Software", "Solutions", "Projects", "Glossary", "GitHub"]) {
         assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
       }
 
@@ -243,18 +245,18 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  for (const relative of ["index.html", "software/projects/index.html", "software/projects/sharktank/index.html", "software/projects/hexframe/index.html", "software/projects/yarreader/index.html"]) {
+  for (const relative of ["index.html", "work/index.html"]) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
-    assert.ok(decorative.length >= (relative.endsWith("index.html") && ["index.html", "software/projects/index.html"].includes(relative) ? 3 : 1), `${relative}: preview must remain decorative and inert`);
+    assert.equal(decorative.length, 3, `${relative}: every preview must remain decorative and inert`);
     for (const preview of decorative.filter(({ attrs }) => attrs.has("data-preview-id"))) {
       assert.ok(["motion-controlled", "static"].includes(preview.attrs.get("data-preview-kind")), `${relative}: preview kind must be explicit`);
       assert.ok(["product-recreation", "synthetic-demo"].includes(preview.attrs.get("data-preview-fixture")), `${relative}: preview fixture must be explicit`);
     }
   }
-  const projects = await readDist("software/projects/index.html");
-  assert.doesNotMatch(projects, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
-  assert.doesNotMatch(projects, /<text\b/i, "decorative SVG previews must not duplicate text content");
+  const work = await readDist("work/index.html");
+  assert.doesNotMatch(work, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
+  assert.doesNotMatch(work, /<text\b/i, "decorative SVG previews must not duplicate text content");
 });
 
 test("CSS exposes preference behavior, mobile open state, target sizing, reduced motion, and safe preview flashing", async () => {

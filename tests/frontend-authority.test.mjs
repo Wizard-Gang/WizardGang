@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { projectCaseStudyMetadata, projectOverviewMetadata, projectRoutes, projects } from "../src/data/projects.ts";
+import { projectPath, projects } from "../src/data/projects.ts";
 import { professionalProjects, professionalRoles, professionalSkills } from "../src/data/professional.ts";
 import { deployments, professionalIntegrationEvidence, professionalSystemEvidence } from "../src/data/professional-systems.ts";
 import { CANONICAL_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
@@ -22,8 +22,6 @@ const retiredAuthorities = [
   "src/portfolio-cleanup.css",
   "src/app/foundation/main.tsx",
   "scripts/verify-frontend-foundation.mjs",
-  "src/pages/Work.tsx",
-  "src/pages/Services.tsx",
   "src/data/services.ts"
 ];
 
@@ -99,22 +97,16 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   for (const authority of [
     "HOME_PAGE",
-    "createProjectPageDefinitions",
-    "WEBSITES_SOLUTION_PAGE",
-    "DEMO_FRAMEWORK_PAGE",
+    "WORK_PAGE",
+    "SERVICES_PAGE",
     "ABOUT_PAGE",
-    "COMPANY_PAGE",
-    "TEAM_PAGE",
-    "JACOB_TEAM_PAGE",
-    "SOFTWARE_PAGE",
-    "SOLUTIONS_PAGE",
-    "GLOSSARY_PAGE",
+    "CONTACT_PAGE",
     "NOT_FOUND_PAGE"
   ]) {
     assert.ok(registry.includes(authority), `typed page registry is missing ${authority}`);
   }
   assert.match(registry, /Duplicate generated route/, "typed registry must reject duplicate output locations");
-  assert.doesNotMatch(registry, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must not return as a canonical renderer");
+  assert.doesNotMatch(registry, /pages\/(?:Projects|Solutions|Glossary|CompanyNavigation)/, "retired page modules must not return to the registry");
 
   assert.match(document, /renderToStaticMarkup/, "canonical documents must be complete static React HTML");
   assert.match(document, /createStaticPageRegistry/, "Document must render from the typed page registry");
@@ -129,22 +121,14 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   const expected = new Set([
     "index.html",
-    "software/projects/index.html",
-    ...projectRoutes,
+    "work/index.html",
+    "services/index.html",
     "about/index.html",
-    "about/company/index.html",
-    "about/team/index.html",
-    "about/team/jacob/index.html",
-    "software/index.html",
-    "software/integrations/index.html",
-    "solutions/index.html",
-    "solutions/websites/index.html",
-    "solutions/demo-framework/index.html",
-    "glossary/index.html",
+    "contact/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 19, "WG-056 establishes canonical Websites and Demo Framework pages under Solutions");
+  assert.equal(expected.size, 6, "WG-063 cuts the public site to five canonical pages plus the generated 404");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
@@ -166,10 +150,10 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/, "shared chrome must consume the typed navigation authority");
   assert.match(navigation, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
   assert.match(navigation, /navigationSectionForPath/, "current-section matching must remain centralized");
-  for (const label of ["About", "Software", "Solutions"]) {
+  for (const label of ["Work", "Services", "About", "Contact"]) {
     assert.ok(navigation.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
   }
-  for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
+  for (const retiredLabel of ["Software", "Solutions", "Projects", "Glossary", "GitHub"]) {
     assert.ok(!navigation.includes(`label: "${retiredLabel}"`), `retired top-level navigation item restored: ${retiredLabel}`);
   }
   assert.match(browser, /initializeBrowserBehavior/);
@@ -210,11 +194,9 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
 test("typed data and styling authorities remain singular and internally valid", async () => {
   const slugs = projects.map((project) => project.slug);
   assert.equal(new Set(slugs).size, slugs.length, "project slugs must be unique");
-  const projectMetadataPaths = projects.flatMap((project) => {
-    const caseStudy = projectCaseStudyMetadata(project);
-    return [projectOverviewMetadata(project).path, ...(caseStudy ? [caseStudy.path] : [])];
-  });
-  assert.equal(new Set(projectMetadataPaths).size, projectMetadataPaths.length, "project metadata paths must be unique");
+  const projectPaths = projects.map((project) => projectPath(project.slug));
+  assert.equal(new Set(projectPaths).size, projectPaths.length, "project paths must be unique");
+  for (const path of projectPaths) assert.match(path, /^\/work\/#[a-z]+$/, "a project is an anchor on the work page");
   for (const project of projects) {
     assertHttpsUrl(project.sourceUrl, `${project.slug} sourceUrl`);
     if (project.liveUrl) assertHttpsUrl(project.liveUrl, `${project.slug} liveUrl`);

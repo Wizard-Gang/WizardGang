@@ -7,46 +7,16 @@ export const dist = resolve(root, "dist");
 
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
+  ["work/index.html", "/work/"],
+  ["services/index.html", "/services/"],
   ["about/index.html", "/about/"],
-  ["about/company/index.html", "/about/company/"],
-  ["about/team/index.html", "/about/team/"],
-  ["about/team/jacob/index.html", "/about/team/jacob/"],
-  ["software/index.html", "/software/"],
-  ["software/integrations/index.html", "/software/integrations/"],
-  ["software/projects/index.html", "/software/projects/"],
-  ["software/projects/sharktank/index.html", "/software/projects/sharktank/"],
-  ["software/projects/hexframe/index.html", "/software/projects/hexframe/"],
-  ["software/projects/yarreader/index.html", "/software/projects/yarreader/"],
-  ["software/projects/sharktank/case-study/index.html", "/software/projects/sharktank/case-study/"],
-  ["software/projects/hexframe/case-study/index.html", "/software/projects/hexframe/case-study/"],
-  ["software/projects/yarreader/case-study/index.html", "/software/projects/yarreader/case-study/"],
-  ["solutions/index.html", "/solutions/"],
-  ["solutions/websites/index.html", "/solutions/websites/"],
-  ["solutions/demo-framework/index.html", "/solutions/demo-framework/"],
-  ["glossary/index.html", "/glossary/"],
+  ["contact/index.html", "/contact/"],
   ["404.html", null]
 ]);
 
-export const SITEMAP_ROUTES = [
-  "/",
-  "/software/",
-  "/software/integrations/",
-  "/software/projects/",
-  "/software/projects/sharktank/",
-  "/software/projects/sharktank/case-study/",
-  "/software/projects/hexframe/",
-  "/software/projects/hexframe/case-study/",
-  "/software/projects/yarreader/",
-  "/software/projects/yarreader/case-study/",
-  "/about/",
-  "/about/company/",
-  "/about/team/",
-  "/about/team/jacob/",
-  "/solutions/",
-  "/solutions/websites/",
-  "/solutions/demo-framework/",
-  "/glossary/"
-];
+export const SITEMAP_ROUTES = ["/", "/work/", "/services/", "/about/", "/contact/"];
+
+export const PROJECT_ANCHORS = ["sharktank", "hexframe", "yarreader"];
 
 export const PROJECT_LINKS = {
   sharktank: {
