@@ -24,6 +24,7 @@ test("typed company navigation is exact and current-section matching is centrali
     ["/software/integrations/", "software"],
     ["/software/projects/sharktank/", "software"],
     ["/solutions/", "solutions"],
+    ["/solutions/websites/", "solutions"],
     ["/solutions/demo-framework/", "solutions"],
     ["/projects/", ""],
     ["/projects/sharktank/", ""],

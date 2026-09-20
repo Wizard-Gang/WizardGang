@@ -3743,3 +3743,102 @@ html:has(#text-size-200:checked) .services-main :where(
   overflow-wrap: anywhere;
   white-space: normal;
 }
+
+
+/* Solutions presentation. The company site stays explanatory; the external architecture demo owns the interactive depth. */
+.solution-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  padding: clamp(3rem, 7vw, 6rem) 0;
+  border-top: 1px solid var(--line);
+}
+
+.solution-card,
+.solution-area-grid article,
+.solution-process-list li {
+  min-width: 0;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.solution-card > span,
+.solution-process-list li > span {
+  color: var(--acid);
+  font: 800 .68rem/1 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.solution-card h2,
+.solution-area-grid h3,
+.solution-process-list h3 {
+  margin: 1.5rem 0 .8rem;
+  overflow-wrap: anywhere;
+}
+
+.solution-card h2 {
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: .95;
+  letter-spacing: -.05em;
+}
+
+.solution-card p,
+.solution-area-grid p,
+.solution-process-list p {
+  color: var(--muted);
+}
+
+.solution-process-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.solution-process-list li {
+  display: flex;
+  flex-direction: column;
+}
+
+.solution-process-list h3 {
+  font-size: 1.2rem;
+}
+
+.solution-process-list p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.solution-area-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: 2rem;
+}
+
+.solution-area-grid h3 {
+  font-size: 1.15rem;
+}
+
+.solution-area-grid p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+html:has(#text-size-200:checked) .solution-card-grid,
+html:has(#text-size-200:checked) .solution-process-list,
+html:has(#text-size-200:checked) .solution-area-grid {
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 760px) {
+  .solution-card-grid,
+  .solution-process-list,
+  .solution-area-grid {
+    grid-template-columns: 1fr;
+  }
+}

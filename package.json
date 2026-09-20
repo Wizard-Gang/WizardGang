@@ -26,7 +26,8 @@
     "test:navigation": "node --test tests/navigation-authority.test.mjs",
     "test:home": "node --test tests/homepage-authority.test.mjs",
     "test:about": "node --test tests/about-authority.test.mjs",
-    "test:integrations": "node --test tests/integration-authority.test.mjs"
+    "test:integrations": "node --test tests/integration-authority.test.mjs",
+    "test:solutions": "node --test tests/solutions-authority.test.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

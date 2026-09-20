@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { projects } from "../src/data/projects.ts";
+import { DEMO_FRAMEWORK_PATH, WEBSITES_SOLUTION_PATH, demoFrameworkSolution, websitesSolution } from "../src/data/solutions.ts";
 import { anchors, linkByRel, metaContent, readDist, tagBlocks, textContent } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -14,6 +15,10 @@ test("homepage source is company-first and consumes existing typed authorities",
 
   assert.match(source, /ProjectCardGrid projects=\{projects\}/);
   assert.match(source, /INTEGRATIONS_PATH/);
+  assert.match(source, /WEBSITES_SOLUTION_PATH/);
+  assert.match(source, /DEMO_FRAMEWORK_PATH/);
+  assert.match(source, /websitesSolution/);
+  assert.match(source, /demoFrameworkSolution/);
   assert.doesNotMatch(source, /professional-systems|systemGroups|integrationGroups|CapabilityList/);
   assert.doesNotMatch(source, /SelectedWorkGrid|HOME_CAPABILITIES/);
   assert.doesNotMatch(source, /SharkTank|Hexframe|YarReader|University of Georgia|Supply Chain Technologies/);
@@ -38,9 +43,14 @@ test("generated homepage presents WizardGang as the subject with one clear hiera
   for (const project of projects) assert.ok(plain.includes(project.name), `homepage missing project ${project.name}`);
 
   const hrefs = new Set(anchors(html).map((anchor) => anchor.href));
-  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "/about/company/", "/about/team/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+  assert.ok(plain.includes(websitesSolution.summary));
+  assert.ok(plain.includes(demoFrameworkSolution.summary));
+
+  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", WEBSITES_SOLUTION_PATH, DEMO_FRAMEWORK_PATH, "/about/", "/about/company/", "/about/team/", "mailto:jacob@wizardgang.ai"]) {
     assert.ok(hrefs.has(href), `homepage missing ${href}`);
   }
+  assert.equal(hrefs.has("/services/"), false, "homepage must not link to the retired Services canonical");
+  assert.equal(hrefs.has("https://demo.wizardgang.ai"), false, "homepage should orient through the canonical Demo Framework page");
 });
 
 test("homepage metadata is company-first and retains the root canonical", async () => {

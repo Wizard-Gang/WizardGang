@@ -2,6 +2,7 @@ import type { ReactPageDefinition } from "../app/contracts";
 import { ProjectCardGrid } from "../components/ProjectSurfaces";
 import { INTEGRATIONS_PATH } from "../data/integrations";
 import { PROJECTS_ROOT_PATH, projects } from "../data/projects";
+import { DEMO_FRAMEWORK_PATH, WEBSITES_SOLUTION_PATH, demoFrameworkSolution, websitesSolution } from "../data/solutions";
 import { CONTACT_EMAIL } from "../data/site";
 
 export const HOME_PAGE: ReactPageDefinition = {
@@ -60,14 +61,14 @@ export const HOME_PAGE: ReactPageDefinition = {
           <article>
             <span>01 / Websites</span>
             <h3>Owner-controlled websites.</h3>
-            <p>The current fixed-scope website offering hands over source, repository, deployment, domain, and documentation.</p>
-            <a className="text-link" href="/services/">View current website offering <span aria-hidden="true">→</span></a>
+            <p>{websitesSolution.summary}</p>
+            <a className="text-link" href={WEBSITES_SOLUTION_PATH}>Explore Websites <span aria-hidden="true">→</span></a>
           </article>
           <article>
             <span>02 / Demo framework</span>
             <h3>Architecture you can inspect.</h3>
-            <p>The WizardGang Architecture Demo remains the detailed executable and evidence surface for the reusable demo framework.</p>
-            <a className="text-link" href="https://demo.wizardgang.ai">Open architecture demo <span aria-hidden="true">↗</span></a>
+            <p>{demoFrameworkSolution.summary}</p>
+            <a className="text-link" href={DEMO_FRAMEWORK_PATH}>Explore Demo Framework <span aria-hidden="true">→</span></a>
           </article>
         </div>
       </section>
