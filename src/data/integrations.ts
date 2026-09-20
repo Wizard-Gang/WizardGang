@@ -1,4 +1,4 @@
-import { projectPath } from "./projects";
+import { projectPath } from "./projects.ts";
 
 export const INTEGRATIONS_PATH = "/software/integrations/" as const;
 

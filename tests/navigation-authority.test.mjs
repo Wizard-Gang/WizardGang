@@ -3,7 +3,7 @@ import test from "node:test";
 import { access } from "node:fs/promises";
 import { resolve } from "node:path";
 import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigation.ts";
-import { CANONICAL_PAGES, anchors, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
+import { CANONICAL_PAGES, anchors, generatedHtmlFiles, linkByRel, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expectedNavigation = [
   { key: "about", href: "/about/", label: "About" },
@@ -45,8 +45,11 @@ test("shared shell consumes company navigation without restoring portfolio-first
 
   assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/);
   assert.match(document, /navigationSectionForPath\(page\.metadata\.path\)/);
+  assert.match(chrome, /type="button"/);
+  assert.match(chrome, /aria-controls=\{MOBILE_NAVIGATION_ID\}/);
   assert.match(browserNavigation, /setAttribute\("aria-expanded"/);
-  assert.match(browserNavigation, /addEventListener\("toggle", syncExpandedState\)/);
+  assert.match(browserNavigation, /toggle\.addEventListener\("click"/);
+  assert.match(browserNavigation, /mobileNav\.hidden/);
 
   for (const retired of [
     '{ key: "projects", href: "/projects/", label: "Projects" }',
@@ -59,7 +62,7 @@ test("shared shell consumes company navigation without restoring portfolio-first
 });
 
 test("every generated page exposes exact desktop/mobile company navigation and approved fallback access", async () => {
-  for (const relative of CANONICAL_PAGES.keys()) {
+  for (const relative of await generatedHtmlFiles()) {
     const html = await readDist(relative);
     const primary = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
     const mobile = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary mobile");
@@ -74,8 +77,9 @@ test("every generated page exposes exact desktop/mobile company navigation and a
       );
     }
 
-    const current = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "page");
-    const route = CANONICAL_PAGES.get(relative);
+    const current = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "location");
+    const canonical = linkByRel(html, "canonical")?.attrs.get("href") ?? "";
+    const route = canonical ? new URL(canonical, "https://wizardgang.ai").pathname : "";
     const expectedCurrent = route ? navigationSectionForPath(route) : "";
     assert.equal(current.length, expectedCurrent ? 1 : 0, `${relative} has incorrect aria-current count`);
     if (expectedCurrent) {

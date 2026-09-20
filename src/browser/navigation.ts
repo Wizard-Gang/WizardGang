@@ -8,44 +8,58 @@ export function isAnchorActivationTarget(target: unknown): boolean {
   return typeof closest === "function" && Boolean(closest.call(target, "a"));
 }
 
-export function setNavigationOpen(disclosure: HTMLDetailsElement | null, open: boolean): void {
-  disclosure?.toggleAttribute("open", open);
+export function setNavigationOpen(
+  toggle: HTMLButtonElement | null,
+  mobileNav: HTMLElement | null,
+  open: boolean
+): void {
+  if (!toggle || !mobileNav) return;
+  toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  mobileNav.hidden = !open;
 }
 
 export function shouldCloseForEscape(key: string, open: boolean): boolean {
   return key === "Escape" && open;
 }
 
+function navigationIsOpen(toggle: HTMLButtonElement): boolean {
+  return toggle.getAttribute("aria-expanded") === "true";
+}
+
 export function initializeNavigation(
   documentRoot: Document,
   matchMediaFn?: (query: string) => MediaQueryList
 ): boolean {
-  const disclosure = documentRoot.querySelector<HTMLDetailsElement>(".nav-disclosure");
+  const disclosure = documentRoot.querySelector<HTMLElement>(".nav-disclosure");
   if (!disclosure) return false;
 
-  const toggle = disclosure.querySelector<HTMLElement>(".nav-toggle");
+  const toggle = disclosure.querySelector<HTMLButtonElement>(".nav-toggle");
   const mobileNav = disclosure.querySelector<HTMLElement>(".site-nav-mobile");
-  const syncExpandedState = (): void => {
-    toggle?.setAttribute("aria-expanded", disclosure.open ? "true" : "false");
-  };
+  if (!toggle || !mobileNav) return false;
 
-  syncExpandedState();
-  disclosure.addEventListener("toggle", syncExpandedState);
+  // Static HTML keeps the mobile navigation visible when JavaScript is unavailable.
+  // Enhancement reveals the real button and collapses the duplicate mobile links.
+  toggle.hidden = false;
+  setNavigationOpen(toggle, mobileNav, false);
 
-  mobileNav?.addEventListener("click", (event) => {
-    if (isAnchorActivationTarget(event.target)) setNavigationOpen(disclosure, false);
+  toggle.addEventListener("click", () => {
+    setNavigationOpen(toggle, mobileNav, !navigationIsOpen(toggle));
+  });
+
+  mobileNav.addEventListener("click", (event) => {
+    if (isAnchorActivationTarget(event.target)) setNavigationOpen(toggle, mobileNav, false);
   });
 
   documentRoot.addEventListener("keydown", (event) => {
-    if (!shouldCloseForEscape(event.key, disclosure.open)) return;
-    setNavigationOpen(disclosure, false);
-    toggle?.focus();
+    if (!shouldCloseForEscape(event.key, navigationIsOpen(toggle))) return;
+    setNavigationOpen(toggle, mobileNav, false);
+    toggle.focus();
   });
 
   if (matchMediaFn) {
     const mobileNavigation = matchMediaFn("(max-width: 760px)");
     mobileNavigation.addEventListener?.("change", (event) => {
-      if (!event.matches) setNavigationOpen(disclosure, false);
+      if (!event.matches) setNavigationOpen(toggle, mobileNav, false);
     });
   }
 

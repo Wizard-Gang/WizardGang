@@ -11,7 +11,7 @@ not an accessibility certification or blanket conformance claim.
 ## Release checks
 
 - semantic landmarks, heading order, lists, tables, labels, and link names;
-- keyboard navigation, skip link, focus order, and visible focus;
+- keyboard navigation, skip link, focus order, visible focus, and button-controlled mobile navigation with an available no-JavaScript fallback;
 - dark and light contrast, color-independent meaning, and 200% text and 400% browser-zoom reflow;
 - decorative-preview exclusion from the accessibility tree and adjacent project descriptions;
 - play-by-default preview motion, a persistent pause/play control, operating-system reduced-motion behavior, and flash rate;
@@ -19,6 +19,10 @@ not an accessibility certification or blanket conformance claim.
 - English and Spanish page-language behavior;
 - canonical routes, alternate paths, sitemap, titles, and error pages; and
 - architecture assurance evidence linked from the dedicated demo compliance index.
+
+Run the focused deterministic accessibility contract with `npm run test:accessibility`; `npm run check`
+also includes it through the complete acceptance corpus. The structural contract is applied to the generated
+HTML inventory so new canonical output automatically receives the baseline checks.
 
 Automated checks support the review but do not replace keyboard, screen-reader, zoom, contrast, or
 visual inspection. Project previews are decorative and hidden from the accessibility tree; project

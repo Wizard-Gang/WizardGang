@@ -14,7 +14,7 @@ export function ProjectActions({ project, surface }: { project: ProjectRecord; s
   const actions = projectActionsFor(project, surface);
   const compact = surface === "card";
   return (
-    <div className={compact ? "project-card-actions" : "button-row"} aria-label={`${project.name} actions`}>
+    <div className={compact ? "project-card-actions" : "button-row"}>
       {actions.map((action) => (
         <a
           className={compact ? "text-link" : `button${action.primary ? " button-primary" : ""}`}

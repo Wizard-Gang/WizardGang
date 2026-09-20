@@ -21,7 +21,7 @@ test("About route family is canonical, shallow, and globally owned by About", as
 
     const primary = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
     assert.ok(primary, `${relative} missing primary navigation`);
-    const current = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "page");
+    const current = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "location");
     assert.equal(current.length, 1, `${relative} must expose one global current item`);
     assert.equal(current[0].href, "/about/");
   }

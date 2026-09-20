@@ -4,7 +4,7 @@ export const NOT_FOUND_PAGE: ReactPageDefinition = {
   relative: "404.html",
   metadata: {
     title: "Not Found — WizardGang",
-    description: "That WizardGang page does not exist.",
+    description: "The requested WizardGang page could not be found. Use the company navigation or browse the canonical software project catalog.",
     path: "/404/",
     noIndex: true
   },

@@ -166,16 +166,24 @@ test("language translation preserves exact and dynamic current behavior", () => 
   assert.equal(translateText(null, "es"), null);
 });
 
-test("navigation helpers preserve link-close and Escape semantics", () => {
-  const disclosure = {
-    open: true,
-    toggleAttribute(name, force) {
-      assert.equal(name, "open");
-      this.open = force;
-    }
+test("navigation helpers preserve button state, link-close and Escape semantics", () => {
+  const attributes = new Map([["aria-expanded", "true"]]);
+  const toggle = {
+    hidden: true,
+    setAttribute(name, value) { attributes.set(name, value); },
+    getAttribute(name) { return attributes.get(name) ?? null; },
+    focus() {}
   };
-  setNavigationOpen(disclosure, false);
-  assert.equal(disclosure.open, false);
+  const mobileNav = { hidden: false };
+
+  setNavigationOpen(toggle, mobileNav, false);
+  assert.equal(attributes.get("aria-expanded"), "false");
+  assert.equal(mobileNav.hidden, true);
+
+  setNavigationOpen(toggle, mobileNav, true);
+  assert.equal(attributes.get("aria-expanded"), "true");
+  assert.equal(mobileNav.hidden, false);
+
   assert.equal(shouldCloseForEscape("Escape", true), true);
   assert.equal(shouldCloseForEscape("Enter", true), false);
   assert.equal(shouldCloseForEscape("Escape", false), false);
@@ -188,26 +196,29 @@ test("navigation enhancement initialization is optional when shell markup is abs
   assert.equal(initializeNavigation({ querySelector() { return null; } }, undefined), false);
 });
 
-test("navigation enhancement synchronizes aria-expanded while native details remain the no-JavaScript authority", () => {
-  const disclosureListeners = new Map();
+test("navigation enhancement upgrades the visible no-JavaScript fallback to a button-controlled menu", () => {
+  const toggleListeners = new Map();
+  const mobileListeners = new Map();
   const documentListeners = new Map();
-  const attributes = new Map();
+  const attributes = new Map([["aria-expanded", "false"]]);
+  let focusCount = 0;
+
   const toggle = {
+    hidden: true,
     setAttribute(name, value) { attributes.set(name, value); },
-    focus() {}
+    getAttribute(name) { return attributes.get(name) ?? null; },
+    addEventListener(type, listener) { toggleListeners.set(type, listener); },
+    focus() { focusCount += 1; }
   };
-  const mobileNav = { addEventListener() {} };
+  const mobileNav = {
+    hidden: false,
+    addEventListener(type, listener) { mobileListeners.set(type, listener); }
+  };
   const disclosure = {
-    open: false,
     querySelector(selector) {
       if (selector === ".nav-toggle") return toggle;
       if (selector === ".site-nav-mobile") return mobileNav;
       return null;
-    },
-    addEventListener(type, listener) { disclosureListeners.set(type, listener); },
-    toggleAttribute(name, force) {
-      assert.equal(name, "open");
-      this.open = force;
     }
   };
   const documentRoot = {
@@ -216,17 +227,26 @@ test("navigation enhancement synchronizes aria-expanded while native details rem
   };
 
   assert.equal(initializeNavigation(documentRoot, undefined), true);
+  assert.equal(toggle.hidden, false, "enhancement reveals the real menu button");
   assert.equal(attributes.get("aria-expanded"), "false");
-  assert.equal(typeof disclosureListeners.get("toggle"), "function");
+  assert.equal(mobileNav.hidden, true, "enhancement collapses the duplicate mobile links initially");
+  assert.equal(typeof toggleListeners.get("click"), "function");
+  assert.equal(typeof mobileListeners.get("click"), "function");
   assert.equal(typeof documentListeners.get("keydown"), "function");
 
-  disclosure.open = true;
-  disclosureListeners.get("toggle")();
+  toggleListeners.get("click")();
   assert.equal(attributes.get("aria-expanded"), "true");
+  assert.equal(mobileNav.hidden, false);
 
-  disclosure.open = false;
-  disclosureListeners.get("toggle")();
+  documentListeners.get("keydown")({ key: "Escape" });
   assert.equal(attributes.get("aria-expanded"), "false");
+  assert.equal(mobileNav.hidden, true);
+  assert.equal(focusCount, 1, "Escape returns focus to the menu button");
+
+  toggleListeners.get("click")();
+  mobileListeners.get("click")({ target: { closest: (selector) => selector === "a" ? {} : null } });
+  assert.equal(attributes.get("aria-expanded"), "false");
+  assert.equal(mobileNav.hidden, true);
 });
 
 test("reduced motion remains the CSS accessibility boundary and overrides preview animation", async () => {

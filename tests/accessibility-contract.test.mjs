@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  CANONICAL_PAGES,
   anchors,
+  generatedHtmlFiles,
   findAnchor,
   readDist,
   readRoot,
@@ -50,8 +50,83 @@ function contrast(a, b) {
   return (bright + 0.05) / (dark + 0.05);
 }
 
+test("every generated page receives baseline structural accessibility checks", async (t) => {
+  const files = await generatedHtmlFiles();
+  const pageTitles = new Map();
+
+  for (const relative of files) {
+    await t.test(relative, async () => {
+      const html = await readDist(relative);
+      const htmlTag = startTags(html, "html")[0];
+      assert.equal(htmlTag?.attrs.get("lang"), "en", "static document language must be declared");
+
+      const titles = tagBlocks(html, "title");
+      assert.equal(titles.length, 1, "page must expose one title");
+      const title = textContent(titles[0].inner);
+      assert.ok(title.length >= 3, "page title must be meaningful");
+      pageTitles.set(relative, title);
+
+      const mains = tagBlocks(html, "main");
+      assert.equal(mains.length, 1, "page must expose one main landmark");
+      assert.equal(mains[0].attrs.get("id"), "main", "shared skip target must stay on the main landmark");
+
+      const h1 = tagBlocks(html, "h1");
+      assert.equal(h1.length, 1, "page must expose exactly one h1");
+      assert.ok(textContent(h1[0].inner).length >= 3, "h1 must be meaningful");
+
+      const headingLevels = [...html.matchAll(/<h([1-6])\b[^>]*>/gi)].map((match) => Number(match[1]));
+      for (let index = 1; index < headingLevels.length; index += 1) {
+        assert.ok(
+          headingLevels[index] <= headingLevels[index - 1] + 1,
+          `heading level skips from h${headingLevels[index - 1]} to h${headingLevels[index]}`
+        );
+      }
+
+      const ids = [...html.matchAll(/\sid=(?:"([^"]+)"|'([^']+)')/gi)].map((match) => match[1] ?? match[2]);
+      assert.equal(new Set(ids).size, ids.length, "duplicate document ids are not allowed");
+      const idSet = new Set(ids);
+
+      const skipIndex = html.indexOf('class="skip-link"');
+      assert.ok(skipIndex >= 0 && skipIndex < html.indexOf("<header") && skipIndex < html.indexOf("<main"), "skip link must appear before header/main content");
+
+      for (const match of html.matchAll(/\stabindex=(?:"(-?\d+)"|'(-?\d+)')/gi)) {
+        assert.ok(Number(match[1] ?? match[2]) <= 0, "positive tabindex is not allowed");
+      }
+
+      for (const anchor of anchors(html)) {
+        assert.doesNotMatch(anchor.href, /^javascript:/i, "javascript: links are not allowed");
+        if (anchor.href.startsWith("#")) {
+          const raw = anchor.href.slice(1);
+          let fragment = raw;
+          try { fragment = decodeURIComponent(raw); } catch {}
+          assert.ok(idSet.has(fragment), `same-page fragment does not resolve: ${anchor.href}`);
+        }
+        assert.doesNotMatch(anchor.inner, /<(?:button|input|select|textarea|summary)\b/i, "links must not contain nested interactive controls");
+      }
+
+      for (const button of tagBlocks(html, "button")) {
+        const name = button.attrs.get("aria-label") || textContent(button.inner);
+        assert.ok(name.trim().length > 0, "buttons require an accessible name");
+        assert.doesNotMatch(button.inner, /<(?:a|input|select|textarea|summary)\b/i, "buttons must not contain nested interactive controls");
+      }
+
+      for (const image of startTags(html, "img")) {
+        assert.ok(image.attrs.has("alt"), "every img requires explicit alt semantics");
+      }
+
+      for (const match of html.matchAll(/\saria-(?:controls|describedby)=(?:"([^"]+)"|'([^']+)')/gi)) {
+        for (const id of (match[1] ?? match[2]).split(/\s+/).filter(Boolean)) {
+          assert.ok(idSet.has(id), `ARIA relationship references missing id ${id}`);
+        }
+      }
+    });
+  }
+
+  assert.equal(new Set(pageTitles.values()).size, pageTitles.size, "canonical pages require distinct document titles");
+});
+
 test("shared shell is protected by semantics rather than serialized markup", async (t) => {
-  for (const relative of CANONICAL_PAGES.keys()) {
+  for (const relative of await generatedHtmlFiles()) {
     await t.test(relative, async () => {
       const html = await readDist(relative);
       const pageAnchors = anchors(html);
@@ -69,23 +144,30 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       }
 
       const currentExpected = currentNavDestination(relative);
-      const currentLinks = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "page");
+      const currentLinks = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "location");
       if (currentExpected) {
         assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
         assert.equal(currentLinks[0].href, currentExpected);
       } else {
-        assert.equal(currentLinks.length, 0, "legacy routes must not claim a company section before they move");
+        assert.equal(currentLinks.length, 0, "pages outside the three primary sections must not claim a current company section");
       }
 
       for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
         assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
       }
 
-      const disclosures = tagBlocks(html, "details");
-      const mobileDisclosure = disclosures.find(({ inner }) => tagBlocks(inner, "nav").some(({ attrs }) => attrs.get("aria-label") === "Primary mobile"));
-      assert.ok(mobileDisclosure, "mobile navigation must remain a native keyboard-operable disclosure");
-      assert.ok(tagBlocks(mobileDisclosure.inner, "summary").some(({ inner }) => /Menu/i.test(textContent(inner))), "mobile navigation disclosure needs a native summary control");
-      const mobile = tagBlocks(mobileDisclosure.inner, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary mobile");
+      const mobileToggle = tagBlocks(html, "button").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("nav-toggle"));
+      assert.ok(mobileToggle, "mobile navigation requires a real button control");
+      assert.equal(mobileToggle.attrs.get("type"), "button");
+      assert.equal(mobileToggle.attrs.get("aria-expanded"), "false");
+      assert.equal(mobileToggle.attrs.get("aria-controls"), "primary-mobile-navigation");
+      assert.ok(mobileToggle.attrs.has("hidden"), "menu button stays hidden until browser enhancement is available");
+      assert.match(textContent(mobileToggle.inner), /Menu/i);
+
+      const mobile = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("id") === "primary-mobile-navigation");
+      assert.ok(mobile, "mobile navigation controlled element is missing");
+      assert.equal(mobile.attrs.get("aria-label"), "Primary mobile");
+      assert.equal(mobile.attrs.has("hidden"), false, "static HTML keeps mobile navigation available without JavaScript");
       for (const [, href] of navDestinations) assert.ok(anchors(mobile.inner).some((anchor) => anchor.href === href), `mobile navigation missing ${href}`);
 
       const home = pageAnchors.find((anchor) => anchor.href === "/" && anchor.attrs.get("aria-label") === "WizardGang home");
@@ -111,7 +193,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
 });
 
 test("language, theme, readable-layout, 200% text, and preview-motion controls remain available on every page", async (t) => {
-  for (const relative of CANONICAL_PAGES.keys()) {
+  for (const relative of await generatedHtmlFiles()) {
     await t.test(relative, async () => {
       const html = await readDist(relative);
       const ids = new Map();
@@ -138,7 +220,7 @@ test("language, theme, readable-layout, 200% text, and preview-motion controls r
 });
 
 test("compact project actions keep destination-specific accessible names without depending on classes", async (t) => {
-  for (const relative of CANONICAL_PAGES.keys()) {
+  for (const relative of await generatedHtmlFiles()) {
     await t.test(relative, async () => {
       const html = await readDist(relative);
       if (relative === "index.html" || relative.startsWith("software/projects/")) {
@@ -184,7 +266,8 @@ test("CSS exposes preference behavior, mobile open state, target sizing, reduced
   assert.match(styles, /body:has\(#play-previews:checked\)\s+\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*running\s*!important(?:;|\})/s);
   assert.match(styles, /html:has\(#text-size-200:checked\)\s*\{[^}]*font-size:\s*200%/s);
   assert.match(styles, /body:has\(#theme-light:checked\)\s*\{/);
-  assert.match(styles, /\.nav-disclosure\[open\]\s+\.site-nav\s*\{[^}]*display:\s*flex/s);
+  assert.match(styles, /\.nav-toggle:not\(\[hidden\]\)\s*\{[^}]*display:\s*inline-flex/s);
+  assert.match(styles, /\.nav-disclosure\s+\.site-nav-mobile:not\(\[hidden\]\)\s*\{[^}]*display:\s*flex/s);
 
   const accessibleTargets = [...styles.matchAll(/min-height:\s*(44|48)px\b/g)];
   assert.ok(accessibleTargets.length >= 6, "interactive controls should retain the current accessible target-size intent");
@@ -222,16 +305,16 @@ test("TypeScript browser source preserves language and persisted display/motion 
     "Español",
     "Jugar",
     "Caso de estudio",
-    "Pautas de Accesibilidad para el Contenido Web",
+    "Accesibilidad",
     "Informar de un problema"
   ]) assert.match(script, new RegExp(signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
   assert.match(script, /storage\.getItem\(STORAGE_KEY\)/);
   assert.match(script, /storage\.setItem\(STORAGE_KEY/);
   assert.match(script, /documentRoot\.documentElement\.lang\s*=\s*locale/);
-  assert.match(script, /shouldCloseForEscape\(event\.key, disclosure\.open\)/);
+  assert.match(script, /shouldCloseForEscape\(event\.key, navigationIsOpen\(toggle\)\)/);
   assert.match(script, /isAnchorActivationTarget\(event\.target\)/);
-  assert.ok((script.match(/setNavigationOpen\(disclosure, false\)/g) || []).length >= 2, "Escape and link activation must close mobile navigation");
+  assert.ok((script.match(/setNavigationOpen\(toggle, mobileNav, false\)/g) || []).length >= 3, "initialization, Escape, link activation, and resize must close mobile navigation");
   for (const key of ["language", "theme", "reading", "text", "motion", "motionExplicit"]) assert.match(script, new RegExp(`\\b${key}\\b`));
   assert.match(script, /controls\.motion\.addEventListener\(["']change["'][\s\S]*motionExplicit\s*=\s*true/);
 });

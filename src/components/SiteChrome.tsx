@@ -8,17 +8,20 @@ const CONTACT_EMAIL = "jacob@wizardgang.ai";
 interface NavigationProps {
   current: CurrentNavSection;
   mobile?: boolean;
+  id?: string;
 }
 
-export function Navigation({ current, mobile = false }: NavigationProps) {
+const MOBILE_NAVIGATION_ID = "primary-mobile-navigation";
+
+export function Navigation({ current, mobile = false, id }: NavigationProps) {
   return (
-    <nav className={mobile ? "site-nav site-nav-mobile" : "site-nav site-nav-desktop"} aria-label={mobile ? "Primary mobile" : "Primary"}>
+    <nav id={id} className={mobile ? "site-nav site-nav-mobile" : "site-nav site-nav-desktop"} aria-label={mobile ? "Primary mobile" : "Primary"}>
       {NAVIGATION_ITEMS.map((item) => (
         <a
           key={item.href}
           href={item.href}
           aria-label={"accessibleName" in item && typeof item.accessibleName === "string" ? item.accessibleName : undefined}
-          aria-current={"key" in item && current === item.key ? "page" : undefined}
+          aria-current={"key" in item && current === item.key ? "location" : undefined}
         >
           {item.label}
         </a>
@@ -37,13 +40,19 @@ export function SiteHeader({ current }: { current: CurrentNavSection }) {
           <span className="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span>
         </a>
         <Navigation current={current} />
-        <details className="nav-disclosure">
-          <summary className="nav-toggle">
+        <div className="nav-disclosure">
+          <button
+            className="nav-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls={MOBILE_NAVIGATION_ID}
+            hidden
+          >
             <span>Menu</span>
             <span className="nav-toggle-icon" aria-hidden="true"><i></i><i></i><i></i></span>
-          </summary>
-          <Navigation current={current} mobile />
-        </details>
+          </button>
+          <Navigation current={current} mobile id={MOBILE_NAVIGATION_ID} />
+        </div>
       </header>
     </>
   );
