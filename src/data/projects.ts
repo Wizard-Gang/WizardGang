@@ -4,10 +4,14 @@ export type ProjectArchitectureItem = readonly [name: string, detail: string];
 export type ProjectPreviewKind = "motion-controlled" | "static";
 export type ProjectPreviewFixture = "product-recreation" | "synthetic-demo";
 
-export const WORK_PATH = "/work/" as const;
+export const SOFTWARE_ROOT = "/software/" as const;
 
-export function projectPath(slug: ProjectSlug): string {
-  return `${WORK_PATH}#${slug}`;
+export function projectPath(slug: ProjectSlug): `/software/${ProjectSlug}/` {
+  return `${SOFTWARE_ROOT}${slug}/`;
+}
+
+export function projectOutputPath(slug: ProjectSlug): `software/${ProjectSlug}/index.html` {
+  return `software/${slug}/index.html`;
 }
 
 export interface ProjectNarrative {
@@ -261,7 +265,7 @@ export function validateProjectRecords(records: readonly ProjectRecord[]): void 
     assertUniqueStrings(project.characteristics, `${project.slug} characteristics`);
 
     const entryPath = projectPath(project.slug);
-    if (!entryPath.startsWith(`${WORK_PATH}#`)) throw new Error(`Invalid canonical project path: ${entryPath}`);
+    if (!entryPath.startsWith(SOFTWARE_ROOT)) throw new Error(`Invalid canonical project path: ${entryPath}`);
     if (routes.has(entryPath)) throw new Error(`Duplicate project route: ${entryPath}`);
     routes.add(entryPath);
 
@@ -285,4 +289,10 @@ export const projectBySlug = new Map<ProjectSlug, ProjectRecord>(
   projects.map((project) => [project.slug, project] as const)
 );
 
-export const projectAnchors = projects.map((project) => `#${project.slug}`);
+/** The Software menu in the primary navigation. */
+export const PROJECT_MENU: readonly { label: string; href: string; accessibleName?: string }[] =
+  projects.map((project) => ({
+    label: project.name,
+    href: projectPath(project.slug),
+    accessibleName: `${project.name} case study`
+  }));

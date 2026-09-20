@@ -16,16 +16,38 @@ const MOBILE_NAVIGATION_ID = "primary-mobile-navigation";
 export function Navigation({ current, mobile = false, id }: NavigationProps) {
   return (
     <nav id={id} className={mobile ? "site-nav site-nav-mobile" : "site-nav site-nav-desktop"} aria-label={mobile ? "Primary mobile" : "Primary"}>
-      {NAVIGATION_ITEMS.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          aria-label={"accessibleName" in item && typeof item.accessibleName === "string" ? item.accessibleName : undefined}
-          aria-current={"key" in item && current === item.key ? "location" : undefined}
-        >
-          {item.label}
-        </a>
-      ))}
+      {NAVIGATION_ITEMS.map((item) => {
+        if (!("items" in item) || !item.items) {
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={current === item.key ? "location" : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        }
+        /* A disclosure, not a scripted menu: it opens with the keyboard and
+           without JavaScript, and every destination is a real link underneath. */
+        return (
+          <details className="nav-menu" key={item.key}>
+            <summary aria-current={current === item.key ? "location" : undefined}>
+              {item.label}
+              <span className="nav-menu-caret" aria-hidden="true">
+                <svg viewBox="0 0 16 16" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </summary>
+            <ul>
+              {item.items.map((entry) => (
+                <li key={entry.href}>
+                  <a href={entry.href} aria-label={entry.accessibleName}>{entry.label}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        );
+      })}
     </nav>
   );
 }
