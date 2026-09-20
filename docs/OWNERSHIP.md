@@ -1,42 +1,39 @@
-# Public source ownership
+# Source and system ownership
 
-Effective date: 2026-08-29 (America/New_York)
+This repository owns the public `wizardgang.ai` company site. Product runtimes and their operating records remain separate systems with their own source authorities.
 
-WizardGang is the site boundary. Product implementations, operational controls, tests,
-reconstruction evidence, and releases belong to their canonical public repositories.
+| Surface | Canonical source | This repository's relationship |
+| --- | --- | --- |
+| `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | Owns company pages, typed site data, project metadata/presentation, static assets, canonical route generation, and the stateless compatibility Worker |
+| `sharktank.wizardgang.ai` | [`Wizard-Gang/SharkTank`](https://github.com/Wizard-Gang/SharkTank) | Main site describes and links to the product; SharkTank owns its runtime, APIs, data, controls, evidence, releases, and deployment |
+| `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | Main site describes and links to the product; Hexframe owns its runtime, simulation, content, tests, releases, and deployment |
+| YarReader offline product | [`Wizard-Gang/YarReader`](https://github.com/Wizard-Gang/YarReader) | Main site describes and links to the project; YarReader owns ingestion, conversion, offline export/reader behavior, tests, releases, and recovery records |
+| `demo.wizardgang.ai` | external Demo Framework application | Main site explains the framework and links outward; the demo system owns its detailed architecture, executable demonstrations, assurance/security surfaces, and operational evidence |
 
-| Surface | Canonical source | Public release at verification | Ownership |
-| --- | --- | --- | --- |
-| `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | `main` | Static company site, project metadata, presentation assets, and temporary stateless compatibility routes |
-| `sharktank.wizardgang.ai` | [`Wizard-Gang/SharkTank`](https://github.com/Wizard-Gang/SharkTank) | `v1.2.0` | Runtime, Cloudflare infrastructure, Durable Objects, WebSockets, APIs, security, operations, governance, evidence, tests, and deployment |
-| `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | `v0.7.2` | Deterministic combat runtime, authored content, rollback, training lab, tests, and deployment |
-| YarReader offline workspace | [`Wizard-Gang/YarReader`](https://github.com/Wizard-Gang/YarReader) | `v1.0.1` | Ingestion, inspection, classification, review, normalization, crash-recoverable archive, static export, portable reader, tests, and reconstruction record |
+## Company and professional ownership
 
-## Retired sources
+WizardGang-owned projects, capabilities, and solutions are company content.
 
-`WizardGangLocal` is retired. It is not a canonical source, deployment input, or recovery
-dependency. The public SharkTank repository contains the reconstructed product code and the
-architecture, controls, tests, provenance, and release records needed to maintain the product.
+Jacob Yongue's employer roles, employer/customer deployments, and professional outcomes are Team/professional content. They can support capability statements when attribution remains explicit, but they are not WizardGang client engagements unless a source establishes that relationship.
 
-ShadowMoney is retired as a product identity. Its public traffic redirects to Hexframe; historical
-rollback evidence remains separate from the site.
+The current public ownership model is documented in [`INFORMATION-ARCHITECTURE.md`](INFORMATION-ARCHITECTURE.md).
 
 ## Data boundary
 
-Git contains source, configuration, documentation, synthetic fixtures, and reproducible tests.
-Cloudflare runtime state, credentials, operator secrets, personal library metadata, publication
-files, and publisher-owned media do not belong in public history.
+Public Git history may contain source, configuration, documentation, synthetic fixtures, and reproducible tests.
 
-Product-specific recovery procedures live with each product. WizardGang must link to those records
-rather than duplicate the implementation or become a second source of truth.
+Do not commit:
 
-## Verification
+- production credentials or operator secrets;
+- private runtime state;
+- personal/private library metadata;
+- customer or publisher-owned confidential records;
+- copyrighted publication content that the project is not authorized to redistribute.
 
-The ownership cutover is complete when all of the following remain true:
+Product-specific runtime state, backup/recovery procedures, and operating records stay with the product that owns them. WizardGang.ai links to those authorities rather than copying them into this repository.
 
-- each product case study links to the exact canonical repository root;
-- the site build rejects retired or non-canonical source URLs;
-- product code is absent from WizardGang;
-- the SharkTank, Hexframe, and YarReader repositories are public and publish their own releases;
-- no production secret, runtime state, private catalog value, or copyrighted publication asset is
-  copied into site source or generated output.
+## Verification boundary
+
+Repository acceptance protects the ownership boundary by checking canonical project/source relationships, company-versus-professional content ownership, route authority, and absence of retired parallel presentation sources.
+
+`npm run check` is the authoritative gate before release work.
