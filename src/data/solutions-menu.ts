@@ -1,42 +1,33 @@
-/** The Solutions menu. Each entry is the public view of one professional-evidence
-    authority in src/data/professional-systems.ts. */
-export type SolutionSlug = "industries" | "integrations" | "deployments";
+/** Solutions is one page with three sections, each projecting one
+    professional-evidence authority from src/data/professional-systems.ts. */
+export const SOLUTIONS_PATH = "/solutions/" as const;
 
-export interface SolutionPage {
-  slug: SolutionSlug;
+export type SolutionSection = "industries" | "integrations" | "deployments";
+
+export interface SolutionSectionDefinition {
+  id: SolutionSection;
   label: string;
-  title: string;
   lede: string;
 }
 
-export const SOLUTION_PAGES = [
+export const SOLUTION_SECTIONS = [
   {
-    slug: "industries",
+    id: "industries",
     label: "Industries",
-    title: "Industries",
-    lede: "The operational domains this practice has actually shipped into."
+    lede: "The operational domains this work has shipped into."
   },
   {
-    slug: "integrations",
+    id: "integrations",
     label: "Integrations",
-    title: "Integrations",
     lede: "Systems connected in production, with the vendor each one belongs to."
   },
   {
-    slug: "deployments",
+    id: "deployments",
     label: "Deployments",
-    title: "Deployments",
-    lede: "Organizations running systems this practice delivered or supported."
+    lede: "Organizations where these systems went live, and what was delivered."
   }
-] as const satisfies readonly SolutionPage[];
+] as const satisfies readonly SolutionSectionDefinition[];
 
-export function solutionPath(slug: SolutionSlug): `/solutions/${SolutionSlug}/` {
-  return `/solutions/${slug}/`;
+export function solutionAnchor(id: SolutionSection): `/solutions/#${SolutionSection}` {
+  return `/solutions/#${id}`;
 }
-
-export function solutionOutputPath(slug: SolutionSlug): `solutions/${SolutionSlug}/index.html` {
-  return `solutions/${slug}/index.html`;
-}
-
-export const SOLUTION_MENU: readonly { label: string; href: string; accessibleName?: string }[] =
-  SOLUTION_PAGES.map((page) => ({ label: page.label, href: solutionPath(page.slug) }));

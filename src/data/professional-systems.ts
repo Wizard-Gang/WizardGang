@@ -5,6 +5,10 @@ export interface ExternalReference {
 
 export interface DeploymentReference extends ExternalReference {
   url: string;
+  /** What was delivered for this organization. */
+  solution: string;
+  /** The employer the work was performed under. Never WizardGang. */
+  employer: string;
 }
 
 export interface ProfessionalIntegrationEvidenceGroup {
@@ -22,29 +26,33 @@ export interface ProfessionalSystemEvidenceGroup {
 // External references are intentionally centralized so links can be audited in one place.
 
 export const deployments: readonly DeploymentReference[] = [
-  ["SpartanNash", "https://www.spartannash.com/"],
-  ["Dot Foods", "https://www.dotfoods.com/"],
-  ["Snap-on Tools", "https://www.snapon.com/"],
-  ["GNC", "https://www.gnc.com/"],
-  ["IPSY", "https://www.ipsy.com/"],
-  ["Saddle Creek Logistics Services", "https://www.sclogistics.com/"],
-  ["Hybrid Apparel", "https://hybridapparel.com/"],
-  ["Solutions 2 GO", "https://www.solutions2go.ca/"],
-  ["Manhattan Beachwear", "https://www.mbwswim.com/"],
-  ["BAMKO", "https://www.bamkousa.com/"],
-  ["Jerry Leigh", "https://www.jerryleigh.com/"],
-  ["Younique", "https://www.youniqueproducts.com/"],
-  ["FamBrands", "https://www.fambrands.com/"],
-  ["Salon Service Group", "https://www.salonservicegroup.com/"],
-  ["BuySeasons", "https://www.buyseasons.com/"],
-  ["A Beka Book", "https://www.abeka.com/"],
-  ["Custom Integrated Designs", "https://www.cidresources.com/"],
-  ["Bulk Reef Supply", "https://www.bulkreefsupply.com/"],
-  ["Brixton", "https://www.brixton.com/"],
-  ["Waytek Wire", "https://www.waytekwire.com/"],
-  ["Obermeyer", "https://obermeyer.com/"],
-  ["Seeds 'N Such", "https://seedsnsuch.com/"]
-].map(([name, url]): DeploymentReference => ({ name: String(name), url: String(url) }));
+  { name: "SpartanNash", url: "https://www.spartannash.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Dot Foods", url: "https://www.dotfoods.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Snap-on Tools", url: "https://www.snapon.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "GNC", url: "https://www.gnc.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "IPSY", url: "https://www.ipsy.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Saddle Creek Logistics Services", url: "https://www.sclogistics.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Hybrid Apparel", url: "https://hybridapparel.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Solutions 2 GO", url: "https://www.solutions2go.ca/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Manhattan Beachwear", url: "https://www.mbwswim.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "BAMKO", url: "https://www.bamkousa.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Jerry Leigh", url: "https://www.jerryleigh.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Younique", url: "https://www.youniqueproducts.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "FamBrands", url: "https://www.fambrands.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Salon Service Group", url: "https://www.salonservicegroup.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "BuySeasons", url: "https://www.buyseasons.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "A Beka Book", url: "https://www.abeka.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Custom Integrated Designs", url: "https://www.cidresources.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Bulk Reef Supply", url: "https://www.bulkreefsupply.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Brixton", url: "https://www.brixton.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Waytek Wire", url: "https://www.waytekwire.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Obermeyer", url: "https://obermeyer.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Seeds 'N Such", url: "https://seedsnsuch.com/", solution: "Warehouse Management System (CIMS)", employer: "Supply Chain Technologies" },
+  { name: "Torque King 4x4", url: "https://www.torqueking.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
+  { name: "Amware", url: "https://www.amware.net/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" },
+  { name: "Rocky Brands", url: "https://www.rockybrands.com/", solution: "Putwall Fulfillment System", employer: "Fastfetch Corporation" },
+  { name: "Plexus Worldwide", url: "https://plexusworldwide.com/", solution: "Order Fulfillment System", employer: "Fastfetch Corporation" }
+];
 
 export const professionalIntegrationEvidence: readonly ProfessionalIntegrationEvidenceGroup[] = [
   {

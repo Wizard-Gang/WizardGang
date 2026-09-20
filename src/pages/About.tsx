@@ -8,7 +8,7 @@ export const ABOUT_PAGE: ReactPageDefinition = {
   relative: "about/index.html",
   metadata: {
     title: "About — WizardGang",
-    description: "Software you can read, run and keep. Built by an engineer who has spent seven years inside warehouses, courts and fulfillment centers, where broken software costs someone their shift.",
+    description: "Software you can read, run, and keep. Built by a solutions architect who has spent seven years inside warehouses, courts and fulfillment centers, where broken software costs someone their shift.",
     path: "/about/",
     socialImage: "/og.jpg"
   },
@@ -16,7 +16,7 @@ export const ABOUT_PAGE: ReactPageDefinition = {
     <main className="site-main" id="main" tabIndex={-1}>
       <section className="page-hero">
         <h1>About</h1>
-        <p>Software you can read, run, and keep after I am gone.</p>
+        <p>Software you can read, run, and keep.</p>
       </section>
 
       <section className="case-section">

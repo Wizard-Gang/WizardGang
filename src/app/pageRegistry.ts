@@ -2,14 +2,14 @@ import type { ReactPageDefinition } from "./contracts";
 import { ABOUT_PAGE } from "../pages/About";
 import { HOME_PAGE } from "../pages/Home";
 import { NOT_FOUND_PAGE } from "../pages/NotFound";
+import { SOLUTIONS_PAGE } from "../pages/Solutions";
 import { createCaseStudyPageDefinitions } from "../pages/CaseStudy";
-import { createSolutionPageDefinitions } from "../pages/Solutions";
 
 export function createStaticPageRegistry(): readonly ReactPageDefinition[] {
   const pages = [
     HOME_PAGE,
+    SOLUTIONS_PAGE,
     ...createCaseStudyPageDefinitions(),
-    ...createSolutionPageDefinitions(),
     ABOUT_PAGE,
     NOT_FOUND_PAGE
   ];

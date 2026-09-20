@@ -10,7 +10,7 @@ export const TEAM_MEMBERS = [
   {
     slug: "jacob",
     name: "Jacob Yongue",
-    role: "Software engineer / implementation lead",
+    role: "Solutions Architect",
     summary: "Builds WizardGang software and brings professional experience across application development, integrations, QA, deployment, training, and production support.",
     profilePath: "/about/#jacob"
   }

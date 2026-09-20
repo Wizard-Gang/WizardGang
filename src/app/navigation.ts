@@ -1,16 +1,16 @@
 import type { NavigationItem, PrimaryNavigationSection } from "./contracts";
 import { PROJECT_MENU } from "../data/projects.ts";
-import { SOLUTION_MENU } from "../data/solutions-menu.ts";
+import { SOLUTIONS_PATH } from "../data/solutions-menu.ts";
 
 export const NAVIGATION_ITEMS = [
-  { key: "software", href: PROJECT_MENU[0].href, label: "Software", items: PROJECT_MENU },
-  { key: "solutions", href: SOLUTION_MENU[0].href, label: "Solutions", items: SOLUTION_MENU },
+  { key: "solutions", href: SOLUTIONS_PATH, label: "Solutions" },
+  { key: "projects", href: PROJECT_MENU[0].href, label: "Projects", items: PROJECT_MENU },
   { key: "about", href: "/about/", label: "About" }
 ] as const satisfies readonly NavigationItem[];
 
 const SECTION_ROOTS: Record<PrimaryNavigationSection, string> = {
-  software: "/software/",
   solutions: "/solutions/",
+  projects: "/projects/",
   about: "/about/"
 };
 
