@@ -19,6 +19,7 @@
     "deploy:production:dry-run": "npm run build && wrangler deploy --dry-run --env production",
     "test:browser": "node --test tests/browser-behavior.test.mjs",
     "test:accessibility": "node --test tests/accessibility-contract.test.mjs",
+    "test:company-ia": "node --test tests/company-ia.test.mjs",
     "test:projects": "node --test tests/project-surfaces.test.mjs",
     "test:project-presentation": "node --test tests/project-surfaces.test.mjs",
     "test:work": "node --test tests/work-surfaces.test.mjs",
