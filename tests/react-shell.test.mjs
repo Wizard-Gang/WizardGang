@@ -44,7 +44,7 @@ test("React owns shared chrome and every canonical page body", async () => {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  for (const authority of ["HOME_PAGE", "createCaseStudyPageDefinitions", "createSolutionPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
+  for (const authority of ["HOME_PAGE", "SOLUTIONS_PAGE", "createCaseStudyPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
@@ -75,11 +75,11 @@ test("the static shell loads only the generated TypeScript browser module withou
   // inside them are the destinations.
   assert.deepEqual(
     tagBlocks(nav.inner, "summary").map(({ inner }) => textContent(inner)),
-    ["Software", "Solutions"]
+    ["Solutions", "Projects"]
   );
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner)),
-    ["SharkTank", "Hexframe", "YarReader", "Industries", "Integrations", "Deployments", "About"]
+    ["Capabilities", "Industries", "Integrations", "Deployments", "SharkTank", "Hexframe", "YarReader", "About"]
   );
 });
 

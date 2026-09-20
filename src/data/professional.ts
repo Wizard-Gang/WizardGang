@@ -32,6 +32,12 @@ export interface ProfessionalSkillGroup {
 // Ordered most-recent-first.
 export const professionalRoles = [
   {
+    organization: "WizardGang AI",
+    role: "Founder / Solutions Architect",
+    dates: "Aug 2023 - Current",
+    summary: "Build and operate WizardGang software end to end — architecture, delivery, deployment, and production support."
+  },
+  {
     organization: "University of Georgia",
     role: "AI Engineer",
     dates: "May 2026 - Current",
@@ -293,19 +299,27 @@ export const professionalProjects = [
 // distinct from the TypeScript/Cloudflare surface the independent lab runs on.
 export const professionalSkills = [
   {
-    label: "Development & data",
-    items: ["C#/.NET", "Python", "SQL/T-SQL", "SQL Server", "SSRS/BI reporting", "ETL & data pipelines"]
+    label: "Front end",
+    items: ["TypeScript", "JavaScript (ES6+)", "React", "Angular", "HTML5", "CSS3", "Responsive UI", "Component architecture"]
   },
   {
-    label: "Systems & integrations",
-    items: ["REST/JSON APIs", "OAuth 2.0", "SAML/SSO", "SOAP", "EDI", "Interface & data mapping"]
+    label: "Graphics & real time",
+    items: ["Three.js", "React Three Fiber", "WebGL / Canvas", "WebSockets", "Real-time state sync"]
   },
   {
-    label: "DevOps & operations",
-    items: ["Git/GitHub", "CI/CD", "PowerShell", "Monitoring & logging", "Incident response", "Production support"]
+    label: "Back end",
+    items: ["C# / .NET", "Node.js", "C++", "Python", "REST API design", "Authentication & sessions", "T-SQL", "PowerShell"]
   },
   {
-    label: "Delivery & support",
-    items: ["Jira", "QA/UAT", "Regression testing", "Upgrades, migrations & cutovers", "Technical documentation", "End-user training"]
+    label: "Data & integration",
+    items: ["Microsoft SQL Server", "ETL & data pipelines", "SSRS / BI reporting", "REST/JSON APIs", "OAuth 2.0", "SAML/SSO", "SOAP", "EDI", "Interface & data mapping"]
+  },
+  {
+    label: "DevOps & cloud",
+    items: ["Cloudflare Workers", "Azure DevOps", "Git / GitHub", "CI/CD", "Release management", "Versioned deployments", "Monitoring & logging", "Incident response"]
+  },
+  {
+    label: "Delivery & practice",
+    items: ["Agile / Scrum", "Sprint planning & estimation", "Requirements & design docs", "QA / UAT", "Regression testing", "Upgrades, migrations & cutovers", "Technical documentation", "End-user training"]
   }
 ] as const satisfies readonly ProfessionalSkillGroup[];

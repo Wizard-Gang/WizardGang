@@ -59,7 +59,9 @@ export function ProjectVisualFrame({ project }: { project: ProjectRecord }) {
    and the preview lives inside the panel so nothing animates until a visitor asks
    for it. `name` makes the set exclusive, so at most one preview ever runs. */
 export function WorkRow({ project }: { project: ProjectRecord }) {
-  const action = projectActionsFor(project, "card").find((candidate) => candidate.id === "project");
+  const actions = projectActionsFor(project, "card");
+  const detail = actions.find((candidate) => candidate.id === "project");
+  const live = projectActionsFor(project, "detail").find((candidate) => candidate.id === "live");
   return (
     <details className="work-row" name="work-list">
       <summary className="work-summary">
@@ -89,11 +91,18 @@ export function WorkRow({ project }: { project: ProjectRecord }) {
             <ProjectPreview project={project} />
           </div>
         ) : null}
-        {action ? (
-          <a className="work-link" href={action.href} aria-label={action.ariaLabel} data-project-action={action.id}>
-            {action.label} <span aria-hidden="true">→</span>
-          </a>
-        ) : null}
+        <div className="work-actions">
+          {detail ? (
+            <a className="work-link" href={detail.href} aria-label={detail.ariaLabel} data-project-action={detail.id}>
+              {detail.label} <span aria-hidden="true">→</span>
+            </a>
+          ) : null}
+          {live ? (
+            <a className="work-link work-link-demo" href={live.href} aria-label={live.ariaLabel} data-project-action={live.id}>
+              {live.label} <span aria-hidden="true">↗</span>
+            </a>
+          ) : null}
+        </div>
       </div>
     </details>
   );

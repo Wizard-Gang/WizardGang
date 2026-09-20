@@ -97,8 +97,8 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   for (const authority of [
     "HOME_PAGE",
+    "SOLUTIONS_PAGE",
     "createCaseStudyPageDefinitions",
-    "createSolutionPageDefinitions",
     "ABOUT_PAGE",
     "NOT_FOUND_PAGE"
   ]) {
@@ -120,17 +120,15 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   const expected = new Set([
     "index.html",
-    "software/sharktank/index.html",
-    "software/hexframe/index.html",
-    "software/yarreader/index.html",
-    "solutions/industries/index.html",
-    "solutions/integrations/index.html",
-    "solutions/deployments/index.html",
+    "solutions/index.html",
+    "projects/sharktank/index.html",
+    "projects/hexframe/index.html",
+    "projects/yarreader/index.html",
     "about/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 9, "eight canonical pages plus the generated 404");
+  assert.equal(expected.size, 7, "six canonical pages plus the generated 404");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
@@ -151,10 +149,10 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/, "shared chrome must consume the typed navigation authority");
   assert.match(navigation, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
   assert.match(navigation, /navigationSectionForPath/, "current-section matching must remain centralized");
-  for (const label of ["Software", "Solutions", "About"]) {
+  for (const label of ["Solutions", "Projects", "About"]) {
     assert.ok(navigation.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
   }
-  for (const retiredLabel of ["Work", "Services", "Contact", "Projects", "Glossary", "GitHub"]) {
+  for (const retiredLabel of ["Work", "Services", "Contact", "Software", "Glossary", "GitHub"]) {
     assert.ok(!navigation.includes(`label: "${retiredLabel}"`), `retired top-level navigation item restored: ${retiredLabel}`);
   }
   assert.match(browser, /initializeBrowserBehavior/);
@@ -197,7 +195,7 @@ test("typed data and styling authorities remain singular and internally valid", 
   assert.equal(new Set(slugs).size, slugs.length, "project slugs must be unique");
   const projectPaths = projects.map((project) => projectPath(project.slug));
   assert.equal(new Set(projectPaths).size, projectPaths.length, "project paths must be unique");
-  for (const path of projectPaths) assert.match(path, /^\/software\/[a-z]+\/$/, "a project is a page under /software/");
+  for (const path of projectPaths) assert.match(path, /^\/projects\/[a-z]+\/$/, "a project is a page under /projects/");
   for (const project of projects) {
     assertHttpsUrl(project.sourceUrl, `${project.slug} sourceUrl`);
     if (project.liveUrl) assertHttpsUrl(project.liveUrl, `${project.slug} liveUrl`);

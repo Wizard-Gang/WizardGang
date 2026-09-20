@@ -64,7 +64,7 @@ test("generated HTML inventory is the explicit canonical contract", async () => 
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 9, "eight canonical pages plus the generated 404");
+  assert.equal(actual.length, 7, "six canonical pages plus the generated 404");
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -220,12 +220,13 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
 
 test("the homepage leads with the work and states its offer once", async () => {
   const home = await readDist("index.html");
-  requireText(home, ["We build software that ships", "Selected work", "SharkTank", "Hexframe", "YarReader"], "homepage");
+  requireText(home, ["Software that Ships", "Selected industries", "Selected integrations", "Selected projects", "SharkTank", "Hexframe", "YarReader", "Explore the Architecture"], "homepage");
 
   // Earlier homepages stacked a kicker, a display headline and a paragraph in every
   // band, and carried the employer-attribution boundary in a section heading.
   rejectText(home, [
     "We build inspectable software.",
+    "We build software that ships",
     "Build software.",
     "Working systems with source and evidence.",
     "Integration capability with clear attribution.",
@@ -233,10 +234,19 @@ test("the homepage leads with the work and states its offer once", async () => {
     "Software with clear ownership."
   ], "homepage");
 
-  // Every project is a closed disclosure, so nothing animates on load.
-  const rows = tagBlocks(home, "details").filter(({ attrs }) => (attrs.get("class") || "").includes("work-row"));
-  assert.equal(rows.length, 3, "one disclosure per project");
-  for (const row of rows) assert.ok(!row.attrs.has("open"), "a project panel must start closed");
+  // Nothing on the page is open, so nothing animates on load.
+  const panels = tagBlocks(home, "details");
+  assert.ok(panels.length >= 5, "the home page is built from disclosures");
+  for (const panel of panels) assert.ok(!panel.attrs.has("open"), "a panel must start closed");
+
+  // Industries and integrations collapse as whole sections; projects are a row each.
+  const sectionPanels = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("section-panel"));
+  assert.equal(sectionPanels.length, 2, "industries and integrations each collapse as one section");
+
+  const projectRows = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("work-row"));
+  assert.equal(projectRows.length, 3, "one disclosure per project");
+  assert.deepEqual([...new Set(projectRows.map(({ attrs }) => attrs.get("name")))], ["work-list"],
+    "project rows share one exclusive group so only one preview can run");
 
   const headings = [...home.matchAll(/<h([1-3])\b/g)].map((match) => Number(match[1]));
   assert.equal(headings.filter((level) => level === 1).length, 1, "one h1 per page");
@@ -249,8 +259,8 @@ test("each project has a page with its preview and outbound relationships", asyn
   }
 
   for (const [slug, relationships] of Object.entries(PROJECT_LINKS)) {
-    assert.ok(anchorWithHref(home, `/software/${slug}/`), `home must route to the ${slug} page`);
-    const page = await readDist(`software/${slug}/index.html`);
+    assert.ok(anchorWithHref(home, `/projects/${slug}/`), `home must route to the ${slug} page`);
+    const page = await readDist(`projects/${slug}/index.html`);
     assert.ok(anchorWithHref(page, relationships.source), `${slug} must expose its source repository`);
     if (relationships.live) assert.ok(anchorWithHref(page, relationships.live), `${slug} must expose its live application`);
     if (relationships.evidence) assert.ok(anchorWithHref(page, relationships.evidence), `${slug} must expose its operating evidence`);
@@ -273,7 +283,7 @@ test("canonical project data retains the source/live/evidence contract", () => {
 });
 
 test("project substance survived the move onto per-project pages", async () => {
-  const sharktank = await readDist("software/sharktank/index.html");
+  const sharktank = await readDist("projects/sharktank/index.html");
   requireText(sharktank, [
     "Shark Tank is a game first, but running it creates real responsibilities",
     "ISO/IEC 27001",
@@ -282,13 +292,13 @@ test("project substance survived the move onto per-project pages", async () => {
     "It demonstrates alignment; it does not claim certification."
   ], "SharkTank");
 
-  requireText(await readDist("software/hexframe/index.html"), [
+  requireText(await readDist("projects/hexframe/index.html"), [
     "The match, training screen, computer player, replay, saved game",
     "A playable training stage with one fighter and one practice dummy",
     "Freeze automatically when a hit connects"
   ], "Hexframe");
 
-  requireText(await readDist("software/yarreader/index.html"), [
+  requireText(await readDist("projects/yarreader/index.html"), [
     "A single folder may contain comics, ebooks, PDFs, loose images",
     "YarReader continues from its work journal"
   ], "YarReader");
@@ -321,21 +331,26 @@ test("About argues for the practice and keeps the career record", async () => {
 });
 
 test("Solutions projects the professional evidence authorities", async () => {
-  const industries = await readDist("solutions/industries/index.html");
-  requireText(industries, ["Industries", "Warehouse &amp; Fulfillment", "Justice &amp; Court Systems", "Case Management"], "industries");
+  const solutions = await readDist("solutions/index.html");
+  requireText(solutions, [
+    "Industries", "Warehouse &amp; Fulfillment", "Case Management",
+    "Integrations", "ERP Integrations", "NetSuite", "https://www.netsuite.com/",
+    "Deployments", "SpartanNash", "https://www.spartannash.com/"
+  ], "solutions");
 
-  const integrations = await readDist("solutions/integrations/index.html");
-  requireText(integrations, ["Integrations", "ERP Integrations", "NetSuite", "https://www.netsuite.com/"], "integrations");
+  // The record is employment, and the page has to say so without a footnote.
+  requireText(solutions, ["not under WizardGang", "Supply Chain Technologies", "Fastfetch Corporation", "Warehouse Management System (CIMS)"], "solutions attribution");
 
-  const deploymentsPage = await readDist("solutions/deployments/index.html");
-  requireText(deploymentsPage, ["Deployments", "SpartanNash", "https://www.spartannash.com/"], "deployments");
-  const wall = tagBlocks(deploymentsPage, "li").filter(({ inner }) => inner.includes("href=\"https://"));
+  for (const section of ["industries", "integrations", "deployments"]) {
+    assert.ok(startTags(solutions, "section").some(({ attrs }) => attrs.get("id") === section), `solutions must anchor ${section}`);
+  }
+  const wall = tagBlocks(solutions, "li").filter(({ inner }) => inner.includes("href=\"https://"));
   assert.ok(wall.length >= 20, "the deployment wall must list every organization");
 });
 
 
 test("canonical pages never link through a redirect-only path", async () => {
-  const redirectOnly = ["/resume", "/professional", "/projects", "/software", "/solutions", "/glossary", "/about/team", "/about/company"];
+  const redirectOnly = ["/resume", "/professional", "/software", "/services", "/work", "/contact", "/glossary", "/about/team", "/about/company"];
   for (const relative of canonicalFiles) {
     const html = await readDist(relative);
     for (const anchor of anchors(html)) {
@@ -446,7 +461,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "createCaseStudyPageDefinitions", "createSolutionPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
+  for (const authority of ["HOME_PAGE", "SOLUTIONS_PAGE", "createCaseStudyPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
   assert.doesNotMatch(registrySource, /pages\/(?:Work|Services|Contact|Glossary|CompanyNavigation)/, "retired page modules must stay out of the React registry");

@@ -1,21 +1,19 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page is the work — SharkTank, Hexframe and YarReader — and everything else is one click from the navigation.
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page scans in one pass — industries, integrations, projects — and every row opens in place.
 
 ```text
-/                          the work, as a list of disclosures
-/software/sharktank/       case study
-/software/hexframe/        case study
-/software/yarreader/       case study
-/solutions/industries/     domains delivered into
-/solutions/integrations/   systems connected, with vendor links
-/solutions/deployments/    organizations running delivered systems
-/about/                    the pitch, the person, the career record
+/                        selected industries, integrations and projects
+/solutions/              capabilities, then the professional record
+/projects/sharktank/     case study
+/projects/hexframe/      case study
+/projects/yarreader/     case study
+/about/                  the pitch, the person, the career record
 ```
 
-Software and Solutions are menus in the header rather than index pages, so nothing restates what the menu already says. Contact is the footer. Every route the site has ever published still resolves — the Worker carries 74 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
+Navigation is Solutions, Projects, About; both Solutions and Projects are menus, and contact is the footer. Every route the site has ever published still resolves — the Worker carries 79 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
 
-**[Live site](https://wizardgang.ai)** · **[Work](https://wizardgang.ai/software/sharktank/)** · **[Solutions](https://wizardgang.ai/solutions/deployments/)**
+**[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/sharktank/)**
 
 ## Architecture
 
@@ -44,12 +42,12 @@ Every heading resolves to one of four scale tokens, so a page cannot invent its 
 
 ## Content ownership
 
-- Home — the work. Each project is a closed disclosure; its preview animates only once opened, and never more than one at a time.
-- Software — one case study per project: problem, what was built, architecture, approach, result.
-- Solutions — the public view of the professional-evidence authorities in `src/data/professional-systems.ts`.
+- Home — selected industries and integrations collapse as whole sections; projects are a row each, because each row carries a preview. Everything starts closed, and a preview animates only while its panel is open.
+- Solutions — Capabilities first: what WizardGang can show running, each entry linking to the fragment on the architecture demo that proves it. Then the professional record in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
+- Projects — one case study per project: problem, what was built, architecture, approach, result.
 - About — the argument for the practice, the person, and the career record.
 
-Typed domain data lives under `src/data/`. Employer and customer evidence stays attributed to the professional record and is not presented as WizardGang client work.
+Typed domain data lives under `src/data/`. Industries, integrations and deployments are Jacob Yongue's employment record, not WizardGang client work, and Solutions states that at the top of the page rather than leaving it implied.
 
 ## Run locally
 
@@ -129,9 +127,11 @@ Key authorities:
 
 - `src/app/pageRegistry.ts` — generated page inventory.
 - `src/app/navigation.ts` — primary navigation and current-section model.
-- `src/data/projects.ts` — project facts, routes, tags, actions, and the Software menu.
-- `src/data/solutions-menu.ts` — the Solutions menu and its routes.
-- `src/data/professional-systems.ts` — the evidence Solutions projects.
+- `src/data/projects.ts` — project facts, routes, tags, actions, and the Projects menu.
+- `src/data/capabilities.ts` — what WizardGang can demonstrate, and the demo fragment that proves each one.
+- `src/data/solutions-menu.ts` — the Solutions page sections and menu.
+- `src/data/professional-systems.ts` — the domains, systems and deployments Solutions projects.
+
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
 - `src/app/Document.tsx` — static document, metadata, and sitemap composition.

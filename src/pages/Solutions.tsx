@@ -1,103 +1,132 @@
-import type { ReactElement } from "react";
 import type { ReactPageDefinition } from "../app/contracts";
-import {
-  SOLUTION_PAGES,
-  solutionOutputPath,
-  solutionPath,
-  type SolutionSlug
-} from "../data/solutions-menu";
+import { SOLUTIONS_PATH, SOLUTION_SECTIONS } from "../data/solutions-menu";
+import { capabilityGroups, capabilityProofCount } from "../data/capabilities";
 import {
   deployments,
   professionalIntegrationEvidence,
-  professionalSystemEvidence
+  professionalSystemEvidence,
+  type ExternalReference
 } from "../data/professional-systems";
 
-/* Solutions is the public view of the professional-evidence authorities: the
-   domains worked in, the systems connected, and the organizations running them.
-   The data lives in src/data/professional-systems.ts; these pages only project it. */
+/* Capabilities leads, because it is the only section that is WizardGang's own
+   work — every proof links into the running architecture demo. The three that
+   follow are Jacob Yongue's employment record, so the attribution note sits
+   between them rather than at the top of the page, where it would have claimed
+   the capabilities were someone else's too. */
 
-function Industries() {
-  return (
-    <div className="evidence-groups">
-      {professionalSystemEvidence.map((group) => (
-        <section className="evidence-group" key={group.title}>
-          <h2>{group.title}</h2>
-          <ul className="evidence-list" aria-label={group.title}>
-            {group.items.map((item) => <li key={item}>{item}</li>)}
-          </ul>
-        </section>
-      ))}
-    </div>
-  );
+const ATTRIBUTION = "Everything below is Jacob Yongue's professional record. This work was delivered under the employers named, not under WizardGang.";
+
+function VendorMark({ item }: { item: ExternalReference }) {
+  if (item.logo) return <img className="vendor-mark" src={item.logo} alt="" width={20} height={20} loading="lazy" />;
+  return <span className="vendor-mark vendor-mark-text" aria-hidden="true">{item.name.slice(0, 1)}</span>;
 }
 
-function Integrations() {
-  return (
-    <div className="evidence-groups">
-      {professionalIntegrationEvidence.map((group) => (
-        <section className="evidence-group" key={group.title}>
-          <h2>{group.title}</h2>
-          <ul className="evidence-list evidence-links" aria-label={group.title}>
-            {group.items.map((item) => (
-              <li key={item.name}>
-                {item.url ? (
-                  <a href={item.url}>{item.name} <span aria-hidden="true">↗</span></a>
-                ) : item.name}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
-    </div>
-  );
-}
+export const SOLUTIONS_PAGE: ReactPageDefinition = {
+  relative: "solutions/index.html",
+  metadata: {
+    title: "Solutions — WizardGang",
+    description: "What WizardGang can demonstrate running, and the professional record behind it: domains delivered into, systems connected in production, and where those systems went live.",
+    path: SOLUTIONS_PATH,
+    socialImage: "/og.jpg"
+  },
+  body: (
+    <main className="site-main" id="main" tabIndex={-1}>
+      <section className="page-hero">
+        <h1>Solutions</h1>
+        <p>What this practice can show you running, and the record behind it.</p>
+      </section>
 
-function Deployments() {
-  return (
-    <ul className="deployment-wall" aria-label="Organizations running delivered systems">
-      {deployments.map((deployment) => (
-        <li key={deployment.name}>
-          <a href={deployment.url}>{deployment.name} <span aria-hidden="true">↗</span></a>
-        </li>
-      ))}
-    </ul>
-  );
-}
+      <nav className="work-jump" aria-label="Sections on this page">
+        <ul>
+          <li><a href="#capabilities">Capabilities</a></li>
+          {SOLUTION_SECTIONS.map((section) => (
+            <li key={section.id}><a href={`#${section.id}`}>{section.label}</a></li>
+          ))}
+        </ul>
+      </nav>
 
-const BODIES: Record<SolutionSlug, () => ReactElement> = {
-  industries: Industries,
-  integrations: Integrations,
-  deployments: Deployments
+      <section className="solution-section" id="capabilities" aria-labelledby="capabilities-heading">
+        <h2 id="capabilities-heading">Capabilities</h2>
+        <p className="work-entry-lede">
+          Each of these is running on the architecture demo. The links open the proof, not a description of it.
+        </p>
+        <p className="evidence-count">{capabilityProofCount} demonstrations across {capabilityGroups.length} groups</p>
+        <div className="evidence-groups">
+          {capabilityGroups.map((group) => (
+            <section className="evidence-group" key={group.title}>
+              <h3>{group.title}</h3>
+              <p className="capability-summary">{group.summary}</p>
+              <ul className="capability-proofs" aria-label={`${group.title} demonstrations`}>
+                {group.proofs.map((proof) => (
+                  <li key={proof.href}>
+                    <a href={proof.href}>
+                      <strong>{proof.name} <span aria-hidden="true">↗</span></strong>
+                      <span>{proof.detail}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <p className="attribution-note" role="note">{ATTRIBUTION}</p>
+
+      <section className="solution-section" id="industries" aria-labelledby="industries-heading">
+        <h2 id="industries-heading">Industries</h2>
+        <p className="work-entry-lede">{SOLUTION_SECTIONS[0].lede}</p>
+        <div className="evidence-groups">
+          {professionalSystemEvidence.map((group) => (
+            <section className="evidence-group" key={group.title}>
+              <h3>{group.title}</h3>
+              <ul className="evidence-list" aria-label={group.title}>
+                {group.items.map((item) => <li key={item}>{item}</li>)}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="solution-section" id="integrations" aria-labelledby="integrations-heading">
+        <h2 id="integrations-heading">Integrations</h2>
+        <p className="work-entry-lede">{SOLUTION_SECTIONS[1].lede}</p>
+        <div className="evidence-groups">
+          {professionalIntegrationEvidence.map((group) => (
+            <section className="evidence-group" key={group.title}>
+              <h3>{group.title}</h3>
+              <ul className="evidence-list evidence-vendors" aria-label={group.title}>
+                {group.items.map((item) => (
+                  <li key={item.name}>
+                    {item.url ? (
+                      <a href={item.url}><VendorMark item={item} />{item.name} <span aria-hidden="true">↗</span></a>
+                    ) : (
+                      <span><VendorMark item={item} />{item.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
+
+      <section className="solution-section" id="deployments" aria-labelledby="deployments-heading">
+        <h2 id="deployments-heading">Deployments</h2>
+        <p className="work-entry-lede">{SOLUTION_SECTIONS[2].lede}</p>
+        <p className="evidence-count">{deployments.length} organizations</p>
+        <ul className="deployment-wall" aria-label="Organizations where these systems went live">
+          {deployments.map((deployment) => (
+            <li key={`${deployment.name}-${deployment.solution}`}>
+              <a href={deployment.url}>
+                <strong>{deployment.name} <span aria-hidden="true">↗</span></strong>
+                <span>{deployment.solution}</span>
+                <em>{deployment.employer}</em>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+  )
 };
-
-const COUNTS: Record<SolutionSlug, string> = {
-  industries: `${professionalSystemEvidence.reduce((total, group) => total + group.items.length, 0)} capabilities across ${professionalSystemEvidence.length} domains`,
-  integrations: `${professionalIntegrationEvidence.reduce((total, group) => total + group.items.length, 0)} systems across ${professionalIntegrationEvidence.length} groups`,
-  deployments: `${deployments.length} organizations`
-};
-
-export function createSolutionPageDefinitions(): readonly ReactPageDefinition[] {
-  return SOLUTION_PAGES.map((page) => {
-    const Body = BODIES[page.slug];
-    return {
-      relative: solutionOutputPath(page.slug),
-      metadata: {
-        title: `${page.title} — WizardGang Solutions`,
-        description: `${page.lede} ${COUNTS[page.slug]}.`,
-        path: solutionPath(page.slug),
-        socialImage: "/og.jpg"
-      },
-      body: (
-        <main className="site-main" id="main" tabIndex={-1}>
-          <section className="page-hero">
-            <p className="kicker">Solutions</p>
-            <h1>{page.title}</h1>
-            <p>{page.lede}</p>
-          </section>
-          <p className="evidence-count">{COUNTS[page.slug]}</p>
-          <Body />
-        </main>
-      )
-    };
-  });
-}
