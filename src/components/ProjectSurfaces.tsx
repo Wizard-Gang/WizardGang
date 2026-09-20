@@ -1,6 +1,5 @@
 import {
   projectActionsFor,
-  projectPath,
   type ProjectActionSurface,
   type ProjectArchitectureItem,
   type ProjectRecord
@@ -56,43 +55,46 @@ export function ProjectVisualFrame({ project }: { project: ProjectRecord }) {
   );
 }
 
-/* The work-first homepage row. The preview is the argument, so it gets the full
-   shell width; the caption carries only what a visitor needs to decide whether
-   to open the project. */
+/* The homepage work list. Each entry is a disclosure: the caption is the control,
+   and the preview lives inside the panel so nothing animates until a visitor asks
+   for it. `name` makes the set exclusive, so at most one preview ever runs. */
 export function WorkRow({ project }: { project: ProjectRecord }) {
-  const tags = (project.technologies?.length ? project.technologies : project.characteristics).slice(0, 3);
   const action = projectActionsFor(project, "card").find((candidate) => candidate.id === "project");
   return (
-    <article className="work-row">
-      {project.preview ? (
-        <div
-          className="work-visual"
-          aria-hidden="true"
-          inert
-          data-preview-id={project.preview.id}
-          data-preview-kind={project.preview.kind}
-          data-preview-fixture={project.preview.fixture}
-        >
-          <ProjectPreview project={project} />
-        </div>
-      ) : null}
-      <div className="work-caption">
-        <div className="work-identity">
-          <p className="work-index"><span className="work-number">{project.number}</span><span>{project.eyebrow}</span></p>
-          <h3><a href={projectPath(project.slug)}>{project.name}</a></h3>
-        </div>
-        <div className="work-detail">
-          <p className="work-tagline">{project.narrative.tagline}</p>
-          <ul className="work-tags" aria-label={project.technologies?.length ? "Selected technologies" : "Selected characteristics"}>
-            {tags.map((tag) => <li key={tag}>{tag}</li>)}
-          </ul>
-          {action ? (
-            <a className="work-link" href={action.href} aria-label={action.ariaLabel} data-project-action={action.id}>
-              {action.label} <span aria-hidden="true">→</span>
-            </a>
-          ) : null}
-        </div>
+    <details className="work-row" name="work-list">
+      <summary className="work-summary">
+        <span className="work-number">{project.number}</span>
+        <span className="work-identity">
+          <span className="work-name">{project.name}</span>
+          <span className="work-eyebrow">{project.eyebrow}</span>
+        </span>
+        <span className="work-tagline">{project.narrative.tagline}</span>
+        <span className="work-tags">
+          {project.tags.map((tag) => <span key={tag}>{tag}</span>)}
+        </span>
+        <span className="work-disclose" aria-hidden="true">
+          <svg viewBox="0 0 16 16" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </span>
+      </summary>
+      <div className="work-panel">
+        {project.preview ? (
+          <div
+            className="work-visual"
+            aria-hidden="true"
+            inert
+            data-preview-id={project.preview.id}
+            data-preview-kind={project.preview.kind}
+            data-preview-fixture={project.preview.fixture}
+          >
+            <ProjectPreview project={project} />
+          </div>
+        ) : null}
+        {action ? (
+          <a className="work-link" href={action.href} aria-label={action.ariaLabel} data-project-action={action.id}>
+            {action.label} <span aria-hidden="true">→</span>
+          </a>
+        ) : null}
       </div>
-    </article>
+    </details>
   );
 }

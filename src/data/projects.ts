@@ -49,6 +49,7 @@ export interface ProjectRecord {
   primaryCapability: string;
   technologies?: readonly string[];
   characteristics: readonly string[];
+  tags: readonly string[];
   liveUrl: string | null;
   operationsUrl?: string;
   sourceUrl: string;
@@ -72,6 +73,7 @@ export const projects = [
     summary: "A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.",
     primaryCapability: "Live multiplayer operation and governance",
     technologies: ["Worker", "Durable Objects", "R2"],
+    tags: ["Cloudflare", "TypeScript", "ISO 27001", "ISO 42001"],
     characteristics: ["Multiplayer game", "100% artificial-intelligence-developed", "ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "Built-in cost controls"],
     liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
@@ -112,6 +114,7 @@ export const projects = [
     summary: "A browser fighting game where every hit has one repeatable result. It includes accessible controls, training tools, replays, computer players, and a foundation for future online play.",
     primaryCapability: "Deterministic combat simulation",
     characteristics: ["Deterministic simulation", "Rollback architecture", "WCAG 2.0 AA interfaces", "Training tools", "Accessible controls"],
+    tags: ["Cloudflare", "TypeScript", "WCAG 2.0 AA"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
     sourceUrl: "https://github.com/Wizard-Gang/Hexframe",
     preview: { id: "hexframe-training", kind: "motion-controlled", fixture: "product-recreation" },
@@ -150,6 +153,7 @@ export const projects = [
     summary: "An offline comic and book library that turns mixed files into a checked, portable reader and can safely continue after a crash or interrupted copy.",
     primaryCapability: "Offline, recoverable media pipeline",
     technologies: ["TypeScript", "CLI", "Static HTML"],
+    tags: ["TypeScript", "CLI", "Offline-first"],
     characteristics: ["Content addressing", "Crash recovery", "Verified exports", "Offline-first"],
     liveUrl: null,
     sourceUrl: "https://github.com/Wizard-Gang/YarReader",
@@ -252,6 +256,8 @@ export function validateProjectRecords(records: readonly ProjectRecord[]): void 
     if (project.liveUrl) assertHttpsUrl(project.liveUrl, `${project.slug} liveUrl`);
     if (project.operationsUrl) assertHttpsUrl(project.operationsUrl, `${project.slug} operationsUrl`);
     assertUniqueStrings(project.technologies, `${project.slug} technologies`);
+    assertUniqueStrings(project.tags, `${project.slug} tags`);
+    if (project.tags.length < 2) throw new Error(`Project needs at least two tags: ${project.slug}`);
     assertUniqueStrings(project.characteristics, `${project.slug} characteristics`);
 
     const entryPath = projectPath(project.slug);
