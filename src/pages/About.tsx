@@ -2,6 +2,7 @@ import type { ReactPageDefinition } from "../app/contracts";
 import { ProfessionalRoleGrid, ReferenceList, SkillList } from "../components/ProfessionalSurfaces";
 import { professionalRoles, professionalSkills } from "../data/professional";
 import { deployments } from "../data/professional-systems";
+import { DEMO_FRAMEWORK_PATH } from "../data/solutions";
 import { TEAM_MEMBERS } from "../data/team";
 
 type AboutLocalSection = "about" | "company" | "team";
@@ -116,7 +117,7 @@ export const COMPANY_PAGE: ReactPageDefinition = {
         <div>
           <h2>Demonstrate; do not overclaim.</h2>
           <p>WizardGang software includes documented accessibility work, and individual projects may document alignment with standards such as WCAG, ISO/IEC 27001, or ISO/IEC 42001. Those records do not become an organization-level certification claim.</p>
-          <a className="text-link" href="https://demo.wizardgang.ai">Open architecture evidence <span aria-hidden="true">↗</span></a>
+          <a className="text-link" href={DEMO_FRAMEWORK_PATH}>Explore the Demo Framework <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </main>

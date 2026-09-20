@@ -88,38 +88,3 @@ export const SOFTWARE_INTEGRATIONS_PAGE: ReactPageDefinition = {
     </main>
   )
 };
-
-export const SOLUTIONS_PAGE: ReactPageDefinition = {
-  relative: "solutions/index.html",
-  metadata: {
-    title: "Solutions — WizardGang",
-    description: "Reusable WizardGang approaches for delivering software, including owner-controlled websites and the architecture demo framework.",
-    path: "/solutions/",
-    socialImage: "/og.jpg"
-  },
-  body: (
-    <main className="case-main" id="main" tabIndex={-1}>
-      <section className="page-hero">
-        <p className="kicker">Solutions</p>
-        <h1>Reusable approaches<br /><span>for software delivery.</span></h1>
-        <p>WizardGang solutions organize repeatable delivery approaches without duplicating the software catalog.</p>
-      </section>
-      <section className="case-section">
-        <div className="case-label">Website services</div>
-        <div>
-          <h2>Owner-controlled websites.</h2>
-          <p>The current fixed-scope website offering remains available under Services.</p>
-          <a className="text-link" href="/services/">View services <span aria-hidden="true">→</span></a>
-        </div>
-      </section>
-      <section className="case-section">
-        <div className="case-label">Demo framework</div>
-        <div>
-          <h2>Architecture you can inspect.</h2>
-          <p>The WizardGang Architecture Demo remains the detailed executable and evidence surface for the reusable demo framework.</p>
-          <a className="text-link" href="https://demo.wizardgang.ai">Open architecture demo <span aria-hidden="true">↗</span></a>
-        </div>
-      </section>
-    </main>
-  )
-};

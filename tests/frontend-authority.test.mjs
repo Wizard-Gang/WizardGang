@@ -22,7 +22,9 @@ const retiredAuthorities = [
   "src/portfolio-cleanup.css",
   "src/app/foundation/main.tsx",
   "scripts/verify-frontend-foundation.mjs",
-  "src/pages/Work.tsx"
+  "src/pages/Work.tsx",
+  "src/pages/Services.tsx",
+  "src/data/services.ts"
 ];
 
 const sourceFiles = (await walk(resolve(root, "src"))).map(repoPath).sort();
@@ -98,7 +100,8 @@ test("canonical page inventory remains owned by the typed React registry", async
   for (const authority of [
     "HOME_PAGE",
     "createProjectPageDefinitions",
-    "SERVICES_PAGE",
+    "WEBSITES_SOLUTION_PAGE",
+    "DEMO_FRAMEWORK_PAGE",
     "ABOUT_PAGE",
     "COMPANY_PAGE",
     "TEAM_PAGE",
@@ -128,7 +131,6 @@ test("canonical page inventory remains owned by the typed React registry", async
     "index.html",
     "software/projects/index.html",
     ...projectRoutes,
-    "services/index.html",
     "about/index.html",
     "about/company/index.html",
     "about/team/index.html",
@@ -136,11 +138,13 @@ test("canonical page inventory remains owned by the typed React registry", async
     "software/index.html",
     "software/integrations/index.html",
     "solutions/index.html",
+    "solutions/websites/index.html",
+    "solutions/demo-framework/index.html",
     "glossary/index.html",
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 18, "WG-053 adds Integrations while moving the existing project outputs under Software");
+  assert.equal(expected.size, 19, "WG-056 establishes canonical Websites and Demo Framework pages under Solutions");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);

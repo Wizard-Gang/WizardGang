@@ -12,7 +12,6 @@ test("typed React registry owns every canonical static page", async () => {
   const registry = await readRoot("src/app/pageRegistry.ts");
   for (const authority of [
     "HOME_PAGE",
-    "SERVICES_PAGE",
     "ABOUT_PAGE",
     "COMPANY_PAGE",
     "TEAM_PAGE",
@@ -20,6 +19,8 @@ test("typed React registry owns every canonical static page", async () => {
     "SOFTWARE_PAGE",
     "SOFTWARE_INTEGRATIONS_PAGE",
     "SOLUTIONS_PAGE",
+    "WEBSITES_SOLUTION_PAGE",
+    "DEMO_FRAMEWORK_PAGE",
     "GLOSSARY_PAGE",
     "NOT_FOUND_PAGE",
     "createProjectPageDefinitions"
@@ -33,7 +34,7 @@ test("typed React registry owns every canonical static page", async () => {
     await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });
   }
 
-  assert.equal(CANONICAL_PAGES.size, 18);
+  assert.equal(CANONICAL_PAGES.size, 19);
   for (const relative of CANONICAL_PAGES.keys()) {
     const html = await readDist(relative);
     assert.equal(tagBlocks(html, "main").length, 1, `${relative} must have one React-authored main`);
@@ -50,8 +51,9 @@ test("remaining current-state pages retain substantive content after React migra
     ["about/team/jacob/index.html", ["Team / Jacob Yongue", "Build the whole path.", "Systems thinking", "Implementation depth", "Project ownership", "Learning velocity", "Professional background", "Career history", "Professional integration evidence", "Experience stays attributed to the roles that produced it.", "Deployments", "Core skills"]],
     ["software/index.html", ["Software, systems,", "Connect systems and workflows.", "WizardGang software projects.", "Explore integrations", "Explore projects"]],
     ["software/integrations/index.html", ["Software / Integrations", "Connect systems.", "Keep ownership clear.", "Five durable integration groups.", "APIs & Services", "Enterprise Systems", "Identity & Access", "Data & Automation", "Operational Interfaces", "Capability and career evidence stay distinct."]],
-    ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Open architecture demo"]],
-    ["services/index.html", ["Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
+    ["solutions/index.html", ["Reusable approaches", "Owner-controlled websites.", "Architecture you can inspect.", "Explore Websites", "Explore Demo Framework"]],
+    ["solutions/websites/index.html", ["Solutions / Websites", "Launch the site.", "Keep the keys.", "Starter", "$95", "Business", "$195", "Owner+", "$350"]],
+    ["solutions/demo-framework/index.html", ["Solutions / Demo Framework", "Make architecture", "Requirement", "Validation", "Release", "Deployment", "Operation", "Explore the architecture demo"]],
     ["glossary/index.html", ["Technical terms.", "Artificial intelligence (AI)", "Application programming interface (API)", "Web Content Accessibility Guidelines (WCAG)"]],
     ["404.html", ["404 / Route not found", "Nothing here.", "View projects", "Home"]]
   ];
@@ -73,11 +75,12 @@ test("Home reuses typed project and systems authorities instead of duplicating f
   assert.doesNotMatch(home, /I build systems that ship|Software engineer · Systems · Project delivery|Selected work/);
 });
 
-test("structured service and glossary records are typed outside legacy rendering", async () => {
-  const services = await readRoot("src/data/services.ts");
+test("structured solution and glossary records are typed outside page rendering", async () => {
+  const solutions = await readRoot("src/data/solutions.ts");
   const glossary = await readRoot("src/data/glossary.ts");
-  assert.match(services, /ServicePackage/);
-  assert.match(services, /WEBSITE_PACKAGES/);
+  assert.match(solutions, /SolutionRecord/);
+  assert.match(solutions, /WEBSITE_PACKAGES/);
+  assert.match(solutions, /DEMO_FRAMEWORK_PROCESS/);
   assert.match(glossary, /GlossaryEntry/);
   assert.match(glossary, /GLOSSARY/);
 });

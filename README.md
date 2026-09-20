@@ -1,6 +1,6 @@
 # WizardGang
 
-WizardGang publishes inspectable software projects, clearly attributed systems and integration capability, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). Software is canonical at `/software/`, with Integrations at `/software/integrations/` and WizardGang projects at `/software/projects/`. Jacob's detailed professional background remains canonical at `/about/team/jacob/`; former `/work/*` and `/projects/*` locations are compatibility-only, while Services remains transitional until its later Solutions migration.
+WizardGang publishes inspectable software projects, clearly attributed systems and integration capability, and reusable engineering solutions at [wizardgang.ai](https://wizardgang.ai). Software is canonical at `/software/`, with Integrations at `/software/integrations/` and WizardGang projects at `/software/projects/`. Jacob's detailed professional background remains canonical at `/about/team/jacob/`. Solutions is canonical at `/solutions/`, with Websites at `/solutions/websites/` and Demo Framework at `/solutions/demo-framework/`; former `/work/*`, `/projects/*`, and `/services/*` locations are compatibility-only.
 
 **[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
 
@@ -39,9 +39,9 @@ Stop the local environment with `Ctrl-C` in the terminal running `npm run dev`. 
 
 React and TypeScript own the shared production document shell: document/head metadata, skip navigation, Header, desktop/mobile navigation, Preferences markup, Footer, and shared outer composition. TypeScript/Vite also owns first-party browser behavior for preferences, language, and mobile-navigation enhancement. The browser receives complete static HTML plus one small generated module and does not load or hydrate a React client application.
 
-React/TypeScript owns every canonical production page body, including Home, Software → Integrations / Projects and project case studies, About and Team/Jacob professional detail, Services, the staged Solutions landing, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and links to the canonical typed integration authority rather than duplicating project, integration, or career catalogs.
+React/TypeScript owns every canonical production page body, including Home, Software → Integrations / Projects and project case studies, About and Team/Jacob professional detail, Solutions → Websites / Demo Framework, Glossary, and the static 404 page. A single typed page registry feeds the static renderer. Home consumes the canonical typed project data/components and links to the canonical typed integration authority rather than duplicating project, integration, or career catalogs.
 
-The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About owns `/about/`, `/about/company/`, `/about/team/`, and `/about/team/jacob/`; Jacob's Team page is the canonical professional-history authority. Software owns `/software/`, `/software/integrations/`, `/software/projects/`, and all project descendants. Legacy `/work/*` and `/projects/*` routes are permanent compatibility redirects. `/solutions/` and `/services/` remain separate until the later Solutions migration.
+The shared primary navigation is company-first: About, Software, and Solutions, with Home on the WizardGang wordmark. About owns `/about/`, `/about/company/`, `/about/team/`, and `/about/team/jacob/`; Jacob's Team page is the canonical professional-history authority. Software owns `/software/`, `/software/integrations/`, `/software/projects/`, and all project descendants. Legacy `/work/*`, `/projects/*`, and `/services/*` routes are permanent compatibility redirects. Solutions owns `/solutions/websites/` and `/solutions/demo-framework/`; the detailed executable Demo Framework surface remains external at `https://demo.wizardgang.ai`.
 
 The authoritative production build remains:
 
@@ -90,10 +90,11 @@ npm run test:about
 - `src/data/integrations.ts` owns the typed WizardGang-facing integration taxonomy, capability identifiers, and evidence relationships.
 - `src/data/professional-systems.ts` owns employer/customer deployment and historical professional-system references; production company UI does not consume it as a second integration catalog.
 - `src/data/team.ts` owns the current typed WizardGang team-member relationship.
-- `src/data/site.ts`, `src/data/services.ts`, and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
+- `src/data/solutions.ts` owns canonical Solutions facts, website packages, the Demo Framework process model, and the external demo boundary.
+- `src/data/site.ts` and `src/data/glossary.ts` own structured current-site data where reuse or repeated records justify it.
 - `src/components/ProjectSurfaces.tsx` owns the common project-card, header, action, fact, architecture, and preview-frame presentation contract; project-specific previews and long-form case-study narrative remain separate.
 - `src/pages/` owns every canonical production page body in React/TypeScript, including project-specific technical narrative.
-- `src/app/pageRegistry.ts` is the typed output/route registry for the current 18 canonical static HTML files.
+- `src/app/pageRegistry.ts` is the typed output/route registry for the current 19 canonical static HTML files.
 - `src/worker/index.ts` is the TypeScript Worker authority for static delivery, compatibility redirects, and SharkTank proxy routing.
 - `src/styles/globals.css` is the single production stylesheet authority for Tailwind integration and authored presentation CSS.
 - `vite.config.ts` compiles the server-only React renderer and generates the canonical static site into `dist/`.
@@ -104,11 +105,11 @@ npm run test:about
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, and the standardized project-presentation contract are implemented. Solutions and later route cleanup remain staged.
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, standardized project presentation, and Solutions → Websites / Demo Framework are implemented. Later redundant-route cleanup remains staged.
 - [Portfolio governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
-- [Architecture compliance and assurance evidence](https://demo.wizardgang.ai/compliance)
+- [Architecture and assurance evidence](https://demo.wizardgang.ai/assurance)
 
 ## Deployment
 

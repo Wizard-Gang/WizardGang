@@ -195,7 +195,7 @@ collect submissions, make automated decisions, host an AI model, or operate cust
 
 ## Accessibility record
 
-The architecture demo’s [compliance and assurance index](https://demo.wizardgang.ai/compliance) links
+The architecture demo’s [compliance and assurance index](https://demo.wizardgang.ai/assurance) links
 to its canonical working accessibility evidence. Portfolio scope, release checks, limitations, and
 reporting remain documented in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 

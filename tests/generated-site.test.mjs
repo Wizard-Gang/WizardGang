@@ -58,13 +58,13 @@ function browserModulePath(html) {
   return source.slice(1);
 }
 
-test("generated HTML inventory is the explicit 18-page canonical contract", async () => {
+test("generated HTML inventory is the explicit 19-page canonical contract", async () => {
   const actual = (await walk(dist))
     .filter((path) => path.endsWith(".html"))
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 18);
+  assert.equal(actual.length, 19);
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -258,7 +258,7 @@ test("homepage is WizardGang-first while routing to current deeper authorities",
   assert.ok(hero, "homepage hero section is missing");
   assert.deepEqual(anchors(hero.inner).map((anchor) => anchor.href).sort(), ["/software/", "/solutions/"].sort());
 
-  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/services/", "/about/", "https://demo.wizardgang.ai", "mailto:jacob@wizardgang.ai"]) {
+  for (const href of ["/software/", "/software/integrations/", "/software/projects/", "/about/team/jacob/", "/solutions/", "/solutions/websites/", "/solutions/demo-framework/", "/about/", "mailto:jacob@wizardgang.ai"]) {
     assert.ok(anchorWithHref(home, href), `homepage missing current destination ${href}`);
   }
   assert.ok(anchorWithHref(home, "https://github.com/Wizard-Gang"), "homepage must retain organization GitHub access through shared chrome");
@@ -411,9 +411,10 @@ test("Jacob Team page preserves attributed career and integration evidence witho
   assert.equal(await exists(resolve(dist, "work/index.html")), false, "redirect-only /work/ must not generate HTML");
 });
 
-test("services page preserves the current package, ownership, and handoff model", async () => {
-  const services = await readDist("services/index.html");
-  requireText(services, [
+test("Websites solution preserves the package, ownership, and handoff model under Solutions", async () => {
+  const websites = await readDist("solutions/websites/index.html");
+  requireText(websites, [
+    "Solutions / Websites",
     "Launch the site",
     "Keep the keys",
     "The website is yours",
@@ -431,16 +432,14 @@ test("services page preserves the current package, ownership, and handoff model"
     "Up to 5 pages",
     "Up to 8 pages",
     "History and checks",
+    "WizardGang can build, configure, test, and launch the site",
+    "WizardGang does not have to stay in the middle"
+  ], "Websites solution");
+  rejectText(websites, [
     "I don’t sell you a website subscription",
     "I build you a small piece of software",
     "I can build, configure, test, and launch the site",
-    "I do not have to stay in the middle"
-  ], "services page");
-  rejectText(services, [
-    "We don’t sell",
-    "We build you",
-    "WizardGang can build",
-    "WizardGang does not have to stay",
+    "I do not have to stay in the middle",
     "$0 hosting forever",
     "$0/month forever",
     "yourwebsite.wizardgang.ai",
@@ -448,7 +447,7 @@ test("services page preserves the current package, ownership, and handoff model"
     "Open the demo",
     "service-demo",
     "service-source-map"
-  ], "services page");
+  ], "Websites solution");
 });
 
 test("About hierarchy and glossary retain their current substantive roles", async () => {
@@ -584,7 +583,7 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "WEBSITES_SOLUTION_PAGE", "DEMO_FRAMEWORK_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
   assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must stay out of the React registry");
