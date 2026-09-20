@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { createStaticPageRegistry } from "./pageRegistry";
 import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
@@ -75,7 +75,6 @@ export function Document({
       <body>
         <SiteHeader current={navigationSectionForPath(page.metadata.path)} />
         {children}
-        <Preferences />
         <SiteFooter build={build} />
       </body>
     </html>

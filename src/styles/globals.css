@@ -33,7 +33,7 @@ body {
 
 a { color: inherit; text-underline-offset: .3em; }
 
-:where(a, button, summary, input, select):focus-visible {
+:where(a,button,summary,input,select):focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 4px;
 }
@@ -52,7 +52,6 @@ a { color: inherit; text-underline-offset: .3em; }
 .skip-link:focus { left: 0; }
 
 .site-header,
-.display-settings,
 .site-main,
 .site-footer {
   width: min(1240px, calc(100% - 40px));
@@ -70,22 +69,6 @@ a { color: inherit; text-underline-offset: .3em; }
   border-bottom: 1px solid var(--line-soft);
 }
 
-.display-settings { border-top: 1px solid var(--line-soft); }
-.display-settings > summary:hover { color: var(--paper); }
-
-.display-settings > summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  width: fit-content;
-  padding: .6rem 0;
-  color: var(--quiet);
-  cursor: pointer;
-  font: 500 var(--text-micro)/1.3 var(--font-mono);
-  letter-spacing: var(--tracking-label);
-  text-transform: uppercase;
-}
-
 .settings-toolbar {
   display: flex;
   align-items: end;
@@ -94,16 +77,6 @@ a { color: inherit; text-underline-offset: .3em; }
   padding: .15rem 0 1rem;
 }
 
-.display-settings fieldset {
-  display: flex;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  gap: .35rem;
-}
-
-.display-settings legend,
 .setting-language > span {
   margin-right: .2rem;
   padding: 0;
@@ -113,7 +86,6 @@ a { color: inherit; text-underline-offset: .3em; }
   text-transform: uppercase;
 }
 
-.display-settings label,
 .setting-language {
   display: flex;
   align-items: center;
@@ -127,7 +99,6 @@ a { color: inherit; text-underline-offset: .3em; }
   gap: .25rem;
 }
 
-.display-settings fieldset label,
 .setting-toggle {
   min-height: 44px;
   padding: .5rem .65rem;
@@ -136,29 +107,6 @@ a { color: inherit; text-underline-offset: .3em; }
   cursor: pointer;
   font-size: .82rem;
   font-weight: 760;
-}
-
-.display-settings label:has(input:checked) {
-  border-color: var(--acid);
-  box-shadow: inset 0 -2px 0 var(--acid);
-}
-
-.display-settings input {
-  flex: 0 0 auto;
-  width: 1rem;
-  height: 1rem;
-  margin: 0;
-  accent-color: var(--acid);
-}
-
-.display-settings select {
-  min-height: 44px;
-  padding: .45rem 2rem .45rem .65rem;
-  border: 1px solid var(--line);
-  border-radius: 0;
-  background: var(--panel);
-  color: var(--paper);
-  font: 760 .82rem/1 var(--font-sans);
 }
 
 body:has(#theme-light:checked) {
@@ -187,14 +135,12 @@ body:has(#theme-light:checked) {
 }
 
 body:has(#theme-light:checked) .home-statement-card,
-body:has(#theme-light:checked) :where(.project-card, .service-package, .glossary-list > div) {
+body:has(#theme-light:checked) :where(.project-card,.service-package,.glossary-list > div) {
   background: var(--panel);
 }
 
 body:has(#theme-light:checked) .button:not(.button-primary),
-body:has(#theme-light:checked) .display-settings fieldset label,
-body:has(#theme-light:checked) .setting-toggle,
-body:has(#theme-light:checked) .display-settings select {
+body:has(#theme-light:checked) .setting-toggle {
   background: #fffdf7;
 }
 
@@ -514,7 +460,6 @@ h1 span { color: var(--muted); }
 @media (max-width: 760px) {
   .settings-toolbar { align-items: stretch; }
   .setting-language { width: 100%; }
-  .display-settings select { width: 100%; }
   .site-footer { flex-direction: column; gap: .9rem; }
 
   .site-header { align-items: center; flex-wrap: wrap; }
@@ -529,7 +474,6 @@ h1 span { color: var(--muted); }
 
 @media (max-width: 620px) {
   .site-header,
-.display-settings,
 .site-main,
 .site-footer { width: min(100% - 24px, 1240px); }
   .site-header { align-items: flex-start; padding: 1.15rem 0; }
@@ -1591,7 +1535,7 @@ h1 span { color: var(--muted); }
 /* Project motion starts on and remains user-controlled. The native checkbox gives
    keyboard and assistive-technology users the same pause control. */
 .project-visual * { animation-play-state: paused !important; }
-body:has(#play-previews:checked) :where(details[open], .case-visual) .project-visual * { animation-play-state: running !important; }
+body:has(#play-previews:checked) :where(details[open],.case-visual) .project-visual * { animation-play-state: running !important; }
 
 @media (max-width: 760px) {
   .tank-board { display: none; }
@@ -1677,7 +1621,7 @@ body:has(#play-previews:checked) :where(details[open], .case-visual) .project-vi
   table-layout: fixed;
 }
 
-.sr-only :where(caption, th, td) {
+.sr-only :where(caption,th,td) {
   max-width: 1px;
   overflow: hidden;
   overflow-wrap: anywhere;
@@ -1827,63 +1771,26 @@ body:has(#play-previews:checked) :where(details[open], .case-visual) .project-vi
   }
 }
 
-body:has(#reading-layout:checked) :where(.site-main, .case-main) p {
+body:has(#reading-layout:checked) :where(.site-main,.case-main) p {
   max-width: 72ch;
   line-height: 1.7;
 }
 
-body:has(#reading-layout:checked) :where(.site-main, .case-main) p + p {
+body:has(#reading-layout:checked) :where(.site-main,.case-main) p + p {
   margin-top: 1.5em;
 }
 
 html:has(#text-size-200:checked) { font-size: 200%; }
 
-html:has(#text-size-200:checked) :where(h1, h2, h3) {
+html:has(#text-size-200:checked) :where(h1,h2,h3) {
   overflow-wrap: anywhere;
 }
 
-html:has(#text-size-200:checked) :where(
-  .site-header,
-  .settings-toolbar,
-  .hero,
-  .section-heading,
-  .project-card-grid,
-  .track-grid,
-  .project-card,
-  .selected-work-grid,
-  .services-teaser-copy,
-  .service-package-grid,
-  .capabilities .capability-grid,
-  .about-teaser,
-  .contact-band,
-  .site-footer,
-  .case-hero,
-  .showcase-overview,
-  .case-section,
-  .project-depth,
-  .professional-hero,
-  .professional-section-heading,
-  .experience-grid,
-  .systems-resume-section > header,
-  .systems-resume-grid,
-  .services-hero,
-  .service-packages > header,
-  .service-ownership > header,
-  .service-cost,
-  .service-handoff,
-  .service-process > header,
-  .service-package-grid,
-  .service-process-grid,
-  .service-stack,
-  .service-growth,
-  .about-principles,
-  .accessibility-section,
-  .glossary-list > div
-) {
+html:has(#text-size-200:checked) :where(.site-header,.settings-toolbar,.hero,.section-heading,.project-card-grid,.track-grid,.project-card,.selected-work-grid,.services-teaser-copy,.service-package-grid,.capabilities .capability-grid,.about-teaser,.contact-band,.site-footer,.case-hero,.showcase-overview,.case-section,.project-depth,.professional-hero,.professional-section-heading,.experience-grid,.systems-resume-section > header,.systems-resume-grid,.services-hero,.service-packages > header,.service-ownership > header,.service-cost,.service-handoff,.service-process > header,.service-package-grid,.service-process-grid,.service-stack,.service-growth,.about-principles,.accessibility-section,.glossary-list > div) {
   grid-template-columns: 1fr;
 }
 
-html:has(#text-size-200:checked) :where(.site-header, .section-heading, .services-teaser-copy, .contact-band, .site-footer) {
+html:has(#text-size-200:checked) :where(.site-header,.section-heading,.services-teaser-copy,.contact-band,.site-footer) {
   align-items: flex-start;
   flex-direction: column;
 }
@@ -1950,94 +1857,39 @@ html:has(#text-size-200:checked) .principle-grid {
   grid-template-columns: 1fr;
 }
 
-html:has(#text-size-200:checked) :where(
-  .reference-cloud li,
-  .capability-cloud li,
-  .reference-cloud a,
-  .skill-columns .tags li
-) {
+html:has(#text-size-200:checked) :where(.reference-cloud li,.capability-cloud li,.reference-cloud a,.skill-columns .tags li) {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
-html:has(#text-size-200:checked) :where(
-  .settings-toolbar,
-  .display-settings fieldset,
-  .display-settings label,
-  .setting-language,
-  .experience-grid,
-  .experience-grid article
-) {
+html:has(#text-size-200:checked) :where(.settings-toolbar,.setting-language,.experience-grid,.experience-grid article) {
   min-width: 0;
   max-width: 100%;
 }
 
-html:has(#text-size-200:checked) .display-settings fieldset {
-  flex-wrap: wrap;
-}
-
-html:has(#text-size-200:checked) :where(
-  .display-settings fieldset label,
-  .setting-toggle,
-  .setting-language,
-  .experience-grid article > span,
-  .experience-grid article > strong,
-  .experience-grid article > p
-) {
+html:has(#text-size-200:checked) :where(.setting-toggle,.setting-language,.experience-grid article > span,.experience-grid article > strong,.experience-grid article > p) {
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
-html:has(#text-size-200:checked) :where(
-  .button,
-  .text-link,
-  .button-row,
-  .about-local-nav,
-  .team-grid,
-  .team-card,
-  .project-card-actions,
-  .project-card-copy,
-  .selected-work-grid article,
-  .capabilities .capability-grid article,
-  .about-teaser > *,
-  .contact-band > *
-) {
+html:has(#text-size-200:checked) :where(.button,.text-link,.button-row,.about-local-nav,.team-grid,.team-card,.project-card-actions,.project-card-copy,.selected-work-grid article,.capabilities .capability-grid article,.about-teaser > *,.contact-band > *) {
   min-width: 0;
   max-width: 100%;
 }
 
-html:has(#text-size-200:checked) :where(
-  .button,
-  .text-link,
-  .services-hero h1 span
-) {
+html:has(#text-size-200:checked) :where(.button,.text-link,.services-hero h1 span) {
   overflow-wrap: anywhere;
   white-space: normal;
 }
 
-html:has(#text-size-200:checked) :where(
-  .hero-identity,
-  .hero-side,
-  .home-statement-card,
-  .selected-work-grid article,
-  .capabilities .capability-grid article,
-  .contact-band
-) {
+html:has(#text-size-200:checked) :where(.hero-identity,.hero-side,.home-statement-card,.selected-work-grid article,.capabilities .capability-grid article,.contact-band) {
   min-width: 0;
   max-width: 100%;
 }
 
-html:has(#text-size-200:checked) :where(
-  .home-statement-card > p,
-  .hero-side > p,
-  .selected-work-grid p,
-  .selected-work-grid strong,
-  .capabilities .capability-grid p,
-  .contact-band > p,
-  .project-card-copy p
-) {
+html:has(#text-size-200:checked) :where(.home-statement-card > p,.hero-side > p,.selected-work-grid p,.selected-work-grid strong,.capabilities .capability-grid p,.contact-band > p,.project-card-copy p) {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -2046,38 +1898,12 @@ html:has(#text-size-200:checked) :where(
 
 /* At 200% text, translated Services copy must be allowed to contribute a
    shrinkable min-content width instead of widening the root layout. */
-html:has(#text-size-200:checked) :where(
-  .services-main,
-  .service-packages,
-  .service-ownership,
-  .service-handoff,
-  .service-process,
-  .service-growth,
-  .service-notes,
-  .service-package-grid,
-  .service-process-grid,
-  .service-package,
-  .service-package header,
-  .service-package ul,
-  .service-package li,
-  .service-statement,
-  .service-stack,
-  .service-stack article,
-  .service-cost
-) {
+html:has(#text-size-200:checked) :where(.services-main,.service-packages,.service-ownership,.service-handoff,.service-process,.service-growth,.service-notes,.service-package-grid,.service-process-grid,.service-package,.service-package header,.service-package ul,.service-package li,.service-statement,.service-stack,.service-stack article,.service-cost) {
   min-width: 0;
   max-width: 100%;
 }
 
-html:has(#text-size-200:checked) .services-main :where(
-  p,
-  li,
-  h1,
-  h2,
-  h3,
-  strong,
-  span
-) {
+html:has(#text-size-200:checked) .services-main :where(p,li,h1,h2,h3,strong,span) {
   min-width: 0;
   max-width: 100%;
   overflow-wrap: anywhere;
@@ -2197,7 +2023,7 @@ html:has(#text-size-200:checked) .solution-area-grid {
 @media (max-width: 1120px) {
   .work-summary { grid-template-columns: 2.5rem minmax(0, 1fr) auto; }
   .work-tagline,
-  .work-tags { grid-column: 2; }
+.work-tags { grid-column: 2; }
   .work-tags { justify-content: flex-start; }
   .work-disclose { grid-column: 3; grid-row: 1 / -1; }
 }
@@ -2262,11 +2088,11 @@ html:has(#text-size-200:checked) .solution-area-grid {
 
 .case-visual .project-visual { border-radius: var(--radius-lg); }
 
-:where(.button, .nav-toggle, .display-settings select, .display-settings fieldset label, .setting-toggle) {
+:where(.button,.nav-toggle,.setting-toggle) {
   border-radius: var(--radius-sm);
 }
 
-:where(.project-card, .track-grid article, .capability-grid article, .team-card, .service-package, .glossary-list > div) {
+:where(.project-card,.track-grid article,.capability-grid article,.team-card,.service-package,.glossary-list > div) {
   border-radius: var(--radius-md);
 }
 
@@ -2527,4 +2353,83 @@ html:has(#text-size-200:checked) .solution-area-grid {
   .nav-menu > ul { position: static; box-shadow: none; margin-top: .35rem; }
   .nav-disclosure .site-nav .nav-menu { width: 100%; }
   .nav-disclosure .site-nav .nav-menu > summary { justify-content: flex-end; padding: 0 .75rem; }
+}
+
+/* Preferences gear. One trigger, one panel. */
+.prefs { position: relative; }
+
+.prefs > summary {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+  transition: color .16s ease, border-color .16s ease, transform .3s ease;
+}
+
+.prefs > summary::-webkit-details-marker { display: none; }
+.prefs > summary:hover { border-color: var(--line-strong); color: var(--paper); }
+.prefs[open] > summary { border-color: var(--acid); color: var(--acid); transform: rotate(45deg); }
+
+.prefs-gear { width: 1.15rem; height: 1.15rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+.settings-toolbar {
+  position: absolute;
+  top: calc(100% + .55rem);
+  right: 0;
+  z-index: 12;
+  display: grid;
+  gap: .55rem;
+  width: max-content;
+  min-width: 13rem;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
+}
+
+.settings-toolbar fieldset { display: flex; gap: .35rem; margin: 0; padding: 0; border: 0; }
+
+.settings-toolbar legend,
+.setting-language > span {
+  padding: 0;
+  color: var(--quiet);
+  font: 500 var(--text-micro)/1.2 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.setting-language { display: grid; gap: .3rem; }
+.setting-theme { display: grid; gap: .3rem; }
+
+.settings-toolbar select,
+.settings-toolbar fieldset label,
+.setting-toggle {
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 40px;
+  padding: .35rem .6rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--paper);
+  cursor: pointer;
+  font: 500 .82rem/1 var(--font-sans);
+}
+
+.settings-toolbar select { width: 100%; }
+.settings-toolbar fieldset label { flex: 1; justify-content: center; }
+.settings-toolbar label:has(input:checked) { border-color: var(--acid); color: var(--acid); }
+.settings-toolbar input { flex: none; width: 1rem; height: 1rem; margin: 0; accent-color: var(--acid); }
+
+body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2); }
+
+@media (max-width: 760px) {
+  .settings-toolbar { right: 0; width: min(18rem, calc(100vw - 48px)); }
 }
