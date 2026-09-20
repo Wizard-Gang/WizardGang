@@ -3,7 +3,7 @@
 Effective date: 2026-08-30 (America/New_York)
 
 Scope: canonical pages served from `wizardgang.ai`, including shared navigation, preferences,
-project previews, portfolio content, and Glossary. Architecture compliance and assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
+project previews, site content, and Glossary. Architecture compliance and assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
 
 Target: WCAG 2.2 Level AA for all scoped content. This is a route-by-route design and testing target,
 not an accessibility certification or blanket conformance claim.

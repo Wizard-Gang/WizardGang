@@ -116,8 +116,10 @@ function staticSitePlugin(): Plugin {
     resolve(root, "src/pages/Projects.tsx"),
     resolve(root, "src/data/professional.ts"),
     resolve(root, "src/data/professional-systems.ts"),
+    resolve(root, "src/data/integrations.ts"),
+    resolve(root, "src/data/team.ts"),
     resolve(root, "src/components/ProfessionalSurfaces.tsx"),
-    resolve(root, "src/pages/Work.tsx"),
+    resolve(root, "src/components/IntegrationSurfaces.tsx"),
     resolve(root, "src/pages/Home.tsx"),
     resolve(root, "src/pages/About.tsx"),
     resolve(root, "src/pages/CompanyNavigation.tsx"),
@@ -151,7 +153,7 @@ function staticSitePlugin(): Plugin {
       };
 
       const build: BuildMetadata = {
-        product: "WizardGang Portfolio",
+        product: "WizardGang",
         commit: gitCommit(),
         builtAt: new Date().toISOString()
       };

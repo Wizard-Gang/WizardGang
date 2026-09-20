@@ -88,12 +88,12 @@ test("integration evidence links resolve directly to canonical pages and fragmen
   }
 });
 
-test("Home, Software, Team, and Services do not become competing integration catalogs", async () => {
-  const [homeSource, softwareSource, aboutSource, servicesSource] = await Promise.all([
+test("Home, Software, Team, and Solutions do not become competing integration catalogs", async () => {
+  const [homeSource, softwareSource, aboutSource, solutionsSource] = await Promise.all([
     readRoot("src/pages/Home.tsx"),
     readRoot("src/pages/CompanyNavigation.tsx"),
     readRoot("src/pages/About.tsx"),
-    readRoot("src/pages/Services.tsx")
+    readRoot("src/pages/Solutions.tsx")
   ]);
 
   assert.match(homeSource, /INTEGRATIONS_PATH/);
@@ -102,7 +102,7 @@ test("Home, Software, Team, and Services do not become competing integration cat
   assert.doesNotMatch(softwareSource, /professional-systems|integrationGroups|systemGroups/);
   assert.match(aboutSource, /import \{ deployments \} from "\.\.\/data\/professional-systems"/);
   assert.doesNotMatch(aboutSource, /IntegrationGroups|SystemGroups|integrationGroups|systemGroups/);
-  assert.doesNotMatch(servicesSource, /integrationCategories|integrationGroups|systemGroups/);
+  assert.doesNotMatch(solutionsSource, /integrationCategories|integrationGroups|systemGroups/);
 
   const home = textContent(await readDist("index.html"));
   const team = textContent(await readDist("about/team/jacob/index.html"));
