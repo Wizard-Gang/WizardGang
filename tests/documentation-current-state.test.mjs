@@ -62,40 +62,46 @@ test("README documents the current entry points and acceptance gate", async () =
     "WIZARDGANG_PORT",
     "npm run build",
     "npm run check",
-    "npm run test:company-ia",
     "npm run test:accessibility",
     "npm run test:frontend-authority",
     "npm run test:docs",
     "src/app/pageRegistry.ts",
     "src/app/navigation.ts",
+    "src/styles/tokens.css",
     "src/worker/index.ts",
     "public/_headers",
     "dist/_headers"
   ]) assert.ok(readme.includes(value), `README is missing current contract: ${value}`);
 
-  assert.doesNotMatch(readme, /canonical at \/(?:work|projects|services)\//, "README must not describe compatibility paths as canonical");
+  // The five canonical pages, and nothing the cut retired.
+  for (const route of ["/work/", "/services/", "/about/", "/contact/"]) {
+    assert.ok(readme.includes(route), `README must document the canonical route ${route}`);
+  }
+  for (const retired of ["/software/projects/", "/solutions/websites/", "/about/team/jacob/", "/glossary/"]) {
+    assert.ok(!readme.includes(`${retired}\n`), `README must not present the retired route ${retired} as canonical`);
+  }
 });
 
 test("information architecture documents current company ownership and static-first constraints", async () => {
   const ia = await source("docs/INFORMATION-ARCHITECTURE.md");
   for (const value of [
     "Status: current-state authority",
-    "/about/company/",
-    "/about/team/jacob/",
-    "/software/integrations/",
-    "/software/projects/",
-    "/solutions/websites/",
-    "/solutions/demo-framework/",
+    "/work/",
+    "/services/",
+    "/about/",
+    "/contact/",
     "demo.wizardgang.ai",
     "src/app/pageRegistry.ts",
     "src/app/navigation.ts",
+    "src/styles/tokens.css",
     "There is no SPA router",
     "public/_headers",
     "npm run check"
   ]) assert.ok(ia.includes(value), `information architecture is missing current contract: ${value}`);
 
   assert.match(ia, /Supported compatibility behavior lives in `src\/worker\/index\.ts`/);
-  assert.match(ia, /There is no canonical `\/contact\/` route/);
+  assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
+  assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
 });
 
 test("relative Markdown documentation links resolve", async () => {

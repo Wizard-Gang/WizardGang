@@ -6,130 +6,85 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-WizardGang is the primary public entity. The global primary navigation is:
-
-- About
-- Software
-- Solutions
-
-Home is reached through the WizardGang wordmark. Contact and GitHub remain available contextually and in the Footer rather than as primary navigation peers.
-
-The canonical public route hierarchy is:
+The site is five pages. The primary navigation is Work, Services, About, Contact; Home is reached through the wordmark.
 
 ```text
 /
+├── /work/
+├── /services/
 ├── /about/
-│   ├── /about/company/
-│   └── /about/team/
-│       └── /about/team/jacob/
-├── /software/
-│   ├── /software/integrations/
-│   └── /software/projects/
-│       ├── /software/projects/sharktank/
-│       │   └── /software/projects/sharktank/case-study/
-│       ├── /software/projects/hexframe/
-│       │   └── /software/projects/hexframe/case-study/
-│       └── /software/projects/yarreader/
-│           └── /software/projects/yarreader/case-study/
-├── /solutions/
-│   ├── /solutions/websites/
-│   └── /solutions/demo-framework/
-└── /glossary/
+└── /contact/
 ```
 
-The build also emits `404.html`. It is noindex and has no canonical URL. It is not a sitemap entry.
+The build also emits `404.html`. It is noindex, has no canonical URL, and is not a sitemap entry.
 
-`src/app/pageRegistry.ts` is the generated-page inventory. Project descendants are produced from the typed project authority rather than maintained as a second route list.
+`src/app/pageRegistry.ts` is the generated-page inventory, and `sitemap.xml` is a projection of it rather than a second list.
+
+Everything deeper than a page is a fragment on the page that owns it. A project is `/work/#<slug>`, a service is `/services/#<slug>`, and the professional record is `/about/#jacob`. Fragments come from the typed authorities, so a route and its anchor cannot drift apart.
 
 ## Content ownership
 
-Each major concept has one public owner:
+Each concept has one public owner:
 
-| Concept | Authority | Supporting surfaces |
+| Concept | Authority | Typed source |
 | --- | --- | --- |
-| WizardGang orientation | `/` | About, Software, Solutions |
-| company identity and principles | `/about/company/` | Home, About |
-| people | `/about/team/` | About |
-| Jacob professional history | `/about/team/jacob/` | Team, Home credibility links |
-| integration capability | `/software/integrations/` | Software, Home, attributed professional evidence |
-| WizardGang project catalog | `/software/projects/` | Software, Home |
-| project facts | `src/data/projects.ts` | project pages, cards, case studies, metadata |
-| website solution | `/solutions/websites/` | Solutions, Home |
-| Demo Framework explanation | `/solutions/demo-framework/` | Solutions, Company |
-| detailed Demo Framework application/evidence | `demo.wizardgang.ai` | linked from the main-site summary |
-| technical definitions | `/glossary/` | contextual links |
+| orientation and the work itself | `/` | `src/data/projects.ts` |
+| project problem, build, architecture, approach, result | `/work/` | `src/data/projects.ts` |
+| websites, Demo Framework, integration capability | `/services/` | `src/data/solutions.ts`, `src/data/integrations.ts` |
+| company, the person, career record, attribution | `/about/` | `src/data/team.ts`, `src/data/professional.ts` |
+| how to make contact | `/contact/` | `src/data/site.ts` |
+| detailed Demo Framework application and evidence | `demo.wizardgang.ai` | linked outward, not mirrored |
 
-Company capability and professional evidence are separate domains. Employer roles, employer/customer deployments, and professional outcomes belong to Jacob's Team/professional data. They may support a capability claim with clear attribution, but they are not WizardGang client work.
+The home page shows each project's preview, a one-line tagline and a link. `/work/` owns the substance. A project's overview and its case study used to be separate routes that restated each other; they are one entry now.
+
+Company capability and professional evidence remain separate domains. Employer roles and customer deployments belong to the professional record on `/about/`, where the boundary is stated once. They may support a capability claim with attribution; they are not WizardGang client work, and that statement does not belong in a section heading on another page.
 
 ## Typed authorities
 
-The current data and configuration model is intentionally singular:
-
-- `src/app/navigation.ts` — global primary navigation and current-section matching.
+- `src/app/navigation.ts` — primary navigation and current-section matching.
 - `src/app/pageRegistry.ts` — generated page inventory.
-- `src/data/projects.ts` — WizardGang project records, route helpers, actions, previews, case-study availability, and metadata.
-- `src/data/integrations.ts` — company integration taxonomy and evidence relationships.
-- `src/data/team.ts` — team membership and profile routes.
-- `src/data/professional.ts` — career roles, professional projects, and skills.
-- `src/data/professional-systems.ts` — attributed professional deployments/system evidence.
-- `src/data/solutions.ts` — solution records, website packages, Demo Framework process, and external demo boundary.
+- `src/data/projects.ts` — project records, `/work/` anchors, actions, previews, metadata.
+- `src/data/integrations.ts` — integration capability taxonomy.
+- `src/data/solutions.ts` — website packages and the Demo Framework boundary.
+- `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, attributed evidence.
 
-Pages and shared components project these authorities. They should not create parallel full catalogs.
+Pages project these authorities. They do not create parallel catalogs.
 
-## Project presentation
+## Presentation
 
-`/software/projects/` is the only canonical WizardGang project catalog.
+Two authored stylesheets, with one job each:
 
-Each project record provides its canonical slug, facts, source/live destinations, preview behavior, and optional case study. `src/pages/Projects.tsx` derives project page definitions from that authority. `src/components/ProjectSurfaces.tsx` provides shared cards, facts, actions, headers, architecture presentation, and preview framing.
+- `src/styles/tokens.css` — the design system. One palette with a four-step surface ladder and a three-level text ramp, one type scale, one spacing scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which `npm run check` enforces, so it cannot become a second place where presentation is decided.
+- `src/styles/globals.css` — every rule, consuming those tokens.
 
-Project-specific narrative remains project-specific; shared presentation does not require identical case-study sections.
+Headings resolve to one of four scale tokens. A page that wants a different size changes the scale, not the page.
 
-## Integrations
-
-`/software/integrations/` is the single company-facing integration capability surface. It renders the typed integration taxonomy.
-
-Jacob's Team page carries the professional record that supports those capabilities. Project pages may describe project-specific integrations. Neither is a second generic integration catalog.
-
-## Solutions and Demo Framework
-
-Software and Solutions are separate concepts:
-
-```text
-Software
-→ Integrations
-→ Projects
-
-Solutions
-→ Websites
-→ Demo Framework
-```
-
-The main-site Demo Framework page explains the reusable approach and links outward. `demo.wizardgang.ai` owns the detailed interactive architecture, assurance, security, and evidence application. The primary site does not mirror that application's route tree or operational data.
+Instrument Sans and JetBrains Mono ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License. The production policy is `default-src 'none'` with `font-src 'self'`, so a font served from another origin would not load at all.
 
 ## Route policy
 
 Canonical identity is path-based.
 
 - Canonical pages come from the typed page registry.
-- First-party UI links directly to canonical paths.
-- Redirect-only paths do not enter the page registry or sitemap.
+- First-party UI links directly to canonical paths and their fragments.
+- Redirect-only paths do not enter the page registry or sitemap, and no canonical page links to one.
 - Canonical metadata and Open Graph URLs use the current canonical path.
-- Query strings may represent non-identity state or tracking, but not alternate canonical pages.
-- Explicitly unsupported/retired paths fall through to the normal 404 behavior.
+- Explicitly unsupported paths fall through to the normal 404 behavior.
 
-Supported compatibility behavior lives in `src/worker/index.ts`. Current company-site compatibility includes:
+Supported compatibility behavior lives in `src/worker/index.ts`, which carries 71 permanent redirects. Every route the site has published lands on the page or fragment that now owns its content:
 
-- `/work[/]`, `/professional[/]`, and `/resume[/]` → `/about/team/jacob/`;
-- `/projects[/]` and the supported former project paths → their final `/software/projects/.../` destinations;
-- supported former `/work/<project>` project paths → their final `/software/projects/.../` destinations;
-- `/services[/]` and `/services/example[/]` → `/solutions/websites/`;
-- `/github[/]` → the WizardGang GitHub organization;
-- `/compliance[/]` and `/accessibility[/]` → the demo assurance surface;
-- `/security[/]` → the demo security surface.
+- former project routes, including the separate case studies, and the older `/projects/*` and `/work/<slug>` paths → `/work/#<slug>`;
+- `/software/` and `/software/projects/` → `/work/`;
+- `/software/integrations/` → `/services/#integrations`;
+- `/solutions/`, `/solutions/websites/`, `/solutions/demo-framework/` → `/services/` and its anchors;
+- `/about/company/`, `/about/team/`, `/about/team/jacob/`, `/resume`, `/professional` → `/about/` and `/about/#jacob`;
+- `/glossary/` → `/`;
+- `/github` → the WizardGang GitHub organization;
+- `/compliance`, `/accessibility`, `/security` → the demo assurance and security surfaces.
 
-The Worker also preserves the product-specific SharkTank compatibility/proxy boundary that is covered by Worker routing acceptance. Internal company-site moves preserve query strings. Redirect destinations are direct; compatibility paths are not canonical pages.
+Internal redirects preserve query strings and place them before any fragment. Destinations are direct: a redirect never lands on another redirect.
 
-There is no canonical `/contact/` route. Contact remains available through the Footer and contextual mail links; `/contact/` uses normal not-found behavior.
+The Worker also preserves the SharkTank compatibility and proxy boundary covered by Worker routing acceptance.
 
 ## Technical architecture
 
@@ -153,84 +108,52 @@ The browser does not hydrate a React application. There is no SPA router. Static
 
 ### Browser enhancement
 
-`src/browser/` owns first-party progressive enhancement for:
-
-- mobile navigation;
-- language behavior;
-- display/theme preferences;
-- readable layout and text size;
-- project-preview motion preferences.
-
-Failure or absence of browser JavaScript must not erase primary content or navigation.
+`src/browser/` owns first-party progressive enhancement for mobile navigation, language, display and theme preferences, readable layout, text size, and project-preview motion. Failure or absence of browser JavaScript must not erase primary content or navigation.
 
 ### Build and styling
 
-`npm run build` invokes Vite through `scripts/build.mjs`.
-
-Vite:
-
-- compiles the server-side React renderer;
-- processes `src/styles/globals.css` through the current Vite/Tailwind toolchain;
-- emits the first-party browser module and CSS;
-- copies public assets;
-- renders the typed page registry;
-- writes `version.json`;
-- publishes the completed tree into `dist/`.
+`npm run build` invokes Vite through `scripts/build.mjs`. Vite compiles the server-side renderer, processes the stylesheets, emits the browser module, copies public assets, renders the page registry, writes `version.json` and the generated `sitemap.xml`, then publishes the tree into `dist/`.
 
 ### Worker and Cloudflare
 
-`src/worker/index.ts` is the Wrangler entry point. It owns compatibility redirects and product-boundary behavior while static assets remain the normal page-delivery path.
-
-`wrangler.jsonc` defines the local, staging, and production Cloudflare configuration. Production serves `wizardgang.ai` as a custom domain.
+`src/worker/index.ts` is the Wrangler entry point and owns compatibility redirects and product-boundary behavior. `wrangler.jsonc` defines local, staging, and production configuration. Production serves `wizardgang.ai` as a custom domain.
 
 ## Local development
-
-The normal workflow is:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-The local orchestrator performs checkout-owned teardown, narrow generated-state reset, production build, local header preparation, Vite build watch, Wrangler startup, readiness verification, browser open, and attached supervision.
+The orchestrator performs checkout-owned teardown, narrow generated-state reset, production build, local header preparation, Vite build watch, Wrangler startup, readiness verification, browser open, and attached supervision.
 
-The default local origin is:
-
-```text
-http://127.0.0.1:8790
-```
-
-Use `WIZARDGANG_PORT` to select another port. The process manager refuses to kill a port owner that it cannot prove belongs to the same checkout.
+The default local origin is `http://127.0.0.1:8790`. Use `WIZARDGANG_PORT` to select another port. The process manager refuses to kill a port owner it cannot prove belongs to the same checkout.
 
 Production headers are authored in `public/_headers`. Local development sanitizes only the generated `dist/_headers` copy so plain HTTP does not receive HSTS or `upgrade-insecure-requests`.
 
 ## Verification and guardrails
 
-`npm run check` is the merge acceptance gate. It includes the production build and all `tests/*.test.mjs`.
+`npm run check` is the merge acceptance gate. It includes strict TypeScript checking, the production build, and every `tests/*.test.mjs`.
 
 The enforced architecture includes:
 
 - TypeScript-first application source;
 - React static composition without client hydration;
-- one canonical page registry;
+- one canonical page registry, and a sitemap derived from it;
 - one typed primary-navigation authority;
-- one canonical route per concept;
-- direct internal canonical links;
-- company/personal attribution boundaries;
+- one canonical route per concept, and one type scale for every heading;
+- direct internal canonical links, never through a redirect;
+- company and personal attribution boundaries;
 - accessibility and progressive-enhancement behavior;
 - Worker compatibility behavior;
-- metadata and sitemap correctness;
+- metadata correctness;
 - safe checkout-scoped local development.
-
-Focused debugging commands include `npm run test:frontend-authority`, `npm run test:company-ia`, `npm run test:accessibility`, and `npm run test:docs`.
 
 ## External boundaries
 
-- `wizardgang.ai` — company/orientation site owned by this repository.
-- `demo.wizardgang.ai` — detailed architecture/demo/assurance application.
-- `sharktank.wizardgang.ai` — SharkTank product/runtime destination.
-- `hexframe.wizardgang.ai` — Hexframe product/runtime destination.
-- WizardGang GitHub repositories — source and release destinations.
-- YarReader — repository/offline-product surface rather than a WizardGang web runtime.
+- `wizardgang.ai` — the company site owned by this repository.
+- `demo.wizardgang.ai` — the detailed architecture, assurance, and evidence application.
+- `sharktank.wizardgang.ai` and `hexframe.wizardgang.ai` — product runtimes.
+- WizardGang GitHub repositories — source and releases.
 
-Product runtime implementation, recovery procedures, operational data, and product-specific evidence stay with their owning systems rather than being duplicated here.
+Product runtime implementation, operational data, and product-specific evidence stay with their owning systems rather than being duplicated here.
