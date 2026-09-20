@@ -1,14 +1,14 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { ProfessionalRoleGrid, SkillList } from "../components/ProfessionalSurfaces";
-import { CONTACT_EMAIL } from "../data/site";
+import { RoleTimeline, SkillList } from "../components/ProfessionalSurfaces";
 import { JACOB_TEAM_MEMBER } from "../data/team";
 import { professionalRoles, professionalSkills } from "../data/professional";
+import { deployments } from "../data/professional-systems";
 
 export const ABOUT_PAGE: ReactPageDefinition = {
   relative: "about/index.html",
   metadata: {
     title: "About — WizardGang",
-    description: "WizardGang is Jacob Yongue's software practice: what it builds, how it works, and the professional background behind it.",
+    description: "Software you can read, run and keep. Built by an engineer who has spent seven years inside warehouses, courts and fulfillment centers, where broken software costs someone their shift.",
     path: "/about/",
     socialImage: "/og.jpg"
   },
@@ -16,21 +16,28 @@ export const ABOUT_PAGE: ReactPageDefinition = {
     <main className="site-main" id="main" tabIndex={-1}>
       <section className="page-hero">
         <h1>About</h1>
-        <p>WizardGang is a one-person software practice. It builds its own products and takes on client work where the same standards apply.</p>
+        <p>Software you can read, run, and keep after I am gone.</p>
       </section>
 
       <section className="case-section">
-        <div className="case-label">How it works</div>
+        <div className="case-label">The pitch</div>
         <div>
           <p>
-            Every project ships with its source, a running demo where one makes sense, and a written
-            record of how it is put together. That is the whole pitch: you can check the work rather
-            than take it on trust.
+            Most custom software arrives as a black box. You get a demo, an invoice, and a codebase
+            nobody outside the project can read. When the contractor leaves, the only person who
+            understood it leaves too, and the next change costs more than the original build.
           </p>
           <p>
-            Accessibility, security and operating controls are built in from the start rather than
-            added when someone asks. Where a standard is referenced, it means <strong>aligned, not
-            certified</strong>.
+            WizardGang works the other way around. Every project ships with its source, a running
+            demo, and a written account of how it is put together &mdash; not as a courtesy, but so
+            you can check the work before you pay for it and keep the work after it is done.
+          </p>
+          <p>
+            That comes from seven years building systems people use to do their jobs: warehouse and
+            fulfillment floors, court case management, carrier and ERP integrations across{" "}
+            <a href="/solutions/deployments/">{deployments.length} organizations</a>. When software
+            breaks there, someone loses a shift, a shipment, or a filing deadline. Those systems have
+            to survive the handoff. So does yours.
           </p>
         </div>
       </section>
@@ -41,22 +48,17 @@ export const ABOUT_PAGE: ReactPageDefinition = {
           <h2 id="jacob-heading">{JACOB_TEAM_MEMBER.name}</h2>
           <p className="work-entry-lede">{JACOB_TEAM_MEMBER.role}</p>
           <p>
-            I am a software engineer with an implementation background and a systems view of
-            delivery. My work spans requirements, architecture, application development,
-            integrations, QA, deployment, training, operational handoff and production support.
-          </p>
-          <p>
-            I am most useful when a problem crosses boundaries: code and workflow, product and
-            operations, technical design and project delivery.
+            I am most useful when a problem crosses boundaries &mdash; code and workflow, product and
+            operations, technical design and project delivery. My work spans requirements,
+            architecture, application development, integrations, QA, deployment, training,
+            operational handoff, and production support.
           </p>
         </div>
       </section>
 
       <section className="case-section">
         <div className="case-label">Background</div>
-        <div>
-          <ProfessionalRoleGrid roles={professionalRoles} className="experience-grid" />
-        </div>
+        <div><RoleTimeline roles={professionalRoles} /></div>
       </section>
 
       <section className="case-section">
@@ -66,24 +68,6 @@ export const ABOUT_PAGE: ReactPageDefinition = {
             {professionalSkills.map((group) => <SkillList key={group.label} group={group} />)}
           </div>
         </div>
-      </section>
-
-      <section className="case-section">
-        <div className="case-label">Attribution</div>
-        <div>
-          <p>
-            The roles above are employment history. That experience supports what WizardGang can do,
-            but employer and customer work is not WizardGang client work and is not presented as
-            such.
-          </p>
-        </div>
-      </section>
-
-      <section className="home-outro" aria-labelledby="about-contact-heading">
-        <h2 className="section-label" id="about-contact-heading">Get in touch</h2>
-        <a className="outro-mail" href={`mailto:${CONTACT_EMAIL}`}>
-          {CONTACT_EMAIL} <span aria-hidden="true">→</span>
-        </a>
       </section>
     </main>
   )
