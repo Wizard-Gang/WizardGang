@@ -13,17 +13,16 @@ import {
 
 // Software and Solutions are disclosure menus; About is a plain link.
 const navMenus = new Map([
-  ["Software", ["/software/sharktank/", "/software/hexframe/", "/software/yarreader/"]],
-  ["Solutions", ["/solutions/industries/", "/solutions/integrations/", "/solutions/deployments/"]]
+  ["Projects", ["/projects/sharktank/", "/projects/hexframe/", "/projects/yarreader/"]]
 ]);
-const navLinks = new Map([["About", "/about/"]]);
+const navLinks = new Map([["Solutions", "/solutions/"], ["About", "/about/"]]);
 
 function normalizedVisible(anchor) {
   return textContent(anchor.inner).replace(/[↗→]/g, "").replace(/\s+/g, " ").trim();
 }
 
 function currentNavDestination(relative) {
-  if (relative.startsWith("software/")) return "software";
+  if (relative.startsWith("projects/")) return "projects";
   if (relative.startsWith("solutions/")) return "solutions";
   if (relative.startsWith("about/")) return "about";
   return null;
@@ -160,7 +159,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       const currentMarks = [...primary.inner.matchAll(/aria-current="location"/g)].length;
       assert.equal(currentMarks, currentSection ? 1 : 0, `${relative} should mark ${currentSection ? "one" : "no"} current section`);
 
-      for (const retiredLabel of ["Work", "Services", "Contact", "Projects", "Glossary", "GitHub"]) {
+      for (const retiredLabel of ["Work", "Services", "Contact", "Software", "Glossary", "GitHub"]) {
         assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
       }
 
@@ -258,7 +257,7 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  const previewPages = { "index.html": 3, "software/sharktank/index.html": 1, "software/hexframe/index.html": 1, "software/yarreader/index.html": 1 };
+  const previewPages = { "index.html": 3, "projects/sharktank/index.html": 1, "projects/hexframe/index.html": 1, "projects/yarreader/index.html": 1 };
   for (const [relative, expected] of Object.entries(previewPages)) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));

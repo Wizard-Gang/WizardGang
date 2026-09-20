@@ -75,17 +75,15 @@ test("README documents the current entry points and acceptance gate", async () =
 
   // The canonical pages, and nothing a retired structure left behind.
   for (const route of [
-    "/software/sharktank/",
-    "/software/hexframe/",
-    "/software/yarreader/",
-    "/solutions/industries/",
-    "/solutions/integrations/",
-    "/solutions/deployments/",
+    "/solutions/",
+    "/projects/sharktank/",
+    "/projects/hexframe/",
+    "/projects/yarreader/",
     "/about/"
   ]) {
     assert.ok(readme.includes(route), `README must document the canonical route ${route}`);
   }
-  for (const retired of ["/work/", "/services/", "/contact/", "/software/projects/", "/solutions/websites/", "/glossary/"]) {
+  for (const retired of ["/work/", "/services/", "/contact/", "/software/", "/solutions/websites/", "/glossary/"]) {
     assert.ok(!readme.includes(`\n${retired}`), `README must not present the retired route ${retired} as canonical`);
   }
 });
@@ -94,9 +92,8 @@ test("information architecture documents current company ownership and static-fi
   const ia = await source("docs/INFORMATION-ARCHITECTURE.md");
   for (const value of [
     "Status: current-state authority",
-    "/software/sharktank/",
-    "/solutions/industries/",
-    "/solutions/deployments/",
+    "/solutions/",
+    "/projects/sharktank/",
     "/about/",
     "demo.wizardgang.ai",
     "src/app/pageRegistry.ts",
@@ -110,8 +107,9 @@ test("information architecture documents current company ownership and static-fi
   assert.match(ia, /Supported compatibility behavior lives in `src\/worker\/index\.ts`/);
   assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
   assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
-  assert.match(ia, /disclosure menus rather than index pages/, "the menu-over-index-page decision must be documented");
+  assert.match(ia, /disclosure menu rather than an index page/, "the menu-over-index-page decision must be documented");
   assert.match(ia, /at most one preview runs at a time/, "the preview motion contract must be documented");
+  assert.match(ia, /employment rather than WizardGang client work/, "the attribution boundary must be documented where the evidence lives");
 });
 
 test("relative Markdown documentation links resolve", async () => {

@@ -6,24 +6,15 @@ import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigatio
 import { CANONICAL_PAGES, anchors, generatedHtmlFiles, linkByRel, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expectedNavigation = [
+  { key: "solutions", label: "Solutions", href: "/solutions/" },
   {
-    key: "software",
-    label: "Software",
-    href: "/software/sharktank/",
+    key: "projects",
+    label: "Projects",
+    href: "/projects/sharktank/",
     items: [
-      { label: "SharkTank", href: "/software/sharktank/" },
-      { label: "Hexframe", href: "/software/hexframe/" },
-      { label: "YarReader", href: "/software/yarreader/" }
-    ]
-  },
-  {
-    key: "solutions",
-    label: "Solutions",
-    href: "/solutions/industries/",
-    items: [
-      { label: "Industries", href: "/solutions/industries/" },
-      { label: "Integrations", href: "/solutions/integrations/" },
-      { label: "Deployments", href: "/solutions/deployments/" }
+      { label: "SharkTank", href: "/projects/sharktank/" },
+      { label: "Hexframe", href: "/projects/hexframe/" },
+      { label: "YarReader", href: "/projects/yarreader/" }
     ]
   },
   { key: "about", label: "About", href: "/about/" }
@@ -42,16 +33,15 @@ test("typed company navigation is exact and current-section matching is centrali
 
   const cases = new Map([
     ["/", ""],
-    ["/software/sharktank/", "software"],
-    ["/software/hexframe/", "software"],
-    ["/solutions/industries/", "solutions"],
-    ["/solutions/deployments/", "solutions"],
+    ["/solutions/", "solutions"],
+    ["/projects/sharktank/", "projects"],
+    ["/projects/hexframe/", "projects"],
     ["/about/", "about"],
     ["/about/team/jacob/", "about"],
+    ["/software/", ""],
     ["/work/", ""],
     ["/services/", ""],
     ["/contact/", ""],
-    ["/projects/", ""],
     ["/glossary/", ""]
   ]);
 

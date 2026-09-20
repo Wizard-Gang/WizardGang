@@ -35,7 +35,7 @@ assert.match(chromeSource, /Preferences/);
 assert.match(chromeSource, /NAVIGATION_ITEMS/);
 assert.match(chromeSource, /WizardGang · Software, systems &amp; integrations/);
 
-for (const label of ["Software", "Solutions", "About"]) {
+for (const label of ["Solutions", "Projects", "About"]) {
   assert.match(navigationSource, new RegExp(`label: "${label}"`), `navigation must expose ${label}`);
 }
 
@@ -45,11 +45,10 @@ for (const pageSource of [homePageSource, aboutPageSource, notFoundPageSource]) 
   assert.match(pageSource, /metadata:/);
   assert.match(pageSource, /body:/);
 }
-for (const factory of [caseStudySource, solutionsPageSource]) {
-  assert.match(factory, /readonly ReactPageDefinition\[\]/, "generated page sets must declare the shared page contract");
-}
+assert.match(caseStudySource, /readonly ReactPageDefinition\[\]/, "generated page sets must declare the shared page contract");
+assert.match(solutionsPageSource, /ReactPageDefinition/, "Solutions must declare the shared page contract");
 
-for (const importName of ["HOME_PAGE", "createCaseStudyPageDefinitions", "createSolutionPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
+for (const importName of ["HOME_PAGE", "SOLUTIONS_PAGE", "createCaseStudyPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
   assert.ok(registrySource.includes(importName), `static page registry missing ${importName}`);
 }
 assert.doesNotMatch(
