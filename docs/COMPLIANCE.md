@@ -4,7 +4,7 @@ Effective date: 2026-08-30 (America/New_York)
 
 Owner: Jacob Yongue
 
-Scope: the public `wizardgang.ai` portfolio, its generated HTML/CSS/JavaScript, its stateless
+Scope: the public `wizardgang.ai` site, its generated HTML/CSS/JavaScript, its stateless
 Cloudflare Worker, its public source repository, and the process used to create and release them.
 The independently operated SharkTank, Hexframe, and YarReader products are outside this management
 boundary and maintain their own source and operating records.
@@ -22,11 +22,11 @@ WizardGang will:
 - keep security, accessibility, AI-development, and recovery decisions versioned with the source;
 - use development deployment and rollback paths before changing production;
 - publish known gaps honestly and correct material defects; and
-- keep product runtimes and private operational data outside the portfolio repository.
+- keep product runtimes and private operational data outside the site repository.
 
 ## Interested parties and requirements
 
-| Interested party | Need or expectation | Portfolio response |
+| Interested party | Need or expectation | Site response |
 | --- | --- | --- |
 | Visitors | Safe, usable, understandable pages | Static delivery, no accounts or forms, accessibility preferences, Spanish mode, security headers |
 | People using assistive technology | Keyboard access, semantic structure, contrast, alternatives, motion control | WCAG checklist, semantic HTML, visible focus, reduced-motion support, text and theme controls |
@@ -51,7 +51,7 @@ WizardGang will:
 ## ISO/IEC 27001:2022 — Clause 4: context of the organization
 
 The scope, interested parties, requirements, interfaces, and exclusions are recorded above and in
-[`OWNERSHIP.md`](OWNERSHIP.md). The portfolio information-security management system consists of
+[`OWNERSHIP.md`](OWNERSHIP.md). The site information-security management system consists of
 the policy, risk register, applicability record, release controls, checks, reporting path, and
 continual-improvement records kept in this repository.
 
@@ -60,13 +60,13 @@ continual-improvement records kept in this repository.
 
 Jacob Yongue is the management-system owner, approves releases, accepts residual risk, reviews
 reports, and owns corrective action. The policy commitments in this document apply to every
-portfolio change, including AI-produced changes.
+site change, including AI-produced changes.
 
 <a id="iso-27001-clause-6"></a>
 ## ISO/IEC 27001:2022 — Clause 6: planning
 
 The risk register above records current information-security risks and treatments. Objectives are
-to keep the public portfolio free of visitor accounts and sensitive-data collection, prevent
+to keep the public site free of visitor accounts and sensitive-data collection, prevent
 secrets from entering public history, pass release verification, preserve a tested rollback path,
 and respond to material reports. Material scope, supplier, or architecture changes require this
 record and the applicability record to be reviewed.
@@ -87,7 +87,7 @@ Each change follows this operating path: edit versioned source; review the diff;
 assets; run automated checks; deploy to the development environment; probe public routes,
 redirects, headers, and critical behavior; obtain human approval; and retain rollback through the
 previous deployment and Git history. Product-specific services and data are not copied into the
-portfolio boundary.
+site boundary.
 
 <a id="iso-27001-clause-9"></a>
 ## ISO/IEC 27001:2022 — Clause 9: performance evaluation
@@ -108,23 +108,23 @@ established and remains a partial item.
 <a id="iso-27001-annex-a"></a>
 ## ISO/IEC 27001:2022 — Annex A applicability record
 
-This is a portfolio-scoped applicability summary, not a reproduction of the standard's control
+This is a site-scoped applicability summary, not a reproduction of the standard's control
 text. Organizational and technological controls for policy, roles, access, supplier use, secure
 development, change, backup/rollback, logging, incident reporting, and continuity are applicable.
 People controls are limited to the owner-operated development process. Physical and data-center
 controls are inherited from service providers and are evaluated through supplier selection rather
 than operated by WizardGang. Controls for visitor identity, employment administration, office
-facilities, payment processing, and production databases are outside scope because the portfolio
+facilities, payment processing, and production databases are outside scope because the site
 does not operate those systems.
 
 <a id="iso-42001-clause-4"></a>
 ## ISO/IEC 42001:2023 — Clause 4: context of the organization
 
-AI is used to develop the portfolio source. The public portfolio is not itself an AI service and
+AI is used to develop the site source. The public site is not itself an AI service and
 does not send visitor content to an AI system. Relevant interested parties are visitors, people
 using assistive technology, the site owner, source and hosting providers, and future maintainers.
 The AI-management boundary covers the planning, generation, review, testing, documentation, and
-release of portfolio changes.
+release of site changes.
 
 <a id="iso-42001-clause-5"></a>
 ## ISO/IEC 42001:2023 — Clause 5: leadership
@@ -156,7 +156,7 @@ supplier-review record is not yet established and remains a partial item.
 AI-produced work follows the same controlled release path as other changes: bounded request,
 versioned implementation, diff review, automated verification, development deployment, browser or
 route checks appropriate to the change, human approval, and rollback availability. Visitor data is
-not used as model input by the public portfolio.
+not used as model input by the public site.
 
 <a id="iso-42001-clause-9"></a>
 ## ISO/IEC 42001:2023 — Clause 9: performance evaluation
@@ -177,26 +177,26 @@ a partial item.
 <a id="iso-42001-annex-a"></a>
 ## ISO/IEC 42001:2023 — Annex A applicability record
 
-This is a portfolio-scoped control summary, not a reproduction of the standard. Applicable areas
+This is a site-scoped control summary, not a reproduction of the standard. Applicable areas
 include AI policy, accountable ownership, risk and impact review, data boundaries, lifecycle
 controls, external-tool management, transparency, documentation, monitoring, and improvement.
 Controls for operating an AI system on visitor data, automated decisions about people, model
 training, model hosting, and customer AI-service operations are outside scope because the public
-portfolio performs none of those activities.
+site performs none of those activities.
 
 ## AI impact assessment
 
-The intended benefit is faster implementation of a public software-engineering portfolio while
+The intended benefit is faster implementation of a public software-engineering site while
 retaining human ownership and evidence. Foreseeable harms include insecure code, inaccessible
 interfaces, inaccurate claims, biased or incomplete language, disclosure of private information,
 and dependency on external tools. The controls above reduce those risks. The residual risk is
-accepted by the owner for development review and must be reconsidered if the portfolio begins to
+accepted by the owner for development review and must be reconsidered if the site begins to
 collect submissions, make automated decisions, host an AI model, or operate customer data.
 
 ## Accessibility record
 
 The architecture demo’s [compliance and assurance index](https://demo.wizardgang.ai/assurance) links
-to its canonical working accessibility evidence. Portfolio scope, release checks, limitations, and
+to its canonical working accessibility evidence. Site scope, release checks, limitations, and
 reporting remain documented in [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
 
 ## Review and change control

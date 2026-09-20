@@ -2,12 +2,12 @@
 
 Effective date: 2026-08-29 (America/New_York)
 
-WizardGang is the portfolio boundary. Product implementations, operational controls, tests,
+WizardGang is the site boundary. Product implementations, operational controls, tests,
 reconstruction evidence, and releases belong to their canonical public repositories.
 
 | Surface | Canonical source | Public release at verification | Ownership |
 | --- | --- | --- | --- |
-| `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | `main` | Static portfolio, project metadata, presentation assets, and temporary stateless compatibility routes |
+| `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | `main` | Static company site, project metadata, presentation assets, and temporary stateless compatibility routes |
 | `sharktank.wizardgang.ai` | [`Wizard-Gang/SharkTank`](https://github.com/Wizard-Gang/SharkTank) | `v1.2.0` | Runtime, Cloudflare infrastructure, Durable Objects, WebSockets, APIs, security, operations, governance, evidence, tests, and deployment |
 | `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | `v0.7.2` | Deterministic combat runtime, authored content, rollback, training lab, tests, and deployment |
 | YarReader offline workspace | [`Wizard-Gang/YarReader`](https://github.com/Wizard-Gang/YarReader) | `v1.0.1` | Ingestion, inspection, classification, review, normalization, crash-recoverable archive, static export, portable reader, tests, and reconstruction record |
@@ -19,7 +19,7 @@ dependency. The public SharkTank repository contains the reconstructed product c
 architecture, controls, tests, provenance, and release records needed to maintain the product.
 
 ShadowMoney is retired as a product identity. Its public traffic redirects to Hexframe; historical
-rollback evidence remains separate from the portfolio.
+rollback evidence remains separate from the site.
 
 ## Data boundary
 
@@ -35,8 +35,8 @@ rather than duplicate the implementation or become a second source of truth.
 The ownership cutover is complete when all of the following remain true:
 
 - each product case study links to the exact canonical repository root;
-- the portfolio build rejects retired or non-canonical source URLs;
+- the site build rejects retired or non-canonical source URLs;
 - product code is absent from WizardGang;
 - the SharkTank, Hexframe, and YarReader repositories are public and publish their own releases;
 - no production secret, runtime state, private catalog value, or copyrighted publication asset is
-  copied into portfolio source or generated output.
+  copied into site source or generated output.

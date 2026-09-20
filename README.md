@@ -76,6 +76,7 @@ npm run test:frontend-authority
 npm run test:navigation
 npm run test:home
 npm run test:about
+npm run test:route-retirement
 ```
 
 ## Structure
@@ -105,8 +106,8 @@ npm run test:about
 ## Documentation & evidence
 
 - [Ownership boundaries](docs/OWNERSHIP.md)
-- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, standardized project presentation, and Solutions → Websites / Demo Framework are implemented. Later redundant-route cleanup remains staged.
-- [Portfolio governance record](docs/COMPLIANCE.md)
+- [Approved company-first information architecture](docs/INFORMATION-ARCHITECTURE.md) — target contract; company-first navigation, Home, About → Company / Team, Jacob's career move into Team, and Software → Integrations / Projects, the canonical integration-content model, standardized project presentation, Solutions → Websites / Demo Framework, and the WG-048 route-retirement policy are implemented.
+- [Governance record](docs/COMPLIANCE.md)
 - [Accessibility record](docs/ACCESSIBILITY.md)
 - [Security reporting](SECURITY.md)
 - [Architecture and assurance evidence](https://demo.wizardgang.ai/assurance)

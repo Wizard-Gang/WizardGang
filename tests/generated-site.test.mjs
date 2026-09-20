@@ -77,7 +77,6 @@ test("all required public build artifacts and public records exist", async () =>
     "robots.txt",
     "version.json",
     "og.jpg",
-    "og-jacob-yongue.jpg",
     "sharktank-project.jpg",
     "hexframe-project.jpg",
     "yarreader-library-art.jpg"
@@ -198,7 +197,7 @@ test("social preview behavior remains page-appropriate", async () => {
 
 test("build/version evidence is present and internally consistent", async () => {
   const version = JSON.parse(await readDist("version.json"));
-  assert.equal(version.product, "WizardGang Portfolio");
+  assert.equal(version.product, "WizardGang");
   assert.match(version.commit, /^(?:[0-9a-f]{12}|development)$/);
   assert.ok(Number.isFinite(Date.parse(version.builtAt)), "version.json must contain an ISO build timestamp");
   for (const relative of canonicalFiles) {
@@ -527,7 +526,7 @@ test("local header sanitization removes only HTTPS-only directives from the prod
   assert.equal(await readRoot("public/_headers"), source, "sanitization must never mutate public/_headers");
 });
 
-test("portfolio boundary remains static and retired compliance application routes stay absent", async () => {
+test("site boundary remains static and retired compliance application routes stay absent", async () => {
   assert.equal(await exists(resolve(dist, "compliance/index.html")), false);
   assert.equal(await exists(resolve(dist, "security/index.html")), false);
   const worker = await readRoot("src/worker/index.ts");

@@ -7,7 +7,6 @@ import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
-const DEFAULT_SOCIAL_IMAGE = "/og-jacob-yongue.jpg";
 const SOCIAL_IMAGE_ALT = "WizardGang — software, systems, integrations, and inspectable engineering projects";
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
@@ -101,5 +100,4 @@ export function renderStaticDocuments(build: BuildMetadata, browserAssetPath: st
   );
 }
 
-export const SOCIAL_IMAGE = DEFAULT_SOCIAL_IMAGE;
 export type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";

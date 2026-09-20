@@ -369,8 +369,6 @@ h1 span { color: var(--muted); }
   text-decoration-thickness: 2px;
 }
 
-.work-tracks,
-.work-preview,
 .capabilities,
 .about-teaser {
   padding: 5rem 0 7rem;
@@ -733,8 +731,6 @@ h1 span { color: var(--muted); }
 }
 
 .about-hero .prose p { margin: 0; color: var(--muted); font-size: 1.1rem; }
-.work-list { margin-bottom: 6rem; }
-
 .crumb {
   display: inline-flex;
   align-items: center;
@@ -2637,7 +2633,7 @@ body:has(#play-previews:checked) .project-visual * { animation-play-state: runni
   }
 }
 
-/* Jacob-first portfolio structure */
+/* Company-first site structure */
 .wordmark-copy {
   display: grid;
   gap: .23rem;

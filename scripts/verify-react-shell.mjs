@@ -13,11 +13,13 @@ const projectPagesSource = await readRoot("src/pages/Projects.tsx");
 const projectDataSource = await readRoot("src/data/projects.ts");
 const professionalDataSource = await readRoot("src/data/professional.ts");
 const professionalSystemsSource = await readRoot("src/data/professional-systems.ts");
+const integrationDataSource = await readRoot("src/data/integrations.ts");
+const integrationSurfacesSource = await readRoot("src/components/IntegrationSurfaces.tsx");
 const homePageSource = await readRoot("src/pages/Home.tsx");
 const aboutPageSource = await readRoot("src/pages/About.tsx");
 const companyNavigationPageSource = await readRoot("src/pages/CompanyNavigation.tsx");
+const solutionsPageSource = await readRoot("src/pages/Solutions.tsx");
 const navigationSource = await readRoot("src/app/navigation.ts");
-const servicesPageSource = await readRoot("src/pages/Services.tsx");
 const glossaryPageSource = await readRoot("src/pages/Glossary.tsx");
 const notFoundPageSource = await readRoot("src/pages/NotFound.tsx");
 const home = await readRoot("dist/index.html");
@@ -35,26 +37,27 @@ assert.match(navigationSource, /Software/);
 assert.match(navigationSource, /Solutions/);
 assert.match(chromeSource, /WizardGang · Software, systems &amp; integrations/);
 
-for (const pageSource of [homePageSource, aboutPageSource, companyNavigationPageSource, servicesPageSource, glossaryPageSource, notFoundPageSource]) {
+for (const pageSource of [homePageSource, aboutPageSource, companyNavigationPageSource, solutionsPageSource, glossaryPageSource, notFoundPageSource]) {
   assert.match(pageSource, /ReactPageDefinition/);
   assert.match(pageSource, /relative:/);
   assert.match(pageSource, /metadata:/);
   assert.match(pageSource, /body:/);
 }
-for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
+for (const importName of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "WEBSITES_SOLUTION_PAGE", "DEMO_FRAMEWORK_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
   assert.ok(registrySource.includes(importName), `static page registry missing ${importName}`);
 }
 assert.match(projectPagesSource, /createProjectPageDefinitions/, "React project route definitions must remain authoritative");
 assert.match(projectDataSource, /export const projects/, "TypeScript project data must remain authoritative");
 assert.match(aboutPageSource, /ProfessionalRoleGrid/, "Jacob Team page must render the typed professional role authority");
-assert.match(aboutPageSource, /SystemGroups/, "Jacob Team page must render typed system evidence");
-assert.match(aboutPageSource, /IntegrationGroups/, "Jacob Team page must render typed integration evidence");
-assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must not remain a static page authority");
+assert.match(aboutPageSource, /deployments/, "Jacob Team page must retain attributed deployment evidence");
+assert.doesNotMatch(aboutPageSource, /IntegrationGroups|SystemGroups|integrationGroups|systemGroups/, "Team must not restore a competing generic integration catalog");
+assert.match(integrationDataSource, /export const integrationCategories/, "TypeScript integration capability data must remain authoritative");
+assert.match(integrationSurfacesSource, /IntegrationCatalog/, "typed integration presentation must remain authoritative");
+assert.match(companyNavigationPageSource, /IntegrationCatalog/, "Software Integrations must consume the canonical integration presentation");
+assert.doesNotMatch(registrySource, /SERVICES_PAGE|createWorkPageDefinitions|pages\/Services|pages\/Work/, "redirect-only Services and Work must not remain static page authorities");
 assert.match(professionalDataSource, /export const professionalRoles/, "TypeScript professional role data must remain authoritative");
 assert.match(professionalDataSource, /export const professionalSkills/, "TypeScript professional skill data must remain authoritative");
-assert.match(professionalSystemsSource, /export const integrationGroups/, "TypeScript integration data must remain authoritative");
-assert.match(professionalSystemsSource, /export const systemGroups/, "TypeScript system data must remain authoritative");
-assert.match(professionalSystemsSource, /export const deployments/, "TypeScript deployment data must remain authoritative");
+assert.match(professionalSystemsSource, /export const deployments/, "TypeScript deployment evidence must remain authoritative");
 
 assert.match(home, /^<!doctype html>/i);
 assert.match(home, /<html\b[^>]*lang="en"/i);
@@ -78,6 +81,8 @@ for (const path of [
   "src/site.mjs",
   "src/styles.css",
   "src/portfolio-cleanup.css",
+  "src/data/services.ts",
+  "src/pages/Services.tsx",
   "src/pages/Work.tsx"
 ]) {
   await assert.rejects(access(resolve(root, path)), { code: "ENOENT" });

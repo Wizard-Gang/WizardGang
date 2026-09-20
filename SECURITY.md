@@ -2,7 +2,7 @@
 
 ## Supported surface
 
-Security reports for the current `wizardgang.ai` portfolio and its stateless compatibility Worker
+Security reports for the current `wizardgang.ai` site and its stateless compatibility Worker
 are accepted. SharkTank, Hexframe, and YarReader are separate products; report product-specific
 issues through their canonical public repositories or operating sites.
 
@@ -15,9 +15,9 @@ private records, credentials, destructive proof, or data belonging to another pe
 Reports are reviewed by Jacob Yongue. A useful report identifies the affected surface, explains the
 expected and observed behavior, and includes a safe proof when one is available.
 
-## Portfolio boundary
+## Site boundary
 
-The portfolio serves generated HTML, CSS, a first-party preferences script, and public media through
+The site serves generated HTML, CSS, a first-party preferences script, and public media through
 Cloudflare. It does not accept visitor accounts, passwords, payments, uploads, or form submissions.
 Security headers, automated release checks, a development deployment, versioned source, and rollback
 reduce the public attack surface. These controls reduce risk; they do not guarantee that defects or
