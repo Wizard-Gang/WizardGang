@@ -73,6 +73,7 @@ Run focused authority checks independently with:
 
 ```bash
 npm run test:frontend-authority
+npm run test:accessibility
 npm run test:navigation
 npm run test:home
 npm run test:about

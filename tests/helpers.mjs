@@ -76,6 +76,13 @@ export async function walk(directory, { ignore = new Set() } = {}) {
   return files;
 }
 
+export async function generatedHtmlFiles() {
+  return (await walk(dist))
+    .filter((path) => extname(path).toLowerCase() === ".html")
+    .map(relativeFromDist)
+    .sort();
+}
+
 export const readDist = (path) => readFile(resolve(dist, path), "utf8");
 export const readRoot = (path) => readFile(resolve(root, path), "utf8");
 

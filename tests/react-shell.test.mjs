@@ -44,11 +44,11 @@ test("React owns shared chrome and every canonical page body", async () => {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "SERVICES_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
+  for (const authority of ["HOME_PAGE", "ABOUT_PAGE", "COMPANY_PAGE", "TEAM_PAGE", "JACOB_TEAM_PAGE", "SOFTWARE_PAGE", "SOFTWARE_INTEGRATIONS_PAGE", "SOLUTIONS_PAGE", "WEBSITES_SOLUTION_PAGE", "DEMO_FRAMEWORK_PAGE", "GLOSSARY_PAGE", "NOT_FOUND_PAGE", "createProjectPageDefinitions"]) {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
-  assert.doesNotMatch(registrySource, /createWorkPageDefinitions|pages\/Work/, "redirect-only Work must stay out of the React registry");
+  assert.doesNotMatch(registrySource, /SERVICES_PAGE|createWorkPageDefinitions|pages\/Services|pages\/Work/, "redirect-only Work and Services must stay out of the React registry");
 
   for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js", "src/pages/Work.tsx"]) {
     await assert.rejects(readRoot(path), { code: "ENOENT" });
