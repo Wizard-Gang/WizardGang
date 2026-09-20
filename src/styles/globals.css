@@ -1784,142 +1784,85 @@ body:has(#reading-layout:checked) :where(.site-main,.case-main) p + p {
   margin-top: 1.5em;
 }
 
+/* 200% text.
+ *
+ * Doubling the root size doubles every rem, so any grid whose tracks are
+ * declared in rem stops fitting: an 11rem label column becomes 22rem, a
+ * 17rem card minimum becomes 34rem. Multi-column layouts therefore collapse
+ * to one column, and rows that sit side by side stack. The previous version
+ * of this block named classes that no longer exist, so it protected almost
+ * nothing.
+ */
 html:has(#text-size-200:checked) { font-size: 200%; }
 
-html:has(#text-size-200:checked) :where(h1,h2,h3) {
+html:has(#text-size-200:checked) :where(h1, h2, h3, .work-name, .outro-mail) {
   overflow-wrap: anywhere;
+  text-wrap: normal;
 }
 
-html:has(#text-size-200:checked) :where(.site-header,.settings-toolbar,.hero,.section-heading,.project-card-grid,.track-grid,.project-card,.selected-work-grid,.services-teaser-copy,.service-package-grid,.capabilities .capability-grid,.about-teaser,.contact-band,.site-footer,.case-hero,.showcase-overview,.case-section,.project-depth,.professional-hero,.professional-section-heading,.experience-grid,.systems-resume-section > header,.systems-resume-grid,.services-hero,.service-packages > header,.service-ownership > header,.service-cost,.service-handoff,.service-process > header,.service-package-grid,.service-process-grid,.service-stack,.service-growth,.about-principles,.accessibility-section,.glossary-list > div) {
+/* Every rem-tracked grid becomes a single column. */
+html:has(#text-size-200:checked) :where(
+  .work-summary,
+  .evidence-groups,
+  .deployment-wall,
+  .role-timeline li,
+  .work-facts,
+  .case-section,
+  .architecture,
+  .built-list,
+  .skill-groups,
+  .service-packages
+) {
   grid-template-columns: 1fr;
 }
 
-html:has(#text-size-200:checked) :where(.site-header,.section-heading,.services-teaser-copy,.contact-band,.site-footer) {
+/* Rows that pair a label with an action stack instead. */
+html:has(#text-size-200:checked) :where(.site-header, .site-footer, .section-label, .section-panel > summary, .work-actions, .work-jump ul) {
   align-items: flex-start;
   flex-direction: column;
 }
 
-html:has(#text-size-200:checked) .settings-toolbar {
-  align-items: stretch;
-  flex-direction: column;
+html:has(#text-size-200:checked) .site-nav {
+  justify-content: flex-start;
+  max-width: none;
 }
 
-html:has(#text-size-200:checked) .section-heading > div {
+html:has(#text-size-200:checked) .work-summary { gap: var(--space-2); }
+html:has(#text-size-200:checked) .work-disclose { grid-row: auto; grid-column: auto; }
+html:has(#text-size-200:checked) .case-section { gap: var(--space-3); }
+html:has(#text-size-200:checked) .role-timeline li { gap: .35rem; }
+
+/* The two overlay panels are anchored to a header that is now much taller, so
+   they stop floating and flow in place where they cannot be pushed off-screen. */
+html:has(#text-size-200:checked) :where(.nav-menu > ul, .settings-toolbar) {
+  position: static;
   width: 100%;
   min-width: 0;
+  box-shadow: none;
 }
 
-html:has(#text-size-200:checked) .site-nav {
-  max-width: none;
-  justify-content: flex-start;
-}
+html:has(#text-size-200:checked) .settings-toolbar { align-items: stretch; }
 
-html:has(#text-size-200:checked) .hero,
-html:has(#text-size-200:checked) .professional-hero,
-html:has(#text-size-200:checked) .services-hero {
-  min-height: auto;
-}
+/* Nothing may force a horizontal scrollbar. */
+html:has(#text-size-200:checked) :where(.work-tags, .evidence-inline, .tags, .work-jump ul) { max-width: 100%; }
+html:has(#text-size-200:checked) :where(.work-tags > span, .evidence-inline li, .tags li) { white-space: normal; }
 
-html:has(#text-size-200:checked) .project-card {
-  grid-template-rows: 22rem auto;
-}
+/* The product previews keep their own proportions; only their densest grids relax. */
+/* Grid children default to min-content width, so a wide preview grid would
+   refuse to shrink. */
+html:has(#text-size-200:checked) :where(.project-visual, .project-visual > *, .lab-timeline, .lab-stage) { min-width: 0; }
 
-html:has(#text-size-200:checked) .project-card-visual {
-  min-height: 22rem;
-  border-right: 0;
-  border-bottom: 1px solid var(--line);
-}
+/* The architecture connector hangs at right: -.9rem, which is -28.8px once the
+   root doubles — enough to push the page sideways. The narrow breakpoint already
+   drops it for the same reason. */
+html:has(#text-size-200:checked) .architecture > div:not(:last-child)::after { display: none; }
 
-html:has(#text-size-200:checked) .yar-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
+html:has(#text-size-200:checked) .yar-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 html:has(#text-size-200:checked) .yar-body span {
   overflow: visible;
+  white-space: normal;
   text-overflow: clip;
-  white-space: normal;
-}
-
-html:has(#text-size-200:checked) .service-package {
-  min-width: 0;
-}
-
-html:has(#text-size-200:checked) .service-package header {
-  flex-wrap: wrap;
-}
-
-html:has(#text-size-200:checked) .selected-work-grid article,
-html:has(#text-size-200:checked) .selected-work-grid article:nth-child(4),
-html:has(#text-size-200:checked) .selected-work-grid article:nth-child(5) {
-  grid-column: auto;
-}
-
-html:has(#text-size-200:checked) .architecture,
-html:has(#text-size-200:checked) .built-list,
-html:has(#text-size-200:checked) .skill-columns,
-html:has(#text-size-200:checked) .principle-grid {
-  grid-template-columns: 1fr;
-}
-
-html:has(#text-size-200:checked) :where(.reference-cloud li,.capability-cloud li,.reference-cloud a,.skill-columns .tags li) {
-  min-width: 0;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-html:has(#text-size-200:checked) :where(.settings-toolbar,.setting-language,.experience-grid,.experience-grid article) {
-  min-width: 0;
-  max-width: 100%;
-}
-
-html:has(#text-size-200:checked) :where(.setting-toggle,.setting-language,.experience-grid article > span,.experience-grid article > strong,.experience-grid article > p) {
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-html:has(#text-size-200:checked) :where(.button,.text-link,.button-row,.about-local-nav,.team-grid,.team-card,.project-card-actions,.project-card-copy,.selected-work-grid article,.capabilities .capability-grid article,.about-teaser > *,.contact-band > *) {
-  min-width: 0;
-  max-width: 100%;
-}
-
-html:has(#text-size-200:checked) :where(.button,.text-link,.services-hero h1 span) {
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-html:has(#text-size-200:checked) :where(.hero-identity,.hero-side,.home-statement-card,.selected-work-grid article,.capabilities .capability-grid article,.contact-band) {
-  min-width: 0;
-  max-width: 100%;
-}
-
-html:has(#text-size-200:checked) :where(.home-statement-card > p,.hero-side > p,.selected-work-grid p,.selected-work-grid strong,.capabilities .capability-grid p,.contact-band > p,.project-card-copy p) {
-  min-width: 0;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-/* At 200% text, translated Services copy must be allowed to contribute a
-   shrinkable min-content width instead of widening the root layout. */
-html:has(#text-size-200:checked) :where(.services-main,.service-packages,.service-ownership,.service-handoff,.service-process,.service-growth,.service-notes,.service-package-grid,.service-process-grid,.service-package,.service-package header,.service-package ul,.service-package li,.service-statement,.service-stack,.service-stack article,.service-cost) {
-  min-width: 0;
-  max-width: 100%;
-}
-
-html:has(#text-size-200:checked) .services-main :where(p,li,h1,h2,h3,strong,span) {
-  min-width: 0;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-/* Solutions presentation. The company site stays explanatory; the external architecture demo owns the interactive depth. */
-
-html:has(#text-size-200:checked) .solution-card-grid,
-html:has(#text-size-200:checked) .solution-process-list,
-html:has(#text-size-200:checked) .solution-area-grid {
-  grid-template-columns: 1fr;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2576,3 +2519,83 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
 @media (max-width: 560px) {
   .section-label { flex-direction: column; gap: .4rem; }
 }
+
+/* Section-level disclosure: industries and integrations read at a glance, so
+   the whole section collapses rather than each group inside it. */
+.section-blurb { max-width: 60ch; margin: calc(var(--space-5) * -1 + .35rem) 0 var(--space-4); color: var(--muted); }
+
+.section-panel { border-bottom: 1px solid var(--line-soft); }
+
+.section-panel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  color: var(--quiet);
+  cursor: pointer;
+  font: 500 var(--text-micro)/1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.section-panel > summary::-webkit-details-marker { display: none; }
+.section-panel > summary:hover { color: var(--paper); }
+.section-panel[open] > summary { color: var(--acid); }
+.section-panel[open] .work-disclose { transform: rotate(180deg); border-color: var(--acid); color: var(--acid); }
+.section-panel > .evidence-groups { padding: var(--space-3) 0 var(--space-5); }
+
+/* Vendor marks on the integration lists. */
+.evidence-vendors li { padding: 0; border-top: 1px solid var(--line-soft); }
+.evidence-vendors li:first-child { border-top: 0; }
+
+.evidence-vendors a,
+.evidence-vendors > li > span {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 38px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.evidence-vendors a:hover { color: var(--acid); }
+
+.vendor-mark {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: contain;
+  background: rgb(255 255 255 / 92%);
+  padding: 2px;
+}
+
+.vendor-mark-text {
+  display: grid;
+  place-items: center;
+  background: var(--surface-3);
+  color: var(--quiet);
+  font: 600 .7rem/1 var(--font-mono);
+  padding: 0;
+}
+
+/* Capability proofs link into the running demo. */
+.capability-summary { margin: 0 0 var(--space-3); color: var(--muted); font-size: var(--text-small); }
+.capability-proofs { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+
+.capability-proofs a {
+  display: grid;
+  gap: .15rem;
+  padding: .55rem .7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  text-decoration: none;
+  transition: border-color .16s ease, background .16s ease;
+}
+
+.capability-proofs a:hover { border-color: var(--acid); background: var(--surface-2); }
+.capability-proofs strong { color: var(--paper); font-size: var(--text-small); font-weight: 600; }
+.capability-proofs span { color: var(--quiet); font: 500 var(--text-micro)/1.4 var(--font-mono); letter-spacing: .04em; }

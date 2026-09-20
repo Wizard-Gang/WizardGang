@@ -31,3 +31,9 @@ export const SOLUTION_SECTIONS = [
 export function solutionAnchor(id: SolutionSection): `/solutions/#${SolutionSection}` {
   return `/solutions/#${id}`;
 }
+
+/** The Solutions menu. Capabilities leads, as it does on the page. */
+export const SOLUTION_MENU: readonly { label: string; href: string; accessibleName?: string }[] = [
+  { label: "Capabilities", href: "/solutions/#capabilities" },
+  ...SOLUTION_SECTIONS.map((section) => ({ label: section.label, href: solutionAnchor(section.id) }))
+];
