@@ -1,6 +1,6 @@
-export const SOLUTIONS_ROOT_PATH = "/solutions/" as const;
-export const WEBSITES_SOLUTION_PATH = "/solutions/websites/" as const;
-export const DEMO_FRAMEWORK_PATH = "/solutions/demo-framework/" as const;
+export const SERVICES_PATH = "/services/" as const;
+export const WEBSITES_SOLUTION_PATH = "/services/#websites" as const;
+export const DEMO_FRAMEWORK_PATH = "/services/#demo-framework" as const;
 export const DEMO_FRAMEWORK_URL = "https://demo.wizardgang.ai" as const;
 
 export type SolutionId = "websites" | "demo-framework";
@@ -12,12 +12,12 @@ export interface SolutionRecord {
   name: string;
   summary: string;
   description: string;
-  path: `/solutions/${SolutionSlug}/`;
+  path: `/services/#${SolutionSlug}`;
   externalUrl?: string;
 }
 
-export function solutionPath(slug: SolutionSlug): `/solutions/${SolutionSlug}/` {
-  return `/solutions/${slug}/`;
+export function solutionPath(slug: SolutionSlug): `/services/#${SolutionSlug}` {
+  return `/services/#${slug}`;
 }
 
 export const websitesSolution = {

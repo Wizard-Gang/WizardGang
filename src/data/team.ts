@@ -12,7 +12,7 @@ export const TEAM_MEMBERS = [
     name: "Jacob Yongue",
     role: "Software engineer / implementation lead",
     summary: "Builds WizardGang software and brings professional experience across application development, integrations, QA, deployment, training, and production support.",
-    profilePath: "/about/team/jacob/"
+    profilePath: "/about/#jacob"
   }
 ] as const satisfies readonly TeamMember[];
 

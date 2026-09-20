@@ -1,27 +1,13 @@
-import type { PageMetadata } from "../app/contracts";
-
 export type ProjectSlug = "sharktank" | "hexframe" | "yarreader";
 export type ProjectId = ProjectSlug;
 export type ProjectArchitectureItem = readonly [name: string, detail: string];
 export type ProjectPreviewKind = "motion-controlled" | "static";
 export type ProjectPreviewFixture = "product-recreation" | "synthetic-demo";
 
-export const PROJECTS_ROOT_PATH = "/software/projects/" as const;
+export const WORK_PATH = "/work/" as const;
 
-export function projectPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/` {
-  return `/software/projects/${slug}/`;
-}
-
-export function projectCaseStudyPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/case-study/` {
-  return `/software/projects/${slug}/case-study/`;
-}
-
-export function projectOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/index.html` {
-  return `software/projects/${slug}/index.html`;
-}
-
-export function projectCaseStudyOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/case-study/index.html` {
-  return `software/projects/${slug}/case-study/index.html`;
+export function projectPath(slug: ProjectSlug): string {
+  return `${WORK_PATH}#${slug}`;
 }
 
 export interface ProjectNarrative {
@@ -41,8 +27,8 @@ export interface ProjectCaseStudyDefinition {
   title: string;
 }
 
-export type ProjectActionSurface = "card" | "overview" | "case-study";
-export type ProjectActionId = "project" | "live" | "case-study" | "evidence" | "source";
+export type ProjectActionSurface = "card" | "detail";
+export type ProjectActionId = "project" | "live" | "evidence" | "source";
 
 export interface ProjectAction {
   id: ProjectActionId;
@@ -203,7 +189,7 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `View ${project.name} project`,
     href: projectPath(project.slug),
     external: false,
-    primary: surface === "card" || surface === "case-study"
+    primary: true
   };
   const liveAction: ProjectAction | null = project.liveUrl ? {
     id: "live",
@@ -211,15 +197,7 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `Open ${project.name} live demo`,
     href: project.liveUrl,
     external: true,
-    primary: surface === "overview"
-  } : null;
-  const caseStudyAction: ProjectAction | null = project.caseStudy ? {
-    id: "case-study",
-    label: "View case study",
-    ariaLabel: `View ${project.name} case study`,
-    href: projectCaseStudyPath(project.slug),
-    external: false,
-    primary: surface === "overview" && !liveAction
+    primary: surface === "detail"
   } : null;
   const evidenceAction: ProjectAction | null = project.operationsUrl ? {
     id: "evidence",
@@ -235,33 +213,11 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `View ${project.name} source on GitHub`,
     href: project.sourceUrl,
     external: true,
-    primary: surface === "overview" && !liveAction && !caseStudyAction
+    primary: surface === "detail" && !liveAction
   };
 
-  if (surface === "card") {
-    return [projectAction, ...(liveAction ? [liveAction] : []), ...(caseStudyAction ? [caseStudyAction] : []), ...(!liveAction ? [sourceAction] : [])];
-  }
-  if (surface === "overview") {
-    return [...(liveAction ? [liveAction] : []), ...(caseStudyAction ? [caseStudyAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
-  }
-  return [projectAction, ...(liveAction ? [liveAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
-}
-
-export function projectOverviewMetadata(project: ProjectRecord): PageMetadata {
-  return {
-    title: `${project.name} — WizardGang Project`,
-    description: `${project.narrative.tagline} ${project.narrative.what}`,
-    path: projectPath(project.slug),
-  };
-}
-
-export function projectCaseStudyMetadata(project: ProjectRecord): PageMetadata | null {
-  if (!project.caseStudy) return null;
-  return {
-    title: `${project.name} — ${project.caseStudy.title} Case Study | WizardGang`,
-    description: project.summary,
-    path: projectCaseStudyPath(project.slug),
-  };
+  if (surface === "card") return [projectAction];
+  return [...(liveAction ? [liveAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
 }
 
 function assertHttpsUrl(value: string, label: string): void {
@@ -298,16 +254,13 @@ export function validateProjectRecords(records: readonly ProjectRecord[]): void 
     assertUniqueStrings(project.technologies, `${project.slug} technologies`);
     assertUniqueStrings(project.characteristics, `${project.slug} characteristics`);
 
-    const overviewPath = projectPath(project.slug);
-    if (!overviewPath.startsWith(PROJECTS_ROOT_PATH)) throw new Error(`Invalid canonical project path: ${overviewPath}`);
-    if (routes.has(overviewPath)) throw new Error(`Duplicate project route: ${overviewPath}`);
-    routes.add(overviewPath);
+    const entryPath = projectPath(project.slug);
+    if (!entryPath.startsWith(`${WORK_PATH}#`)) throw new Error(`Invalid canonical project path: ${entryPath}`);
+    if (routes.has(entryPath)) throw new Error(`Duplicate project route: ${entryPath}`);
+    routes.add(entryPath);
 
-    if (project.caseStudy) {
-      if (!project.caseStudy.title.trim()) throw new Error(`Empty case-study title: ${project.slug}`);
-      const casePath = projectCaseStudyPath(project.slug);
-      if (routes.has(casePath)) throw new Error(`Duplicate project route: ${casePath}`);
-      routes.add(casePath);
+    if (project.caseStudy && !project.caseStudy.title.trim()) {
+      throw new Error(`Empty case-study title: ${project.slug}`);
     }
 
     if (project.preview) {
@@ -326,13 +279,4 @@ export const projectBySlug = new Map<ProjectSlug, ProjectRecord>(
   projects.map((project) => [project.slug, project] as const)
 );
 
-export const projectRoutes = projects.flatMap((project) => [
-  projectOutputPath(project.slug),
-  ...(project.caseStudy ? [projectCaseStudyOutputPath(project.slug)] : [])
-]);
-
-export const PROJECTS_INDEX_METADATA: PageMetadata = {
-  title: "Projects — WizardGang Software",
-  description: "WizardGang software projects: SharkTank, Hexframe, and YarReader, with technical case studies, source, and live proof where available.",
-  path: PROJECTS_ROOT_PATH
-};
+export const projectAnchors = projects.map((project) => `#${project.slug}`);

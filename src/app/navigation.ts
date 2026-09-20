@@ -1,9 +1,10 @@
 import type { NavigationItem, PrimaryNavigationSection } from "./contracts";
 
 export const NAVIGATION_ITEMS = [
+  { key: "work", href: "/work/", label: "Work" },
+  { key: "services", href: "/services/", label: "Services" },
   { key: "about", href: "/about/", label: "About" },
-  { key: "software", href: "/software/", label: "Software" },
-  { key: "solutions", href: "/solutions/", label: "Solutions" }
+  { key: "contact", href: "/contact/", label: "Contact" }
 ] as const satisfies readonly NavigationItem[];
 
 export function navigationSectionForPath(path: string): PrimaryNavigationSection | "" {

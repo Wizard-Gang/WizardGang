@@ -150,6 +150,7 @@ function staticSitePlugin(): Plugin {
       const rendererUrl = `${pathToFileURL(rendererFile).href}?generation=${generation}`;
       const renderer = await import(rendererUrl) as {
         renderStaticDocuments(build: BuildMetadata, browserAssetPath: string): Map<string, string>;
+        sitemapPaths(): readonly string[];
       };
 
       const build: BuildMetadata = {
@@ -186,6 +187,16 @@ function staticSitePlugin(): Plugin {
         }
 
         await writeFile(resolve(publishOut, "version.json"), `${JSON.stringify(build, null, 2)}\n`);
+
+        // The sitemap is a projection of the page registry, never a second route list.
+        const sitemap = [
+          '<?xml version="1.0" encoding="UTF-8"?>',
+          '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+          ...renderer.sitemapPaths().map((path) => `  <url><loc>https://wizardgang.ai${path}</loc></url>`),
+          "</urlset>",
+          ""
+        ].join("\n");
+        await writeFile(resolve(publishOut, "sitemap.xml"), sitemap);
 
         // Keep Wrangler's configured asset root alive across watch rebuilds. The next
         // complete tree is staged first; files are then atomically replaced in-place

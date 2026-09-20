@@ -102,4 +102,10 @@ export function renderStaticDocuments(build: BuildMetadata, browserAssetPath: st
   );
 }
 
+export function sitemapPaths(): readonly string[] {
+  return createStaticPageRegistry()
+    .filter((page) => !page.metadata.noIndex)
+    .map((page) => page.metadata.path);
+}
+
 export type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
