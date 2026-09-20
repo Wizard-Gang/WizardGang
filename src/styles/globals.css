@@ -798,11 +798,15 @@ h1 span { color: var(--muted); }
   52%, 56% { box-shadow: 0 0 0 3px rgb(255 255 255 / 42%), 0 0 24px rgb(255 90 54 / 72%); filter: brightness(1.22); }
 }
 
+/* Two rows since the brand header was removed: the stage takes the space the
+   panel gives it, and the timeline sits at its natural height underneath. The
+   third `auto` row was still reserved for the header, so the timeline absorbed
+   the slack and left a void above it. */
 .lab-preview {
   display: grid;
   padding: 0;
   background: #080a0f;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .lab-preview::before { display: none; }
@@ -838,7 +842,7 @@ h1 span { color: var(--muted); }
 .lab-stage {
   position: relative;
   overflow: hidden;
-  min-height: 250px;
+  min-height: 300px;
   background: #080a0f;
 }
 
