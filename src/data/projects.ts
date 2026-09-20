@@ -1,27 +1,17 @@
-import type { PageMetadata } from "../app/contracts";
-
 export type ProjectSlug = "sharktank" | "hexframe" | "yarreader";
 export type ProjectId = ProjectSlug;
 export type ProjectArchitectureItem = readonly [name: string, detail: string];
 export type ProjectPreviewKind = "motion-controlled" | "static";
 export type ProjectPreviewFixture = "product-recreation" | "synthetic-demo";
 
-export const PROJECTS_ROOT_PATH = "/software/projects/" as const;
+export const SOFTWARE_ROOT = "/software/" as const;
 
-export function projectPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/` {
-  return `/software/projects/${slug}/`;
+export function projectPath(slug: ProjectSlug): `/software/${ProjectSlug}/` {
+  return `${SOFTWARE_ROOT}${slug}/`;
 }
 
-export function projectCaseStudyPath(slug: ProjectSlug): `/software/projects/${ProjectSlug}/case-study/` {
-  return `/software/projects/${slug}/case-study/`;
-}
-
-export function projectOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/index.html` {
-  return `software/projects/${slug}/index.html`;
-}
-
-export function projectCaseStudyOutputPath(slug: ProjectSlug): `software/projects/${ProjectSlug}/case-study/index.html` {
-  return `software/projects/${slug}/case-study/index.html`;
+export function projectOutputPath(slug: ProjectSlug): `software/${ProjectSlug}/index.html` {
+  return `software/${slug}/index.html`;
 }
 
 export interface ProjectNarrative {
@@ -41,8 +31,8 @@ export interface ProjectCaseStudyDefinition {
   title: string;
 }
 
-export type ProjectActionSurface = "card" | "overview" | "case-study";
-export type ProjectActionId = "project" | "live" | "case-study" | "evidence" | "source";
+export type ProjectActionSurface = "card" | "detail";
+export type ProjectActionId = "project" | "live" | "evidence" | "source";
 
 export interface ProjectAction {
   id: ProjectActionId;
@@ -63,6 +53,7 @@ export interface ProjectRecord {
   primaryCapability: string;
   technologies?: readonly string[];
   characteristics: readonly string[];
+  tags: readonly string[];
   liveUrl: string | null;
   operationsUrl?: string;
   sourceUrl: string;
@@ -82,10 +73,11 @@ export const projects = [
     slug: "sharktank",
     name: "SharkTank",
     number: "01",
-    eyebrow: "Artificial-intelligence-developed multiplayer game",
+    eyebrow: "AI-developed multiplayer game",
     summary: "A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.",
     primaryCapability: "Live multiplayer operation and governance",
     technologies: ["Worker", "Durable Objects", "R2"],
+    tags: ["Cloudflare", "TypeScript", "ISO 27001", "ISO 42001"],
     characteristics: ["Multiplayer game", "100% artificial-intelligence-developed", "ISO/IEC 27001 aligned", "ISO/IEC 42001 aligned", "Built-in cost controls"],
     liveUrl: "https://sharktank.wizardgang.ai/play/",
     operationsUrl: "https://sharktank.wizardgang.ai/evidence/",
@@ -126,6 +118,7 @@ export const projects = [
     summary: "A browser fighting game where every hit has one repeatable result. It includes accessible controls, training tools, replays, computer players, and a foundation for future online play.",
     primaryCapability: "Deterministic combat simulation",
     characteristics: ["Deterministic simulation", "Rollback architecture", "WCAG 2.0 AA interfaces", "Training tools", "Accessible controls"],
+    tags: ["Cloudflare", "TypeScript", "WCAG 2.0 AA"],
     liveUrl: "https://hexframe.wizardgang.ai/play/",
     sourceUrl: "https://github.com/Wizard-Gang/Hexframe",
     preview: { id: "hexframe-training", kind: "motion-controlled", fixture: "product-recreation" },
@@ -164,6 +157,7 @@ export const projects = [
     summary: "An offline comic and book library that turns mixed files into a checked, portable reader and can safely continue after a crash or interrupted copy.",
     primaryCapability: "Offline, recoverable media pipeline",
     technologies: ["TypeScript", "CLI", "Static HTML"],
+    tags: ["TypeScript", "CLI", "Offline-first"],
     characteristics: ["Content addressing", "Crash recovery", "Verified exports", "Offline-first"],
     liveUrl: null,
     sourceUrl: "https://github.com/Wizard-Gang/YarReader",
@@ -203,7 +197,7 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `View ${project.name} project`,
     href: projectPath(project.slug),
     external: false,
-    primary: surface === "card" || surface === "case-study"
+    primary: true
   };
   const liveAction: ProjectAction | null = project.liveUrl ? {
     id: "live",
@@ -211,15 +205,7 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `Open ${project.name} live demo`,
     href: project.liveUrl,
     external: true,
-    primary: surface === "overview"
-  } : null;
-  const caseStudyAction: ProjectAction | null = project.caseStudy ? {
-    id: "case-study",
-    label: "View case study",
-    ariaLabel: `View ${project.name} case study`,
-    href: projectCaseStudyPath(project.slug),
-    external: false,
-    primary: surface === "overview" && !liveAction
+    primary: surface === "detail"
   } : null;
   const evidenceAction: ProjectAction | null = project.operationsUrl ? {
     id: "evidence",
@@ -235,33 +221,11 @@ export function projectActionsFor(project: ProjectRecord, surface: ProjectAction
     ariaLabel: `View ${project.name} source on GitHub`,
     href: project.sourceUrl,
     external: true,
-    primary: surface === "overview" && !liveAction && !caseStudyAction
+    primary: surface === "detail" && !liveAction
   };
 
-  if (surface === "card") {
-    return [projectAction, ...(liveAction ? [liveAction] : []), ...(caseStudyAction ? [caseStudyAction] : []), ...(!liveAction ? [sourceAction] : [])];
-  }
-  if (surface === "overview") {
-    return [...(liveAction ? [liveAction] : []), ...(caseStudyAction ? [caseStudyAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
-  }
-  return [projectAction, ...(liveAction ? [liveAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
-}
-
-export function projectOverviewMetadata(project: ProjectRecord): PageMetadata {
-  return {
-    title: `${project.name} — WizardGang Project`,
-    description: `${project.narrative.tagline} ${project.narrative.what}`,
-    path: projectPath(project.slug),
-  };
-}
-
-export function projectCaseStudyMetadata(project: ProjectRecord): PageMetadata | null {
-  if (!project.caseStudy) return null;
-  return {
-    title: `${project.name} — ${project.caseStudy.title} Case Study | WizardGang`,
-    description: project.summary,
-    path: projectCaseStudyPath(project.slug),
-  };
+  if (surface === "card") return [projectAction];
+  return [...(liveAction ? [liveAction] : []), ...(evidenceAction ? [evidenceAction] : []), sourceAction];
 }
 
 function assertHttpsUrl(value: string, label: string): void {
@@ -296,18 +260,17 @@ export function validateProjectRecords(records: readonly ProjectRecord[]): void 
     if (project.liveUrl) assertHttpsUrl(project.liveUrl, `${project.slug} liveUrl`);
     if (project.operationsUrl) assertHttpsUrl(project.operationsUrl, `${project.slug} operationsUrl`);
     assertUniqueStrings(project.technologies, `${project.slug} technologies`);
+    assertUniqueStrings(project.tags, `${project.slug} tags`);
+    if (project.tags.length < 2) throw new Error(`Project needs at least two tags: ${project.slug}`);
     assertUniqueStrings(project.characteristics, `${project.slug} characteristics`);
 
-    const overviewPath = projectPath(project.slug);
-    if (!overviewPath.startsWith(PROJECTS_ROOT_PATH)) throw new Error(`Invalid canonical project path: ${overviewPath}`);
-    if (routes.has(overviewPath)) throw new Error(`Duplicate project route: ${overviewPath}`);
-    routes.add(overviewPath);
+    const entryPath = projectPath(project.slug);
+    if (!entryPath.startsWith(SOFTWARE_ROOT)) throw new Error(`Invalid canonical project path: ${entryPath}`);
+    if (routes.has(entryPath)) throw new Error(`Duplicate project route: ${entryPath}`);
+    routes.add(entryPath);
 
-    if (project.caseStudy) {
-      if (!project.caseStudy.title.trim()) throw new Error(`Empty case-study title: ${project.slug}`);
-      const casePath = projectCaseStudyPath(project.slug);
-      if (routes.has(casePath)) throw new Error(`Duplicate project route: ${casePath}`);
-      routes.add(casePath);
+    if (project.caseStudy && !project.caseStudy.title.trim()) {
+      throw new Error(`Empty case-study title: ${project.slug}`);
     }
 
     if (project.preview) {
@@ -326,13 +289,10 @@ export const projectBySlug = new Map<ProjectSlug, ProjectRecord>(
   projects.map((project) => [project.slug, project] as const)
 );
 
-export const projectRoutes = projects.flatMap((project) => [
-  projectOutputPath(project.slug),
-  ...(project.caseStudy ? [projectCaseStudyOutputPath(project.slug)] : [])
-]);
-
-export const PROJECTS_INDEX_METADATA: PageMetadata = {
-  title: "Projects — WizardGang Software",
-  description: "WizardGang software projects: SharkTank, Hexframe, and YarReader, with technical case studies, source, and live proof where available.",
-  path: PROJECTS_ROOT_PATH
-};
+/** The Software menu in the primary navigation. */
+export const PROJECT_MENU: readonly { label: string; href: string; accessibleName?: string }[] =
+  projects.map((project) => ({
+    label: project.name,
+    href: projectPath(project.slug),
+    accessibleName: `${project.name} case study`
+  }));

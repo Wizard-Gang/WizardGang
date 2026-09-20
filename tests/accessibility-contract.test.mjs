@@ -11,20 +11,21 @@ import {
   textContent
 } from "./helpers.mjs";
 
-const navDestinations = new Map([
-  ["About", "/about/"],
-  ["Software", "/software/"],
-  ["Solutions", "/solutions/"]
+// Software and Solutions are disclosure menus; About is a plain link.
+const navMenus = new Map([
+  ["Software", ["/software/sharktank/", "/software/hexframe/", "/software/yarreader/"]],
+  ["Solutions", ["/solutions/industries/", "/solutions/integrations/", "/solutions/deployments/"]]
 ]);
+const navLinks = new Map([["About", "/about/"]]);
 
 function normalizedVisible(anchor) {
   return textContent(anchor.inner).replace(/[↗→]/g, "").replace(/\s+/g, " ").trim();
 }
 
 function currentNavDestination(relative) {
-  if (relative.startsWith("about/")) return "/about/";
-  if (relative.startsWith("software/")) return "/software/";
-  if (relative.startsWith("solutions/")) return "/solutions/";
+  if (relative.startsWith("software/")) return "software";
+  if (relative.startsWith("solutions/")) return "solutions";
+  if (relative.startsWith("about/")) return "about";
   return null;
 }
 
@@ -138,21 +139,28 @@ test("shared shell is protected by semantics rather than serialized markup", asy
 
       const primary = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
       assert.ok(primary, "missing primary navigation landmark");
-      for (const [name, href] of navDestinations) {
+      for (const [name, href] of navLinks) {
         const link = anchors(primary.inner).find((anchor) => anchor.href === href && normalizedVisible(anchor) === name);
         assert.ok(link, `primary navigation missing ${name} -> ${href}`);
       }
-
-      const currentExpected = currentNavDestination(relative);
-      const currentLinks = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "location");
-      if (currentExpected) {
-        assert.equal(currentLinks.length, 1, "current route should expose one aria-current link");
-        assert.equal(currentLinks[0].href, currentExpected);
-      } else {
-        assert.equal(currentLinks.length, 0, "pages outside the three primary sections must not claim a current company section");
+      for (const [name, destinations] of navMenus) {
+        const menu = tagBlocks(primary.inner, "details").find(({ inner }) => {
+          const summary = tagBlocks(inner, "summary")[0];
+          return summary && normalizedVisible({ inner: summary.inner }) === name;
+        });
+        assert.ok(menu, `primary navigation missing the ${name} menu`);
+        const hrefs = anchors(menu.inner).map((anchor) => anchor.href);
+        assert.deepEqual(hrefs, destinations, `${name} menu destinations have drifted`);
+        // A menu must be operable without script, so it stays a real disclosure.
+        assert.ok(tagBlocks(menu.inner, "summary").length === 1, `${name} menu needs exactly one summary control`);
       }
 
-      for (const retiredLabel of ["Projects", "Work", "Contact", "GitHub"]) {
+      // The current section is marked once, on the link or on the menu's summary.
+      const currentSection = currentNavDestination(relative);
+      const currentMarks = [...primary.inner.matchAll(/aria-current="location"/g)].length;
+      assert.equal(currentMarks, currentSection ? 1 : 0, `${relative} should mark ${currentSection ? "one" : "no"} current section`);
+
+      for (const retiredLabel of ["Work", "Services", "Contact", "Projects", "Glossary", "GitHub"]) {
         assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
       }
 
@@ -168,7 +176,10 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       assert.ok(mobile, "mobile navigation controlled element is missing");
       assert.equal(mobile.attrs.get("aria-label"), "Primary mobile");
       assert.equal(mobile.attrs.has("hidden"), false, "static HTML keeps mobile navigation available without JavaScript");
-      for (const [, href] of navDestinations) assert.ok(anchors(mobile.inner).some((anchor) => anchor.href === href), `mobile navigation missing ${href}`);
+      const mobileHrefs = new Set(anchors(mobile.inner).map((anchor) => anchor.href));
+      for (const href of [...navLinks.values(), ...[...navMenus.values()].flat()]) {
+        assert.ok(mobileHrefs.has(href), `mobile navigation missing ${href}`);
+      }
 
       const home = pageAnchors.find((anchor) => anchor.href === "/" && anchor.attrs.get("aria-label") === "WizardGang home");
       assert.ok(home, "wordmark must retain a named home relationship");
@@ -205,7 +216,11 @@ test("language, theme, readable-layout, 200% text, and preview-motion controls r
       }
       assert.match(html, />English</);
       assert.match(html, />Español</);
-      assert.ok(tagBlocks(html, "summary").some(({ inner }) => /^Preferences$/i.test(textContent(inner))), "preferences disclosure is missing");
+      // The band became a gear: the control is an icon, so its name is the label.
+      const gear = tagBlocks(html, "summary").find(({ attrs }) => /preferences/i.test(attrs.get("aria-label") || ""));
+      assert.ok(gear, "preferences disclosure is missing");
+      assert.match(gear.attrs.get("aria-label") || "", /preferences/i, "the gear needs an accessible name");
+      assert.equal(textContent(gear.inner), "", "the gear is an icon, so its name comes from aria-label");
       assert.equal(ids.get("theme-dark").attrs.get("type"), "radio");
       assert.ok(ids.get("theme-dark").attrs.has("checked"), "dark theme remains the default");
       assert.equal(ids.get("theme-light").attrs.get("type"), "radio");
@@ -243,18 +258,19 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  for (const relative of ["index.html", "software/projects/index.html", "software/projects/sharktank/index.html", "software/projects/hexframe/index.html", "software/projects/yarreader/index.html"]) {
+  const previewPages = { "index.html": 3, "software/sharktank/index.html": 1, "software/hexframe/index.html": 1, "software/yarreader/index.html": 1 };
+  for (const [relative, expected] of Object.entries(previewPages)) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
-    assert.ok(decorative.length >= (relative.endsWith("index.html") && ["index.html", "software/projects/index.html"].includes(relative) ? 3 : 1), `${relative}: preview must remain decorative and inert`);
+    assert.equal(decorative.length, expected, `${relative}: every preview must remain decorative and inert`);
     for (const preview of decorative.filter(({ attrs }) => attrs.has("data-preview-id"))) {
       assert.ok(["motion-controlled", "static"].includes(preview.attrs.get("data-preview-kind")), `${relative}: preview kind must be explicit`);
       assert.ok(["product-recreation", "synthetic-demo"].includes(preview.attrs.get("data-preview-fixture")), `${relative}: preview fixture must be explicit`);
     }
   }
-  const projects = await readDist("software/projects/index.html");
-  assert.doesNotMatch(projects, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
-  assert.doesNotMatch(projects, /<text\b/i, "decorative SVG previews must not duplicate text content");
+  const home = await readDist("index.html");
+  assert.doesNotMatch(home, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
+  assert.doesNotMatch(home, /<text\b/i, "decorative SVG previews must not duplicate text content");
 });
 
 test("CSS exposes preference behavior, mobile open state, target sizing, reduced motion, and safe preview flashing", async () => {
@@ -263,7 +279,9 @@ test("CSS exposes preference behavior, mobile open state, target sizing, reduced
   // These control-linked selectors are intentional seams: CSS itself implements the behavior,
   // so checking the public control state is more durable than checking animation/keyframe names.
   assert.match(styles, /\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*paused\s*!important(?:;|\})/s);
-  assert.match(styles, /body:has\(#play-previews:checked\)\s+\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*running\s*!important(?:;|\})/s);
+  // Previews are paused by default and only run inside an opened disclosure.
+  assert.match(styles, /\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*paused\s*!important/s);
+  assert.match(styles, /body:has\(#play-previews:checked\)[^{]*details\[open\][^{]*\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*running\s*!important/s);
   assert.match(styles, /html:has\(#text-size-200:checked\)\s*\{[^}]*font-size:\s*200%/s);
   assert.match(styles, /body:has\(#theme-light:checked\)\s*\{/);
   assert.match(styles, /\.nav-toggle:not\(\[hidden\]\)\s*\{[^}]*display:\s*inline-flex/s);

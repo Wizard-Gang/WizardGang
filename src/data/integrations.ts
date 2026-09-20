@@ -1,6 +1,6 @@
 import { projectPath } from "./projects.ts";
 
-export const INTEGRATIONS_PATH = "/software/integrations/" as const;
+export const INTEGRATIONS_PATH = "/services/#integrations" as const;
 
 export type IntegrationCategoryId =
   | "apis-services"

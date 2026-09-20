@@ -1,30 +1,21 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. It presents WizardGang software, integration capability, reusable solutions, and the people behind the work without treating prior-employer experience as WizardGang client work.
-
-The public site is company-first:
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page is the work — SharkTank, Hexframe and YarReader — and everything else is one click from the navigation.
 
 ```text
-/
-├── about/
-│   ├── company/
-│   └── team/
-│       └── jacob/
-├── software/
-│   ├── integrations/
-│   └── projects/
-│       ├── sharktank/
-│       ├── hexframe/
-│       └── yarreader/
-├── solutions/
-│   ├── websites/
-│   └── demo-framework/
-└── glossary/
+/                          the work, as a list of disclosures
+/software/sharktank/       case study
+/software/hexframe/        case study
+/software/yarreader/       case study
+/solutions/industries/     domains delivered into
+/solutions/integrations/   systems connected, with vendor links
+/solutions/deployments/    organizations running delivered systems
+/about/                    the pitch, the person, the career record
 ```
 
-Project case studies live beneath their project routes. The generated 404 is noindex and is not a sitemap entry. The authoritative route inventory is the typed page registry; compatibility-only paths are handled by the Worker rather than generated as duplicate pages.
+Software and Solutions are menus in the header rather than index pages, so nothing restates what the menu already says. Contact is the footer. Every route the site has ever published still resolves — the Worker carries 74 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
 
-**[Live site](https://wizardgang.ai)** · **[Software](https://wizardgang.ai/software/)** · **[Solutions](https://wizardgang.ai/solutions/)**
+**[Live site](https://wizardgang.ai)** · **[Work](https://wizardgang.ai/software/sharktank/)** · **[Solutions](https://wizardgang.ai/solutions/deployments/)**
 
 ## Architecture
 
@@ -40,21 +31,25 @@ React + TypeScript page composition
 
 React renders complete static documents during the build. There is no client React hydration and no SPA router. Browser TypeScript progressively enhances language, display preferences, and mobile navigation.
 
-The TypeScript Worker owns runtime routing that cannot be expressed as static assets alone, including supported compatibility redirects and product-boundary routing. Wrangler owns local runtime and Cloudflare deployment configuration.
+The TypeScript Worker owns runtime routing that cannot be expressed as static assets alone, including compatibility redirects and product-boundary routing. Wrangler owns local runtime and Cloudflare deployment configuration.
 
-Styling is built through Vite with Tailwind available in the toolchain and authored production CSS in `src/styles/globals.css`.
+## Presentation
+
+Two authored stylesheets, one job each:
+
+- `src/styles/tokens.css` — the design system: one palette, one type scale, one spacing scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which the acceptance gate enforces.
+- `src/styles/globals.css` — every rule, consuming those tokens.
+
+Every heading resolves to one of four scale tokens, so a page cannot invent its own display size. Instrument Sans and JetBrains Mono ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License; the production policy is `default-src 'none'` with `font-src 'self'`, so a font from another origin would not load.
 
 ## Content ownership
 
-- Home — WizardGang orientation.
-- About / Company — company identity, principles, and public claims.
-- About / Team — people and professional background. `/about/team/jacob/` is the professional-history authority.
-- Software / Integrations — the single company-facing integration capability catalog.
-- Software / Projects — WizardGang-owned project facts, project pages, and case studies.
-- Solutions — reusable approaches. Demo Framework is explained on the main site; the detailed executable/evidence application lives at [demo.wizardgang.ai](https://demo.wizardgang.ai).
-- Glossary — supporting technical definitions.
+- Home — the work. Each project is a closed disclosure; its preview animates only once opened, and never more than one at a time.
+- Software — one case study per project: problem, what was built, architecture, approach, result.
+- Solutions — the public view of the professional-evidence authorities in `src/data/professional-systems.ts`.
+- About — the argument for the practice, the person, and the career record.
 
-Typed domain data lives under `src/data/`. Employer/customer evidence remains attributed to professional data and must not be presented as WizardGang client work.
+Typed domain data lives under `src/data/`. Employer and customer evidence stays attributed to the professional record and is not presented as WizardGang client work.
 
 ## Run locally
 
@@ -94,7 +89,7 @@ Build the complete static site:
 npm run build
 ```
 
-The build emits the static HTML pages, public assets, generated CSS/browser JavaScript, and `version.json` into `dist/`.
+The build emits the static HTML pages, public assets, generated CSS/browser JavaScript, `sitemap.xml` and `version.json` into `dist/`. The sitemap is a projection of the page registry, never a second route list.
 
 The authoritative repository acceptance gate is:
 
@@ -102,14 +97,14 @@ The authoritative repository acceptance gate is:
 npm run check
 ```
 
-It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, company-first IA, accessibility, browser behavior, project/integration/solution ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
+It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
 
 Useful focused checks include:
 
 ```bash
-npm run test:company-ia
 npm run test:accessibility
 npm run test:frontend-authority
+npm run test:navigation
 npm run test:docs
 ```
 
@@ -122,11 +117,11 @@ src/
   components/  shared presentation
   data/        typed content authorities
   pages/       canonical React page bodies
-  styles/      production CSS
+  styles/      design tokens and production CSS
   worker/      Cloudflare runtime routing
 scripts/       build, local development, verification, maintenance
 tests/         repository acceptance
-public/        deployable static assets and production headers
+public/        deployable static assets, fonts, and production headers
 docs/          current operating and architecture documentation
 ```
 
@@ -134,13 +129,14 @@ Key authorities:
 
 - `src/app/pageRegistry.ts` — generated page inventory.
 - `src/app/navigation.ts` — primary navigation and current-section model.
-- `src/data/projects.ts` — project facts, routes, actions, and metadata.
-- `src/data/integrations.ts` — company integration capability.
-- `src/data/team.ts`, `src/data/professional.ts`, and `src/data/professional-systems.ts` — people, career history, and attributed professional evidence.
-- `src/data/solutions.ts` — Websites and Demo Framework solution data.
+- `src/data/projects.ts` — project facts, routes, tags, actions, and the Software menu.
+- `src/data/solutions-menu.ts` — the Solutions menu and its routes.
+- `src/data/professional-systems.ts` — the evidence Solutions projects.
+- `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
-- `src/app/Document.tsx` — static document and metadata composition.
-- `src/worker/index.ts` — compatibility/runtime routing.
+- `src/app/Document.tsx` — static document, metadata, and sitemap composition.
+- `src/worker/index.ts` — compatibility and runtime routing.
+- `src/styles/tokens.css` — the design system.
 - `vite.config.ts` — static build pipeline.
 - `wrangler.jsonc` — local/staging/production Cloudflare configuration.
 

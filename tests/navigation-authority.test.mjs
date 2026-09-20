@@ -6,30 +6,52 @@ import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigatio
 import { CANONICAL_PAGES, anchors, generatedHtmlFiles, linkByRel, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expectedNavigation = [
-  { key: "about", href: "/about/", label: "About" },
-  { key: "software", href: "/software/", label: "Software" },
-  { key: "solutions", href: "/solutions/", label: "Solutions" }
+  {
+    key: "software",
+    label: "Software",
+    href: "/software/sharktank/",
+    items: [
+      { label: "SharkTank", href: "/software/sharktank/" },
+      { label: "Hexframe", href: "/software/hexframe/" },
+      { label: "YarReader", href: "/software/yarreader/" }
+    ]
+  },
+  {
+    key: "solutions",
+    label: "Solutions",
+    href: "/solutions/industries/",
+    items: [
+      { label: "Industries", href: "/solutions/industries/" },
+      { label: "Integrations", href: "/solutions/integrations/" },
+      { label: "Deployments", href: "/solutions/deployments/" }
+    ]
+  },
+  { key: "about", label: "About", href: "/about/" }
 ];
 
 test("typed company navigation is exact and current-section matching is centralized", () => {
-  assert.deepEqual(NAVIGATION_ITEMS, expectedNavigation);
+  assert.deepEqual(
+    NAVIGATION_ITEMS.map((item) => ({
+      key: item.key,
+      label: item.label,
+      href: item.href,
+      ...("items" in item && item.items ? { items: item.items.map(({ label, href }) => ({ label, href })) } : {})
+    })),
+    expectedNavigation
+  );
 
   const cases = new Map([
     ["/", ""],
+    ["/software/sharktank/", "software"],
+    ["/software/hexframe/", "software"],
+    ["/solutions/industries/", "solutions"],
+    ["/solutions/deployments/", "solutions"],
     ["/about/", "about"],
-    ["/about/company/", "about"],
-    ["/about/team/", "about"],
     ["/about/team/jacob/", "about"],
-    ["/software/", "software"],
-    ["/software/integrations/", "software"],
-    ["/software/projects/sharktank/", "software"],
-    ["/solutions/", "solutions"],
-    ["/solutions/websites/", "solutions"],
-    ["/solutions/demo-framework/", "solutions"],
-    ["/projects/", ""],
-    ["/projects/sharktank/", ""],
     ["/work/", ""],
     ["/services/", ""],
+    ["/contact/", ""],
+    ["/projects/", ""],
     ["/glossary/", ""]
   ]);
 
@@ -69,22 +91,29 @@ test("every generated page exposes exact desktop/mobile company navigation and a
     assert.ok(primary, `${relative} missing desktop primary navigation`);
     assert.ok(mobile, `${relative} missing mobile primary navigation`);
 
+    // A menu contributes its children; a plain item contributes itself.
+    const expectedPairs = expectedNavigation.flatMap((item) =>
+      item.items ? item.items.map(({ label, href }) => [label, href]) : [[item.label, item.href]]
+    );
+    const expectedSummaries = expectedNavigation.filter((item) => item.items).map((item) => item.label);
     for (const nav of [primary, mobile]) {
       assert.deepEqual(
         anchors(nav.inner).map((anchor) => [textContent(anchor.inner), anchor.href]),
-        expectedNavigation.map(({ label, href }) => [label, href]),
+        expectedPairs,
         `${relative} navigation does not match the typed company contract`
+      );
+      assert.deepEqual(
+        tagBlocks(nav.inner, "summary").map(({ inner }) => textContent(inner)),
+        expectedSummaries,
+        `${relative} menu triggers do not match the typed company contract`
       );
     }
 
-    const current = anchors(primary.inner).filter((anchor) => anchor.attrs.get("aria-current") === "location");
     const canonical = linkByRel(html, "canonical")?.attrs.get("href") ?? "";
     const route = canonical ? new URL(canonical, "https://wizardgang.ai").pathname : "";
     const expectedCurrent = route ? navigationSectionForPath(route) : "";
-    assert.equal(current.length, expectedCurrent ? 1 : 0, `${relative} has incorrect aria-current count`);
-    if (expectedCurrent) {
-      assert.equal(current[0].href, expectedNavigation.find((item) => item.key === expectedCurrent)?.href);
-    }
+    const currentMarks = [...primary.inner.matchAll(/aria-current="location"/g)].length;
+    assert.equal(currentMarks, expectedCurrent ? 1 : 0, `${relative} has incorrect aria-current count`);
 
     const allAnchors = anchors(html);
     assert.ok(allAnchors.some((anchor) => anchor.href === "/" && anchor.attrs.get("aria-label") === "WizardGang home"), `${relative} missing WizardGang home link`);

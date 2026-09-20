@@ -6,14 +6,19 @@ export interface BuildMetadata {
   builtAt: string;
 }
 
-export type PrimaryNavigationSection = "about" | "software" | "solutions";
+export type PrimaryNavigationSection = "software" | "solutions" | "about";
 export type CurrentNavSection = PrimaryNavigationSection | "";
 
-export interface NavigationItem {
+export interface NavigationLink {
   label: string;
   href: string;
-  key?: PrimaryNavigationSection;
   accessibleName?: string;
+}
+
+/** A primary item is either a direct link or a menu of links. */
+export interface NavigationItem extends NavigationLink {
+  key: PrimaryNavigationSection;
+  items?: readonly NavigationLink[];
 }
 
 export interface PageMetadata {

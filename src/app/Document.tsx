@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { Preferences, SiteFooter, SiteHeader } from "../components/SiteChrome";
+import { SiteFooter, SiteHeader } from "../components/SiteChrome";
 import { createStaticPageRegistry } from "./pageRegistry";
 import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
@@ -18,7 +18,7 @@ function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadat
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <meta name="theme-color" content="#08080b" />
+      <meta name="theme-color" content="#0a0a0f" />
       <title>{metadata.title}</title>
       <meta name="description" content={metadata.description} />
       {metadata.noIndex ? (
@@ -48,6 +48,8 @@ function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadat
       ) : (
         <meta name="twitter:card" content="summary" />
       )}
+      <link rel="preload" href="/fonts/instrument-sans-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       <link rel="manifest" href="/site.webmanifest" />
       <link rel="stylesheet" href={`/assets/styles.css?v=${assetVersion}`} />
@@ -72,7 +74,6 @@ export function Document({
       <Metadata metadata={page.metadata} build={build} browserAssetPath={browserAssetPath} />
       <body>
         <SiteHeader current={navigationSectionForPath(page.metadata.path)} />
-        <Preferences />
         {children}
         <SiteFooter build={build} />
       </body>
@@ -98,6 +99,12 @@ export function renderStaticDocuments(build: BuildMetadata, browserAssetPath: st
       renderStaticDocument(page, page.body, build, browserAssetPath)
     ])
   );
+}
+
+export function sitemapPaths(): readonly string[] {
+  return createStaticPageRegistry()
+    .filter((page) => !page.metadata.noIndex)
+    .map((page) => page.metadata.path);
 }
 
 export type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";

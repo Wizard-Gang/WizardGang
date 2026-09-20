@@ -449,11 +449,6 @@ export function HexframePreview() {
   return (
     <div className="preview-with-data">
       <div className="project-visual lab-preview" role="img" aria-label="Hexframe training mode: two authored attacks deal 30 and 20 damage, produce impact sparks, reduce the dummy's health, and push the dummy backward in sync with the move timeline" aria-describedby="hexframe-move-data">
-        <header className="lab-brand">
-          <p className="lab-eyebrow">Hexframe / Training</p>
-          <strong>Prime. Link. Cash out.</strong>
-          <p className="lab-sub">Build a sixteen-technique arsenal. Route statuses. Finish the fight.</p>
-        </header>
         <div className="lab-stage">
           <div className="lab-hud">
             <div className="lab-player">

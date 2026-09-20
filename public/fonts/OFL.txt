@@ -1,0 +1,12 @@
+Fonts bundled with this site
+
+Instrument Sans — SIL Open Font License 1.1
+  Copyright 2022 The Instrument Sans Project Authors
+  https://github.com/Instrument/instrument-sans
+
+JetBrains Mono — SIL Open Font License 1.1
+  Copyright 2020 The JetBrains Mono Project Authors
+  https://github.com/JetBrains/JetBrainsMono
+
+Both faces are redistributed here as latin-subset variable WOFF2 under the
+terms of the OFL. Full licence text: https://openfontlicense.org

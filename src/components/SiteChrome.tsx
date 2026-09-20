@@ -16,16 +16,38 @@ const MOBILE_NAVIGATION_ID = "primary-mobile-navigation";
 export function Navigation({ current, mobile = false, id }: NavigationProps) {
   return (
     <nav id={id} className={mobile ? "site-nav site-nav-mobile" : "site-nav site-nav-desktop"} aria-label={mobile ? "Primary mobile" : "Primary"}>
-      {NAVIGATION_ITEMS.map((item) => (
-        <a
-          key={item.href}
-          href={item.href}
-          aria-label={"accessibleName" in item && typeof item.accessibleName === "string" ? item.accessibleName : undefined}
-          aria-current={"key" in item && current === item.key ? "location" : undefined}
-        >
-          {item.label}
-        </a>
-      ))}
+      {NAVIGATION_ITEMS.map((item) => {
+        if (!("items" in item) || !item.items) {
+          return (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-current={current === item.key ? "location" : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        }
+        /* A disclosure, not a scripted menu: it opens with the keyboard and
+           without JavaScript, and every destination is a real link underneath. */
+        return (
+          <details className="nav-menu" key={item.key}>
+            <summary aria-current={current === item.key ? "location" : undefined}>
+              {item.label}
+              <span className="nav-menu-caret" aria-hidden="true">
+                <svg viewBox="0 0 16 16" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg>
+              </span>
+            </summary>
+            <ul>
+              {item.items.map((entry) => (
+                <li key={entry.href}>
+                  <a href={entry.href} aria-label={entry.accessibleName}>{entry.label}</a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        );
+      })}
     </nav>
   );
 }
@@ -40,6 +62,7 @@ export function SiteHeader({ current }: { current: CurrentNavSection }) {
           <span className="wordmark-copy"><strong>WIZARDGANG</strong><small>Jacob Yongue</small></span>
         </a>
         <Navigation current={current} />
+        <Preferences />
         <div className="nav-disclosure">
           <button
             className="nav-toggle"
@@ -58,10 +81,18 @@ export function SiteHeader({ current }: { current: CurrentNavSection }) {
   );
 }
 
+/* The preferences gear, after the in-game tools rail on SharkTank: one icon
+   trigger whose panel holds the whole set. A `details` rather than a scripted
+   popover, so it opens with the keyboard and without JavaScript. */
 export function Preferences() {
   return (
-    <details className="display-settings">
-      <summary>Preferences</summary>
+    <details className="prefs">
+      <summary aria-label="Display and language preferences" title="Preferences">
+        <svg className="prefs-gear" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z" />
+        </svg>
+      </summary>
       <section className="settings-toolbar" aria-label="Language, display, and motion preferences">
         <label className="setting-language">
           <span>Language</span>
