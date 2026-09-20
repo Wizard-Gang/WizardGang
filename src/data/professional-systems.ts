@@ -68,11 +68,11 @@ export const professionalIntegrationEvidence: readonly ProfessionalIntegrationEv
   {
     title: "ERP Integrations",
     items: [
-      ["NetSuite", "https://www.netsuite.com/"],
+      ["NetSuite", "https://www.netsuite.com/", "/logos/vendors/netsuite.png"],
       ["Microsoft Dynamics", "https://www.microsoft.com/en-us/dynamics-365", "/logos/vendors/microsoft-dynamics.png"],
-      ["Sage", "https://www.sage.com/"],
+      ["Sage", "https://www.sage.com/", "/logos/vendors/sage.svg"],
       ["Fishbowl", "https://www.fishbowlinventory.com/", "/logos/vendors/fishbowl.ico"],
-      ["QuickBooks POS", "https://quickbooks.intuit.com/pos/"],
+      ["QuickBooks POS", "https://quickbooks.intuit.com/pos/", "/logos/vendors/quickbooks-pos.svg"],
       ["RedPrairie", "https://blueyonder.com/", "/logos/vendors/redprairie.ico"],
       ["Blue Yonder", "https://blueyonder.com/", "/logos/vendors/blue-yonder.ico"],
       ["CIMS WMS", "https://cloudimsystems.com/", "/logos/vendors/cims-wms.ico"],
@@ -109,7 +109,7 @@ export const professionalIntegrationEvidence: readonly ProfessionalIntegrationEv
     items: [
       ["USPS", "https://www.usps.com/", "/logos/vendors/usps.ico"],
       ["UPS", "https://www.ups.com/", "/logos/vendors/ups.ico"],
-      ["FedEx", "https://www.fedex.com/"]
+      ["FedEx", "https://www.fedex.com/", "/logos/vendors/fedex.svg"]
     ]
   },
   {
@@ -120,7 +120,7 @@ export const professionalIntegrationEvidence: readonly ProfessionalIntegrationEv
     title: "Warehouse Hardware",
     items: [
       ["Zebra", "https://www.zebra.com/", "/logos/vendors/zebra.ico"],
-      ["Honeywell", "https://automation.honeywell.com/us/en/industries/logistics-and-warehouses"]
+      ["Honeywell", "https://automation.honeywell.com/us/en/industries/logistics-and-warehouses", "/logos/vendors/honeywell.svg"]
     ]
   },
   {

@@ -104,7 +104,10 @@ test("information architecture documents current company ownership and static-fi
     "npm run check"
   ]) assert.ok(ia.includes(value), `information architecture is missing current contract: ${value}`);
 
-  assert.match(ia, /Supported compatibility behavior lives in `src\/worker\/index\.ts`/);
+  // Compatibility redirects are retired; the doc has to say the paths are dead.
+  assert.match(ia, /Compatibility redirects have been retired/, "the retirement decision must be documented");
+  assert.match(ia, /fall through to the ordinary 404/, "dead paths must be documented as dead");
+  assert.match(ia, /none of them were ever\npages on this site/, "the surviving redirects must be justified");
   assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
   assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
   assert.match(ia, /disclosure menus/, "the menu-over-index-page decision must be documented");

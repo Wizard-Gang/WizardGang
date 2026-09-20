@@ -11,13 +11,7 @@ type ExternalPermanentRedirect = {
   destination: HttpsUrl;
 };
 
-type InternalPermanentRedirect = {
-  kind: "internal";
-  source: Path;
-  destination: Path;
-};
-
-type PermanentRedirectRoute = ExternalPermanentRedirect | InternalPermanentRedirect;
+type PermanentRedirectRoute = ExternalPermanentRedirect;
 
 type HumanCompatibilityRoute = {
   source: Path;
@@ -36,84 +30,17 @@ type WorkerModule = {
   fetch(request: Request, env: WorkerEnv): Promise<Response>;
 };
 
+/* Outward shortcuts only. These were never pages on this site — they are handy
+   aliases for surfaces that live elsewhere, so they keep resolving.
+   Compatibility redirects for routes this site used to serve have been removed:
+   those paths are dead and return the ordinary 404. */
 const PERMANENT_REDIRECT_ROUTES = [
-  { kind: "internal", source: "/about", destination: "/about/" },
-  { kind: "internal", source: "/solutions", destination: "/solutions/" },
-  { kind: "internal", source: "/projects", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/projects/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/sharktank", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/sharktank/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects/sharktank/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects/sharktank", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects/sharktank/case-study/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects/sharktank/case-study", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/projects/sharktank/case-study", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/projects/sharktank/case-study/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/work/sharktank", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/hexframe", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/hexframe/", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/projects/hexframe", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/projects/hexframe/", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/projects/hexframe/case-study", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/projects/hexframe/case-study/", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/projects/hexframe/case-study", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/projects/hexframe/case-study/", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/work/hexframe", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software/yarreader", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/software/yarreader/", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/software/projects/yarreader", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/software/projects/yarreader/", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/software/projects/yarreader/case-study/", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/software/projects/yarreader/case-study", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/projects/yarreader/case-study", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/projects/yarreader/case-study/", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/work/yarreader", destination: "/projects/yarreader/" },
-  { kind: "internal", source: "/projects/shark-tank/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/projects/shark-tank", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/work/shark-tank", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/work/shadowmoney", destination: "/projects/hexframe/" },
-  { kind: "internal", source: "/software", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects/", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/software/projects", destination: "/projects/sharktank/" },
-  { kind: "internal", source: "/solutions/industries", destination: "/solutions/#industries" },
-  { kind: "internal", source: "/solutions/industries/", destination: "/solutions/#industries" },
-  { kind: "internal", source: "/solutions/integrations/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/integrations", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/deployments/", destination: "/solutions/#deployments" },
-  { kind: "internal", source: "/solutions/deployments", destination: "/solutions/#deployments" },
-  { kind: "internal", source: "/software/integrations", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/software/integrations/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/websites", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/websites/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/demo-framework/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/solutions/demo-framework", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/services", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/services/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/services/example/", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/services/example", destination: "/solutions/#integrations" },
-  { kind: "internal", source: "/about/company", destination: "/about/" },
-  { kind: "internal", source: "/about/company/", destination: "/about/" },
-  { kind: "internal", source: "/about/team", destination: "/about/" },
-  { kind: "internal", source: "/about/team/", destination: "/about/" },
-  { kind: "internal", source: "/about/team/jacob", destination: "/about/" },
-  { kind: "internal", source: "/about/team/jacob/", destination: "/about/" },
-  { kind: "internal", source: "/resume/", destination: "/about/" },
-  { kind: "internal", source: "/resume", destination: "/about/" },
-  { kind: "internal", source: "/professional/", destination: "/about/" },
-  { kind: "internal", source: "/professional", destination: "/about/" },
-  { kind: "internal", source: "/contact/", destination: "/about/" },
-  { kind: "internal", source: "/contact", destination: "/about/" },
-  { kind: "internal", source: "/work", destination: "/" },
-  { kind: "internal", source: "/work/", destination: "/" },
-  { kind: "internal", source: "/glossary", destination: "/" },
-  { kind: "internal", source: "/glossary/", destination: "/" },
   { kind: "external", source: "/github", destination: GITHUB_ORG },
   { kind: "external", source: "/github/", destination: GITHUB_ORG },
-  { kind: "external", source: "/compliance/", destination: `${DEMO_ORIGIN}/assurance` },
   { kind: "external", source: "/compliance", destination: `${DEMO_ORIGIN}/assurance` },
-  { kind: "external", source: "/accessibility/", destination: `${DEMO_ORIGIN}/assurance` },
+  { kind: "external", source: "/compliance/", destination: `${DEMO_ORIGIN}/assurance` },
   { kind: "external", source: "/accessibility", destination: `${DEMO_ORIGIN}/assurance` },
+  { kind: "external", source: "/accessibility/", destination: `${DEMO_ORIGIN}/assurance` },
   { kind: "external", source: "/security", destination: `${DEMO_ORIGIN}/security` },
   { kind: "external", source: "/security/", destination: `${DEMO_ORIGIN}/security` }
 ] as const satisfies readonly PermanentRedirectRoute[];
@@ -201,10 +128,6 @@ function isMachineRoute(path: string): boolean {
     /^\/logs\/game\/[^/]+\.txt$/.test(path);
 }
 
-function isRetiredGameRoute(path: string): boolean {
-  return /^\/(?:arena|uno|x4|21|game|checkers|battleship|3d|shark-?run)(?:\/.*)?$/i.test(path);
-}
-
 async function proxyToSharkTank(request: Request, url: URL): Promise<Response> {
   const target = new URL(url.pathname + url.search, SHARK_ORIGIN);
   const headers = new Headers(request.headers);
@@ -231,14 +154,8 @@ const worker = {
     const path = url.pathname;
 
     const permanentRoute = permanentRedirectFor(path);
-    if (permanentRoute) {
-      if (permanentRoute.kind === "external") return redirect(permanentRoute.destination);
-      const target = new URL(permanentRoute.destination, url.origin);
-      target.search = url.search;
-      return redirect(target.toString());
-    }
+    if (permanentRoute) return redirect(permanentRoute.destination);
 
-    if (isRetiredGameRoute(path)) return redirect(`${url.origin}/`);
     if (isProtectedLegacy(path)) return redirect(`${SHARK_ORIGIN}${path}${url.search}`);
     if (isMachineRoute(path)) return proxyToSharkTank(request, url);
 

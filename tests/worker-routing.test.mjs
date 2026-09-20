@@ -21,83 +21,12 @@ async function fetchWorker(path, init = {}, env = assetEnv()) {
 }
 
 const permanentRedirects = [
-  ["/about", `${SITE}/about/`, true],
-  ["/solutions", `${SITE}/solutions/`, true],
-  ["/projects", `${SITE}/projects/sharktank/`, true],
-  ["/projects/", `${SITE}/projects/sharktank/`, true],
-  ["/software/sharktank", `${SITE}/projects/sharktank/`, true],
-  ["/software/sharktank/", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects/sharktank/", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects/sharktank", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects/sharktank/case-study/", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects/sharktank/case-study", `${SITE}/projects/sharktank/`, true],
-  ["/projects/sharktank/case-study", `${SITE}/projects/sharktank/`, true],
-  ["/projects/sharktank/case-study/", `${SITE}/projects/sharktank/`, true],
-  ["/work/sharktank", `${SITE}/projects/sharktank/`, true],
-  ["/software/hexframe", `${SITE}/projects/hexframe/`, true],
-  ["/software/hexframe/", `${SITE}/projects/hexframe/`, true],
-  ["/software/projects/hexframe", `${SITE}/projects/hexframe/`, true],
-  ["/software/projects/hexframe/", `${SITE}/projects/hexframe/`, true],
-  ["/software/projects/hexframe/case-study", `${SITE}/projects/hexframe/`, true],
-  ["/software/projects/hexframe/case-study/", `${SITE}/projects/hexframe/`, true],
-  ["/projects/hexframe/case-study", `${SITE}/projects/hexframe/`, true],
-  ["/projects/hexframe/case-study/", `${SITE}/projects/hexframe/`, true],
-  ["/work/hexframe", `${SITE}/projects/hexframe/`, true],
-  ["/software/yarreader", `${SITE}/projects/yarreader/`, true],
-  ["/software/yarreader/", `${SITE}/projects/yarreader/`, true],
-  ["/software/projects/yarreader", `${SITE}/projects/yarreader/`, true],
-  ["/software/projects/yarreader/", `${SITE}/projects/yarreader/`, true],
-  ["/software/projects/yarreader/case-study/", `${SITE}/projects/yarreader/`, true],
-  ["/software/projects/yarreader/case-study", `${SITE}/projects/yarreader/`, true],
-  ["/projects/yarreader/case-study", `${SITE}/projects/yarreader/`, true],
-  ["/projects/yarreader/case-study/", `${SITE}/projects/yarreader/`, true],
-  ["/work/yarreader", `${SITE}/projects/yarreader/`, true],
-  ["/projects/shark-tank/", `${SITE}/projects/sharktank/`, true],
-  ["/projects/shark-tank", `${SITE}/projects/sharktank/`, true],
-  ["/work/shark-tank", `${SITE}/projects/sharktank/`, true],
-  ["/work/shadowmoney", `${SITE}/projects/hexframe/`, true],
-  ["/software", `${SITE}/projects/sharktank/`, true],
-  ["/software/", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects/", `${SITE}/projects/sharktank/`, true],
-  ["/software/projects", `${SITE}/projects/sharktank/`, true],
-  ["/solutions/industries", `${SITE}/solutions/#industries`, true],
-  ["/solutions/industries/", `${SITE}/solutions/#industries`, true],
-  ["/solutions/integrations/", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/integrations", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/deployments/", `${SITE}/solutions/#deployments`, true],
-  ["/solutions/deployments", `${SITE}/solutions/#deployments`, true],
-  ["/software/integrations", `${SITE}/solutions/#integrations`, true],
-  ["/software/integrations/", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/websites", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/websites/", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/demo-framework/", `${SITE}/solutions/#integrations`, true],
-  ["/solutions/demo-framework", `${SITE}/solutions/#integrations`, true],
-  ["/services", `${SITE}/solutions/#integrations`, true],
-  ["/services/", `${SITE}/solutions/#integrations`, true],
-  ["/services/example/", `${SITE}/solutions/#integrations`, true],
-  ["/services/example", `${SITE}/solutions/#integrations`, true],
-  ["/about/company", `${SITE}/about/`, true],
-  ["/about/company/", `${SITE}/about/`, true],
-  ["/about/team", `${SITE}/about/`, true],
-  ["/about/team/", `${SITE}/about/`, true],
-  ["/about/team/jacob", `${SITE}/about/`, true],
-  ["/about/team/jacob/", `${SITE}/about/`, true],
-  ["/resume/", `${SITE}/about/`, true],
-  ["/resume", `${SITE}/about/`, true],
-  ["/professional/", `${SITE}/about/`, true],
-  ["/professional", `${SITE}/about/`, true],
-  ["/contact/", `${SITE}/about/`, true],
-  ["/contact", `${SITE}/about/`, true],
-  ["/work", `${SITE}/`, true],
-  ["/work/", `${SITE}/`, true],
-  ["/glossary", `${SITE}/`, true],
-  ["/glossary/", `${SITE}/`, true],
   ["/github", "https://github.com/Wizard-Gang", false],
   ["/github/", "https://github.com/Wizard-Gang", false],
-  ["/compliance/", "https://demo.wizardgang.ai/assurance", false],
   ["/compliance", "https://demo.wizardgang.ai/assurance", false],
-  ["/accessibility/", "https://demo.wizardgang.ai/assurance", false],
+  ["/compliance/", "https://demo.wizardgang.ai/assurance", false],
   ["/accessibility", "https://demo.wizardgang.ai/assurance", false],
+  ["/accessibility/", "https://demo.wizardgang.ai/assurance", false],
   ["/security", "https://demo.wizardgang.ai/security", false],
   ["/security/", "https://demo.wizardgang.ai/security", false]
 ];
@@ -127,31 +56,25 @@ test("same-origin compatibility redirects terminate at a canonical asset route i
   }
 });
 
-test("retired game routes permanently collapse to the WizardGang root", async (t) => {
-  const routes = [
-    "/arena",
-    "/uno",
-    "/x4",
-    "/21",
-    "/game",
-    "/checkers",
-    "/battleship",
-    "/3d",
-    "/shark-run",
-    "/sharkrun",
-    "/arena/rooms/42",
-    "/game/archive/one",
-    "/shark-run/legacy/match",
-    "/sharkrun/stats"
+test("routes this site used to serve are dead rather than redirected", async (t) => {
+  const retired = [
+    "/work/", "/services/", "/contact/", "/projects/", "/glossary/", "/resume", "/professional",
+    "/software/", "/software/projects/", "/software/sharktank/", "/software/integrations/",
+    "/solutions/industries/", "/solutions/integrations/", "/solutions/deployments/",
+    "/solutions/websites/", "/about/company/", "/about/team/", "/about/team/jacob/",
+    "/arena", "/uno", "/x4", "/21", "/checkers", "/battleship"
   ];
-  for (const path of routes) {
+  for (const path of retired) {
     await t.test(path, async () => {
-      const response = await fetchWorker(`${path}?legacy=1`);
-      assert.equal(response.status, 308);
-      assert.equal(response.headers.get("location"), `${SITE}/`);
+      const calls = [];
+      const response = await fetchWorker(path, {}, assetEnv(calls));
+      assert.equal(response.status, 200, "a dead route falls through to the asset handler");
+      assert.equal(calls.length, 1, "nothing may intercept it on the way");
+      assert.equal(response.headers.get("location"), null, `${path} must not redirect`);
     });
   }
 });
+
 
 test("protected SharkTank legacy routes preserve path and query at the SharkTank origin", async (t) => {
   const routes = [

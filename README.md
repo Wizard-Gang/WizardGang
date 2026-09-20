@@ -11,7 +11,9 @@
 /about/                  the pitch, the person, the career record
 ```
 
-Navigation is Solutions, Projects, About; both Solutions and Projects are menus, and contact is the footer. Every route the site has ever published still resolves — the Worker carries 79 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
+Navigation is Solutions, Projects, About; both Solutions and Projects are menus, and contact is the footer. These six routes are the whole site: anything this site used to serve is now a dead path returning the ordinary 404, not a redirect. The generated 404 is noindex and is not a sitemap entry.
+
+The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward — plus the SharkTank product boundary.
 
 **[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/sharktank/)**
 

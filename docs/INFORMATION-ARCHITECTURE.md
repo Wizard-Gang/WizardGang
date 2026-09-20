@@ -84,17 +84,17 @@ Canonical identity is path-based.
 - Canonical metadata and Open Graph URLs use the current canonical path.
 - Explicitly unsupported paths fall through to the normal 404 behavior.
 
-Supported compatibility behavior lives in `src/worker/index.ts`, which carries 79 permanent redirects. Every route the site has published lands on the page that now owns its content:
+Compatibility redirects have been retired. Routes this site used to serve —
+`/work/`, `/services/`, `/contact/`, `/software/*`, `/projects/`, the former
+Solutions sub-pages, `/about/team/`, `/about/company/`, `/about/team/jacob/`,
+`/resume`, `/professional`, `/glossary/` and the retired game paths — are dead.
+They fall through to the ordinary 404 rather than forwarding somewhere, because
+a path that no longer names anything should say so.
 
-- former project routes, the separate case studies, and the older `/software/<slug>` and `/work/<slug>` paths → `/projects/<slug>/`;
-- `/software/`, `/software/projects/`, `/projects/` → `/projects/sharktank/`;
-- the former Solutions sub-pages, `/software/integrations/`, `/services/`, `/solutions/websites/` and `/solutions/demo-framework/` → the matching `/solutions/#section`;
-- `/about/company/`, `/about/team/`, `/about/team/jacob/`, `/resume`, `/professional`, `/contact/` → `/about/`;
-- `/work/` and `/glossary/` → `/`;
-- `/github` → the WizardGang GitHub organization;
-- `/compliance`, `/accessibility`, `/security` → the demo assurance and security surfaces.
-
-Internal redirects preserve query strings and place them before any fragment. Destinations are direct: a redirect never lands on another redirect, and no canonical page links to a redirect-only path.
+`src/worker/index.ts` keeps eight permanent redirects, and none of them were ever
+pages on this site: `/github` to the WizardGang GitHub organization, and
+`/compliance`, `/accessibility` and `/security` to the demo's assurance and
+security surfaces. They are outward aliases, not compatibility.
 
 The Worker also preserves the SharkTank compatibility and proxy boundary covered by Worker routing acceptance.
 
