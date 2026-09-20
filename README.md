@@ -4,14 +4,14 @@
 
 ```text
 /                        selected industries, integrations and projects
-/solutions/              the full professional record, in three sections
+/solutions/              capabilities, then the professional record
 /projects/sharktank/     case study
 /projects/hexframe/      case study
 /projects/yarreader/     case study
 /about/                  the pitch, the person, the career record
 ```
 
-Navigation is Solutions, Projects, About; Projects is a menu, Solutions is a page, and contact is the footer. Every route the site has ever published still resolves — the Worker carries 79 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
+Navigation is Solutions, Projects, About; both Solutions and Projects are menus, and contact is the footer. Every route the site has ever published still resolves — the Worker carries 79 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
 
 **[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/sharktank/)**
 
@@ -42,8 +42,8 @@ Every heading resolves to one of four scale tokens, so a page cannot invent its 
 
 ## Content ownership
 
-- Home — three disclosure lists in one pattern: selected industries, selected integrations, selected projects. Every row starts closed, and a project's preview animates only while its panel is open.
-- Solutions — the full professional record in three sections, projected from `src/data/professional-systems.ts`. Every deployment carries what was delivered and the employer it was delivered under.
+- Home — selected industries and integrations collapse as whole sections; projects are a row each, because each row carries a preview. Everything starts closed, and a preview animates only while its panel is open.
+- Solutions — Capabilities first: what WizardGang can show running, each entry linking to the fragment on the architecture demo that proves it. Then the professional record in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
 - Projects — one case study per project: problem, what was built, architecture, approach, result.
 - About — the argument for the practice, the person, and the career record.
 
@@ -128,9 +128,10 @@ Key authorities:
 - `src/app/pageRegistry.ts` — generated page inventory.
 - `src/app/navigation.ts` — primary navigation and current-section model.
 - `src/data/projects.ts` — project facts, routes, tags, actions, and the Projects menu.
-- `src/data/solutions-menu.ts` — the Solutions page sections.
+- `src/data/capabilities.ts` — what WizardGang can demonstrate, and the demo fragment that proves each one.
+- `src/data/solutions-menu.ts` — the Solutions page sections and menu.
 - `src/data/professional-systems.ts` — the domains, systems and deployments Solutions projects.
-- `src/components/Disclosure.tsx` — the row pattern every home section uses.
+
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
 - `src/app/Document.tsx` — static document, metadata, and sitemap composition.

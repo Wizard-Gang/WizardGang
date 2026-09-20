@@ -6,7 +6,17 @@ import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigatio
 import { CANONICAL_PAGES, anchors, generatedHtmlFiles, linkByRel, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expectedNavigation = [
-  { key: "solutions", label: "Solutions", href: "/solutions/" },
+  {
+    key: "solutions",
+    label: "Solutions",
+    href: "/solutions/",
+    items: [
+      { label: "Capabilities", href: "/solutions/#capabilities" },
+      { label: "Industries", href: "/solutions/#industries" },
+      { label: "Integrations", href: "/solutions/#integrations" },
+      { label: "Deployments", href: "/solutions/#deployments" }
+    ]
+  },
   {
     key: "projects",
     label: "Projects",

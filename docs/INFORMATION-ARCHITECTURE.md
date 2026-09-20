@@ -6,11 +6,11 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-Six canonical pages. The primary navigation is Solutions, Projects and About. Projects is a disclosure menu rather than an index page; Solutions is a single page with three sections. Home is reached through the wordmark, and contact lives in the footer.
+Six canonical pages. The primary navigation is Solutions, Projects and About, where both Solutions and Projects are disclosure menus. Solutions is a single page whose menu points at its four sections; Projects has no index page at all. Home is reached through the wordmark, and contact lives in the footer.
 
 ```text
 /
-├── /solutions/            #industries, #integrations, #deployments
+├── /solutions/            #capabilities, #industries, #integrations, #deployments
 ├── /projects/sharktank/
 ├── /projects/hexframe/
 ├── /projects/yarreader/
@@ -21,7 +21,7 @@ There is no `/projects/` landing page. A section index would restate what its me
 
 The build also emits `404.html`. It is noindex, has no canonical URL, and is not a sitemap entry.
 
-`src/app/pageRegistry.ts` is the generated-page inventory, and `sitemap.xml` is a projection of it rather than a second list. The menus are projections too: the Software menu comes from `src/data/projects.ts` and the Solutions menu from `src/data/solutions-menu.ts`, so navigation and routes cannot drift apart.
+`src/app/pageRegistry.ts` is the generated-page inventory, and `sitemap.xml` is a projection of it rather than a second list. The menus are projections too: the Projects menu comes from `src/data/projects.ts` and the Solutions menu from `src/data/solutions-menu.ts`, so navigation and routes cannot drift apart.
 
 ## Content ownership
 
@@ -31,24 +31,30 @@ Each concept has one public owner:
 | --- | --- | --- |
 | industries, integrations and projects, as scannable lists | `/` | `src/data/projects.ts`, `src/data/professional-systems.ts` |
 | one project's problem, build, architecture, approach, result | `/projects/<slug>/` | `src/data/projects.ts` |
-| the full professional record | `/solutions/` | `src/data/professional-systems.ts` |
+| what WizardGang can demonstrate running | `/solutions/#capabilities` | `src/data/capabilities.ts` |
+| the professional record | `/solutions/` | `src/data/professional-systems.ts` |
 | the argument, the person, the career record | `/about/` | `src/data/team.ts`, `src/data/professional.ts` |
 | detailed Demo Framework application and evidence | `demo.wizardgang.ai` | linked outward, not mirrored |
 
 The home page carries each project's preview, a one-line tagline, its tags and a link. The case study owns the substance. A project's overview and its case study used to be separate routes that restated each other; they are one page now.
 
-Solutions is the public view of professional evidence that previously had no surface: the domains worked in, the systems connected, and the organizations those systems ran for. Every deployment record carries the solution delivered and the employer it was delivered under, and the page opens with a note saying the whole record is employment rather than WizardGang client work. That claim is made where the evidence is, not in a footnote on another page.
+Solutions carries two different kinds of claim, and keeps them apart.
+
+Capabilities leads, and is WizardGang's own work: every entry links to the fragment on `demo.wizardgang.ai` that demonstrates it, so the claim and its proof are one click apart. Those anchors are read from the running application rather than authored here.
+
+The three sections after it are Jacob Yongue's employment record — the domains worked in, the systems connected, and the organizations those systems ran for. Every deployment carries the solution delivered and the employer it was delivered under. The attribution note sits between the two halves rather than at the top of the page, because at the top it disclaimed WizardGang's own capabilities as employment rather than WizardGang client work.
 
 ### Motion
 
-Every row on the home page — industry, integration and project alike — is a closed `details` built from the same component. A project's preview animates only while its panel is open, and each list shares a `name`, so at most one panel per list is open and at most one preview runs at a time. Nothing moves on load. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
+Nothing on the home page is open on load. Industries and integrations collapse as whole sections, since each reads at a glance; projects are a row each, since each row carries a preview worth opening on its own. A preview animates only while its panel is open, and the project rows share a `name`, so at most one preview runs at a time. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
 
 ## Typed authorities
 
 - `src/app/navigation.ts` — primary navigation and current-section matching.
 - `src/app/pageRegistry.ts` — generated page inventory.
 - `src/data/projects.ts` — project records, `/projects/` routes, displayed tags, actions, previews, metadata, and the Projects menu.
-- `src/data/solutions-menu.ts` — the Solutions page sections.
+- `src/data/capabilities.ts` — what WizardGang can demonstrate, and the demo fragment proving each one.
+- `src/data/solutions-menu.ts` — the Solutions page sections and menu.
 - `src/data/professional-systems.ts` — the domains, systems and organizations Solutions projects.
 - `src/data/integrations.ts` — the company integration taxonomy.
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, attributed evidence.
@@ -63,6 +69,8 @@ Two authored stylesheets, with one job each:
 - `src/styles/globals.css` — every rule, consuming those tokens.
 
 Headings resolve to one of four scale tokens. A page that wants a different size changes the scale, not the page.
+
+At 200% text the root doubles, so every rem doubles with it: an 11rem grid track becomes 22rem and a 17rem card minimum becomes 34rem. Multi-column grids therefore collapse to one column, label/action rows stack, and the two overlay panels flow in place instead of floating off a header that is now much taller. Every page must report zero horizontal overflow at that size.
 
 Instrument Sans and JetBrains Mono ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License. The production policy is `default-src 'none'` with `font-src 'self'`, so a font served from another origin would not load at all.
 

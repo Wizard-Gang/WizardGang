@@ -13,9 +13,10 @@ import {
 
 // Software and Solutions are disclosure menus; About is a plain link.
 const navMenus = new Map([
+  ["Solutions", ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"]],
   ["Projects", ["/projects/sharktank/", "/projects/hexframe/", "/projects/yarreader/"]]
 ]);
-const navLinks = new Map([["Solutions", "/solutions/"], ["About", "/about/"]]);
+const navLinks = new Map([["About", "/about/"]]);
 
 function normalizedVisible(anchor) {
   return textContent(anchor.inner).replace(/[↗→]/g, "").replace(/\s+/g, " ").trim();

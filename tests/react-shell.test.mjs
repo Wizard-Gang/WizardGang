@@ -75,11 +75,11 @@ test("the static shell loads only the generated TypeScript browser module withou
   // inside them are the destinations.
   assert.deepEqual(
     tagBlocks(nav.inner, "summary").map(({ inner }) => textContent(inner)),
-    ["Projects"]
+    ["Solutions", "Projects"]
   );
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner)),
-    ["Solutions", "SharkTank", "Hexframe", "YarReader", "About"]
+    ["Capabilities", "Industries", "Integrations", "Deployments", "SharkTank", "Hexframe", "YarReader", "About"]
   );
 });
 

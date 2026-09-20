@@ -107,9 +107,10 @@ test("information architecture documents current company ownership and static-fi
   assert.match(ia, /Supported compatibility behavior lives in `src\/worker\/index\.ts`/);
   assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
   assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
-  assert.match(ia, /disclosure menu rather than an index page/, "the menu-over-index-page decision must be documented");
+  assert.match(ia, /disclosure menus/, "the menu-over-index-page decision must be documented");
   assert.match(ia, /at most one preview runs at a time/, "the preview motion contract must be documented");
   assert.match(ia, /employment rather than WizardGang client work/, "the attribution boundary must be documented where the evidence lives");
+  assert.match(ia, /zero horizontal overflow/, "the 200% text contract must be documented");
 });
 
 test("relative Markdown documentation links resolve", async () => {

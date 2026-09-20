@@ -234,17 +234,19 @@ test("the homepage leads with the work and states its offer once", async () => {
     "Software with clear ownership."
   ], "homepage");
 
-  // Every row on the page is a closed disclosure, so nothing animates on load.
-  const rows = tagBlocks(home, "details").filter(({ attrs }) => (attrs.get("class") || "").includes("work-row"));
-  assert.ok(rows.length >= 3, "the home page is built from disclosure rows");
-  for (const row of rows) assert.ok(!row.attrs.has("open"), "a panel must start closed");
+  // Nothing on the page is open, so nothing animates on load.
+  const panels = tagBlocks(home, "details");
+  assert.ok(panels.length >= 5, "the home page is built from disclosures");
+  for (const panel of panels) assert.ok(!panel.attrs.has("open"), "a panel must start closed");
 
-  const projectRows = rows.filter(({ attrs }) => attrs.get("name") === "work-list");
+  // Industries and integrations collapse as whole sections; projects are a row each.
+  const sectionPanels = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("section-panel"));
+  assert.equal(sectionPanels.length, 2, "industries and integrations each collapse as one section");
+
+  const projectRows = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("work-row"));
   assert.equal(projectRows.length, 3, "one disclosure per project");
-
-  // Each list is its own exclusive group, so opening one never opens another's.
-  const groups = new Set(rows.map(({ attrs }) => attrs.get("name")));
-  assert.deepEqual([...groups].sort(), ["home-industries", "home-integrations", "work-list"]);
+  assert.deepEqual([...new Set(projectRows.map(({ attrs }) => attrs.get("name")))], ["work-list"],
+    "project rows share one exclusive group so only one preview can run");
 
   const headings = [...home.matchAll(/<h([1-3])\b/g)].map((match) => Number(match[1]));
   assert.equal(headings.filter((level) => level === 1).length, 1, "one h1 per page");
