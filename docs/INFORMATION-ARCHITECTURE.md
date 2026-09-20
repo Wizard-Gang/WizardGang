@@ -6,21 +6,24 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-The site is five pages. The primary navigation is Work, Services, About, Contact; Home is reached through the wordmark.
+Eight canonical pages. The primary navigation is Software, Solutions and About, where the first two are disclosure menus rather than index pages; Home is reached through the wordmark, and contact lives in the footer.
 
 ```text
 /
-├── /work/
-├── /services/
-├── /about/
-└── /contact/
+├── /software/sharktank/
+├── /software/hexframe/
+├── /software/yarreader/
+├── /solutions/industries/
+├── /solutions/integrations/
+├── /solutions/deployments/
+└── /about/
 ```
+
+There is no `/software/` or `/solutions/` landing page. A section index would restate what its menu already says, which is exactly the redundancy between a home page and a work listing that this structure removes. Both roots redirect to their first entry.
 
 The build also emits `404.html`. It is noindex, has no canonical URL, and is not a sitemap entry.
 
-`src/app/pageRegistry.ts` is the generated-page inventory, and `sitemap.xml` is a projection of it rather than a second list.
-
-Everything deeper than a page is a fragment on the page that owns it. A project is `/work/#<slug>`, a service is `/services/#<slug>`, and the professional record is `/about/#jacob`. Fragments come from the typed authorities, so a route and its anchor cannot drift apart.
+`src/app/pageRegistry.ts` is the generated-page inventory, and `sitemap.xml` is a projection of it rather than a second list. The menus are projections too: the Software menu comes from `src/data/projects.ts` and the Solutions menu from `src/data/solutions-menu.ts`, so navigation and routes cannot drift apart.
 
 ## Content ownership
 
@@ -28,24 +31,30 @@ Each concept has one public owner:
 
 | Concept | Authority | Typed source |
 | --- | --- | --- |
-| orientation and the work itself | `/` | `src/data/projects.ts` |
-| project problem, build, architecture, approach, result | `/work/` | `src/data/projects.ts` |
-| websites, Demo Framework, integration capability | `/services/` | `src/data/solutions.ts`, `src/data/integrations.ts` |
-| company, the person, career record, attribution | `/about/` | `src/data/team.ts`, `src/data/professional.ts` |
-| how to make contact | `/contact/` | `src/data/site.ts` |
+| the work, as a scannable list | `/` | `src/data/projects.ts` |
+| one project's problem, build, architecture, approach, result | `/software/<slug>/` | `src/data/projects.ts` |
+| operational domains delivered into | `/solutions/industries/` | `src/data/professional-systems.ts` |
+| systems connected in production | `/solutions/integrations/` | `src/data/professional-systems.ts` |
+| organizations running delivered systems | `/solutions/deployments/` | `src/data/professional-systems.ts` |
+| the argument, the person, the career record | `/about/` | `src/data/team.ts`, `src/data/professional.ts` |
 | detailed Demo Framework application and evidence | `demo.wizardgang.ai` | linked outward, not mirrored |
 
-The home page shows each project's preview, a one-line tagline and a link. `/work/` owns the substance. A project's overview and its case study used to be separate routes that restated each other; they are one entry now.
+The home page carries each project's preview, a one-line tagline, its tags and a link. The case study owns the substance. A project's overview and its case study used to be separate routes that restated each other; they are one page now.
 
-Company capability and professional evidence remain separate domains. Employer roles and customer deployments belong to the professional record on `/about/`, where the boundary is stated once. They may support a capability claim with attribution; they are not WizardGang client work, and that statement does not belong in a section heading on another page.
+Solutions is the public view of professional evidence that previously had no surface. Employer roles and customer deployments are labelled as employment history on `/about/`; they support a capability claim, and are not presented as WizardGang client work.
+
+### Motion
+
+Every project on the home page is a closed `details`. Its preview animates only while its panel is open, and the set shares a `name`, so at most one preview runs at a time. Nothing moves on load. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
 
 ## Typed authorities
 
 - `src/app/navigation.ts` — primary navigation and current-section matching.
 - `src/app/pageRegistry.ts` — generated page inventory.
-- `src/data/projects.ts` — project records, `/work/` anchors, actions, previews, metadata.
-- `src/data/integrations.ts` — integration capability taxonomy.
-- `src/data/solutions.ts` — website packages and the Demo Framework boundary.
+- `src/data/projects.ts` — project records, `/software/` routes, displayed tags, actions, previews, metadata, and the Software menu.
+- `src/data/solutions-menu.ts` — the Solutions menu and its routes.
+- `src/data/professional-systems.ts` — the domains, systems and organizations Solutions projects.
+- `src/data/integrations.ts` — the company integration taxonomy.
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, attributed evidence.
 
 Pages project these authorities. They do not create parallel catalogs.
@@ -71,18 +80,18 @@ Canonical identity is path-based.
 - Canonical metadata and Open Graph URLs use the current canonical path.
 - Explicitly unsupported paths fall through to the normal 404 behavior.
 
-Supported compatibility behavior lives in `src/worker/index.ts`, which carries 71 permanent redirects. Every route the site has published lands on the page or fragment that now owns its content:
+Supported compatibility behavior lives in `src/worker/index.ts`, which carries 74 permanent redirects. Every route the site has published lands on the page that now owns its content:
 
-- former project routes, including the separate case studies, and the older `/projects/*` and `/work/<slug>` paths → `/work/#<slug>`;
-- `/software/` and `/software/projects/` → `/work/`;
-- `/software/integrations/` → `/services/#integrations`;
-- `/solutions/`, `/solutions/websites/`, `/solutions/demo-framework/` → `/services/` and its anchors;
-- `/about/company/`, `/about/team/`, `/about/team/jacob/`, `/resume`, `/professional` → `/about/` and `/about/#jacob`;
-- `/glossary/` → `/`;
+- former project routes, the separate case studies, and the older `/projects/*` and `/work/<slug>` paths → `/software/<slug>/`;
+- `/software/`, `/software/projects/`, `/projects/` → `/software/sharktank/`;
+- `/software/integrations/`, `/services/`, `/solutions/websites/`, `/solutions/demo-framework/` → `/solutions/integrations/`;
+- `/solutions/` → `/solutions/industries/`;
+- `/about/company/`, `/about/team/`, `/about/team/jacob/`, `/resume`, `/professional`, `/contact/` → `/about/`;
+- `/work/` and `/glossary/` → `/`;
 - `/github` → the WizardGang GitHub organization;
 - `/compliance`, `/accessibility`, `/security` → the demo assurance and security surfaces.
 
-Internal redirects preserve query strings and place them before any fragment. Destinations are direct: a redirect never lands on another redirect.
+Internal redirects preserve query strings and place them before any fragment. Destinations are direct: a redirect never lands on another redirect, and no canonical page links to a redirect-only path.
 
 The Worker also preserves the SharkTank compatibility and proxy boundary covered by Worker routing acceptance.
 
@@ -142,6 +151,7 @@ The enforced architecture includes:
 - one canonical page registry, and a sitemap derived from it;
 - one typed primary-navigation authority;
 - one canonical route per concept, and one type scale for every heading;
+- navigation menus that open with the keyboard and without JavaScript;
 - direct internal canonical links, never through a redirect;
 - company and personal attribution boundaries;
 - accessibility and progressive-enhancement behavior;

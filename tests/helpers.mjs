@@ -7,16 +7,28 @@ export const dist = resolve(root, "dist");
 
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
-  ["work/index.html", "/work/"],
-  ["services/index.html", "/services/"],
+  ["software/sharktank/index.html", "/software/sharktank/"],
+  ["software/hexframe/index.html", "/software/hexframe/"],
+  ["software/yarreader/index.html", "/software/yarreader/"],
+  ["solutions/industries/index.html", "/solutions/industries/"],
+  ["solutions/integrations/index.html", "/solutions/integrations/"],
+  ["solutions/deployments/index.html", "/solutions/deployments/"],
   ["about/index.html", "/about/"],
-  ["contact/index.html", "/contact/"],
   ["404.html", null]
 ]);
 
-export const SITEMAP_ROUTES = ["/", "/work/", "/services/", "/about/", "/contact/"];
+export const SITEMAP_ROUTES = [
+  "/",
+  "/software/sharktank/",
+  "/software/hexframe/",
+  "/software/yarreader/",
+  "/solutions/industries/",
+  "/solutions/integrations/",
+  "/solutions/deployments/",
+  "/about/"
+];
 
-export const PROJECT_ANCHORS = ["sharktank", "hexframe", "yarreader"];
+export const PROJECT_SLUGS = ["sharktank", "hexframe", "yarreader"];
 
 export const PROJECT_LINKS = {
   sharktank: {

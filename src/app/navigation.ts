@@ -1,6 +1,6 @@
 import type { NavigationItem, PrimaryNavigationSection } from "./contracts";
-import { PROJECT_MENU } from "../data/projects";
-import { SOLUTION_MENU } from "../data/solutions-menu";
+import { PROJECT_MENU } from "../data/projects.ts";
+import { SOLUTION_MENU } from "../data/solutions-menu.ts";
 
 export const NAVIGATION_ITEMS = [
   { key: "software", href: PROJECT_MENU[0].href, label: "Software", items: PROJECT_MENU },

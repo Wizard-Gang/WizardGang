@@ -35,8 +35,8 @@ test("React owns shared chrome and every canonical page body", async () => {
   assert.match(documentSource, /<html lang="en">/);
   assert.match(documentSource, /<Metadata /);
   assert.match(documentSource, /<SiteHeader /);
-  assert.match(documentSource, /<Preferences \/>/);
-  assert.match(documentSource, /<SiteFooter /);
+    assert.match(documentSource, /<SiteFooter /);
+  assert.match(chromeSource, /<Preferences \/>/, "the preferences gear now lives in the site header");
   assert.match(documentSource, /renderToStaticMarkup/);
   assert.match(documentSource, /createStaticPageRegistry/);
 
@@ -44,13 +44,13 @@ test("React owns shared chrome and every canonical page body", async () => {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  for (const authority of ["HOME_PAGE", "WORK_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "CONTACT_PAGE", "NOT_FOUND_PAGE"]) {
+  for (const authority of ["HOME_PAGE", "createCaseStudyPageDefinitions", "createSolutionPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
-  assert.doesNotMatch(registrySource, /pages\/(?:Projects|Solutions|Glossary|CompanyNavigation)/, "retired page modules must stay out of the React registry");
+  assert.doesNotMatch(registrySource, /pages\/(?:Work|Services|Contact|Glossary|CompanyNavigation)/, "retired page modules must stay out of the React registry");
 
-  for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js", "src/pages/Projects.tsx", "src/pages/Solutions.tsx"]) {
+  for (const path of ["src/site.mjs", "src/styles.css", "src/portfolio-cleanup.css", "public/assets/site.js", "src/pages/Work.tsx", "src/pages/Services.tsx", "src/pages/Contact.tsx"]) {
     await assert.rejects(readRoot(path), { code: "ENOENT" });
   }
 });
@@ -71,9 +71,15 @@ test("the static shell loads only the generated TypeScript browser module withou
 
   const nav = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
   assert.ok(nav);
+  // Software and Solutions are menus, so their labels are summaries; the anchors
+  // inside them are the destinations.
+  assert.deepEqual(
+    tagBlocks(nav.inner, "summary").map(({ inner }) => textContent(inner)),
+    ["Software", "Solutions"]
+  );
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner)),
-    ["Work", "Services", "About", "Contact"]
+    ["SharkTank", "Hexframe", "YarReader", "Industries", "Integrations", "Deployments", "About"]
   );
 });
 

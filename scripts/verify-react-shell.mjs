@@ -15,10 +15,9 @@ const professionalDataSource = await readRoot("src/data/professional.ts");
 const professionalSystemsSource = await readRoot("src/data/professional-systems.ts");
 const integrationDataSource = await readRoot("src/data/integrations.ts");
 const homePageSource = await readRoot("src/pages/Home.tsx");
-const workPageSource = await readRoot("src/pages/Work.tsx");
-const servicesPageSource = await readRoot("src/pages/Services.tsx");
+const caseStudySource = await readRoot("src/pages/CaseStudy.tsx");
+const solutionsPageSource = await readRoot("src/pages/Solutions.tsx");
 const aboutPageSource = await readRoot("src/pages/About.tsx");
-const contactPageSource = await readRoot("src/pages/Contact.tsx");
 const notFoundPageSource = await readRoot("src/pages/NotFound.tsx");
 const tokensSource = await readRoot("src/styles/tokens.css");
 const stylesSource = await readRoot("src/styles/globals.css");
@@ -36,32 +35,34 @@ assert.match(chromeSource, /Preferences/);
 assert.match(chromeSource, /NAVIGATION_ITEMS/);
 assert.match(chromeSource, /WizardGang · Software, systems &amp; integrations/);
 
-for (const label of ["Work", "Services", "About", "Contact"]) {
+for (const label of ["Software", "Solutions", "About"]) {
   assert.match(navigationSource, new RegExp(`label: "${label}"`), `navigation must expose ${label}`);
 }
 
-const pageSources = [homePageSource, workPageSource, servicesPageSource, aboutPageSource, contactPageSource, notFoundPageSource];
-for (const pageSource of pageSources) {
+for (const pageSource of [homePageSource, aboutPageSource, notFoundPageSource]) {
   assert.match(pageSource, /ReactPageDefinition/);
   assert.match(pageSource, /relative:/);
   assert.match(pageSource, /metadata:/);
   assert.match(pageSource, /body:/);
 }
+for (const factory of [caseStudySource, solutionsPageSource]) {
+  assert.match(factory, /readonly ReactPageDefinition\[\]/, "generated page sets must declare the shared page contract");
+}
 
-for (const importName of ["HOME_PAGE", "WORK_PAGE", "SERVICES_PAGE", "ABOUT_PAGE", "CONTACT_PAGE", "NOT_FOUND_PAGE"]) {
+for (const importName of ["HOME_PAGE", "createCaseStudyPageDefinitions", "createSolutionPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
   assert.ok(registrySource.includes(importName), `static page registry missing ${importName}`);
 }
 assert.doesNotMatch(
   registrySource,
-  /pages\/(?:Projects|Solutions|Glossary|CompanyNavigation)/,
-  "page modules retired by the five-page cut must not return to the registry"
+  /pages\/(?:Work|Services|Contact|Glossary|CompanyNavigation)/,
+  "retired page modules must not return to the registry"
 );
 
 assert.match(projectDataSource, /export const projects/, "TypeScript project data must remain authoritative");
-assert.match(workPageSource, /projects\.map/, "the work page must render every project from the typed authority");
-assert.match(aboutPageSource, /ProfessionalRoleGrid/, "About must render the typed professional role authority");
+assert.match(caseStudySource, /projects\.map/, "a case study must be generated per project from the typed authority");
+assert.match(aboutPageSource, /RoleTimeline/, "About must render the typed professional role authority");
 assert.match(integrationDataSource, /export const integrationCategories/, "TypeScript integration capability data must remain authoritative");
-assert.match(servicesPageSource, /integrationCategories/, "Services must consume the typed integration authority");
+assert.match(solutionsPageSource, /professionalIntegrationEvidence/, "Solutions must consume the typed integration evidence");
 assert.match(professionalDataSource, /export const professionalRoles/, "TypeScript professional role data must remain authoritative");
 assert.match(professionalDataSource, /export const professionalSkills/, "TypeScript professional skill data must remain authoritative");
 assert.match(professionalSystemsSource, /export const deployments/, "TypeScript deployment evidence must remain authoritative");
@@ -102,8 +103,9 @@ for (const path of [
   "src/portfolio-cleanup.css",
   "src/data/services.ts",
   "src/data/glossary.ts",
-  "src/pages/Projects.tsx",
-  "src/pages/Solutions.tsx",
+  "src/pages/Work.tsx",
+  "src/pages/Services.tsx",
+  "src/pages/Contact.tsx",
   "src/pages/Glossary.tsx",
   "src/pages/CompanyNavigation.tsx"
 ]) {

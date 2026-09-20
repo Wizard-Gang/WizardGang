@@ -1,20 +1,21 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. It leads with the work — SharkTank, Hexframe and YarReader — and keeps everything else to what a visitor actually needs.
-
-The public site is five pages:
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page is the work — SharkTank, Hexframe and YarReader — and everything else is one click from the navigation.
 
 ```text
-/            orientation, and the three projects as live previews
-/work/       each project: problem, build, architecture, approach, result
-/services/   websites, the Demo Framework, integration capability
-/about/      the company, the person, and the attribution boundary
-/contact/    how to reach WizardGang
+/                          the work, as a list of disclosures
+/software/sharktank/       case study
+/software/hexframe/        case study
+/software/yarreader/       case study
+/solutions/industries/     domains delivered into
+/solutions/integrations/   systems connected, with vendor links
+/solutions/deployments/    organizations running delivered systems
+/about/                    the pitch, the person, the career record
 ```
 
-Anything deeper is a fragment on the page that owns it: a project is `/work/#<slug>`, a service is `/services/#<slug>`, the professional record is `/about/#jacob`. Every route the site has ever published still resolves — the Worker carries 71 permanent redirects to the page or anchor that now owns that content. The generated 404 is noindex and is not a sitemap entry.
+Software and Solutions are menus in the header rather than index pages, so nothing restates what the menu already says. Contact is the footer. Every route the site has ever published still resolves — the Worker carries 74 permanent redirects to the page that now owns that content. The generated 404 is noindex and is not a sitemap entry.
 
-**[Live site](https://wizardgang.ai)** · **[Work](https://wizardgang.ai/work/)** · **[Services](https://wizardgang.ai/services/)**
+**[Live site](https://wizardgang.ai)** · **[Work](https://wizardgang.ai/software/sharktank/)** · **[Solutions](https://wizardgang.ai/solutions/deployments/)**
 
 ## Architecture
 
@@ -43,13 +44,12 @@ Every heading resolves to one of four scale tokens, so a page cannot invent its 
 
 ## Content ownership
 
-- Home — orientation, and the work itself.
-- Work — WizardGang-owned project facts and substance.
-- Services — reusable offers and integration capability. The Demo Framework is explained here; the executable application lives at [demo.wizardgang.ai](https://demo.wizardgang.ai).
-- About — company identity, the person, and the professional record.
-- Contact — email and the public profiles.
+- Home — the work. Each project is a closed disclosure; its preview animates only once opened, and never more than one at a time.
+- Software — one case study per project: problem, what was built, architecture, approach, result.
+- Solutions — the public view of the professional-evidence authorities in `src/data/professional-systems.ts`.
+- About — the argument for the practice, the person, and the career record.
 
-Typed domain data lives under `src/data/`. Employer and customer evidence stays attributed to the professional record and is not presented as WizardGang client work; that boundary is stated once, on About.
+Typed domain data lives under `src/data/`. Employer and customer evidence stays attributed to the professional record and is not presented as WizardGang client work.
 
 ## Run locally
 
@@ -97,7 +97,7 @@ The authoritative repository acceptance gate is:
 npm run check
 ```
 
-It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and service ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
+It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
 
 Useful focused checks include:
 
@@ -129,9 +129,9 @@ Key authorities:
 
 - `src/app/pageRegistry.ts` — generated page inventory.
 - `src/app/navigation.ts` — primary navigation and current-section model.
-- `src/data/projects.ts` — project facts, anchors, actions, and metadata.
-- `src/data/integrations.ts` — integration capability.
-- `src/data/solutions.ts` — website packages and the Demo Framework boundary.
+- `src/data/projects.ts` — project facts, routes, tags, actions, and the Software menu.
+- `src/data/solutions-menu.ts` — the Solutions menu and its routes.
+- `src/data/professional-systems.ts` — the evidence Solutions projects.
 - `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
 - `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
 - `src/app/Document.tsx` — static document, metadata, and sitemap composition.
