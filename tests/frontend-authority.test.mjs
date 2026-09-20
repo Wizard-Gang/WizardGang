@@ -232,7 +232,28 @@ test("typed data and styling authorities remain singular and internally valid", 
   }
 
   const cssFiles = sourceFiles.filter((path) => path.endsWith(".css"));
-  assert.deepEqual(cssFiles, ["src/styles/globals.css"], "src/styles/globals.css must remain the sole authored production stylesheet");
+  assert.deepEqual(
+    cssFiles,
+    ["src/styles/globals.css", "src/styles/tokens.css"],
+    "authored production CSS is exactly the token authority and the presentation authority"
+  );
+
+  // tokens.css owns the design system; it must not grow into a second place
+  // where presentation is decided, so it may declare only custom properties
+  // and the self-hosted faces.
+  const tokens = await readRoot("src/styles/tokens.css");
+  const tokenRules = tokens.replace(/@font-face\s*\{[^}]*\}/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
+  const tokenSelectors = [...new Set([...tokenRules.matchAll(/([^{}]+)\{/g)].map((match) => match[1].trim()))];
+  assert.deepEqual(tokenSelectors, [":root"], "tokens.css may only declare :root custom properties alongside @font-face");
+  for (const declaration of tokenRules.matchAll(/([a-z-]+)\s*:/g)) {
+    const property = declaration[1];
+    if (property === "color-scheme") continue;
+    assert.match(property, /^--/, `tokens.css must declare only custom properties, found ${property}`);
+  }
+
+  const globals = await readRoot("src/styles/globals.css");
+  assert.match(globals, /@import "\.\/tokens\.css";/, "the presentation authority must consume the token authority");
+
   const document = await readRoot("src/app/Document.tsx");
   const vite = await readRoot("vite.config.ts");
   assert.match(document, /import "\.\.\/styles\/globals\.css"/);

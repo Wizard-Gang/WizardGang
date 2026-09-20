@@ -268,7 +268,7 @@ export const SPANISH_TRANSLATIONS = new Map<string, string>([
     ["6 sample series", "6 series de muestra"],
     ["Search series, title, year", "Buscar serie, título o año"],
     ["Alphabetical", "Alfabético"],
-    ["Artificial-intelligence-developed multiplayer game", "Juego multijugador desarrollado con inteligencia artificial"],
+    ["AI-developed multiplayer game", "Juego multijugador desarrollado con IA"],
     ["Multiplayer game", "Juego multijugador"],
     ["ISO/IEC 27001 aligned", "Alineado con ISO/IEC 27001"],
     ["ISO/IEC 42001 aligned", "Alineado con ISO/IEC 42001"],

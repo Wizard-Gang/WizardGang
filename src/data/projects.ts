@@ -82,7 +82,7 @@ export const projects = [
     slug: "sharktank",
     name: "SharkTank",
     number: "01",
-    eyebrow: "Artificial-intelligence-developed multiplayer game",
+    eyebrow: "AI-developed multiplayer game",
     summary: "A live multiplayer shark game built entirely with code created by artificial intelligence (AI), with measured cloud costs, accessible interfaces, and built-in security, reliability, and operating controls.",
     primaryCapability: "Live multiplayer operation and governance",
     technologies: ["Worker", "Durable Objects", "R2"],
