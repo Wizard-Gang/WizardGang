@@ -11,10 +11,10 @@ import {
   textContent
 } from "./helpers.mjs";
 
-// Software and Solutions are disclosure menus; About is a plain link.
+// Solutions and Projects link to their index pages and open their submenus.
 const navMenus = new Map([
-  ["Solutions", ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"]],
-  ["Projects", ["/projects/sharktank/", "/projects/hexframe/", "/projects/yarreader/"]]
+  ["Solutions", { href: "/solutions/", items: ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"] }],
+  ["Projects", { href: "/projects/", items: ["/projects/sharktank/", "/projects/hexframe/", "/projects/yarreader/"] }]
 ]);
 const navLinks = new Map([["About", "/about/"]]);
 
@@ -143,16 +143,13 @@ test("shared shell is protected by semantics rather than serialized markup", asy
         const link = anchors(primary.inner).find((anchor) => anchor.href === href && normalizedVisible(anchor) === name);
         assert.ok(link, `primary navigation missing ${name} -> ${href}`);
       }
-      for (const [name, destinations] of navMenus) {
-        const menu = tagBlocks(primary.inner, "details").find(({ inner }) => {
-          const summary = tagBlocks(inner, "summary")[0];
-          return summary && normalizedVisible({ inner: summary.inner }) === name;
-        });
-        assert.ok(menu, `primary navigation missing the ${name} menu`);
-        const hrefs = anchors(menu.inner).map((anchor) => anchor.href);
-        assert.deepEqual(hrefs, destinations, `${name} menu destinations have drifted`);
-        // A menu must be operable without script, so it stays a real disclosure.
-        assert.ok(tagBlocks(menu.inner, "summary").length === 1, `${name} menu needs exactly one summary control`);
+      for (const [name, entry] of navMenus) {
+        const item = tagBlocks(primary.inner, "div").find(({ attrs, inner }) =>
+          (attrs.get("class") || "").includes("nav-item") && inner.includes(`>${name}`));
+        assert.ok(item, `primary navigation missing the ${name} menu`);
+        const hrefs = anchors(item.inner).map((anchor) => anchor.href);
+        // The label is a real link to the section, then its children follow.
+        assert.deepEqual(hrefs, [entry.href, ...entry.items], `${name} menu destinations have drifted`);
       }
 
       // The current section is marked once, on the link or on the menu's summary.
@@ -177,7 +174,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       assert.equal(mobile.attrs.get("aria-label"), "Primary mobile");
       assert.equal(mobile.attrs.has("hidden"), false, "static HTML keeps mobile navigation available without JavaScript");
       const mobileHrefs = new Set(anchors(mobile.inner).map((anchor) => anchor.href));
-      for (const href of [...navLinks.values(), ...[...navMenus.values()].flat()]) {
+      for (const href of [...navLinks.values(), ...[...navMenus.values()].flatMap((m) => [m.href, ...m.items])]) {
         assert.ok(mobileHrefs.has(href), `mobile navigation missing ${href}`);
       }
 

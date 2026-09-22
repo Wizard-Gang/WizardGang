@@ -8,6 +8,7 @@ export const dist = resolve(root, "dist");
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
   ["solutions/index.html", "/solutions/"],
+  ["projects/index.html", "/projects/"],
   ["projects/sharktank/index.html", "/projects/sharktank/"],
   ["projects/hexframe/index.html", "/projects/hexframe/"],
   ["projects/yarreader/index.html", "/projects/yarreader/"],
@@ -18,6 +19,7 @@ export const CANONICAL_PAGES = new Map([
 export const SITEMAP_ROUTES = [
   "/",
   "/solutions/",
+  "/projects/",
   "/projects/sharktank/",
   "/projects/hexframe/",
   "/projects/yarreader/",

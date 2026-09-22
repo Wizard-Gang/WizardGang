@@ -6,18 +6,19 @@ Implementation authority remains the typed source and acceptance tests. This doc
 
 ## Public hierarchy
 
-Six canonical pages. The primary navigation is Solutions, Projects and About, where both Solutions and Projects are disclosure menus. Solutions is a single page whose menu points at its four sections; Projects has no index page at all. Home is reached through the wordmark, and contact lives in the footer.
+Seven canonical pages. The primary navigation is Solutions, Projects and About. Solutions and Projects are links to their index pages, with menus that open on hover or keyboard focus. The Solutions menu points at its four sections; the Projects menu points at the three case studies. Home is reached through the wordmark, and contact lives in the footer.
 
 ```text
 /
 ├── /solutions/            #capabilities, #industries, #integrations, #deployments
+├── /projects/
 ├── /projects/sharktank/
 ├── /projects/hexframe/
 ├── /projects/yarreader/
 └── /about/
 ```
 
-There is no `/projects/` landing page. A section index would restate what its menu already says, which is exactly the redundancy between a home page and a work listing that this structure removes; `/projects/` redirects to its first entry.
+The `/projects/` index introduces each project and links to its case study and live application where one exists.
 
 The build also emits `404.html`. It is noindex, has no canonical URL, and is not a sitemap entry.
 
@@ -29,7 +30,8 @@ Each concept has one public owner:
 
 | Concept | Authority | Typed source |
 | --- | --- | --- |
-| industries, integrations and projects, as scannable lists | `/` | `src/data/projects.ts`, `src/data/professional-systems.ts` |
+| selected industries, integrations and projects, as scannable lists | `/` | `src/data/projects.ts`, `src/data/professional-systems.ts` |
+| all projects, as an index | `/projects/` | `src/data/projects.ts` |
 | one project's problem, build, architecture, approach, result | `/projects/<slug>/` | `src/data/projects.ts` |
 | what WizardGang can demonstrate running | `/solutions/#capabilities` | `src/data/capabilities.ts` |
 | the professional record | `/solutions/` | `src/data/professional-systems.ts` |
@@ -40,7 +42,7 @@ The home page carries each project's preview, a one-line tagline, its tags and a
 
 Solutions carries two different kinds of claim, and keeps them apart.
 
-Capabilities leads, and is WizardGang's own work: every entry links to the fragment on `demo.wizardgang.ai` that demonstrates it, so the claim and its proof are one click apart. Those anchors are read from the running application rather than authored here.
+Capabilities leads, and is WizardGang's own work: each entry links to the corresponding area on `demo.wizardgang.ai`, and the section links to the full demo workbench. Assurance and security links lead to their supporting records and reporting guidance. Demo fragments match the demonstration IDs in the architecture application.
 
 The three sections after it are Jacob Yongue's employment record — the domains worked in, the systems connected, and the organizations those systems ran for. Every deployment carries the solution delivered and the employer it was delivered under. The attribution note sits between the two halves rather than at the top of the page, because at the top it disclaimed WizardGang's own capabilities as employment rather than WizardGang client work.
 
@@ -84,17 +86,17 @@ Canonical identity is path-based.
 - Canonical metadata and Open Graph URLs use the current canonical path.
 - Explicitly unsupported paths fall through to the normal 404 behavior.
 
-Supported compatibility behavior lives in `src/worker/index.ts`, which carries 79 permanent redirects. Every route the site has published lands on the page that now owns its content:
+Compatibility redirects have been retired. Routes this site used to serve —
+`/work/`, `/services/`, `/contact/`, `/software/*`, the former
+Solutions sub-pages, `/about/team/`, `/about/company/`, `/about/team/jacob/`,
+`/resume`, `/professional`, `/glossary/` and the retired game paths — are dead.
+They fall through to the ordinary 404 rather than forwarding somewhere, because
+a path that no longer names anything should say so.
 
-- former project routes, the separate case studies, and the older `/software/<slug>` and `/work/<slug>` paths → `/projects/<slug>/`;
-- `/software/`, `/software/projects/`, `/projects/` → `/projects/sharktank/`;
-- the former Solutions sub-pages, `/software/integrations/`, `/services/`, `/solutions/websites/` and `/solutions/demo-framework/` → the matching `/solutions/#section`;
-- `/about/company/`, `/about/team/`, `/about/team/jacob/`, `/resume`, `/professional`, `/contact/` → `/about/`;
-- `/work/` and `/glossary/` → `/`;
-- `/github` → the WizardGang GitHub organization;
-- `/compliance`, `/accessibility`, `/security` → the demo assurance and security surfaces.
-
-Internal redirects preserve query strings and place them before any fragment. Destinations are direct: a redirect never lands on another redirect, and no canonical page links to a redirect-only path.
+`src/worker/index.ts` keeps eight permanent redirects, and none of them were ever
+pages on this site: `/github` to the WizardGang GitHub organization, and
+`/compliance`, `/accessibility` and `/security` to the demo's assurance and
+security surfaces. They are outward aliases, not compatibility.
 
 The Worker also preserves the SharkTank compatibility and proxy boundary covered by Worker routing acceptance.
 

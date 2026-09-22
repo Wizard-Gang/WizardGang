@@ -3,6 +3,7 @@ import { RoleTimeline, SkillList } from "../components/ProfessionalSurfaces";
 import { JACOB_TEAM_MEMBER } from "../data/team";
 import { professionalRoles, professionalSkills } from "../data/professional";
 import { deployments } from "../data/professional-systems";
+import { solutionAnchor } from "../data/solutions-menu";
 
 export const ABOUT_PAGE: ReactPageDefinition = {
   relative: "about/index.html",
@@ -35,7 +36,7 @@ export const ABOUT_PAGE: ReactPageDefinition = {
           <p>
             That comes from seven years building systems people use to do their jobs: warehouse and
             fulfillment floors, court case management, carrier and ERP integrations across{" "}
-            <a href="/solutions/deployments/">{deployments.length} organizations</a>. When software
+            <a href={solutionAnchor("deployments")}>{deployments.length} organizations</a>. When software
             breaks there, someone loses a shift, a shipment, or a filing deadline. Those systems have
             to survive the handoff. So does yours.
           </p>

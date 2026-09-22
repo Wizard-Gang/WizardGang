@@ -1,5 +1,5 @@
-/** Solutions is one page with three sections, each projecting one
-    professional-evidence authority from src/data/professional-systems.ts. */
+/** Solutions leads with WizardGang capabilities, then three sections drawn from
+    Jacob Yongue's professional record in src/data/professional-systems.ts. */
 export const SOLUTIONS_PATH = "/solutions/" as const;
 
 export type SolutionSection = "industries" | "integrations" | "deployments";
@@ -14,17 +14,17 @@ export const SOLUTION_SECTIONS = [
   {
     id: "industries",
     label: "Industries",
-    lede: "The operational domains this work has shipped into."
+    lede: "Industries delivered to, and the work done in each."
   },
   {
     id: "integrations",
     label: "Integrations",
-    lede: "Systems connected in production, with the vendor each one belongs to."
+    lede: "Systems connected in production, and who makes them."
   },
   {
     id: "deployments",
     label: "Deployments",
-    lede: "Organizations where these systems went live, and what was delivered."
+    lede: "Organizations running this software, and what was built for them."
   }
 ] as const satisfies readonly SolutionSectionDefinition[];
 
