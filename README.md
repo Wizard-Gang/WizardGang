@@ -45,7 +45,7 @@ Every heading resolves to one of four scale tokens, so a page cannot invent its 
 
 ## Content ownership
 
-- Home — selected industries and integrations collapse as whole sections; projects are a row each, because each row carries a preview. Everything starts closed, and a preview animates only while its panel is open.
+- Home — industry and integration categories are visible in responsive grids; projects remain expandable rows because each row carries a preview. Project previews start closed and animate only while open.
 - Solutions — Capabilities first: each working example links to its architecture demo, with a link to the full demo workbench. The professional record follows in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
 - Projects — an index of the work, then one case study per project: problem, what was built, architecture, approach, result.
 - About — the argument for the practice, the person, and the career record.

@@ -48,7 +48,7 @@ The three sections after it are Jacob Yongue's employment record — the domains
 
 ### Motion
 
-Nothing on the home page is open on load. Industries and integrations collapse as whole sections, since each reads at a glance; projects are a row each, since each row carries a preview worth opening on its own. A preview animates only while its panel is open, and the project rows share a `name`, so at most one preview runs at a time. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
+Industry and integration categories are visible in responsive grids on the home page. Projects remain expandable rows because each row carries a preview worth opening on its own. Nothing animated is open on load. A preview animates only while its panel is open, and the project rows share a `name`, so at most one preview runs at a time. `src/styles/globals.css` pauses `.project-visual *` unconditionally and resumes it only inside `details[open]` or a case study's `.case-visual`, with the preview toggle still respected.
 
 ## Typed authorities
 
