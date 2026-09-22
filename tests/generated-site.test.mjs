@@ -221,7 +221,14 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
 
 test("the homepage leads with the work and states its offer once", async () => {
   const home = await readDist("index.html");
-  requireText(home, ["Software that Ships", "Selected industries", "Selected integrations", "Selected projects", "SharkTank", "Hexframe", "YarReader", "Explore the Architecture"], "homepage");
+  requireText(home, [
+    "Software that Ships", "Industries", "Warehouse &amp; Fulfillment", "Logistics",
+    "Justice &amp; Court Systems", "Public-Sector Workflows", "Enterprise &amp; AI Infrastructure",
+    "Integrations", "ERP Integrations", "Commerce &amp; Fulfillment", "Warehouse Automation",
+    "Carrier Integrations", "EDI &amp; B2B", "Warehouse Hardware", "Development &amp; Workflow",
+    "Justice &amp; Legal", "Selected projects", "SharkTank", "Hexframe", "YarReader",
+    "Explore the Architecture"
+  ], "homepage");
 
   // Earlier homepages stacked a kicker, a display headline and a paragraph in every
   // band, and carried the employer-attribution boundary in a section heading.
@@ -235,17 +242,17 @@ test("the homepage leads with the work and states its offer once", async () => {
     "Software with clear ownership."
   ], "homepage");
 
-  // Nothing on the page is open, so nothing animates on load.
+  // Industries and integrations stay visible. Only the three project previews
+  // are disclosures, and they remain closed so nothing animates on load.
   const panels = tagBlocks(home, "details");
-  assert.ok(panels.length >= 5, "the home page is built from disclosures");
   for (const panel of panels) assert.ok(!panel.attrs.has("open"), "a panel must start closed");
 
-  // Every section uses the same row language: industries and integrations are one
-  // row each, projects are a row per project.
+  // Professional categories are visible without extra clicks or summary rows.
+  assert.equal(startTags(home, "ul").filter(({ attrs }) => (attrs.get("class") || "").includes("home-topic-grid")).length, 2);
+  rejectText(home, ["All industries", "All integrations", "5 domains", "8 groups"], "homepage category grids");
+
   const named = panels.filter(({ attrs }) => attrs.get("name"));
-  assert.deepEqual([...new Set(named.map(({ attrs }) => attrs.get("name")))].sort(),
-    ["home-industries", "home-integrations", "work-list"],
-    "each home section is its own exclusive disclosure group");
+  assert.deepEqual([...new Set(named.map(({ attrs }) => attrs.get("name")))], ["work-list"]);
 
   const projectRows = panels.filter(({ attrs }) => attrs.get("name") === "work-list");
   assert.equal(projectRows.length, 3, "one disclosure per project");
