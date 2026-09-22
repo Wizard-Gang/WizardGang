@@ -1,6 +1,6 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { SOLUTIONS_PATH, SOLUTION_SECTIONS } from "../data/solutions-menu";
-import { capabilityGroups, capabilityProofCount } from "../data/capabilities";
+import { DEMO_ORIGIN, capabilityGroups, capabilityProofCount } from "../data/capabilities";
 import {
   deployments,
   professionalIntegrationEvidence,
@@ -25,7 +25,7 @@ export const SOLUTIONS_PAGE: ReactPageDefinition = {
   relative: "solutions/index.html",
   metadata: {
     title: "Solutions — WizardGang",
-    description: "What WizardGang can demonstrate running, and the professional record behind it: domains delivered into, systems connected in production, and where those systems went live.",
+    description: "Software for warehouses, courts and the systems feeding them \u2014 what it does, what it connects to, and the organizations where it went live.",
     path: SOLUTIONS_PATH,
     socialImage: "/og.jpg"
   },
@@ -33,7 +33,10 @@ export const SOLUTIONS_PAGE: ReactPageDefinition = {
     <main className="site-main" id="main" tabIndex={-1}>
       <section className="page-hero">
         <h1>Solutions</h1>
-        <p>What this practice can show you running, and the record behind it.</p>
+        <p>
+          Software for the parts of a business that cannot stop: warehouses, courtrooms, and the
+          systems feeding them. Below is what it does, what it connects to, and where it runs.
+        </p>
       </section>
 
       <nav className="work-jump" aria-label="Sections on this page">
@@ -48,15 +51,19 @@ export const SOLUTIONS_PAGE: ReactPageDefinition = {
       <section className="solution-section" id="capabilities" aria-labelledby="capabilities-heading">
         <h2 id="capabilities-heading">Capabilities</h2>
         <p className="work-entry-lede">
-          Each of these is running on the architecture demo. The links open the proof, not a description of it.
+          Open each working example in the architecture demo. The assurance and security links
+          lead to the records and reporting guidance behind the work.
         </p>
-        <p className="evidence-count">{capabilityProofCount} demonstrations across {capabilityGroups.length} groups</p>
+        <div className="capability-intro-actions">
+          <p className="evidence-count">{capabilityProofCount} linked areas across {capabilityGroups.length} groups</p>
+          <a href={`${DEMO_ORIGIN}/demos`}>Explore all demos <span aria-hidden="true">↗</span></a>
+        </div>
         <div className="evidence-groups">
           {capabilityGroups.map((group) => (
             <section className="evidence-group" key={group.title}>
               <h3>{group.title}</h3>
               <p className="capability-summary">{group.summary}</p>
-              <ul className="capability-proofs" aria-label={`${group.title} demonstrations`}>
+              <ul className="capability-proofs" aria-label={`${group.title} links`}>
                 {group.proofs.map((proof) => (
                   <li key={proof.href}>
                     <a href={proof.href}>

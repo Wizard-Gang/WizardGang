@@ -20,7 +20,7 @@ const expectedNavigation = [
   {
     key: "projects",
     label: "Projects",
-    href: "/projects/sharktank/",
+    href: "/projects/",
     items: [
       { label: "SharkTank", href: "/projects/sharktank/" },
       { label: "Hexframe", href: "/projects/hexframe/" },
@@ -92,20 +92,17 @@ test("every generated page exposes exact desktop/mobile company navigation and a
     assert.ok(mobile, `${relative} missing mobile primary navigation`);
 
     // A menu contributes its children; a plain item contributes itself.
+    // A menu contributes its own label link first, then its children.
     const expectedPairs = expectedNavigation.flatMap((item) =>
-      item.items ? item.items.map(({ label, href }) => [label, href]) : [[item.label, item.href]]
+      item.items
+        ? [[item.label, item.href], ...item.items.map(({ label, href }) => [label, href])]
+        : [[item.label, item.href]]
     );
-    const expectedSummaries = expectedNavigation.filter((item) => item.items).map((item) => item.label);
     for (const nav of [primary, mobile]) {
       assert.deepEqual(
-        anchors(nav.inner).map((anchor) => [textContent(anchor.inner), anchor.href]),
+        anchors(nav.inner).map((anchor) => [textContent(anchor.inner).replace(/\s+/g, " ").trim(), anchor.href]),
         expectedPairs,
         `${relative} navigation does not match the typed company contract`
-      );
-      assert.deepEqual(
-        tagBlocks(nav.inner, "summary").map(({ inner }) => textContent(inner)),
-        expectedSummaries,
-        `${relative} menu triggers do not match the typed company contract`
       );
     }
 

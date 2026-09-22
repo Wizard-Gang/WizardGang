@@ -1,10 +1,10 @@
 import type { NavigationItem, PrimaryNavigationSection } from "./contracts";
-import { PROJECT_MENU } from "../data/projects.ts";
+import { PROJECTS_ROOT, PROJECT_MENU } from "../data/projects.ts";
 import { SOLUTIONS_PATH, SOLUTION_MENU } from "../data/solutions-menu.ts";
 
 export const NAVIGATION_ITEMS = [
   { key: "solutions", href: SOLUTIONS_PATH, label: "Solutions", items: SOLUTION_MENU },
-  { key: "projects", href: PROJECT_MENU[0].href, label: "Projects", items: PROJECT_MENU },
+  { key: "projects", href: PROJECTS_ROOT, label: "Projects", items: PROJECT_MENU },
   { key: "about", href: "/about/", label: "About" }
 ] as const satisfies readonly NavigationItem[];
 

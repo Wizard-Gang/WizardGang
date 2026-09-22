@@ -5,17 +5,18 @@
 ```text
 /                        selected industries, integrations and projects
 /solutions/              capabilities, then the professional record
+/projects/               project index
 /projects/sharktank/     case study
 /projects/hexframe/      case study
 /projects/yarreader/     case study
 /about/                  the pitch, the person, the career record
 ```
 
-Navigation is Solutions, Projects, About; both Solutions and Projects are menus, and contact is the footer. These six routes are the whole site: anything this site used to serve is now a dead path returning the ordinary 404, not a redirect. The generated 404 is noindex and is not a sitemap entry.
+Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These seven routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
 
 The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward — plus the SharkTank product boundary.
 
-**[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/sharktank/)**
+**[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/)**
 
 ## Architecture
 
@@ -45,11 +46,11 @@ Every heading resolves to one of four scale tokens, so a page cannot invent its 
 ## Content ownership
 
 - Home — selected industries and integrations collapse as whole sections; projects are a row each, because each row carries a preview. Everything starts closed, and a preview animates only while its panel is open.
-- Solutions — Capabilities first: what WizardGang can show running, each entry linking to the fragment on the architecture demo that proves it. Then the professional record in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
-- Projects — one case study per project: problem, what was built, architecture, approach, result.
+- Solutions — Capabilities first: each working example links to its architecture demo, with a link to the full demo workbench. The professional record follows in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
+- Projects — an index of the work, then one case study per project: problem, what was built, architecture, approach, result.
 - About — the argument for the practice, the person, and the career record.
 
-Typed domain data lives under `src/data/`. Industries, integrations and deployments are Jacob Yongue's employment record, not WizardGang client work, and Solutions states that at the top of the page rather than leaving it implied.
+Typed domain data lives under `src/data/`. Industries, integrations and deployments are Jacob Yongue's employment record, not WizardGang client work, and Solutions states that boundary before the professional record.
 
 ## Run locally
 

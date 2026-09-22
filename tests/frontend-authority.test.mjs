@@ -98,6 +98,7 @@ test("canonical page inventory remains owned by the typed React registry", async
   for (const authority of [
     "HOME_PAGE",
     "SOLUTIONS_PAGE",
+    "PROJECTS_PAGE",
     "createCaseStudyPageDefinitions",
     "ABOUT_PAGE",
     "NOT_FOUND_PAGE"
@@ -121,6 +122,7 @@ test("canonical page inventory remains owned by the typed React registry", async
   const expected = new Set([
     "index.html",
     "solutions/index.html",
+    "projects/index.html",
     "projects/sharktank/index.html",
     "projects/hexframe/index.html",
     "projects/yarreader/index.html",
@@ -128,7 +130,7 @@ test("canonical page inventory remains owned by the typed React registry", async
     "404.html"
   ]);
   assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 7, "six canonical pages plus the generated 404");
+  assert.equal(expected.size, 8, "seven canonical pages plus the generated 404");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);

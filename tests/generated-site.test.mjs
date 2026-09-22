@@ -8,6 +8,7 @@ import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {
   CANONICAL_PAGES,
   PROJECT_LINKS,
+  PROJECT_SLUGS,
   SITEMAP_ROUTES,
   anchors,
   dist,
@@ -64,7 +65,7 @@ test("generated HTML inventory is the explicit canonical contract", async () => 
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 7, "six canonical pages plus the generated 404");
+  assert.equal(actual.length, 8, "seven canonical pages plus the generated 404");
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -239,11 +240,14 @@ test("the homepage leads with the work and states its offer once", async () => {
   assert.ok(panels.length >= 5, "the home page is built from disclosures");
   for (const panel of panels) assert.ok(!panel.attrs.has("open"), "a panel must start closed");
 
-  // Industries and integrations collapse as whole sections; projects are a row each.
-  const sectionPanels = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("section-panel"));
-  assert.equal(sectionPanels.length, 2, "industries and integrations each collapse as one section");
+  // Every section uses the same row language: industries and integrations are one
+  // row each, projects are a row per project.
+  const named = panels.filter(({ attrs }) => attrs.get("name"));
+  assert.deepEqual([...new Set(named.map(({ attrs }) => attrs.get("name")))].sort(),
+    ["home-industries", "home-integrations", "work-list"],
+    "each home section is its own exclusive disclosure group");
 
-  const projectRows = panels.filter(({ attrs }) => (attrs.get("class") || "").includes("work-row"));
+  const projectRows = panels.filter(({ attrs }) => attrs.get("name") === "work-list");
   assert.equal(projectRows.length, 3, "one disclosure per project");
   assert.deepEqual([...new Set(projectRows.map(({ attrs }) => attrs.get("name")))], ["work-list"],
     "project rows share one exclusive group so only one preview can run");
@@ -346,6 +350,33 @@ test("Solutions projects the professional evidence authorities", async () => {
   }
   const wall = tagBlocks(solutions, "li").filter(({ inner }) => inner.includes("href=\"https://"));
   assert.ok(wall.length >= 20, "the deployment wall must list every organization");
+});
+
+test("Capabilities leads Solutions and links to every architecture demonstration", async () => {
+  const solutions = await readDist("solutions/index.html");
+  const sections = startTags(solutions, "section")
+    .map(({ attrs }) => attrs.get("id"))
+    .filter(Boolean);
+  assert.deepEqual(sections.slice(0, 4), ["capabilities", "industries", "integrations", "deployments"]);
+
+  const links = new Set(anchors(solutions).map(({ href }) => href));
+  assert.ok(links.has("https://demo.wizardgang.ai/demos"), "Capabilities must link to the full demo workbench");
+  for (const id of ["d1", "r2", "rest", "graphql", "webhooks", "identity", "mcp", "edge", "workers", "durable-objects", "accessibility", "i18n"]) {
+    assert.ok(links.has(`https://demo.wizardgang.ai/demos#${id}`), `Capabilities must link to the ${id} demo`);
+  }
+  assert.ok(links.has("https://demo.wizardgang.ai/assurance"));
+  assert.ok(links.has("https://demo.wizardgang.ai/security"));
+});
+
+test("the Projects index introduces each case study and its available live demo", async () => {
+  const index = await readDist("projects/index.html");
+  requireText(index, ["Projects", "SharkTank", "Hexframe", "YarReader"], "projects index");
+  for (const slug of PROJECT_SLUGS) {
+    assert.ok(anchorWithHref(index, `/projects/${slug}/`), `Projects index must link to ${slug}`);
+  }
+  for (const { live } of Object.values(PROJECT_LINKS)) {
+    if (live) assert.ok(anchorWithHref(index, live), `Projects index must link to live demo ${live}`);
+  }
 });
 
 

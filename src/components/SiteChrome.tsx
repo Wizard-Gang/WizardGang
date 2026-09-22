@@ -17,35 +17,30 @@ export function Navigation({ current, mobile = false, id }: NavigationProps) {
   return (
     <nav id={id} className={mobile ? "site-nav site-nav-mobile" : "site-nav site-nav-desktop"} aria-label={mobile ? "Primary mobile" : "Primary"}>
       {NAVIGATION_ITEMS.map((item) => {
+        const currentHere = current === item.key ? ("location" as const) : undefined;
         if (!("items" in item) || !item.items) {
-          return (
-            <a
-              key={item.href}
-              href={item.href}
-              aria-current={current === item.key ? "location" : undefined}
-            >
-              {item.label}
-            </a>
-          );
+          return <a key={item.href} href={item.href} aria-current={currentHere}>{item.label}</a>;
         }
-        /* A disclosure, not a scripted menu: it opens with the keyboard and
-           without JavaScript, and every destination is a real link underneath. */
+        /* The label is a real link to the section, and the menu opens on hover or
+           focus. No script: :hover and :focus-within do the work, so a keyboard
+           reaches every destination by tabbing, and a click goes to the section
+           itself rather than only toggling something open. */
         return (
-          <details className="nav-menu" key={item.key}>
-            <summary aria-current={current === item.key ? "location" : undefined}>
+          <div className="nav-item" key={item.key}>
+            <a className="nav-item-label" href={item.href} aria-current={currentHere}>
               {item.label}
               <span className="nav-menu-caret" aria-hidden="true">
                 <svg viewBox="0 0 16 16" focusable="false"><path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </span>
-            </summary>
-            <ul>
+            </a>
+            <ul className="nav-item-menu" aria-label={`${item.label} sections`}>
               {item.items.map((entry) => (
                 <li key={entry.href}>
                   <a href={entry.href} aria-label={entry.accessibleName}>{entry.label}</a>
                 </li>
               ))}
             </ul>
-          </details>
+          </div>
         );
       })}
     </nav>

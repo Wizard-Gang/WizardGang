@@ -76,6 +76,7 @@ test("README documents the current entry points and acceptance gate", async () =
   // The canonical pages, and nothing a retired structure left behind.
   for (const route of [
     "/solutions/",
+    "/projects/",
     "/projects/sharktank/",
     "/projects/hexframe/",
     "/projects/yarreader/",
@@ -110,7 +111,7 @@ test("information architecture documents current company ownership and static-fi
   assert.match(ia, /none of them were ever\npages on this site/, "the surviving redirects must be justified");
   assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
   assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
-  assert.match(ia, /disclosure menus/, "the menu-over-index-page decision must be documented");
+  assert.match(ia, /menus that open on hover or keyboard focus/, "the navigation behavior must be documented");
   assert.match(ia, /at most one preview runs at a time/, "the preview motion contract must be documented");
   assert.match(ia, /employment rather than WizardGang client work/, "the attribution boundary must be documented where the evidence lives");
   assert.match(ia, /zero horizontal overflow/, "the 200% text contract must be documented");

@@ -1795,29 +1795,18 @@ body:has(#reading-layout:checked) :where(.site-main,.case-main) p + p {
  */
 html:has(#text-size-200:checked) { font-size: 200%; }
 
-html:has(#text-size-200:checked) :where(h1, h2, h3, .work-name, .outro-mail) {
+html:has(#text-size-200:checked) :where(h1,h2,h3,.work-name,.outro-mail) {
   overflow-wrap: anywhere;
   text-wrap: normal;
 }
 
 /* Every rem-tracked grid becomes a single column. */
-html:has(#text-size-200:checked) :where(
-  .work-summary,
-  .evidence-groups,
-  .deployment-wall,
-  .role-timeline li,
-  .work-facts,
-  .case-section,
-  .architecture,
-  .built-list,
-  .skill-groups,
-  .service-packages
-) {
-  grid-template-columns: 1fr;
+html:has(#text-size-200:checked) :where(.work-summary,.evidence-groups,.deployment-wall,.role-timeline li,.work-facts,.case-section,.architecture,.built-list,.skill-groups,.service-packages) {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* Rows that pair a label with an action stack instead. */
-html:has(#text-size-200:checked) :where(.site-header, .site-footer, .section-label, .section-panel > summary, .work-actions, .work-jump ul) {
+html:has(#text-size-200:checked) :where(.site-header,.site-footer,.section-label,.work-actions,.work-jump ul) {
   align-items: flex-start;
   flex-direction: column;
 }
@@ -1834,7 +1823,7 @@ html:has(#text-size-200:checked) .role-timeline li { gap: .35rem; }
 
 /* The two overlay panels are anchored to a header that is now much taller, so
    they stop floating and flow in place where they cannot be pushed off-screen. */
-html:has(#text-size-200:checked) :where(.nav-menu > ul, .settings-toolbar) {
+html:has(#text-size-200:checked) :where(.settings-toolbar) {
   position: static;
   width: 100%;
   min-width: 0;
@@ -1844,13 +1833,13 @@ html:has(#text-size-200:checked) :where(.nav-menu > ul, .settings-toolbar) {
 html:has(#text-size-200:checked) .settings-toolbar { align-items: stretch; }
 
 /* Nothing may force a horizontal scrollbar. */
-html:has(#text-size-200:checked) :where(.work-tags, .evidence-inline, .tags, .work-jump ul) { max-width: 100%; }
-html:has(#text-size-200:checked) :where(.work-tags > span, .evidence-inline li, .tags li) { white-space: normal; }
+html:has(#text-size-200:checked) :where(.work-tags,.evidence-inline,.tags,.work-jump ul) { max-width: 100%; }
+html:has(#text-size-200:checked) :where(.work-tags > span,.evidence-inline li,.tags li) { white-space: normal; }
 
 /* The product previews keep their own proportions; only their densest grids relax. */
 /* Grid children default to min-content width, so a wide preview grid would
    refuse to shrink. */
-html:has(#text-size-200:checked) :where(.project-visual, .project-visual > *, .lab-timeline, .lab-stage) { min-width: 0; }
+html:has(#text-size-200:checked) :where(.project-visual,.project-visual > *,.lab-timeline,.lab-stage) { min-width: 0; }
 
 /* The architecture connector hangs at right: -.9rem, which is -28.8px once the
    root doubles — enough to push the page sideways. The narrow breakpoint already
@@ -1897,7 +1886,7 @@ html:has(#text-size-200:checked) .yar-body span {
   text-transform: uppercase;
 }
 
-.work { padding-bottom: var(--section-y); border-top: 1px solid var(--line-soft); }
+.work { padding-bottom: var(--space-7); }
 
 .work-row { border-bottom: 1px solid var(--line-soft); }
 
@@ -2051,10 +2040,10 @@ html:has(#text-size-200:checked) .yar-body span {
 .work-number { color: var(--acid); }
 
 /* ---------------------------------------------------------------------------
-   The five canonical pages.
+   The canonical pages.
    --------------------------------------------------------------------------- */
 
-.work-jump { margin-bottom: var(--section-y); }
+.work-jump { margin-bottom: var(--space-5); }
 .work-jump ul { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; }
 
 .work-jump a {
@@ -2178,62 +2167,8 @@ html:has(#text-size-200:checked) .yar-body span {
    Primary navigation menus and the Solutions evidence pages.
    --------------------------------------------------------------------------- */
 
-.nav-menu { position: relative; }
-
-.nav-menu > summary {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  min-height: 44px;
-  color: var(--muted);
-  cursor: pointer;
-  font: 500 var(--text-micro)/1 var(--font-mono);
-  letter-spacing: var(--tracking-label);
-  list-style: none;
-  text-transform: uppercase;
-  transition: color .16s ease;
-}
-
-.nav-menu > summary::-webkit-details-marker { display: none; }
-.nav-menu > summary:hover,
-.nav-menu[open] > summary,
-.nav-menu > summary[aria-current] { color: var(--paper); }
-
 .nav-menu-caret { display: grid; place-items: center; width: .7rem; height: .7rem; }
 .nav-menu-caret svg { width: 100%; height: 100%; }
-.nav-menu[open] .nav-menu-caret { transform: rotate(180deg); }
-
-.nav-menu > ul {
-  position: absolute;
-  top: calc(100% + .55rem);
-  right: 0;
-  z-index: 10;
-  display: grid;
-  gap: .1rem;
-  min-width: 11rem;
-  margin: 0;
-  padding: .4rem;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  background: var(--surface-2);
-  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
-  list-style: none;
-}
-
-.nav-menu > ul a {
-  display: flex;
-  align-items: center;
-  min-height: 40px;
-  padding: 0 .7rem;
-  border-radius: var(--radius-sm);
-  color: var(--muted);
-  font: 500 var(--text-micro)/1 var(--font-mono);
-  letter-spacing: var(--tracking-label);
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.nav-menu > ul a:hover { background: var(--surface-3); color: var(--paper); }
 
 .evidence-count {
   margin: 0 0 var(--space-5);
@@ -2251,6 +2186,7 @@ html:has(#text-size-200:checked) .yar-body span {
 }
 
 .evidence-group {
+  min-width: 0;
   padding: var(--space-4);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
@@ -2295,12 +2231,6 @@ html:has(#text-size-200:checked) .yar-body span {
 }
 
 .deployment-wall a:hover { border-color: var(--acid); background: var(--surface-2); color: var(--paper); }
-
-@media (max-width: 760px) {
-  .nav-menu > ul { position: static; box-shadow: none; margin-top: .35rem; }
-  .nav-disclosure .site-nav .nav-menu { width: 100%; }
-  .nav-disclosure .site-nav .nav-menu > summary { justify-content: flex-end; padding: 0 .75rem; }
-}
 
 /* Preferences gear. One trigger, one panel. */
 .prefs { position: relative; }
@@ -2425,7 +2355,7 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
   .role-timeline li { grid-template-columns: 1fr; gap: .35rem; }
 }
 
-/* Section labels can carry a link to the full list. */
+/* Section headings and actions. */
 .section-label {
   display: flex;
   flex-wrap: wrap;
@@ -2444,7 +2374,7 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
 
 .section-label a:hover { text-decoration: underline; }
 
-.work + .work { padding-top: var(--space-6); }
+
 
 .work-actions { display: flex; flex-wrap: wrap; gap: var(--space-4); }
 .work-link-demo { color: var(--violet); }
@@ -2481,7 +2411,7 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
 }
 
 .solution-section {
-  padding: var(--section-y) 0 0;
+  padding: var(--space-6) 0 0;
   border-top: 1px solid var(--line-soft);
   scroll-margin-top: var(--space-5);
 }
@@ -2520,32 +2450,6 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
   .section-label { flex-direction: column; gap: .4rem; }
 }
 
-/* Section-level disclosure: industries and integrations read at a glance, so
-   the whole section collapses rather than each group inside it. */
-.section-blurb { max-width: 60ch; margin: calc(var(--space-5) * -1 + .35rem) 0 var(--space-4); color: var(--muted); }
-
-.section-panel { border-bottom: 1px solid var(--line-soft); }
-
-.section-panel > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: var(--space-3) 0;
-  color: var(--quiet);
-  cursor: pointer;
-  font: 500 var(--text-micro)/1 var(--font-mono);
-  letter-spacing: var(--tracking-label);
-  list-style: none;
-  text-transform: uppercase;
-}
-
-.section-panel > summary::-webkit-details-marker { display: none; }
-.section-panel > summary:hover { color: var(--paper); }
-.section-panel[open] > summary { color: var(--acid); }
-.section-panel[open] .work-disclose { transform: rotate(180deg); border-color: var(--acid); color: var(--acid); }
-.section-panel > .evidence-groups { padding: var(--space-3) 0 var(--space-5); }
-
 /* Vendor marks on the integration lists. */
 .evidence-vendors li { padding: 0; border-top: 1px solid var(--line-soft); }
 .evidence-vendors li:first-child { border-top: 0; }
@@ -2557,6 +2461,7 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
   gap: .55rem;
   min-height: 38px;
   color: var(--muted);
+  overflow-wrap: anywhere;
   text-decoration: none;
 }
 
@@ -2599,3 +2504,213 @@ body:has(#theme-light:checked) .settings-toolbar { background: var(--surface-2);
 .capability-proofs a:hover { border-color: var(--acid); background: var(--surface-2); }
 .capability-proofs strong { color: var(--paper); font-size: var(--text-small); font-weight: 600; }
 .capability-proofs span { color: var(--quiet); font: 500 var(--text-micro)/1.4 var(--font-mono); letter-spacing: .04em; }
+
+.capability-intro-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  margin: 0 0 var(--space-5);
+}
+
+.capability-intro-actions .evidence-count { margin: 0; }
+.capability-intro-actions a { color: var(--acid); font: 500 var(--text-micro)/1.4 var(--font-mono); text-decoration: none; text-transform: uppercase; }
+.capability-intro-actions a:hover { text-decoration: underline; }
+
+/* One section head for every home section: label, what it is, where the rest lives. */
+.section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: .35rem var(--space-4);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.section-head .section-label { display: block; margin: 0; padding: 0; border: 0; }
+
+.section-blurb {
+  grid-column: 1;
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+}
+
+.section-more {
+  grid-column: 2;
+  grid-row: 1;
+  color: var(--acid);
+  font: 500 var(--text-micro)/1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.section-more:hover { text-decoration: underline; }
+
+.home-outro .section-blurb { max-width: 54ch; margin-bottom: var(--space-4); }
+.outro-actions { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-5); }
+
+/* Primary navigation: the label links to the section, and its menu opens on
+   hover or keyboard focus. No script, and a click always goes somewhere. */
+.nav-item { position: relative; }
+
+.nav-item-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  color: var(--muted);
+  font: 500 var(--text-micro)/1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color .16s ease;
+}
+
+.nav-item:hover .nav-item-label,
+.nav-item:focus-within .nav-item-label,
+.nav-item-label[aria-current] { color: var(--paper); }
+
+.nav-menu-caret { transition: transform .18s ease; }
+.nav-item:hover .nav-menu-caret,
+.nav-item:focus-within .nav-menu-caret { transform: rotate(180deg); }
+
+.nav-item-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  display: grid;
+  gap: .1rem;
+  min-width: 12rem;
+  margin: 0;
+  padding: .4rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-.25rem);
+  transition: opacity .16s ease, transform .16s ease, visibility .16s;
+}
+
+.nav-item:hover .nav-item-menu,
+.nav-item:focus-within .nav-item-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.nav-item-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 .7rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font: 500 var(--text-micro)/1 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-item-menu a:hover,
+.nav-item-menu a:focus-visible { background: var(--surface-3); color: var(--paper); }
+
+/* The Projects index reuses the row language of the home list. */
+.index-list { display: grid; margin: 0; padding: 0 0 var(--section-y); list-style: none; }
+.index-list li { border-bottom: 1px solid var(--line-soft); padding-bottom: var(--space-3); }
+.index-list li:first-child { border-top: 1px solid var(--line-soft); }
+
+.index-entry {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) 0 var(--space-2);
+  text-decoration: none;
+}
+
+.index-number { color: var(--acid); font: 500 1rem/1 var(--font-mono); }
+.index-body { display: grid; gap: .35rem; }
+
+.index-name {
+  font-size: var(--text-h3);
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+  transition: color .16s ease;
+}
+
+.index-entry:hover .index-name { color: var(--acid); }
+
+.index-eyebrow {
+  color: var(--quiet);
+  font: 500 var(--text-micro)/1.35 var(--font-mono);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.index-detail { color: var(--muted); }
+.index-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+
+.index-tags > span {
+  padding: .28rem .6rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font: 500 var(--text-micro)/1.5 var(--font-mono);
+  white-space: nowrap;
+}
+
+.index-go { color: var(--muted); transition: transform .16s ease, color .16s ease; }
+.index-entry:hover .index-go { transform: translateX(3px); color: var(--acid); }
+
+.index-aside {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  margin-left: calc(2.5rem + var(--space-4));
+  color: var(--violet);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.index-aside:hover { text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .nav-item { width: 100%; }
+  .nav-item-menu {
+    position: static;
+    margin-top: .35rem;
+    opacity: 1;
+    visibility: visible;
+    box-shadow: none;
+    transform: none;
+  }
+  .nav-disclosure .site-nav .nav-item-label { justify-content: flex-end; padding: 0 .75rem; }
+}
+
+@media (max-width: 620px) {
+  .section-head { grid-template-columns: 1fr; }
+  .section-more { grid-column: 1; grid-row: auto; }
+  .index-entry { grid-template-columns: 2rem minmax(0, 1fr) auto; gap: var(--space-3); }
+  .index-aside { margin-left: 0; }
+}
+
+html:has(#text-size-200:checked) .nav-item-menu {
+  position: static;
+  width: 100%;
+  opacity: 1;
+  visibility: visible;
+  box-shadow: none;
+  transform: none;
+}
+
+html:has(#text-size-200:checked) :where(.section-head, .index-entry) { grid-template-columns: 1fr; }

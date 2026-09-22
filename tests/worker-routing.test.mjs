@@ -58,7 +58,7 @@ test("same-origin compatibility redirects terminate at a canonical asset route i
 
 test("routes this site used to serve are dead rather than redirected", async (t) => {
   const retired = [
-    "/work/", "/services/", "/contact/", "/projects/", "/glossary/", "/resume", "/professional",
+    "/work/", "/services/", "/contact/", "/glossary/", "/resume", "/professional",
     "/software/", "/software/projects/", "/software/sharktank/", "/software/integrations/",
     "/solutions/industries/", "/solutions/integrations/", "/solutions/deployments/",
     "/solutions/websites/", "/about/company/", "/about/team/", "/about/team/jacob/",
@@ -206,7 +206,7 @@ test("policy child routes permanently preserve the matching SharkTank path and q
 });
 
 test("ordinary canonical pages and static assets fall through untouched to ASSETS", async () => {
-  for (const [url, method] of [[`${SITE}/about/?source=wg037`, "GET"], [`${SITE}/assets/styles.css?v=current`, "HEAD"]]) {
+  for (const [url, method] of [[`${SITE}/about/?source=wg037`, "GET"], [`${SITE}/projects/`, "GET"], [`${SITE}/assets/styles.css?v=current`, "HEAD"]]) {
     const calls = [];
     const env = assetEnv(calls);
     const request = new Request(url, { method, headers: { "x-fallback-proof": "1" } });
