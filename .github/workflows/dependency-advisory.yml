@@ -1,0 +1,18 @@
+name: Dependency advisory
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * 1'
+permissions:
+  contents: read
+jobs:
+  advisory:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: npm install --global npm@11.19.1
+      - run: npm ci
+      - run: npm run security:dependency-advisories

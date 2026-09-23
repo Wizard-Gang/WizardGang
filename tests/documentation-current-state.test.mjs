@@ -159,6 +159,6 @@ test("root governance contract exists and stays aligned with the active queue", 
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
   assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
 
-  assert.match(plan, /### WG-082 — \[TEST\] Commit pure GitHub repository-settings expectations/, "WG-082 must be the first remaining task");
-  assert.doesNotMatch(plan, /### WG-081 —/, "delivered WG-081 must be removed from the active plan");
+  assert.match(plan, /### WG-085 — \[BUILD\] Make release identity reproducible/, "WG-085 must be the first remaining task");
+  assert.doesNotMatch(plan, /### WG-084 —/, "delivered WG-084 must be removed from the active plan");
 });

@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-082; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-085; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,45 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-082 — [TEST] Commit pure GitHub repository-settings expectations
-
-- Dependency: WG-081 merged.
-- Why: Provider behavior currently has no committed source of truth.
-- Scope: Add `config/github-repository-settings.json` plus credential-free comparison logic and tests.
-- Expected state:
-  - default branch `main`;
-  - squash merge enabled;
-  - merge commits disabled;
-  - rebase merges disabled;
-  - merged branches deleted automatically;
-  - branch updates allowed;
-  - `main` requires pull requests and required CI;
-  - deletion and force/non-fast-forward changes blocked;
-  - `v*` tags cannot be updated or deleted.
-- Non-goals: Do not mutate GitHub settings in this task.
-- Acceptance: Pure tests fail on representative merge-policy, required-check, branch, or tag-ruleset drift.
-- Validation: Settings comparison tests; `npm run check`; `git diff --check`.
-
-### WG-083 — [BUILD] Run canonical acceptance on pull requests and main
-
-- Dependency: WG-082 merged.
-- Why: WizardGang currently has no GitHub Actions workflow.
-- Scope: Add `.github/workflows/ci.yml` for PRs targeting `main` and pushes to `main`. Check out the exact revision, resolve the committed Node/npm toolchain, run `npm ci`, and invoke canonical `npm run check` once. Validate controlled PR identity through a named CI boundary.
-- Security: Add the explicit registry-backed dependency-advisory gate required by the shared baseline while keeping credential-free repository acceptance distinct from live/provider checks.
-- Non-goals: No release, production deployment, or repository-settings mutation.
-- Acceptance: PR-head and merged-main CI exercise the same repository acceptance contract and expose stable required status contexts.
-- Validation: Workflow contract tests where practical; exact-head CI; merged-main CI; `npm run check`; `git diff --check`.
-
-### WG-084 — [OPS] Normalize live GitHub settings and branch hygiene
-
-- Dependency: WG-083 merged and stable CI status contexts exist.
-- Why: `main` is currently unprotected; merge, squash, and rebase are all enabled; merged-branch deletion is disabled; old WG branches remain.
-- Scope: Add documented provider-aware verify/apply commands, then reconcile live GitHub state to the committed settings authority. Enable squash-only controlled merges, automatic branch deletion, `main` protection, required CI, and immutable `v*` tag rules. Remove stale `wg-*` branches only after proving they contain no unmerged work.
-- Non-goals: Never delete an unmerged branch merely because it is old. Never weaken protection to simplify automation.
-- Acceptance: Read-only live verification exactly matches committed expectations. Historical merged branches are removed or any branch with unique work is explicitly retained and reported.
-- Blocker rule: If the available credential/provider cannot perform a required admin action, leave the task open and record the exact blocker rather than claiming parity.
-- Validation: Pure settings tests; live verification; `npm run check`; provider evidence; `git diff --check`.
 
 ### WG-085 — [BUILD] Make release identity reproducible
 

@@ -1,0 +1,44 @@
+name: CI
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Pin npm
+        run: npm install --global npm@11.19.1
+      - name: Install
+        run: npm ci
+      - name: Check exact revision
+        env:
+          PATCH_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PATCH_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: npm run check
+  change-id:
+    name: change-id
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Validate PR identity
+        run: node scripts/check-pr-identity.mjs

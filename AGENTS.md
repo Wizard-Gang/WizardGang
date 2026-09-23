@@ -59,7 +59,9 @@ Run focused tests appropriate to the change and run `git diff --check` before de
 
 Repository validation and provider evidence are separate facts. Do not claim that CI passed, a GitHub setting changed, a tag exists, a GitHub Release exists, production deployed, or a branch was deleted until authoritative provider state proves it.
 
-Canonical PR/main CI does not yet exist on current `main`; WG-083 owns that boundary. Historical WG-058/WG-059/WG-060 workflow runs are evidence of those historical changes only and must not be described as the current canonical CI path.
+`.github/workflows/ci.yml` runs credential-free `npm run check` on the exact PR head and merged `main`. Pull requests also require the `change-id` identity check. A separate scheduled or manually dispatched dependency-advisory workflow owns the network registry gate.
+
+`config/github-repository-settings.json` is the committed GitHub administration authority. `npm run test:github-settings` is pure; `npm run verify:github-settings` reads live state with `GH_ADMIN_TOKEN` or an authorized `GH_TOKEN`; `npm run apply:github-settings` is the explicit mutation command and independently re-reads the result. Neither token belongs in files, output, or `npm run check`.
 
 `npm run check:history` validates prospective first-parent WG identity, controlled records, and the active plan against the immutable pre-WG-078 history tip. `npm run check:patch-integrity` validates an explicit committed range when `PATCH_BASE_SHA` and `PATCH_HEAD_SHA` are supplied together. Both are part of credential-free `npm run check`.
 
@@ -82,13 +84,13 @@ Normal controlled delivery is:
 5. create one controlled commit;
 6. open the PR;
 7. re-fetch the exact PR head, current `main`, ahead/behind state, commit count, mergeability, reviews, and relevant provider settings;
-8. merge only the exact verified head;
-9. re-fetch merged `main` and confirm the task landed;
+8. squash only the exact validated head into one controlled commit on `main`;
+9. re-fetch merged `main`, confirm the one controlled commit and post-merge CI, and verify branch deletion;
 10. end with the next open task and a complete kickoff prompt.
 
-The desired steady state is one controlled result on `main` via squash-only merge. Until WG-084 applies provider enforcement, GitHub may still expose merge and rebase options. Treat those live options as provider drift, not policy; controlled delivery should use squash merge.
+The required provider policy permits only squash merges, requires current-with-main `verify` and `change-id`, blocks direct normal pushes, force pushes and branch deletion, and has zero bypass actors.
 
-Completed controlled branches should be removed automatically. Do not make the owner perform repetitive manual branch cleanup. Until WG-084 normalizes provider cleanup, report a retained merged branch truthfully and leave provider convergence to that task.
+Completed controlled branches are deleted automatically. Verify cleanup rather than asking the owner to perform it.
 
 ## Release authority
 
