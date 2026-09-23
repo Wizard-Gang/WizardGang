@@ -57,7 +57,7 @@ In short:
 - remove the delivered task from the active plan;
 - target one squash result on `main`.
 
-GitHub provider state is separate from local repository validation. A normal merged change is not a release, and a release is not a production deployment. Production is Cloudflare-only.
+GitHub provider state is separate from local repository validation. Use `npm run verify:github-settings` for read-only live verification and `npm run apply:github-settings` for authorized administration. Supply `GH_ADMIN_TOKEN` or an authorized `GH_TOKEN` only through the process environment. A normal merged change is not a release, and a release is not a production deployment. Production is Cloudflare-only.
 
 ## Security, ownership, and architecture
 
