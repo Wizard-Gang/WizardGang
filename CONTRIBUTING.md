@@ -10,7 +10,7 @@ Install the locked dependency graph:
 npm ci
 ```
 
-The exact shared Node/npm pin is not yet repository authority; WG-080 owns that normalization. Do not invent a version requirement before it lands.
+Use the committed shared toolchain before installing: Node `26.9.0` and npm `11.19.1`. `.node-version` and `packageManager` are the exact version authorities; `engines` plus `.npmrc` enforce the supported Node 26/npm 11 runtime boundary.
 
 Start the safe checkout-owned local environment:
 

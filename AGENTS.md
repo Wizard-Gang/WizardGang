@@ -61,7 +61,7 @@ Repository validation and provider evidence are separate facts. Do not claim tha
 
 Canonical PR/main CI does not yet exist on current `main`; WG-083 owns that boundary. Historical WG-058/WG-059/WG-060 workflow runs are evidence of those historical changes only and must not be described as the current canonical CI path.
 
-The exact Node/npm toolchain is not yet committed authority; WG-080 owns that normalization. Do not silently complete it in an earlier task.
+The committed repository toolchain authority is Node `26.9.0` with npm `11.19.1`. `.node-version`, `packageManager`, `engines`, `.npmrc`, and the reviewed `allowScripts` policy define the install/runtime boundary.
 
 ## Plan lifecycle
 
