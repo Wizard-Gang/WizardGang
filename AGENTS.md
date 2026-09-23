@@ -61,6 +61,8 @@ Repository validation and provider evidence are separate facts. Do not claim tha
 
 Canonical PR/main CI does not yet exist on current `main`; WG-083 owns that boundary. Historical WG-058/WG-059/WG-060 workflow runs are evidence of those historical changes only and must not be described as the current canonical CI path.
 
+`npm run check:history` validates prospective first-parent WG identity, controlled records, and the active plan against the immutable pre-WG-078 history tip. `npm run check:patch-integrity` validates an explicit committed range when `PATCH_BASE_SHA` and `PATCH_HEAD_SHA` are supplied together. Both are part of credential-free `npm run check`.
+
 The committed repository toolchain authority is Node `26.9.0` with npm `11.19.1`. `.node-version`, `packageManager`, `engines`, `.npmrc`, and the reviewed `allowScripts` policy define the install/runtime boundary.
 
 ## Plan lifecycle

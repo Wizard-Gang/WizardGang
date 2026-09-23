@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-081; the WG-078 planning delivery and WG-079 repository-contract delivery are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-082; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,15 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-081 — [BUILD] Enforce prospective controlled history and patch integrity
-
-- Dependency: WG-080 merged.
-- Why: WG IDs currently exist by convention but are not mechanically enforced.
-- Scope: Establish the pre-WG-078 history as immutable legacy history and validate prospective WG sequencing, controlled commit structure, active-plan lifecycle, and committed patch integrity. Add deterministic fixture tests and compose the credential-free portions into `npm run check`.
-- Non-goals: No rewriting old WG history and no provider-authenticated checks inside `check`.
-- Acceptance: Missing, duplicate, or out-of-sequence prospective WG identities, malformed controlled records, completed tasks retained in the active plan, and committed whitespace defects fail focused tests.
-- Validation: Focused validator tests; `npm run check`; `git diff --check`.
 
 ### WG-082 — [TEST] Commit pure GitHub repository-settings expectations
 
