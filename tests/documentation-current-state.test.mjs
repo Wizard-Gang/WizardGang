@@ -130,3 +130,35 @@ test("relative Markdown documentation links resolve", async () => {
     }
   }
 });
+
+
+test("root governance contract exists and stays aligned with the active queue", async () => {
+  for (const path of ["AGENTS.md", "CONTRIBUTING.md", "LICENSE.md", "implementation_plan.md"]) {
+    await assert.doesNotReject(access(resolve(root, path)), `${path} must exist`);
+  }
+
+  const agents = await source("AGENTS.md");
+  const contributing = await source("CONTRIBUTING.md");
+  const license = await source("LICENSE.md");
+  const plan = await source("implementation_plan.md");
+
+  assert.match(agents, /implementation_plan\.md/, "automation contract must name the active queue");
+  assert.match(agents, /first open task/i, "automation contract must define first-open-task selection");
+  assert.match(agents, /npm run check/, "automation contract must identify canonical acceptance");
+  assert.match(agents, /current\/future work only/i, "automation contract must define plan lifecycle semantics");
+  assert.match(agents, /Ordinary .* merges are \*\*not releases\*\*/i, "automation contract must separate normal merges from releases");
+  assert.match(agents, /Cloudflare-only/, "automation contract must keep production Cloudflare-only");
+  assert.match(agents, /wg-nnn-short-kebab-summary/, "automation contract must define controlled branch naming");
+
+  assert.match(contributing, /\[AGENTS\.md\]\(AGENTS\.md\)/, "contributor guide must point to the automation contract");
+  assert.match(contributing, /npm run check/, "contributor guide must identify canonical acceptance");
+  assert.match(contributing, /SECURITY\.md/, "contributor guide must point security reports to the security policy");
+  assert.match(contributing, /docs\/OWNERSHIP\.md/, "contributor guide must point to ownership authority");
+
+  assert.match(license, /No repository-wide open-source license is granted/i, "license boundary must not invent an open-source grant");
+  assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
+  assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
+
+  assert.match(plan, /### WG-080 — \[BUILD\] Pin the shared Node and npm toolchain/, "WG-080 must be the first remaining task");
+  assert.doesNotMatch(plan, /### WG-079 —/, "delivered WG-079 must be removed from the active plan");
+});

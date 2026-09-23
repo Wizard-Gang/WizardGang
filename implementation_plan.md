@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-079; the preceding WG-078 planning delivery establishes this queue and is retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-080; the WG-078 planning delivery and WG-079 repository-contract delivery are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,17 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-079 — [DOCS] Establish the controlled repository contract
-
-- Dependency: WG-078 merged.
-- Why: WizardGang lacks the root governance files required by the organization baseline.
-- Scope: Add `AGENTS.md`, `CONTRIBUTING.md`, and an explicit source/license/attribution boundary. Define the `WG-NNN` controlled-change contract, first-open-task selection, current/future-only plan semantics, branch/title/body conventions, squash-oriented delivery, exact-head validation, merge completion, and release/deploy authority.
-- Preserve: Existing `README.md`, `SECURITY.md`, product ownership documentation, current UI/runtime architecture, and Git history.
-- Non-goals: No provider mutation, runtime change, release, tag, or deployment.
-- Acceptance: A contributor or agent can determine the complete normal change workflow from current repository files without relying on old PRs or reconstructed history.
-- Validation: `npm run check`; documentation tests; `git diff --check`.
-- Authorities: WG-ARCH-001 §27, `README.md`, `SECURITY.md`, `docs/OWNERSHIP.md`.
 
 ### WG-080 — [BUILD] Pin the shared Node and npm toolchain
 
