@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-080; the WG-078 planning delivery and WG-079 repository-contract delivery are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-081; the WG-078 planning delivery and WG-079 repository-contract delivery are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,15 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-080 — [BUILD] Pin the shared Node and npm toolchain
-
-- Dependency: WG-079 merged.
-- Why: The repository currently has neither `.node-version` nor `packageManager`/engine authority.
-- Scope: Adopt the shared Node 26/npm 11 toolchain, targeting Node `26.9.0` and npm `11.19.1`; add `.node-version`, `packageManager`, `engines`, `.npmrc` with strict engine enforcement, and the minimum explicit install-script allowances required by the locked dependency graph. Align Node typings where necessary.
-- Non-goals: No unrelated dependency refresh or application behavior change.
-- Acceptance: Local and CI installs can prove the exact intended Node/npm pair before `npm ci`; unsupported runtimes fail rather than silently continuing.
-- Validation: Exact Node/npm checks; `npm ci`; `npm run check`; `git diff --check`.
 
 ### WG-081 — [BUILD] Enforce prospective controlled history and patch integrity
 
