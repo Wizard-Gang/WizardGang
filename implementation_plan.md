@@ -30,11 +30,38 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
+## Immediate provider recovery prerequisite — complete governed v1.1.0 production identity
+
+WG-090 successfully published immutable release identity but did not complete production deployment. This prerequisite is provider recovery, not a new product/change-management implementation task, and it must complete before WG-092 begins.
+
+Fresh observed release state after WG-090:
+
+- authoritative `main`: `f80370a1304bf66f9f1fa1d4fd6fa0557b045f15`;
+- annotated immutable tag `v1.1.0` resolves to that exact commit;
+- GitHub Release `v1.1.0` exists as published, non-draft, and non-prerelease;
+- CI #31 / run `36045572180` passed merged-main verification, release-tag reconciliation, exact-tag reproduction, and GitHub Release publication;
+- `deploy-production` failed before Wrangler could make a production request because the protected `production` environment supplied an empty `CLOUDFLARE_API_TOKEN`;
+- therefore no WG-090 Cloudflare production mutation, captured Worker Version ID, 100%-traffic provider proof, or public `wizardgang.ai/version.json` convergence evidence exists yet.
+
+Required recovery before WG-092:
+
+1. From an authorized operator context, create or rotate an active Cloudflare API token with the permissions required by the existing production Worker deployment contract. Verify Cloudflare reports the token active.
+2. Store that token only as the GitHub `production` environment secret named `CLOUDFLARE_API_TOKEN` for `Wizard-Gang/WizardGang`, and verify secret metadata exists without exposing the token value. The repository-owned discovery/rotation scripts may be used where an interactive authorized shell is available.
+3. Re-fetch authoritative `main`, `v1.1.0`, GitHub Release `v1.1.0`, the production environment boundary, and CI #31 before retrying. Do not move, delete, replace, or republish the existing tag or Release.
+4. Retry the governed CI release/deployment path for the same immutable `v1.1.0` state. Use GitHub's retry mechanism; if successful release/tag jobs are rerun, they must verify existing matching immutable state rather than rewrite it.
+5. Require the retried `deploy-production` job to deploy only the exact published `v1.1.0` checkout and capture Wrangler's structured Cloudflare Worker Version ID.
+6. Query Cloudflare with `wrangler deployments list --env production --json` and require the newest production deployment to route exactly 100% of traffic to that captured Worker Version ID.
+7. Require public `https://wizardgang.ai/version.json` to converge on release `v1.1.0` and commit `f80370a1304bf66f9f1fa1d4fd6fa0557b045f15`.
+8. Record only evidence that actually exists. If the retry fails after provider interaction begins, retrieve the complete exact failing job evidence first, preserve the immutable tag/Release/history, and correct forward.
+9. Consider this prerequisite complete only when the governed workflow is green through production deployment, provider traffic proof, and public identity proof. Remove this temporary prerequisite from the active plan when the next controlled planning/delivery change records that completion.
+
+Non-goals: no new version bump, replacement tag, replacement GitHub Release, arbitrary-checkout production deploy, alternate hosting provider, ruleset weakening, or WG-092 implementation as part of this recovery.
+
 ## Open tasks
 
 ### WG-092 — [OPS] Normalize shared package, workflow, and npm command contracts
 
-- Dependency: WG-090 delivered; portfolio planning policy WG-091 merged. Coordinate with the same normalization task in every public sibling repository.
+- Dependency: WG-090 delivered; the immediate governed v1.1.0 provider recovery prerequisite above is complete; portfolio planning policy WG-091 merged. Coordinate with the same normalization task in every public sibling repository.
 - Why: Shared versioned tooling, workflow behavior, and npm command meanings have drifted across the public repositories.
 - Scope: Inventory every public repository's direct and transitive shared npm packages, package manager, Node pin, lockfile, versioned vendor code, GitHub Action pins, workflow triggers/permissions/toolchain/install/check/advisory/identity/release/deploy steps, and npm scripts. Select one supported version for each shared vendor dependency or document a concrete compatibility exception. Align common scripts and YAML workflows to the same behavior for equivalent capabilities. Keep product-specific commands and explicit local-only/library/no-deploy boundaries. Reconcile AGENTS.md and the byte-identical CONTRIBUTING.md contract across the public set.
 - Non-goals: Do not add unused packages, a hosted runtime to a local-only product, or production deployment merely for parity. Do not rewrite published history or unrelated product behavior.
