@@ -6,7 +6,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-090; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-092; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -31,16 +31,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-090 — [OPS] Publish the first governed WizardGang.ai release
-
-- Dependency: WG-089 merged and live repository settings match committed authority.
-- Why: The standardized process is not proven until the repository uses it once end to end.
-- Scope: Make one controlled version-bump release change. The expected next release from the current `1.0.0` package line is `v1.1.0` unless intervening product scope justifies a different owner-approved SemVer.
-- Required path: version-bump PR → exact-head CI → squash merge → annotated tag → tagged-state reproduction → GitHub Release → production deploy → deployed identity verification.
-- Non-goals: No unrelated product changes in the release change.
-- Acceptance: GitHub shows the immutable annotated tag and GitHub Release, the release workflow is green, Cloudflare production was deployed only after publication, and live `version.json` identifies the same release and commit.
-- Validation: Full provider evidence plus the canonical repository and production checks above.
 
 ### WG-092 — [OPS] Normalize shared package, workflow, and npm command contracts
 

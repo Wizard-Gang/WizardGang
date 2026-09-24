@@ -1,6 +1,6 @@
 {
   "name": "wizardgang-site",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "packageManager": "npm@11.19.1",
@@ -11,7 +11,7 @@
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.3": true,
-    "workerd@1.20260828.1": true
+    "workerd@1.20260921.1": true
   },
   "description": "Static company site for WizardGang at wizardgang.ai.",
   "scripts": {
