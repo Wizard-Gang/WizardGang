@@ -159,8 +159,8 @@ test("root governance contract exists and stays aligned with the active queue", 
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
   assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
 
-  assert.match(plan, /WG-092 owns this forward-only recovery correction/, "WG-092 must own the governed release recovery");
   assert.match(plan, /### WG-094 — \[OPS\] Normalize shared package, workflow, and npm command contracts/, "WG-094 must remain queued after recovery");
+  assert.doesNotMatch(plan, /## Immediate provider recovery prerequisite/, "completed provider recovery must leave the active plan");
   assert.doesNotMatch(plan, /### WG-090 —/, "delivered WG-090 must be removed from the active plan");
   assert.doesNotMatch(plan, /### WG-089 —/, "delivered WG-089 must remain absent from the active plan");
   assert.doesNotMatch(plan, /### WG-088 —/, "delivered WG-088 must remain absent from the active plan");
