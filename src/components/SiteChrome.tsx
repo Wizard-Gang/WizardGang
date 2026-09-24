@@ -111,6 +111,7 @@ export function Preferences() {
 }
 
 export function SiteFooter({ build }: { build: BuildMetadata }) {
+  const buildLabel = build.commit === "development" ? build.commit : build.commit.slice(0, 12);
   return (
     <footer className="site-footer">
       <span>WizardGang · Software, systems &amp; integrations</span>
@@ -119,7 +120,7 @@ export function SiteFooter({ build }: { build: BuildMetadata }) {
         <a href={LINKEDIN}>LinkedIn <span aria-hidden="true">↗</span></a>
         <a href={GITHUB} aria-label="Visit WizardGang on GitHub">GitHub <span aria-hidden="true">↗</span></a>
       </span>
-      <span>WizardGang.ai · <a href="/version.json">Build {build.commit}</a></span>
+      <span>WizardGang.ai · <a href="/version.json">Build {buildLabel}</a></span>
     </footer>
   );
 }

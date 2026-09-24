@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 
 export interface BuildMetadata {
   product: string;
+  release: string;
   commit: string;
   builtAt: string;
 }

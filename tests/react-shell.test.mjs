@@ -86,7 +86,8 @@ test("build metadata remains visible in the React footer and version record", as
   assert.ok(footer);
   const buildLink = anchors(footer.inner).find((anchor) => anchor.href === "/version.json");
   assert.ok(buildLink);
-  assert.equal(textContent(buildLink.inner), `Build ${version.commit}`);
+  const buildLabel = version.commit === "development" ? version.commit : version.commit.slice(0, 12);
+  assert.equal(textContent(buildLink.inner), `Build ${buildLabel}`);
 });
 
 test("the static React document has no legacy body injection seam", async () => {

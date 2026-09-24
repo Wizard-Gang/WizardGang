@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-085; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-086; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,16 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-085 — [BUILD] Make release identity reproducible
-
-- Dependency: WG-084 merged.
-- Why: Current `version.json` records a commit and build timestamp but has no authoritative released SemVer identity.
-- Scope: Align build metadata with the shared release identity contract, including product, release/version, exact commit, and build time. Add an exact release-identity validator requiring semantic `vMAJOR.MINOR.PATCH`, matching `package.json` version, an annotated tag, and the tag resolving to the checked-out commit.
-- Local behavior: Ordinary development builds remain possible without pretending to be releases.
-- Non-goals: Do not create a tag, GitHub Release, or production deployment.
-- Acceptance: A mismatched package version, lightweight tag, wrong commit, malformed tag, or forged release build fails before publication.
-- Validation: Release-identity fixtures; production build; `npm run check`; `git diff --check`.
 
 ### WG-086 — [BUILD] Create immutable release tags from merged version changes
 
