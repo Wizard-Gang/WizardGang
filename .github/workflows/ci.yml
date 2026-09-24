@@ -4,6 +4,16 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing published immutable release to recover
+        required: true
+        type: string
+      expected_commit:
+        description: Exact accepted main commit of the release tag
+        required: true
+        type: string
 permissions:
   contents: read
 jobs:
@@ -77,15 +87,18 @@ jobs:
 
   release:
     name: release
-    needs: release-tag
-    if: github.event_name == 'push' && needs.release-tag.outputs.tag != ''
+    needs: [verify, release-tag]
+    if: >-
+      always() && needs.verify.result == 'success' &&
+      ((github.event_name == 'push' && needs.release-tag.result == 'success' && needs.release-tag.outputs.tag != '') ||
+       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-tag.outputs.tag }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -99,12 +112,19 @@ jobs:
         run: npm run check
       - name: Verify exact release identity
         env:
-          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
-        run: npm run verify:release-identity -- "$RELEASE_TAG"
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
+          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}
+        run: |
+          set -euo pipefail
+          npm run verify:release-identity -- "$RELEASE_TAG"
+          [[ "$EXPECTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+          git fetch origin refs/heads/main:refs/remotes/origin/main
+          git merge-base --is-ancestor "$EXPECTED_COMMIT" refs/remotes/origin/main
       - name: Publish or verify immutable GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -117,16 +137,22 @@ jobs:
           if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             verify_release
             echo "GitHub Release already matches immutable tag: $RELEASE_TAG"
-          else
+          elif [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
             gh release create "$RELEASE_TAG" --verify-tag --generate-notes --title "$RELEASE_TAG"
+          else
+            echo "::error::Recovery requires an existing published GitHub Release: $RELEASE_TAG"
+            exit 1
           fi
 
           verify_release
 
   deploy-production:
     name: deploy-production
-    needs: [release-tag, release]
-    if: github.event_name == 'push' && needs.release-tag.outputs.tag != ''
+    needs: [verify, release-tag, release]
+    if: >-
+      always() && needs.verify.result == 'success' && needs.release.result == 'success' &&
+      ((github.event_name == 'push' && needs.release-tag.result == 'success' && needs.release-tag.outputs.tag != '') ||
+       (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
     environment: production
     concurrency:
       group: wizardgang-production
@@ -137,7 +163,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.release-tag.outputs.tag }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
@@ -151,12 +177,19 @@ jobs:
         run: npm run check
       - name: Verify exact release identity
         env:
-          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
-        run: npm run verify:release-identity -- "$RELEASE_TAG"
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
+          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}
+        run: |
+          set -euo pipefail
+          npm run verify:release-identity -- "$RELEASE_TAG"
+          [[ "$EXPECTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT"
+          git fetch origin refs/heads/main:refs/remotes/origin/main
+          git merge-base --is-ancestor "$EXPECTED_COMMIT" refs/remotes/origin/main
       - name: Verify published GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
         shell: bash
         run: |
           set -euo pipefail
@@ -170,6 +203,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           WRANGLER_OUTPUT_FILE: ${{ runner.temp }}/wrangler-output.jsonl
+          WRANGLER_OUTPUT_FILE_PATH: ${{ runner.temp }}/wrangler-output.jsonl
         shell: bash
         run: |
           set -euo pipefail
@@ -189,8 +223,8 @@ jobs:
           node scripts/production-deployment-identity.mjs provider "$deployments" "$EXPECTED_VERSION_ID"
       - name: Verify public release identity
         env:
-          EXPECTED_RELEASE: ${{ needs.release-tag.outputs.tag }}
-          EXPECTED_COMMIT: ${{ github.sha }}
+          EXPECTED_RELEASE: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || needs.release-tag.outputs.tag }}
+          EXPECTED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.expected_commit || github.sha }}
         run: >-
           node scripts/production-deployment-identity.mjs public
           https://wizardgang.ai/version.json

@@ -90,7 +90,7 @@ test("canonical release publication precedes deployment, provider confirmation, 
   const deploy = jobBlock("deploy-production");
   assert.ok(release);
   assert.ok(deploy);
-  assert.match(deploy, /^    needs: \[release-tag, release\]$/m);
+  assert.match(deploy, /^    needs: \[verify, release-tag, release\]$/m);
 
   const providerRelease = deploy.indexOf("Verify published GitHub Release");
   const publish = deploy.indexOf("./node_modules/.bin/wrangler deploy --env production");
@@ -102,10 +102,11 @@ test("canonical release publication precedes deployment, provider confirmation, 
   assert.ok(provider > publish);
   assert.ok(publicIdentity > provider);
   assert.match(deploy, /WRANGLER_OUTPUT_FILE:/);
+  assert.match(deploy, /WRANGLER_OUTPUT_FILE_PATH:/);
   assert.match(deploy, /wrangler deployments list --env production --json/);
   assert.match(deploy, /EXPECTED_VERSION_ID: \$\{\{ steps\.deploy\.outputs\.version_id \}\}/);
-  assert.match(deploy, /EXPECTED_RELEASE: \$\{\{ needs\.release-tag\.outputs\.tag \}\}/);
-  assert.match(deploy, /EXPECTED_COMMIT: \$\{\{ github\.sha \}\}/);
+  assert.match(deploy, /EXPECTED_RELEASE: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}/);
+  assert.match(deploy, /EXPECTED_COMMIT: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.expected_commit \|\| github\.sha \}\}/);
   assert.match(release, /gh release create/);
   assert.doesNotMatch(release, /wrangler deploy/);
 });

@@ -158,10 +158,12 @@ test("canonical CI hands only the exact reconciled tag to release publication", 
   assert.match(tagging, /git cat-file -t "refs\/tags\/\$tag"/);
   assert.match(tagging, /git rev-parse "refs\/tags\/\$tag\^\{commit\}"/);
   assert.match(tagging, /echo "tag=\$tag" >> "\$GITHUB_OUTPUT"/);
-  assert.match(release, /^    needs: release-tag$/m);
+  assert.match(release, /^    needs: \[verify, release-tag\]$/m);
+  assert.match(release, /needs\.verify\.result == 'success'/);
   assert.match(release, /needs\.release-tag\.outputs\.tag != ''/);
+  assert.match(release, /github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
   assert.match(release, /^      contents: write$/m);
-  assert.match(release, /ref: \$\{\{ needs\.release-tag\.outputs\.tag \}\}/);
+  assert.match(release, /ref: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}/);
   assert.match(release, /fetch-depth: 0/);
 });
 
@@ -179,6 +181,8 @@ test("release publication reproduces and verifies the exact tagged state before 
   assert.match(release, /node-version-file: \.node-version/);
   assert.match(release, /npm install --global npm@11\.19\.1/);
   assert.match(release, /GH_TOKEN: \$\{\{ github\.token \}\}/);
+  assert.match(release, /git merge-base --is-ancestor "\$EXPECTED_COMMIT" refs\/remotes\/origin\/main/);
+  assert.match(release, /Recovery requires an existing published GitHub Release/);
   assert.doesNotMatch(release, /deploy:production|wrangler deploy/);
 });
 
