@@ -6,7 +6,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-088; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-089; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -31,16 +31,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-088 — [OPS] Deploy production only from accepted release state
-
-- Dependency: WG-087 merged.
-- Why: `npm run deploy:production` can currently publish whatever checkout invoked it.
-- Scope: Make production deployment reachable only after successful release publication. Deploy the exact annotated/released tag through the protected `production` environment with Cloudflare Wrangler. Preserve staging and safe dry-run capabilities, but remove or fail-closed guard any arbitrary-checkout path to production.
-- Concurrency: Production deployments serialize and do not cancel an in-progress deployment.
-- Non-goals: No alternative hosting platform and no deployment from arbitrary `main`.
-- Acceptance: An untagged checkout, mismatched release identity, or unpublished tag cannot deploy production.
-- Validation: Deployment-boundary tests; Wrangler dry run; `npm run check`; workflow validation.
 
 ### WG-089 — [TEST] Prove release and deployed identity end to end
 

@@ -125,7 +125,9 @@ Do not create, move, delete, or publish release tags or GitHub Releases outside 
 
 WizardGang.ai production is **Cloudflare-only**. Do not introduce another production host.
 
-Current `deploy:production` can still deploy an arbitrary checkout; that is an observed transitional capability, not final authority. WG-088 owns the fail-closed production boundary. Until then, ordinary controlled tasks do not deploy production unless their task explicitly says so.
+Canonical CI owns production deployment through the `deploy-production` job after the immutable GitHub Release has published successfully. That job depends on both `release-tag` and `release`, checks out the exact reconciled tag, re-runs the canonical check and exact release-identity verification, verifies the non-draft/non-prerelease GitHub Release, and only then invokes the pinned local Wrangler dependency.
+
+The job declares the protected `production` environment, reads `CLOUDFLARE_API_TOKEN` only from that environment/provider boundary, and serializes production deployment with `cancel-in-progress: false`. There is no checkout-owned `npm run deploy:production` command. Staging deployment and both staging/production Wrangler dry runs remain available; a dry run never publishes production.
 
 ## End-of-turn handoff
 
