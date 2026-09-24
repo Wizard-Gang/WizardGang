@@ -12,6 +12,7 @@ const sections = ["Change", "Reason", "Impact", "Risk", "Controls", "Validation"
 export function validateHistory(records, plan, pendingTask = null) {
   const errors = [];
   let expected = 78;
+  const earlyMaintenance = new Set();
   for (const record of records) {
     const match = title.exec(record.subject);
     if (!match) {
@@ -20,8 +21,13 @@ export function validateHistory(records, plan, pendingTask = null) {
     }
     const id = Number(match[1]);
     expected = consolidatedTransition.get(expected) ?? expected;
-    if (id !== expected) errors.push(`${record.sha}: expected WG-${String(expected).padStart(3, "0")}, found WG-${match[1]}`);
-    expected = id + 1;
+    while (earlyMaintenance.has(expected)) expected += 1;
+    if (/^Portfolio-Plan-Maintenance: true$/m.test(record.body) && id > expected) {
+      earlyMaintenance.add(id);
+    } else {
+      if (id !== expected) errors.push(`${record.sha}: expected WG-${String(expected).padStart(3, "0")}, found WG-${match[1]}`);
+      else expected += 1;
+    }
     if (id >= 80) {
       if (record.parents.length !== 1) errors.push(`WG-${match[1]}: expected one controlled commit parent`);
       for (const section of sections) {
@@ -34,7 +40,9 @@ export function validateHistory(records, plan, pendingTask = null) {
   if (pendingTask === expected && ids[0] === expected + 1) expected += 1;
   if (!ids.length) errors.push("active plan has no open WG tasks");
   ids.forEach((id, index) => {
-    if (id !== expected + index) errors.push(`active plan expected WG-${String(expected + index).padStart(3, "0")}, found WG-${String(id).padStart(3, "0")}`);
+    while (earlyMaintenance.has(expected)) expected += 1;
+    if (id !== expected) errors.push(`active plan expected WG-${String(expected).padStart(3, "0")}, found WG-${String(id).padStart(3, "0")}`);
+    expected += 1;
   });
   return errors;
 }

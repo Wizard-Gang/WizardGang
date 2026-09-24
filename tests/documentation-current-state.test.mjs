@@ -153,7 +153,7 @@ test("root governance contract exists and stays aligned with the active queue", 
   assert.match(contributing, /\[AGENTS\.md\]\(AGENTS\.md\)/, "contributor guide must point to the automation contract");
   assert.match(contributing, /npm run check/, "contributor guide must identify canonical acceptance");
   assert.match(contributing, /SECURITY\.md/, "contributor guide must point security reports to the security policy");
-  assert.match(contributing, /docs\/OWNERSHIP\.md/, "contributor guide must point to ownership authority");
+  assert.match(contributing, /Ownership is defined by AGENTS\.md/, "contributor guide must point to ownership authority");
 
   assert.match(license, /No repository-wide open-source license is granted/i, "license boundary must not invent an open-source grant");
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
