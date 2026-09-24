@@ -6,7 +6,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-089; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-090; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -31,15 +31,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-089 — [TEST] Prove release and deployed identity end to end
-
-- Dependency: WG-088 merged.
-- Why: Release identity and deployment evidence are distinct controls and both need regression protection.
-- Scope: Add focused tests for tag → reproduce → publish → deploy ordering and fail-closed production prerequisites. After Wrangler deployment, capture the deployed Cloudflare version, confirm it is serving production, then verify public `wizardgang.ai/version.json` reports the expected release and commit.
-- Non-goals: Do not turn workflow YAML wording into a brittle prose snapshot.
-- Acceptance: Publication cannot move after deployment, deployment cannot bypass release publication, and a wrong production release/commit fails verification.
-- Validation: Focused release/deploy tests; `npm run check`; authenticated Cloudflare deployment evidence; public identity check.
 
 ### WG-090 — [OPS] Publish the first governed WizardGang.ai release
 

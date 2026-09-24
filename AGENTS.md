@@ -127,7 +127,7 @@ WizardGang.ai production is **Cloudflare-only**. Do not introduce another produc
 
 Canonical CI owns production deployment through the `deploy-production` job after the immutable GitHub Release has published successfully. That job depends on both `release-tag` and `release`, checks out the exact reconciled tag, re-runs the canonical check and exact release-identity verification, verifies the non-draft/non-prerelease GitHub Release, and only then invokes the pinned local Wrangler dependency.
 
-The job declares the protected `production` environment, reads `CLOUDFLARE_API_TOKEN` only from that environment/provider boundary, and serializes production deployment with `cancel-in-progress: false`. There is no checkout-owned `npm run deploy:production` command. Staging deployment and both staging/production Wrangler dry runs remain available; a dry run never publishes production.
+The job declares the protected `production` environment, reads `CLOUDFLARE_API_TOKEN` only from that environment/provider boundary, and serializes production deployment with `cancel-in-progress: false`. After Wrangler publishes, CI captures the structured Worker Version ID, requires the newest Cloudflare production deployment to route 100% of traffic to that exact version, and then requires public `wizardgang.ai/version.json` to converge on the same release tag and merged commit. There is no checkout-owned `npm run deploy:production` command. Staging deployment and both staging/production Wrangler dry runs remain available; a dry run never publishes production.
 
 ## End-of-turn handoff
 

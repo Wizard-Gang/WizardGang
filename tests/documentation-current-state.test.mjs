@@ -159,6 +159,7 @@ test("root governance contract exists and stays aligned with the active queue", 
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
   assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
 
-  assert.match(plan, /### WG-089 — \[TEST\] Prove release and deployed identity end to end/, "WG-089 must be the first remaining task");
-  assert.doesNotMatch(plan, /### WG-088 —/, "delivered WG-088 must be removed from the active plan");
+  assert.match(plan, /### WG-090 — \[OPS\] Publish the first governed WizardGang\.ai release/, "WG-090 must be the first remaining task after WG-089 retires");
+  assert.doesNotMatch(plan, /### WG-089 —/, "delivered WG-089 must be removed from the active plan");
+  assert.doesNotMatch(plan, /### WG-088 —/, "delivered WG-088 must remain absent from the active plan");
 });

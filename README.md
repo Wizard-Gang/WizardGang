@@ -160,4 +160,4 @@ npm run deploy:staging:dry-run
 npm run deploy:production:dry-run
 ```
 
-Staging can still be published explicitly with `npm run deploy:staging`. Production has no checkout-owned deploy command. Canonical CI waits for the exact immutable GitHub Release, re-verifies that released tag, enters the protected `production` environment, and then deploys that exact state with Wrangler. Production deployments serialize rather than cancelling an in-progress deploy.
+Staging can still be published explicitly with `npm run deploy:staging`. Production has no checkout-owned deploy command. Canonical CI waits for the exact immutable GitHub Release, re-verifies that released tag, enters the protected `production` environment, and then deploys that exact state with Wrangler. It records Wrangler's structured Worker Version ID, verifies Cloudflare is serving that version at 100% of production traffic, and requires public `version.json` to report the same release and commit. Production deployments serialize rather than cancelling an in-progress deploy.
