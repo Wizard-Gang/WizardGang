@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-086; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-087; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,16 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-086 — [BUILD] Create immutable release tags from merged version changes
-
-- Dependency: WG-085 merged.
-- Why: Release initiation should use the normal controlled PR/merge path instead of requiring a separate manual tagging operation.
-- Scope: Add release automation that detects an accepted `package.json` version change on `main`, proves the version transition is intentional and unreleased, and creates the corresponding annotated `vX.Y.Z` tag on that exact merged commit.
-- Safety: Ordinary pushes to `main` without a version change create no tag. Reruns are idempotent. An existing tag pointing elsewhere is a hard failure and is never rewritten.
-- Non-goals: No production deployment yet.
-- Acceptance: A normal controlled version-bump PR can cause exactly one immutable annotated tag to be created after merge, with no manual workstation tagging step.
-- Validation: Tagging-contract tests; workflow validation; `npm run check`; controlled provider test where safe.
 
 ### WG-087 — [BUILD] Publish GitHub Releases from exact tagged state
 
