@@ -96,7 +96,9 @@ Completed controlled branches are deleted automatically. Verify cleanup rather t
 
 ## Release authority
 
-Canonical CI owns release-tag creation. Its `release-tag` job runs only for merged `main` after `verify` succeeds. `scripts/release-tag.mjs` compares the direct parent and merged commit versions in both `package.json` and `package-lock.json`; unchanged versions are a no-op. A strictly increasing exact SemVer transition may create one annotated `vX.Y.Z` tag on that exact merged commit. A matching existing annotated tag is idempotent; lightweight tags or tags pointing elsewhere fail closed and are never rewritten.
+Canonical CI owns release-tag creation and GitHub Release publication. Its `release-tag` job runs only for merged `main` after `verify` succeeds. `scripts/release-tag.mjs` compares the direct parent and merged commit versions in both `package.json` and `package-lock.json`; unchanged versions are a no-op. A strictly increasing exact SemVer transition may create one annotated `vX.Y.Z` tag on that exact merged commit. A matching existing annotated tag is idempotent; lightweight tags or tags pointing elsewhere fail closed and are never rewritten.
+
+When `release-tag` reports a release transition, `release-publish` checks out that exact annotated tag, reapplies the committed Node/npm toolchain, runs `npm ci` and `npm run check`, and validates tag/package/commit identity before publication. `scripts/release-publication.mjs` publishes with GitHub CLI `gh release create --verify-tag`; reruns verify an existing matching non-draft, non-prerelease Release and never rewrite it.
 
 Ordinary feature, fix, documentation, test, build, refactor, content, and process merges are **not releases**.
 

@@ -48,6 +48,8 @@ jobs:
     if: github.event_name == 'push'
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,4 +60,37 @@ jobs:
         with:
           node-version-file: .node-version
       - name: Create immutable release tag when version changes
+        id: tag
         run: node scripts/release-tag.mjs --before "${{ github.event.before }}" --after "$GITHUB_SHA" --push-origin
+  release-publish:
+    name: release-publish
+    needs: release-tag
+    if: github.event_name == 'push' && needs.release-tag.outputs.tag != ''
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact release tag
+        uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ needs.release-tag.outputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Pin npm
+        run: npm install --global npm@11.19.1
+      - name: Install exact tagged dependencies
+        run: npm ci
+      - name: Reproduce exact tagged acceptance
+        run: npm run check
+      - name: Verify release identity
+        env:
+          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+        run: npm run verify:release-identity -- "$RELEASE_TAG"
+      - name: Publish or verify GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+        run: node scripts/release-publication.mjs "$RELEASE_TAG"

@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { appendFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -139,6 +140,12 @@ export function reconcileReleaseTag({ cwd = process.cwd(), before, after, pushOr
   return { changed: true, tag, target: afterCommit, existing: false };
 }
 
+export function writeGitHubOutput(result, outputPath = process.env.GITHUB_OUTPUT) {
+  if (!outputPath) return;
+  const tag = result?.changed ? result.tag : "";
+  appendFileSync(outputPath, `tag=${tag}\n`, "utf8");
+}
+
 function parseArgs(args) {
   const options = { before: "", after: "", pushOrigin: false };
   for (let index = 0; index < args.length; index += 1) {
@@ -166,6 +173,7 @@ const invoked = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(im
 if (invoked) {
   try {
     const result = reconcileReleaseTag(parseArgs(process.argv.slice(2)));
+    writeGitHubOutput(result);
     if (!result.changed) console.log(`No package release version change at ${result.target}; no tag created.`);
     else if (result.existing) console.log(`Release tag already matches ${result.target}: ${result.tag}`);
     else console.log(`Created immutable release tag ${result.tag} at ${result.target}${process.argv.includes("--push-origin") ? " and pushed to origin" : ""}.`);

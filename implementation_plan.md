@@ -4,7 +4,7 @@ This is WizardGang.ai's current/future process-convergence wave under WG-ARCH-00
 
 The current company-site architecture, React/TypeScript presentation, route ownership, accessibility contracts, Cloudflare Worker boundary, and local-development lifecycle are already established. This wave does not reopen the landed frontend or information-architecture work. Its purpose is to bring repository governance, npm/toolchain use, controlled changes, CI, merge behavior, tagging, GitHub Releases, and Cloudflare production deployment onto the shared WizardGang delivery model.
 
-Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-087; completed tasks are retained only in Git/GitHub history.
+Existing history remains immutable and is not retroactively rewritten. The active queue begins at WG-088; completed tasks are retained only in Git/GitHub history.
 
 The target delivery path is:
 
@@ -29,17 +29,6 @@ A release is initiated through an ordinary controlled version-bump PR rather tha
 Production remains Cloudflare-only. No normalization task introduces another hosting or deployment provider.
 
 ## Open tasks
-
-### WG-087 — [BUILD] Publish GitHub Releases from exact tagged state
-
-- Dependency: WG-086 merged.
-- Why: GitHub Releases must become the historical release authority.
-- Scope: Reproduce the newly annotated tag with the committed toolchain, `npm ci`, and `npm run check`; validate exact tag/package/commit identity; then publish the GitHub Release with GitHub CLI using `gh release create --verify-tag`.
-- Ordering: Publication must succeed before any production deployment is eligible to run.
-- Retry behavior: A rerun must verify existing matching immutable release state rather than rewriting history.
-- Non-goals: No `CHANGELOG.md` or per-version Markdown archive.
-- Acceptance: Every published release corresponds to one immutable annotated tag, one exact commit, and the matching package version.
-- Validation: Release workflow tests; exact tagged reproduction; GitHub Release provider evidence.
 
 ### WG-088 — [OPS] Deploy production only from accepted release state
 

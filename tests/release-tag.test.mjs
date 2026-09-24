@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { reconcileReleaseTag } from "../scripts/release-tag.mjs";
+import { reconcileReleaseTag, writeGitHubOutput } from "../scripts/release-tag.mjs";
 
 function git(cwd, ...args) {
   return execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
@@ -125,6 +125,18 @@ test("downgrades and package-lock drift cannot create a release tag", () => {
   }
 });
 
+test("release-tag job output exposes only a semantic release transition", () => {
+  const root = mkdtempSync(join(tmpdir(), "wizardgang-release-output-"));
+  const output = join(root, "github-output");
+  try {
+    writeGitHubOutput({ changed: true, tag: "v1.1.0" }, output);
+    writeGitHubOutput({ changed: false, tag: "" }, output);
+    assert.equal(readFileSync(output, "utf8"), "tag=v1.1.0\ntag=\n");
+  } finally {
+    cleanup(root);
+  }
+});
+
 function jobBlock(workflow, jobName) {
   const start = new RegExp(`^  ${jobName}:\\s*$`, "m").exec(workflow);
   if (!start) return "";
@@ -133,15 +145,17 @@ function jobBlock(workflow, jobName) {
   return next ? after.slice(0, next.index) : after;
 }
 
-test("canonical CI tags only successful merged main and keeps publication/deploy out of WG-086", () => {
+test("canonical CI tags only successful merged main and hands the immutable tag to publication", () => {
   const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   const block = jobBlock(workflow, "release-tag");
   assert.ok(block, "CI must define release-tag job");
   assert.match(block, /^    needs: verify$/m);
   assert.match(block, /^    if: github\.event_name == 'push'$/m);
+  assert.match(block, /^      tag: \$\{\{ steps\.tag\.outputs\.tag \}\}$/m);
   assert.match(block, /^      contents: write$/m);
   assert.match(block, /fetch-depth: 0/);
   assert.match(block, /node-version-file: \.node-version/);
+  assert.match(block, /^        id: tag$/m);
   assert.match(block, /node scripts\/release-tag\.mjs --before "\$\{\{ github\.event\.before \}\}" --after "\$GITHUB_SHA" --push-origin/);
   assert.doesNotMatch(block, /gh release|deploy:production|wrangler deploy/);
 });
