@@ -48,6 +48,8 @@ jobs:
     if: github.event_name == 'push'
     permissions:
       contents: write
+    outputs:
+      tag: ${{ steps.release-tag.outputs.tag }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,4 +60,65 @@ jobs:
         with:
           node-version-file: .node-version
       - name: Create immutable release tag when version changes
-        run: node scripts/release-tag.mjs --before "${{ github.event.before }}" --after "$GITHUB_SHA" --push-origin
+        id: release-tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/release-tag.mjs --before "${{ github.event.before }}" --after "$GITHUB_SHA" --push-origin
+          version="$(node -p "require('./package.json').version")"
+          tag="v${version}"
+          if git show-ref --verify --quiet "refs/tags/$tag" \
+            && test "$(git cat-file -t "refs/tags/$tag")" = "tag" \
+            && test "$(git rev-parse "refs/tags/$tag^{commit}")" = "$GITHUB_SHA"; then
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    name: release
+    needs: release-tag
+    if: github.event_name == 'push' && needs.release-tag.outputs.tag != ''
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.release-tag.outputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - name: Pin npm
+        run: npm install --global npm@11.19.1
+      - name: Install exact tagged dependencies
+        run: npm ci
+      - name: Check exact tagged state
+        run: npm run check
+      - name: Verify exact release identity
+        env:
+          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+        run: npm run verify:release-identity -- "$RELEASE_TAG"
+      - name: Publish or verify immutable GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.release-tag.outputs.tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_release() {
+            test "$(gh release view "$RELEASE_TAG" --json tagName --jq '.tagName')" = "$RELEASE_TAG"
+            test "$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft')" = "false"
+            test "$(gh release view "$RELEASE_TAG" --json isPrerelease --jq '.isPrerelease')" = "false"
+          }
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            verify_release
+            echo "GitHub Release already matches immutable tag: $RELEASE_TAG"
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --generate-notes --title "$RELEASE_TAG"
+          fi
+
+          verify_release

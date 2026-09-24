@@ -133,7 +133,7 @@ function jobBlock(workflow, jobName) {
   return next ? after.slice(0, next.index) : after;
 }
 
-test("canonical CI tags only successful merged main and keeps publication/deploy out of WG-086", () => {
+test("canonical CI tags only successful merged main and keeps publication/deploy out of the tagging job", () => {
   const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
   const block = jobBlock(workflow, "release-tag");
   assert.ok(block, "CI must define release-tag job");
@@ -144,4 +144,52 @@ test("canonical CI tags only successful merged main and keeps publication/deploy
   assert.match(block, /node-version-file: \.node-version/);
   assert.match(block, /node scripts\/release-tag\.mjs --before "\$\{\{ github\.event\.before \}\}" --after "\$GITHUB_SHA" --push-origin/);
   assert.doesNotMatch(block, /gh release|deploy:production|wrangler deploy/);
+});
+
+test("canonical CI hands only the exact reconciled tag to release publication", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
+  const tagging = jobBlock(workflow, "release-tag");
+  const release = jobBlock(workflow, "release");
+  assert.ok(tagging, "CI must define release-tag job");
+  assert.ok(release, "CI must define release job");
+  assert.match(tagging, /^    outputs:\n      tag: \$\{\{ steps\.release-tag\.outputs\.tag \}\}$/m);
+  assert.match(tagging, /^        id: release-tag$/m);
+  assert.match(tagging, /git show-ref --verify --quiet "refs\/tags\/\$tag"/);
+  assert.match(tagging, /git cat-file -t "refs\/tags\/\$tag"/);
+  assert.match(tagging, /git rev-parse "refs\/tags\/\$tag\^\{commit\}"/);
+  assert.match(tagging, /echo "tag=\$tag" >> "\$GITHUB_OUTPUT"/);
+  assert.match(release, /^    needs: release-tag$/m);
+  assert.match(release, /needs\.release-tag\.outputs\.tag != ''/);
+  assert.match(release, /^      contents: write$/m);
+  assert.match(release, /ref: \$\{\{ needs\.release-tag\.outputs\.tag \}\}/);
+  assert.match(release, /fetch-depth: 0/);
+});
+
+test("release publication reproduces and verifies the exact tagged state before publishing", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
+  const release = jobBlock(workflow, "release");
+  const install = release.indexOf("npm ci");
+  const check = release.indexOf("npm run check");
+  const identity = release.indexOf('npm run verify:release-identity -- "$RELEASE_TAG"');
+  const publish = release.indexOf('gh release create "$RELEASE_TAG" --verify-tag --generate-notes --title "$RELEASE_TAG"');
+  assert.ok(install >= 0, "release must perform npm ci");
+  assert.ok(check > install, "release must run canonical check after npm ci");
+  assert.ok(identity > check, "release must verify exact tag/package/commit identity after reproduction");
+  assert.ok(publish > identity, "release publication must follow exact identity verification");
+  assert.match(release, /node-version-file: \.node-version/);
+  assert.match(release, /npm install --global npm@11\.19\.1/);
+  assert.match(release, /GH_TOKEN: \$\{\{ github\.token \}\}/);
+  assert.doesNotMatch(release, /deploy:production|wrangler deploy/);
+});
+
+test("release reruns verify matching immutable provider state instead of rewriting it", () => {
+  const workflow = readFileSync(new URL("../.github/workflows/ci.yml", import.meta.url), "utf8");
+  const release = jobBlock(workflow, "release");
+  const view = release.indexOf('if gh release view "$RELEASE_TAG"');
+  const create = release.indexOf('gh release create "$RELEASE_TAG" --verify-tag');
+  assert.ok(view >= 0 && create > view, "existing Release verification must precede create");
+  assert.match(release, /--json tagName --jq '\.tagName'/);
+  assert.match(release, /--json isDraft --jq '\.isDraft'/);
+  assert.match(release, /--json isPrerelease --jq '\.isPrerelease'/);
+  assert.doesNotMatch(release, /gh release (?:edit|delete|upload)/);
 });

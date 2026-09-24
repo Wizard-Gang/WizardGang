@@ -98,6 +98,8 @@ Completed controlled branches are deleted automatically. Verify cleanup rather t
 
 Canonical CI owns release-tag creation. Its `release-tag` job runs only for merged `main` after `verify` succeeds. `scripts/release-tag.mjs` compares the direct parent and merged commit versions in both `package.json` and `package-lock.json`; unchanged versions are a no-op. A strictly increasing exact SemVer transition may create one annotated `vX.Y.Z` tag on that exact merged commit. A matching existing annotated tag is idempotent; lightweight tags or tags pointing elsewhere fail closed and are never rewritten.
 
+After `release-tag` reconciles an exact tag on merged `main`, it exposes that tag to the dependent `release` job. `release` checks out that exact tag with full Git history, pins the committed Node/npm toolchain, runs `npm ci` and `npm run check`, verifies exact tag/package/commit identity, and publishes with `gh release create --verify-tag`. A rerun verifies an existing non-draft, non-prerelease GitHub Release for the same immutable tag instead of editing, deleting, or replacing it. The release job does not deploy production; WG-088 owns that boundary.
+
 Ordinary feature, fix, documentation, test, build, refactor, content, and process merges are **not releases**.
 
 The governed release path is:
