@@ -1,66 +1,19 @@
 # Contributing
 
-WizardGang.ai is a production company site. Keep changes narrow, current-state, and consistent with the repository contract in [AGENTS.md](AGENTS.md).
+Read [AGENTS.md](AGENTS.md) before changing a repository. It owns the repository's product boundaries, controlled change identity, validation details, and merge rules. Read the active implementation plan when present; its filename may be `implementation_plan.md` or `IMPLEMENTATION_PLAN.md`.
 
-## Install and local development
+## Work queue and plan updates
 
-Install the locked dependency graph:
+The first open plan task is the default next implementation task unless the owner explicitly changes priority. Keep existing open tasks in place when appending future work. A separately requested portfolio plan maintenance change may append or clarify future tasks while another task or pull request is in progress. Once the shared policy is established, that maintenance change edits only the active plan file and does not claim to deliver a queued task. The last task deletes the plan only when no later task remains.
 
-```bash
-npm ci
-```
+Before editing or merging, fetch current `main` and inspect open pull requests. Record the base commit and the plan's current contents. Immediately before merging, fetch again and compare the current `main` commit, exact pull request head, and plan against that recorded base. Rebase and reconcile any concurrent plan change rather than overwriting it. Merge only the current, mergeable head after required checks pass.
 
-Use the committed shared toolchain before installing: Node `26.9.0` and npm `11.19.1`. `.node-version` and `packageManager` are the exact version authorities; `engines` plus `.npmrc` enforce the supported Node 26/npm 11 runtime boundary.
+## Toolchain and commands
 
-Start the safe checkout-owned local environment:
+Use the exact Node version in `.node-version` and npm version in `package.json`'s `packageManager`; install from the committed lockfile with `npm ci`. `npm run check` is the canonical local repository acceptance command. Run the focused checks named by the active task and `git diff --check` as well. `build`, `test`, `typecheck`, and `dev` follow the repository's `package.json` and AGENTS.md; use only capabilities that repository actually has. Network dependency advisories, live GitHub settings verification, releases, and production deployment are separate operations with repository-specific prerequisites.
 
-```bash
-npm run dev
-```
+Shared dependencies and versioned vendor tooling should use one supported version across public repositories when those repositories consume them. GitHub Actions workflows and common npm script names should have equivalent behavior for equivalent capabilities. A library or local-only application does not acquire a hosted deployment merely for parity.
 
-The lifecycle builds the site, starts the local Vite/Cloudflare Worker processes, opens the local URL, and only cleans up processes proven to belong to this checkout.
+## Contribution and security boundaries
 
-## Acceptance and focused tests
-
-The canonical credential-free acceptance gate is:
-
-```bash
-npm run check
-```
-
-Useful focused checks include:
-
-```bash
-npm run test:docs
-npm run test:accessibility
-npm run test:frontend-authority
-npm run test:navigation
-npm run test:browser
-npm run test:dev
-```
-
-Run `git diff --check` and inspect the complete diff before opening a PR.
-
-For visual or interaction changes, verify the affected canonical routes, keyboard behavior, responsive behavior, text resizing, motion/reduced-motion behavior, and accessibility expectations in [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md). Do not fabricate visual evidence for documentation-only work.
-
-## Controlled changes
-
-Follow [AGENTS.md](AGENTS.md) for full automation semantics.
-
-In short:
-
-- take only the first open task from `implementation_plan.md`;
-- use `wg-nnn-short-kebab-summary`;
-- title the commit and PR as `[WG-NNN] [TYPE] Imperative summary`;
-- keep one controlled task per delivery;
-- record validation and evidence truthfully;
-- remove the delivered task from the active plan;
-- target one squash result on `main`.
-
-GitHub provider state is separate from local repository validation. Use `npm run verify:github-settings` for read-only live verification and `npm run apply:github-settings` for authorized administration. Supply `GH_ADMIN_TOKEN` or an authorized `GH_TOKEN` only through the process environment. A normal merged change is not a release, and a release is not a production deployment. Production is Cloudflare-only.
-
-## Security, ownership, and architecture
-
-Report vulnerabilities using [SECURITY.md](SECURITY.md); do not open public issues for unpatched security defects.
-
-Source/system ownership and the professional-record attribution boundary are documented in [docs/OWNERSHIP.md](docs/OWNERSHIP.md). Current route and frontend/runtime architecture are documented in [docs/INFORMATION-ARCHITECTURE.md](docs/INFORMATION-ARCHITECTURE.md). Source, font, and third-party mark licensing boundaries are documented in [LICENSE.md](LICENSE.md).
+Keep changes scoped to one controlled delivery unless the owner requests portfolio plan maintenance. Record validation and provider actions truthfully. Follow the repository's AGENTS.md for branch, commit, pull request, exact-head CI, and squash-merge requirements. Use [SECURITY.md](SECURITY.md) for security reports. Ownership is defined by AGENTS.md and its linked ownership policy where present.
