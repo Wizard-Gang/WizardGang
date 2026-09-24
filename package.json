@@ -18,7 +18,7 @@
     "build": "node scripts/build.mjs",
     "typecheck": "tsc --project tsconfig.json --noEmit",
     "check:frontend": "npm run typecheck && npm run build && node scripts/verify-react-shell.mjs",
-    "check": "npm run check:frontend && node scripts/verify.mjs && npm run test:github-settings && npm run check:history && npm run check:patch-integrity",
+    "check": "npm run check:frontend && node scripts/verify.mjs && npm run test:github-settings && npm run test:release-tag && npm run check:history && npm run check:patch-integrity",
     "test:github-settings": "node --test tests/github-settings.test.mjs",
     "verify:github-settings": "node scripts/verify-github-settings.mjs",
     "apply:github-settings": "node scripts/apply-github-settings.mjs",
@@ -40,7 +40,8 @@
     "test:accessibility": "node --test tests/accessibility-contract.test.mjs",
     "test:docs": "node --test tests/documentation-current-state.test.mjs",
     "test:frontend-authority": "node --test tests/frontend-authority.test.mjs",
-    "test:navigation": "node --test tests/navigation-authority.test.mjs"
+    "test:navigation": "node --test tests/navigation-authority.test.mjs",
+    "test:release-tag": "node --test tests/release-tag.test.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

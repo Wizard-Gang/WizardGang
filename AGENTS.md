@@ -96,6 +96,8 @@ Completed controlled branches are deleted automatically. Verify cleanup rather t
 
 ## Release authority
 
+Canonical CI owns release-tag creation. Its `release-tag` job runs only for merged `main` after `verify` succeeds. `scripts/release-tag.mjs` compares the direct parent and merged commit versions in both `package.json` and `package-lock.json`; unchanged versions are a no-op. A strictly increasing exact SemVer transition may create one annotated `vX.Y.Z` tag on that exact merged commit. A matching existing annotated tag is idempotent; lightweight tags or tags pointing elsewhere fail closed and are never rewritten.
+
 Ordinary feature, fix, documentation, test, build, refactor, content, and process merges are **not releases**.
 
 The governed release path is:

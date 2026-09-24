@@ -42,3 +42,20 @@ jobs:
           node-version-file: .node-version
       - name: Validate PR identity
         run: node scripts/check-pr-identity.mjs
+  release-tag:
+    name: release-tag
+    needs: verify
+    if: github.event_name == 'push'
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Create immutable release tag when version changes
+        run: node scripts/release-tag.mjs --before "${{ github.event.before }}" --after "$GITHUB_SHA" --push-origin
