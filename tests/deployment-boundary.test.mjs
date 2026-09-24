@@ -25,17 +25,21 @@ test("production deployment depends on successful release publication and exact 
   const deploy = jobBlock("deploy-production");
   assert.ok(release, "CI must define release publication");
   assert.ok(deploy, "CI must define production deployment");
-  assert.match(deploy, /^    needs: \[release-tag, release\]$/m);
+  assert.match(deploy, /^    needs: \[verify, release-tag, release\]$/m);
+  assert.match(deploy, /needs\.release\.result == 'success'/);
   assert.match(deploy, /needs\.release-tag\.outputs\.tag != ''/);
+  assert.match(deploy, /github\.event_name == 'workflow_dispatch' && github\.ref == 'refs\/heads\/main'/);
   assert.match(deploy, /^    environment: production$/m);
   assert.match(deploy, /^    concurrency:\n      group: wizardgang-production\n      cancel-in-progress: false$/m);
-  assert.match(deploy, /ref: \$\{\{ needs\.release-tag\.outputs\.tag \}\}/);
+  assert.match(deploy, /ref: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.release_tag \|\| needs\.release-tag\.outputs\.tag \}\}/);
   assert.match(deploy, /fetch-depth: 0/);
   assert.match(deploy, /npm ci/);
   assert.match(deploy, /npm run check/);
   assert.match(deploy, /npm run verify:release-identity -- "\$RELEASE_TAG"/);
+  assert.match(deploy, /test "\$\(git rev-parse HEAD\)" = "\$EXPECTED_COMMIT"/);
   assert.match(deploy, /GH_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(deploy, /CLOUDFLARE_API_TOKEN: \$\{\{ secrets\.CLOUDFLARE_API_TOKEN \}\}/);
+  assert.match(deploy, /WRANGLER_OUTPUT_FILE_PATH: \$\{\{ runner\.temp \}\}\/wrangler-output\.jsonl/);
   assert.doesNotMatch(release, /wrangler deploy|deploy-production/);
 });
 

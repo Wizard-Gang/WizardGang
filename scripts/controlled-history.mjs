@@ -37,7 +37,11 @@ export function validateHistory(records, plan, pendingTask = null) {
   }
   expected = consolidatedTransition.get(expected) ?? expected;
   const ids = [...plan.matchAll(/^### WG-(\d{3}) — \[([A-Z]+)\]/gm)].map((m) => Number(m[1]));
-  if (pendingTask === expected && ids[0] === expected + 1) expected += 1;
+  if (pendingTask === expected) {
+    let afterPending = expected + 1;
+    while (earlyMaintenance.has(afterPending)) afterPending += 1;
+    if (ids[0] === afterPending) expected = afterPending;
+  }
   if (!ids.length) errors.push("active plan has no open WG tasks");
   ids.forEach((id, index) => {
     while (earlyMaintenance.has(expected)) expected += 1;

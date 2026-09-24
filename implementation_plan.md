@@ -32,7 +32,7 @@ Production remains Cloudflare-only. No normalization task introduces another hos
 
 ## Immediate provider recovery prerequisite — complete governed v1.1.0 production identity
 
-WG-090 successfully published immutable release identity but did not complete production deployment. This prerequisite is provider recovery, not a new product/change-management implementation task, and it must complete before WG-092 begins.
+WG-090 successfully published immutable release identity. The first deploy lacked a Cloudflare token. After the owner supplied a token and approved the protected environment, CI attempt 2 deployed the exact release but failed to capture Wrangler's structured output file. WG-092 owns this forward-only recovery correction. The next implementation task, WG-094, begins only after a governed run completes all proof gates. WG-093 was delivered earlier as portfolio plan maintenance.
 
 Fresh observed release state after WG-090:
 
@@ -40,28 +40,25 @@ Fresh observed release state after WG-090:
 - annotated immutable tag `v1.1.0` resolves to that exact commit;
 - GitHub Release `v1.1.0` exists as published, non-draft, and non-prerelease;
 - CI #31 / run `36045572180` passed merged-main verification, release-tag reconciliation, exact-tag reproduction, and GitHub Release publication;
-- `deploy-production` failed before Wrangler could make a production request because the protected `production` environment supplied an empty `CLOUDFLARE_API_TOKEN`;
-- therefore no WG-090 Cloudflare production mutation, captured Worker Version ID, 100%-traffic provider proof, or public `wizardgang.ai/version.json` convergence evidence exists yet.
+- the owner set the `production` environment `CLOUDFLARE_API_TOKEN` secret and the environment now requires SouthernGentlemen review with only `main` allowed to deploy;
+- CI run `36045572180` attempt 2 deployed Worker Version ID `f30cbaea-0cea-4933-bc2f-bc3b623075ce`; Cloudflare reports it at 100% traffic and public `wizardgang.ai/version.json` reports `v1.1.0` and the exact tagged commit;
+- the job failed after deployment because the workflow set `WRANGLER_OUTPUT_FILE` but Wrangler requires `WRANGLER_OUTPUT_FILE_PATH` to create the structured output file. The job therefore did not capture its own Version ID or complete the automated provider/public proof steps.
 
-Required recovery before WG-092:
+Required recovery under WG-092, before WG-094:
 
-1. From an authorized operator context, create or rotate an active Cloudflare API token with the permissions required by the existing production Worker deployment contract. Verify Cloudflare reports the token active.
-2. Store that token only as the GitHub `production` environment secret named `CLOUDFLARE_API_TOKEN` for `Wizard-Gang/WizardGang`, and verify secret metadata exists without exposing the token value. The repository-owned discovery/rotation scripts may be used where an interactive authorized shell is available.
-3. Re-fetch authoritative `main`, `v1.1.0`, GitHub Release `v1.1.0`, the production environment boundary, and CI #31 before retrying. Do not move, delete, replace, or republish the existing tag or Release.
-4. Retry the governed CI release/deployment path for the same immutable `v1.1.0` state. Use GitHub's retry mechanism; if successful release/tag jobs are rerun, they must verify existing matching immutable state rather than rewrite it.
-5. Require the retried `deploy-production` job to deploy only the exact published `v1.1.0` checkout and capture Wrangler's structured Cloudflare Worker Version ID.
-6. Query Cloudflare with `wrangler deployments list --env production --json` and require the newest production deployment to route exactly 100% of traffic to that captured Worker Version ID.
-7. Require public `https://wizardgang.ai/version.json` to converge on release `v1.1.0` and commit `f80370a1304bf66f9f1fa1d4fd6fa0557b045f15`.
-8. Record only evidence that actually exists. If the retry fails after provider interaction begins, retrieve the complete exact failing job evidence first, preserve the immutable tag/Release/history, and correct forward.
-9. Consider this prerequisite complete only when the governed workflow is green through production deployment, provider traffic proof, and public identity proof. Remove this temporary prerequisite from the active plan when the next controlled planning/delivery change records that completion.
+1. Correct the Wrangler structured output file variable to `WRANGLER_OUTPUT_FILE_PATH` while retaining the parser's `WRANGLER_OUTPUT_FILE` path, and add a same-workflow `main` dispatch recovery route for the existing published release. Keep exact tag/expected commit/accepted-main ancestry checks and require a pre-existing published GitHub Release on recovery.
+2. Merge the controlled correction only after exact-head checks and live repository policy verification. Re-fetch `main`, `v1.1.0`, GitHub Release, and production environment state; do not move, delete, replace, or republish the tag or Release.
+3. Dispatch the governed CI recovery on `main` with `release_tag=v1.1.0` and `expected_commit=f80370a1304bf66f9f1fa1d4fd6fa0557b045f15`. Require owner approval at the protected production environment. The release job must verify the existing published Release, then the deploy job must use only the exact tag checkout.
+4. Require the deployment job to capture Wrangler's structured Worker Version ID, show the newest Cloudflare production deployment routes exactly 100% of traffic to it, and verify public `https://wizardgang.ai/version.json` reports `v1.1.0` at the exact tagged commit.
+5. Record only evidence that actually exists. If another run fails after provider interaction begins, inspect its complete failing job evidence first and correct forward without changing immutable history. Remove this temporary prerequisite from the active plan only after the governed recovery run is green through production and public proof.
 
-Non-goals: no new version bump, replacement tag, replacement GitHub Release, arbitrary-checkout production deploy, alternate hosting provider, ruleset weakening, or WG-092 implementation as part of this recovery.
+Non-goals: no new version bump, replacement tag, replacement GitHub Release, arbitrary-checkout production deploy, alternate hosting provider, ruleset weakening, or WG-094 implementation as part of this recovery.
 
 ## Open tasks
 
-### WG-092 — [OPS] Normalize shared package, workflow, and npm command contracts
+### WG-094 — [OPS] Normalize shared package, workflow, and npm command contracts
 
-- Dependency: WG-090 delivered; the immediate governed v1.1.0 provider recovery prerequisite above is complete; portfolio planning policy WG-091 merged. Coordinate with the same normalization task in every public sibling repository.
+- Dependency: WG-090 delivered; WG-092 governed v1.1.0 provider recovery above is complete; portfolio planning policy WG-091 and maintenance WG-093 merged. Coordinate with the same normalization task in every public sibling repository.
 - Why: Shared versioned tooling, workflow behavior, and npm command meanings have drifted across the public repositories.
 - Scope: Inventory every public repository's direct and transitive shared npm packages, package manager, Node pin, lockfile, versioned vendor code, GitHub Action pins, workflow triggers/permissions/toolchain/install/check/advisory/identity/release/deploy steps, and npm scripts. Select one supported version for each shared vendor dependency or document a concrete compatibility exception. Align common scripts and YAML workflows to the same behavior for equivalent capabilities. Keep product-specific commands and explicit local-only/library/no-deploy boundaries. Reconcile AGENTS.md and the byte-identical CONTRIBUTING.md contract across the public set.
 - Non-goals: Do not add unused packages, a hosted runtime to a local-only product, or production deployment merely for parity. Do not rewrite published history or unrelated product behavior.

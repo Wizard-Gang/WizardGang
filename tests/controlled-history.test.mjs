@@ -17,3 +17,13 @@ test("malformed controlled body or retained completed plan task fails", () => {
   assert.match(validateHistory([...records.slice(0, 2), { ...records[2], body: "" }], plan).join(" "), /missing Change/);
   assert.match(validateHistory(records, "### WG-080 — [BUILD] Done\n" ).join(" "), /expected WG-081/);
 });
+
+test("pending implementation task can precede an early plan-maintenance identity", () => {
+  const prior = [
+    ...records,
+    ...[81, 84, 85, 86, 87, 88, 89, 90, 91].map((n) => ({ sha: `sha${n}`, parents: ["parent"], subject: `[WG-${String(n).padStart(3, "0")}] [OPS] Deliver task`, body })),
+    { sha: "sha93", parents: ["parent"], subject: "[WG-093] [DOCS] Amend plan", body: `${body}\nPortfolio-Plan-Maintenance: true` },
+  ];
+  assert.deepEqual(validateHistory(prior, "### WG-094 — [OPS] Next\n", 92), []);
+  assert.match(validateHistory(prior, "### WG-094 — [OPS] Next\n", 91).join(" "), /expected WG-092/);
+});
