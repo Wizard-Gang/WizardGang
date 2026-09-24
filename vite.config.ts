@@ -1,4 +1,3 @@
-import { execFileSync } from "node:child_process";
 import { cp, mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -6,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 import type { BuildMetadata } from "./src/app/contracts";
+import { createBuildIdentity } from "./scripts/build-identity.mjs";
 import { sanitizeLocalHeadersText } from "./scripts/local-headers.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
@@ -93,15 +93,6 @@ async function publishStaticTree(sourceRoot: string, targetRoot: string): Promis
   }
 }
 
-function gitCommit(): string {
-  if (process.env.BUILD_COMMIT) return process.env.BUILD_COMMIT.slice(0, 12);
-  try {
-    return execFileSync("git", ["rev-parse", "--short=12", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
-  } catch {
-    return "development";
-  }
-}
-
 function staticSitePlugin(): Plugin {
   let generation = 0;
   let browserReferenceId = "";
@@ -153,11 +144,10 @@ function staticSitePlugin(): Plugin {
         sitemapPaths(): readonly string[];
       };
 
-      const build: BuildMetadata = {
-        product: "WizardGang",
-        commit: gitCommit(),
-        builtAt: new Date().toISOString()
-      };
+      const build: BuildMetadata = createBuildIdentity({
+        cwd: root,
+        product: "WizardGang"
+      });
 
       await rm(publishOut, { recursive: true, force: true });
       await mkdir(publishOut, { recursive: true });
@@ -202,7 +192,7 @@ function staticSitePlugin(): Plugin {
         // complete tree is staged first; files are then atomically replaced in-place
         // before stale files/directories are pruned.
         await publishStaticTree(publishOut, dist);
-        console.log(`Built ${pages.size} React-shell HTML pages at ${build.commit}.`);
+        console.log(`Built ${pages.size} React-shell HTML pages at ${build.commit} (${build.release}).`);
       } finally {
         await rm(publishOut, { recursive: true, force: true });
       }

@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import test from "node:test";
@@ -199,14 +200,34 @@ test("social preview behavior remains page-appropriate", async () => {
 
 test("build/version evidence is present and internally consistent", async () => {
   const version = JSON.parse(await readDist("version.json"));
+  const packageVersion = JSON.parse(await readRoot("package.json")).version;
   assert.equal(version.product, "WizardGang");
-  assert.match(version.commit, /^(?:[0-9a-f]{12}|development)$/);
+  assert.match(
+    version.release,
+    /^(?:0\.0\.0-dev|v(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*))(?:\+dirty)?$/,
+    "version.json must distinguish development from semantic release identity"
+  );
+  assert.match(version.commit, /^(?:[0-9a-f]{40}|development)$/);
   assert.ok(Number.isFinite(Date.parse(version.builtAt)), "version.json must contain an ISO build timestamp");
+
+  const releaseTag = version.release.replace(/\+dirty$/, "");
+  if (releaseTag.startsWith("v")) {
+    assert.equal(releaseTag, `v${packageVersion}`, "release identity must match package.json");
+  }
+
+  if (version.commit !== "development") {
+    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
+    const epoch = Number(execFileSync("git", ["show", "-s", "--format=%ct", "HEAD"], { cwd: root, encoding: "utf8" }).trim());
+    assert.equal(version.commit, head, "version.json must name the exact checked-out commit");
+    assert.equal(version.builtAt, new Date(epoch * 1000).toISOString(), "build time must derive from immutable commit metadata");
+  }
+
+  const buildLabel = version.commit === "development" ? version.commit : version.commit.slice(0, 12);
   for (const relative of canonicalFiles) {
     const html = await readDist(relative);
     const buildLink = anchorWithHref(html, "/version.json");
     assert.ok(buildLink, `${relative}: missing version evidence link`);
-    assert.match(textContent(buildLink.inner), /^Build (?:[0-9a-f]{12}|development)$/);
+    assert.equal(textContent(buildLink.inner), `Build ${buildLabel}`);
   }
 });
 

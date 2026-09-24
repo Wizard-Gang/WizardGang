@@ -22,6 +22,8 @@
     "test:github-settings": "node --test tests/github-settings.test.mjs",
     "verify:github-settings": "node scripts/verify-github-settings.mjs",
     "apply:github-settings": "node scripts/apply-github-settings.mjs",
+    "test:release-identity": "node --test tests/release-identity.test.mjs",
+    "verify:release-identity": "node scripts/release-identity.mjs",
     "check:history": "node scripts/check-controlled-history.mjs",
     "check:patch-integrity": "node scripts/check-patch-integrity.mjs",
     "test:history": "node --test tests/controlled-history.test.mjs",
