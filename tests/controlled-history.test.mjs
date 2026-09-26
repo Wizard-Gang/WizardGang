@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { validateHistory } from "../scripts/controlled-history.mjs";
+import { readFileSync } from "node:fs";
 
 const body = "Change: yes\nReason: yes\nImpact: yes\nRisk: Low\nControls: yes\nValidation: yes\nEvidence: yes\nSource: yes\nRelease/deployment effect: None.";
 const records = [78, 79, 80].map((n) => ({ sha: `sha${n}`, parents: ["parent"], subject: `[WG-${String(n).padStart(3, "0")}] [BUILD] Deliver task`, body }));
@@ -9,9 +10,10 @@ const plan = "### WG-081 — [BUILD] Current\n### WG-082 — [TEST] Next\n";
 test("sequential controlled records and active plan pass", () => {
   assert.deepEqual(validateHistory(records, plan), []);
 });
-test("the final task removes the active plan instead of leaving an empty placeholder", () => {
-  assert.deepEqual(validateHistory(records, null), []);
-  assert.match(validateHistory(records, "").join(" "), /active plan has no open WG tasks/);
+test("the final task leaves the shared permanent empty queue", () => {
+  assert.deepEqual(validateHistory(records, readFileSync("implementation_plan.md", "utf8")), []);
+  assert.match(validateHistory(records, null).join(" "), /must remain tracked/);
+  assert.match(validateHistory(records, "").join(" "), /shared permanent queue template/);
 });
 test("missing, duplicate, or out-of-sequence identities fail", () => {
   assert.match(validateHistory([records[0], records[2]], plan).join(" "), /expected WG-079/);
