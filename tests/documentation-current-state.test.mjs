@@ -132,15 +132,18 @@ test("relative Markdown documentation links resolve", async () => {
 });
 
 
-test("root governance contract exists and stays aligned with the active queue", async () => {
-  for (const path of ["AGENTS.md", "CONTRIBUTING.md", "LICENSE.md", "implementation_plan.md"]) {
+test("root governance contract exists and accepts retirement of the final queue", async () => {
+  for (const path of ["AGENTS.md", "CONTRIBUTING.md", "LICENSE.md"]) {
     await assert.doesNotReject(access(resolve(root, path)), `${path} must exist`);
   }
 
   const agents = await source("AGENTS.md");
   const contributing = await source("CONTRIBUTING.md");
   const license = await source("LICENSE.md");
-  const plan = await source("implementation_plan.md");
+  const plan = await source("implementation_plan.md").catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
 
   assert.match(agents, /implementation_plan\.md/, "automation contract must name the active queue");
   assert.match(agents, /first open task/i, "automation contract must define first-open-task selection");
@@ -159,9 +162,8 @@ test("root governance contract exists and stays aligned with the active queue", 
   assert.match(license, /SIL Open Font License 1\.1/, "license boundary must preserve the font license");
   assert.match(license, /third-party names and marks remain the property of their respective owners/i, "license boundary must preserve third-party mark ownership");
 
-  assert.match(plan, /### WG-094 — \[OPS\] Normalize shared package, workflow, and npm command contracts/, "WG-094 must remain queued after recovery");
-  assert.doesNotMatch(plan, /## Immediate provider recovery prerequisite/, "completed provider recovery must leave the active plan");
-  assert.doesNotMatch(plan, /### WG-090 —/, "delivered WG-090 must be removed from the active plan");
-  assert.doesNotMatch(plan, /### WG-089 —/, "delivered WG-089 must remain absent from the active plan");
-  assert.doesNotMatch(plan, /### WG-088 —/, "delivered WG-088 must remain absent from the active plan");
+  if (plan !== null) {
+    assert.match(plan, /^### WG-\d{3} — /m, "an active plan must have an open task");
+    assert.doesNotMatch(plan, /## Immediate provider recovery prerequisite/, "completed provider recovery must leave the active plan");
+  }
 });

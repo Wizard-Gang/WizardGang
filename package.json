@@ -3,15 +3,15 @@
   "version": "1.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "npm@11.19.1",
+  "packageManager": "npm@12.1.0",
   "engines": {
     "node": "26.x",
-    "npm": "11.x"
+    "npm": "12.x"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
     "fsevents@2.3.3": true,
-    "workerd@1.20260921.1": true
+    "workerd@1.20260925.1": true
   },
   "description": "Static company site for WizardGang at wizardgang.ai.",
   "scripts": {
@@ -27,7 +27,8 @@
     "check:history": "node scripts/check-controlled-history.mjs",
     "check:patch-integrity": "node scripts/check-patch-integrity.mjs",
     "test:history": "node --test tests/controlled-history.test.mjs",
-    "security:dependency-advisories": "npm audit --audit-level=high",
+    "audit:dependencies": "npm audit --audit-level=high",
+    "security:dependency-advisories": "npm run audit:dependencies",
     "test:dev": "node --test tests/dev-lifecycle.test.mjs",
     "secrets:cloudflare:discover": "bash scripts/discover-cloudflare-api-token-targets.sh",
     "secrets:cloudflare:rotate": "bash scripts/rotate-cloudflare-api-token.sh",
@@ -45,18 +46,18 @@
     "test:release-deployment": "node --test tests/release-deployment-identity.test.mjs"
   },
   "dependencies": {
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^26.6.2",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.1",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2",
-    "vite": "^8.3.0",
-    "wrangler": "^4.127.1"
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.6.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.1",
+    "wrangler": "4.141.0"
   }
 }

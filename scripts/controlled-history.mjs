@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 export const LEGACY_TIP = "029e80db654594e861d64db1574351bd9696f529";
 // The portfolio transition delivered the queued settings authority, CI, and live
@@ -36,13 +36,13 @@ export function validateHistory(records, plan, pendingTask = null) {
     }
   }
   expected = consolidatedTransition.get(expected) ?? expected;
-  const ids = [...plan.matchAll(/^### WG-(\d{3}) — \[([A-Z]+)\]/gm)].map((m) => Number(m[1]));
+  const ids = [...(plan ?? "").matchAll(/^### WG-(\d{3}) — \[([A-Z]+)\]/gm)].map((m) => Number(m[1]));
   if (pendingTask === expected) {
     let afterPending = expected + 1;
     while (earlyMaintenance.has(afterPending)) afterPending += 1;
     if (ids[0] === afterPending) expected = afterPending;
   }
-  if (!ids.length) errors.push("active plan has no open WG tasks");
+  if (!ids.length && plan !== null) errors.push("active plan has no open WG tasks");
   ids.forEach((id, index) => {
     while (earlyMaintenance.has(expected)) expected += 1;
     if (id !== expected) errors.push(`active plan expected WG-${String(expected).padStart(3, "0")}, found WG-${String(id).padStart(3, "0")}`);
@@ -62,5 +62,6 @@ export function readCurrentHistory() {
 export function validateCurrentHistory() {
   const branch = execFileSync("git", ["branch", "--show-current"], { encoding: "utf8" }).trim();
   const pending = /^wg-(\d{3})-/.exec(branch);
-  return validateHistory(readCurrentHistory(), readFileSync("implementation_plan.md", "utf8"), pending ? Number(pending[1]) : null);
+  const plan = existsSync("implementation_plan.md") ? readFileSync("implementation_plan.md", "utf8") : null;
+  return validateHistory(readCurrentHistory(), plan, pending ? Number(pending[1]) : null);
 }

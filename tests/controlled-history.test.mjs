@@ -9,6 +9,10 @@ const plan = "### WG-081 — [BUILD] Current\n### WG-082 — [TEST] Next\n";
 test("sequential controlled records and active plan pass", () => {
   assert.deepEqual(validateHistory(records, plan), []);
 });
+test("the final task removes the active plan instead of leaving an empty placeholder", () => {
+  assert.deepEqual(validateHistory(records, null), []);
+  assert.match(validateHistory(records, "").join(" "), /active plan has no open WG tasks/);
+});
 test("missing, duplicate, or out-of-sequence identities fail", () => {
   assert.match(validateHistory([records[0], records[2]], plan).join(" "), /expected WG-079/);
   assert.match(validateHistory([...records, records[2]], plan).join(" "), /expected WG-081/);

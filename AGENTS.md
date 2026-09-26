@@ -71,7 +71,7 @@ Repository validation and provider evidence are separate facts. Do not claim tha
 
 `npm run check:history` validates prospective first-parent WG identity, controlled records, and the active plan against the immutable pre-WG-078 history tip. `npm run check:patch-integrity` validates an explicit committed range when `PATCH_BASE_SHA` and `PATCH_HEAD_SHA` are supplied together. Both are part of credential-free `npm run check`.
 
-The committed repository toolchain authority is Node `26.9.0` with npm `11.19.1`. `.node-version`, `packageManager`, `engines`, `.npmrc`, and the reviewed `allowScripts` policy define the install/runtime boundary.
+The committed repository toolchain authority is Node `26.10.0` with npm `12.1.0`. `.node-version`, `packageManager`, `engines`, `.npmrc`, and the reviewed `allowScripts` policy define the install/runtime boundary.
 
 Build identity is derived from Git rather than caller-supplied commit text. `version.json` carries product, release identity, the full commit, and commit-derived build time. Untagged or dirty ordinary builds remain explicitly development/dirty. `npm run test:release-identity` exercises the fail-closed fixtures; `npm run verify:release-identity -- vMAJOR.MINOR.PATCH` accepts only an annotated semantic release tag that matches `package.json` and resolves to the checked-out commit. Exact release verification is intentionally separate from ordinary `npm run check` so an untagged development checkout remains valid.
 

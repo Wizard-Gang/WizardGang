@@ -16,9 +16,9 @@ test("shared Node and npm toolchain authority is explicit and strict", async () 
   const pkg = JSON.parse(await source("package.json"));
   const lock = JSON.parse(await source("package-lock.json"));
 
-  assert.equal(nodeVersion, "26.9.0");
-  assert.equal(pkg.packageManager, "npm@11.19.1");
-  assert.deepEqual(pkg.engines, { node: "26.x", npm: "11.x" });
+  assert.equal(nodeVersion, "26.10.0");
+  assert.equal(pkg.packageManager, "npm@12.1.0");
+  assert.deepEqual(pkg.engines, { node: "26.x", npm: "12.x" });
   assert.deepEqual(lock.packages[""].engines, pkg.engines);
 
   assert.match(npmrc, /^engine-strict=true$/m);
@@ -44,7 +44,7 @@ test("every locked install script is explicitly reviewed at its locked version",
   assert.deepEqual(reviewed, [
     "esbuild@0.28.1",
     "fsevents@2.3.3",
-    "workerd@1.20260921.1"
+    "workerd@1.20260925.1"
   ]);
   assert.deepEqual(scripted, reviewed);
 });
@@ -53,8 +53,8 @@ test("Node runtime typings align with the Node 26 toolchain", async () => {
   const pkg = JSON.parse(await source("package.json"));
   const lock = JSON.parse(await source("package-lock.json"));
 
-  assert.equal(pkg.devDependencies["@types/node"], "^26.6.2");
-  assert.equal(lock.packages[""].devDependencies["@types/node"], "^26.6.2");
-  assert.equal(lock.packages["node_modules/@types/node"].version, "26.6.2");
+  assert.equal(pkg.devDependencies["@types/node"], "26.6.3");
+  assert.equal(lock.packages[""].devDependencies["@types/node"], "26.6.3");
+  assert.equal(lock.packages["node_modules/@types/node"].version, "26.6.3");
   assert.equal(lock.packages["node_modules/undici-types"].version, "8.9.0");
 });
