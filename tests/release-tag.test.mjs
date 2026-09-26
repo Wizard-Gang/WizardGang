@@ -179,7 +179,7 @@ test("release publication reproduces and verifies the exact tagged state before 
   assert.ok(identity > check, "release must verify exact tag/package/commit identity after reproduction");
   assert.ok(publish > identity, "release publication must follow exact identity verification");
   assert.match(release, /node-version-file: \.node-version/);
-  assert.match(release, /npm install --global npm@11\.19\.1/);
+  assert.match(release, /npm install --global npm@12\.1\.0/);
   assert.match(release, /GH_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(release, /git merge-base --is-ancestor "\$EXPECTED_COMMIT" refs\/remotes\/origin\/main/);
   assert.match(release, /Recovery requires an existing published GitHub Release/);
