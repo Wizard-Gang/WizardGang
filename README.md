@@ -98,7 +98,7 @@ The authoritative repository acceptance gate is:
 npm run check
 ```
 
-It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, and security/header boundaries.
+It includes strict TypeScript checking, the production build, frontend-architecture authority, generated-page contracts, accessibility, browser behavior, project and solution ownership, Worker routing, local-development lifecycle, metadata, links, security/header boundaries, and bounded tracked-file and reachable-history credential scanning.
 
 Useful focused checks include:
 

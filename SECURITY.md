@@ -21,3 +21,9 @@ WizardGang.ai serves generated static HTML, CSS, a first-party browser module, p
 The browser architecture does not require inline application scripts or React hydration. First-party browser behavior is emitted as a Vite module from `src/browser/`.
 
 Automated checks, source review, dry-run/staging validation, versioned source, and rollback options reduce risk but do not guarantee that defects or incidents cannot occur.
+
+`npm run check` scans tracked files and reachable Git history for credential
+patterns without network access or token output. The bounded scanner permits
+the empty `.env.example` template, explicit `test-`/`fake-`/`example`
+placeholders, and source identifiers or regex syntax that are not credential
+values. Pure cases prove current and historical detection.
