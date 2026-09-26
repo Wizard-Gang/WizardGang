@@ -1,5 +1,8 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+
+const emptyPlanHash = "59cdf5f8622ee928364b5647474b3a83f502c949bde9562d0a53a33291b090d0";
 
 export const LEGACY_TIP = "029e80db654594e861d64db1574351bd9696f529";
 // The portfolio transition delivered the queued settings authority, CI, and live
@@ -42,7 +45,10 @@ export function validateHistory(records, plan, pendingTask = null) {
     while (earlyMaintenance.has(afterPending)) afterPending += 1;
     if (ids[0] === afterPending) expected = afterPending;
   }
-  if (!ids.length && plan !== null) errors.push("active plan has no open WG tasks");
+  if (plan === null) errors.push("implementation_plan.md must remain tracked");
+  else if (!ids.length && createHash("sha256").update(plan).digest("hex") !== emptyPlanHash) {
+    errors.push("empty implementation_plan.md must use the shared permanent queue template");
+  }
   ids.forEach((id, index) => {
     while (earlyMaintenance.has(expected)) expected += 1;
     if (id !== expected) errors.push(`active plan expected WG-${String(expected).padStart(3, "0")}, found WG-${String(id).padStart(3, "0")}`);

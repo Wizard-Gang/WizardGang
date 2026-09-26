@@ -82,6 +82,12 @@ If a requested port belongs to an unrelated process, startup fails rather than t
 
 Production security policy remains in `public/_headers`. Local development removes HSTS and `upgrade-insecure-requests` only from the generated `dist/_headers` copy; do not weaken `public/_headers` to make localhost work.
 
+## WizardGang-specific controlled work
+
+Use `WG-NNN` controlled IDs, branches named `wg-nnn-short-kebab-summary`, and `[WG-NNN] [TYPE] Imperative summary` for the commit and pull request. The required exact-head checks are `verify` and `change-id`. [Ownership](docs/OWNERSHIP.md), [information architecture](docs/INFORMATION-ARCHITECTURE.md), and the source authorities below govern site-specific changes. The first-parent history and committed queue checks run inside `npm run check`.
+
+Normal merges do not create releases. Production is Cloudflare-only and is reached only from an accepted immutable release tag after GitHub Release publication and the protected `production` environment. The exact release and production identity path is documented below; ordinary process work does not publish or deploy.
+
 ## Build and verify
 
 Build the complete static site:
