@@ -255,7 +255,8 @@ test("compact project actions keep destination-specific accessible names without
 });
 
 test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  const previewPages = { "index.html": 1, "projects/hexframe/index.html": 1 };
+  // The redesigned home has no previews; the legacy case study stays protected until WG-135.
+  const previewPages = { "index.html": 0, "projects/hexframe/index.html": 1 };
   for (const [relative, expected] of Object.entries(previewPages)) {
     const html = await readDist(relative);
     const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
