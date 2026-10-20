@@ -53,3 +53,53 @@ test("pending implementation task can precede an early plan-maintenance identity
   assert.deepEqual(validateHistory(prior, "### WG-094 — [OPS] Next\n", 92), []);
   assert.match(validateHistory(prior, "### WG-094 — [OPS] Next\n", 91).join(" "), /expected WG-092/);
 });
+
+test("WG-137 exact-SHA historic attestation covers all nine sections and nothing else", () => {
+  const immutable = {
+    sha: "9db8d2c91c352c9b0cc8f8da74633d253fed405d",
+    parents: ["a366da30c60a0893a8963ccce5f3e4ee8e5f73e2"],
+    subject: "[WG-137] [TEST] Verify the lean single-page public contract",
+    body: "Verified lean root-only public contract on exact-head CI, including pinned install/check, focused tests and deploy dry-run. Preserve WG-138; no release/version change/deployment.",
+  };
+  const headings = ["Change", "Reason", "Impact", "Risk", "Controls", "Validation", "Evidence", "Source", "Release/deployment effect"];
+  const impostors = [
+    { ...immutable, sha: "different-sha" },
+    { ...immutable, parents: ["different-parent"] },
+    { ...immutable, parents: ["a366da30c60a0893a8963ccce5f3e4ee8e5f73e2", "extra-parent"] },
+    { ...immutable, subject: "[WG-137] [TEST] Different task" },
+    { ...immutable, body: "Different merge message." },
+  ];
+  for (const section of headings) {
+    assert.equal(hasRequiredSection(immutable, section), true, section);
+    for (const impostor of impostors) {
+      assert.equal(hasRequiredSection(impostor, section), false, section + " must be bound to immutable commit identity");
+    }
+  }
+  assert.equal(hasRequiredSection(immutable, "Not a controlled section"), false);
+});
+
+test("WG-137 immutable attestation restores history without consuming reserved WG-138", () => {
+  const body = "Change: yes\nReason: yes\nImpact: yes\nRisk: Low\nControls: yes\nValidation: yes\nEvidence: yes\nSource: yes\nRelease/deployment effect: None.";
+  const prior = [78, 79, 80, 81, ...Array.from({ length: 53 }, (_, index) => index + 84)]
+    .map((id) => ({
+      sha: "sha" + id, parents: ["parent"],
+      subject: `[WG-${String(id).padStart(3, "0")}] [OPS] Prior task`,
+      body,
+    }));
+  const restored = {
+    sha: "9db8d2c91c352c9b0cc8f8da74633d253fed405d",
+    parents: ["a366da30c60a0893a8963ccce5f3e4ee8e5f73e2"],
+    subject: "[WG-137] [TEST] Verify the lean single-page public contract",
+    body: "Verified lean root-only public contract on exact-head CI, including pinned install/check, focused tests and deploy dry-run. Preserve WG-138; no release/version change/deployment.",
+  };
+  const recovery = {
+    sha: "sha139", parents: ["parent"],
+    subject: "[WG-139] [OPS] Attest immutable WG-137 controlled history",
+    body: body + "\nPortfolio-Plan-Maintenance: true",
+  };
+  const reserved = "### WG-138 — [RELEASE] Publish one-page refresh\n";
+  assert.deepEqual(validateHistory([...prior, restored], reserved), []);
+  assert.deepEqual(validateHistory([...prior, restored, recovery], reserved), []);
+  assert.match(validateHistory([...prior, restored, { ...recovery, body }], reserved).join(" "), /expected WG-138/);
+  assert.match(validateHistory([...prior, { ...restored, sha: "different-sha" }], reserved).join(" "), /missing Change/);
+});
