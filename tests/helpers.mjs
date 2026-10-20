@@ -7,29 +7,10 @@ export const dist = resolve(root, "dist");
 
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
-  ["solutions/index.html", "/solutions/"],
-  ["projects/index.html", "/projects/"],
-  ["projects/hexframe/index.html", "/projects/hexframe/"],
-  ["about/index.html", "/about/"],
   ["404.html", null]
 ]);
 
-export const SITEMAP_ROUTES = [
-  "/",
-  "/solutions/",
-  "/projects/",
-  "/projects/hexframe/",
-  "/about/"
-];
-
-export const PROJECT_SLUGS = ["hexframe"];
-
-export const PROJECT_LINKS = {
-  hexframe: {
-    source: "https://github.com/Wizard-Gang/Hexframe",
-    live: "https://hexframe.wizardgang.ai/play/"
-  }
-};
+export const SITEMAP_ROUTES = ["/"];
 
 export async function walk(directory, { ignore = new Set() } = {}) {
   const entries = await readdir(directory, { withFileTypes: true });

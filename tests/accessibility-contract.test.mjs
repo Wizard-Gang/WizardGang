@@ -11,22 +11,16 @@ import {
   textContent
 } from "./helpers.mjs";
 
-// Solutions and Projects link to their index pages and open their submenus.
-const navMenus = new Map([
-  ["Solutions", { href: "/solutions/", items: ["/solutions/#capabilities", "/solutions/#industries", "/solutions/#integrations", "/solutions/#deployments"] }],
-  ["Projects", { href: "/projects/", items: ["/projects/hexframe/"] }]
+// All navigation links move within the one canonical document.
+const navLinks = new Map([
+  ["Services", "/#services"],
+  ["Experience", "/#experience"],
+  ["About", "/#about"],
+  ["Contact", "/#contact"]
 ]);
-const navLinks = new Map([["About", "/about/"]]);
 
 function normalizedVisible(anchor) {
   return textContent(anchor.inner).replace(/[↗→]/g, "").replace(/\s+/g, " ").trim();
-}
-
-function currentNavDestination(relative) {
-  if (relative.startsWith("projects/")) return "projects";
-  if (relative.startsWith("solutions/")) return "solutions";
-  if (relative.startsWith("about/")) return "about";
-  return null;
 }
 
 function cssVariables(block) {
@@ -143,22 +137,12 @@ test("shared shell is protected by semantics rather than serialized markup", asy
         const link = anchors(primary.inner).find((anchor) => anchor.href === href && normalizedVisible(anchor) === name);
         assert.ok(link, `primary navigation missing ${name} -> ${href}`);
       }
-      for (const [name, entry] of navMenus) {
-        const item = tagBlocks(primary.inner, "div").find(({ attrs, inner }) =>
-          (attrs.get("class") || "").includes("nav-item") && inner.includes(`>${name}`));
-        assert.ok(item, `primary navigation missing the ${name} menu`);
-        const hrefs = anchors(item.inner).map((anchor) => anchor.href);
-        // The label is a real link to the section, then its children follow.
-        assert.deepEqual(hrefs, [entry.href, ...entry.items], `${name} menu destinations have drifted`);
-      }
-
-      // The current section is marked once, on the link or on the menu's summary.
-      const currentSection = currentNavDestination(relative);
-      const currentMarks = [...primary.inner.matchAll(/aria-current="location"/g)].length;
-      assert.equal(currentMarks, currentSection ? 1 : 0, `${relative} should mark ${currentSection ? "one" : "no"} current section`);
-
-      for (const retiredLabel of ["Work", "Services", "Contact", "Software", "Glossary", "GitHub"]) {
-        assert.ok(!anchors(primary.inner).some((anchor) => normalizedVisible(anchor) === retiredLabel), `primary navigation must not restore ${retiredLabel}`);
+      assert.doesNotMatch(primary.inner, /nav-item-menu|nav-menu-caret/, "single-page navigation must not expose submenus");
+      assert.equal([...primary.inner.matchAll(/aria-current="location"/g)].length, 0,
+        "path-based rendering must not claim that a scroll section is current");
+      for (const retiredLabel of ["Work", "Projects", "Solutions", "Software", "Glossary", "GitHub"]) {
+        assert.ok(!anchors(primary.inner).some(anchor => normalizedVisible(anchor) === retiredLabel),
+          `navigation must not restore ${retiredLabel}`);
       }
 
       const mobileToggle = tagBlocks(html, "button").find(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("nav-toggle"));
@@ -174,7 +158,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       assert.equal(mobile.attrs.get("aria-label"), "Primary mobile");
       assert.equal(mobile.attrs.has("hidden"), false, "static HTML keeps mobile navigation available without JavaScript");
       const mobileHrefs = new Set(anchors(mobile.inner).map((anchor) => anchor.href));
-      for (const href of [...navLinks.values(), ...[...navMenus.values()].flatMap((m) => [m.href, ...m.items])]) {
+      for (const href of navLinks.values()) {
         assert.ok(mobileHrefs.has(href), `mobile navigation missing ${href}`);
       }
 
@@ -254,21 +238,11 @@ test("compact project actions keep destination-specific accessible names without
   }
 });
 
-test("project previews remain excluded from the accessibility tree while useful descriptions stay outside them", async () => {
-  // The redesigned home has no previews; the legacy case study stays protected until WG-135.
-  const previewPages = { "index.html": 0, "projects/hexframe/index.html": 1 };
-  for (const [relative, expected] of Object.entries(previewPages)) {
-    const html = await readDist(relative);
-    const decorative = startTags(html, "div").filter(({ attrs }) => attrs.get("aria-hidden") === "true" && attrs.has("inert"));
-    assert.equal(decorative.length, expected, `${relative}: every preview must remain decorative and inert`);
-    for (const preview of decorative.filter(({ attrs }) => attrs.has("data-preview-id"))) {
-      assert.ok(["motion-controlled", "static"].includes(preview.attrs.get("data-preview-kind")), `${relative}: preview kind must be explicit`);
-      assert.ok(["product-recreation", "synthetic-demo"].includes(preview.attrs.get("data-preview-fixture")), `${relative}: preview fixture must be explicit`);
-    }
-  }
+test("the single-page document includes no animated product preview", async () => {
   const home = await readDist("index.html");
-  assert.doesNotMatch(home, /<animate(?:Transform)?\b/i, "SVG previews must not add uncontrolled SMIL motion");
-  assert.doesNotMatch(home, /<text\b/i, "decorative SVG previews must not duplicate text content");
+  assert.equal(startTags(home, "div").filter(({ attrs }) => attrs.has("data-preview-id")).length, 0);
+  assert.doesNotMatch(home, /<animate(?:Transform)?\b/i);
+  assert.doesNotMatch(home, /<text\b/i);
 });
 
 test("CSS exposes preference behavior, mobile open state, target sizing, and reduced motion", async () => {
@@ -331,11 +305,10 @@ test("TypeScript browser source preserves language and persisted display/motion 
   assert.match(script, /controls\.motion\.addEventListener\(["']change["'][\s\S]*motionExplicit\s*=\s*true/);
 });
 
-test("preview-motion documentation and browser help agree on play-by-default behavior", async () => {
-  const script = await readRoot("src/browser/translations.ts");
+test("accessibility documentation describes current single-page navigation", async () => {
   const record = await readRoot("docs/ACCESSIBILITY.md");
-  assert.match(script, /Project previews play by default; pause them with the Play previews control\./);
-  assert.match(record, /play-by-default preview motion/i);
-  assert.doesNotMatch(script, /paused[- ]by[- ]default|animations (?:are|están) pausad/i);
-  assert.doesNotMatch(record, /paused[- ]by[- ]default|animations (?:are|están) pausad/i);
+  const home = await readDist("index.html");
+  assert.match(record, /mobile menu/i);
+  assert.match(record, /reduced-motion/i);
+  assert.doesNotMatch(home, /data-preview-id/);
 });

@@ -1,22 +1,15 @@
-import type { NavigationItem, PrimaryNavigationSection } from "./contracts";
-import { PROJECTS_ROOT, PROJECT_MENU } from "../data/projects.ts";
-import { SOLUTIONS_PATH, SOLUTION_MENU } from "../data/solutions-menu.ts";
+import type { NavigationItem, CurrentNavSection } from "./contracts";
 
+// The root page is the only public company document; every navigation link
+// targets a real section there, including from the generated 404.
 export const NAVIGATION_ITEMS = [
-  { key: "solutions", href: SOLUTIONS_PATH, label: "Solutions", items: SOLUTION_MENU },
-  { key: "projects", href: PROJECTS_ROOT, label: "Projects", items: PROJECT_MENU },
-  { key: "about", href: "/about/", label: "About" }
+  { key: "services", href: "/#services", label: "Services" },
+  { key: "experience", href: "/#experience", label: "Experience" },
+  { key: "about", href: "/#about", label: "About" },
+  { key: "contact", href: "/#contact", label: "Contact" }
 ] as const satisfies readonly NavigationItem[];
 
-const SECTION_ROOTS: Record<PrimaryNavigationSection, string> = {
-  solutions: "/solutions/",
-  projects: "/projects/",
-  about: "/about/"
-};
-
-export function navigationSectionForPath(path: string): PrimaryNavigationSection | "" {
-  for (const [key, root] of Object.entries(SECTION_ROOTS)) {
-    if (path === root || path.startsWith(root)) return key as PrimaryNavigationSection;
-  }
+// A path alone cannot identify the reader's current scroll fragment.
+export function navigationSectionForPath(_path: string): CurrentNavSection {
   return "";
 }
