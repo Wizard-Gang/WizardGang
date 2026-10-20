@@ -30,6 +30,13 @@ jobs:
           PATCH_BASE_SHA: ${{ github.event.pull_request.base.sha }}
           PATCH_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: npm run check
+      - name: Exercise focused public contract and credential-free deploy package
+        run: |
+          npm run test:accessibility
+          npm run test:navigation
+          npm run test:browser
+          npm run test:frontend-authority
+          npm run deploy:dry-run
   change-id:
     name: change-id
     if: github.event_name == 'pull_request'
