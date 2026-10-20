@@ -62,7 +62,6 @@ export function initializePreferences(documentRoot: Document, browserWindow: Win
   const storage = safeLocalStorage(browserWindow);
   const saved = readPreferences(storage);
   const initial = resolveInitialPreferences(saved, browserWindow.navigator?.language ?? "");
-  let motionExplicit = initial.motionExplicit;
 
   applyPreferenceControls(controls, initial);
 
@@ -85,7 +84,7 @@ export function initializePreferences(documentRoot: Document, browserWindow: Win
   };
 
   const persist = (): void => {
-    writePreferences(storage, preferencesFromControls(controls, motionExplicit));
+    writePreferences(storage, preferencesFromControls(controls));
   };
 
   applyLocale(initial.language);
@@ -99,11 +98,6 @@ export function initializePreferences(documentRoot: Document, browserWindow: Win
   for (const control of [controls.dark, controls.light, controls.reading, controls.text]) {
     control.addEventListener("change", persist);
   }
-
-  controls.motion.addEventListener("change", () => {
-    motionExplicit = true;
-    persist();
-  });
 
   return true;
 }

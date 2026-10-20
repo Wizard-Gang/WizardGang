@@ -9,8 +9,7 @@
  * control or link uses it. The light preference re-points these same names in
  * globals.css rather than declaring a second vocabulary.
  *
- * One interface face. JetBrains Mono is kept for machine values only — the
- * build identifier and the product recreations — not for labels or chrome.
+ * One interface face. JetBrains Mono is kept for the build identifier only, not for labels or chrome.
  *
  * Self-hosted because the production CSP is `default-src 'none'` with
  * `font-src 'self'`: a font served from another origin is silently dead.
@@ -66,7 +65,7 @@
   --mark-a: #ccff2e;
   --mark-b: #a98bff;
 
-  /* Page atmosphere: a faint grid and glow behind the top of every page. */
+  /* Remaining surface tokens support the small site; no animated backgrounds. */
   --grid-line: rgb(255 255 255 / 4.5%);
   --glow: rgb(204 255 46 / 7%);
   --shadow-panel: 0 16px 48px -12px rgb(0 0 0 / 70%);

@@ -2,14 +2,6 @@
 
 ## Open tasks
 
-### WG-136 — [REFACTOR] Strip redundant presentation and client behavior
-
-- Dependency: WG-135 merged and resulting-main CI green.
-- Scope: Remove unreachable preview, case-study, dropdown/menu, and project-specific CSS/JS; trim unused typed authorities and component code. Refactor `src/styles/globals.css` toward a small, mobile-first page style with bounded content width, readable spacing, restrained zinc-and-accent palette, and reusable heading/button/section treatments. Retain `src/styles/tokens.css` as the sole token authority and current self-hosted font/license boundaries.
-- Remove nonessential display widgets if doing so preserves expected accessibility and language support; do not sacrifice keyboard focus, text resizing, contrast, reduced-motion behavior, no-JS reading or real mobile navigation to shave code. Preserve statically rendered React + TypeScript, no SPA router and no hydration.
-- Update frontend/browser/accessibility acceptance tests and all current-state README/docs so they describe the new design, not old previews or menus.
-- Acceptance: No dead preview or retired product presentation in generated output, source imports or public assets; 320px and enlarged 200% text layouts have no horizontal overflow; desktop/phone interaction and reduced-motion checks pass; `npm run check`, exact-head CI and post-merge CI pass. No release or deployment.
-
 ### WG-137 — [TEST] Verify the lean single-page public contract
 
 - Dependency: WG-136 merged and resulting-main CI green.

@@ -32,7 +32,7 @@ The site runs as the `wizardgang` Worker on baseline's shared `wg-edge` shell, v
 The site uses a mobile-first layout and two authored stylesheets:
 
 - `src/styles/tokens.css` — the zinc palette, lime accent, typography, spacing, radius and self-hosted fonts. It may declare only `:root` custom properties and `@font-face`.
-- `src/styles/globals.css` — layout and presentation consuming the tokens, including enlarged text, contrast, reduced motion, and mobile navigation. Legacy unused CSS is scheduled for removal in the next controlled cleanup.
+- `src/styles/globals.css` — layout and presentation consuming the tokens, including enlarged text, contrast, reduced motion, mobile navigation and compact display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
 
 Instrument Sans is the primary typeface, with JetBrains Mono for machine-readable build information. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin.
 

@@ -41,7 +41,7 @@ test("React owns shared chrome and every canonical page body", async () => {
   assert.match(documentSource, /renderToStaticMarkup/);
   assert.match(documentSource, /createStaticPageRegistry/);
 
-  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "play-previews", "WizardGang · Software, systems &amp; integrations", "/version.json"]) {
+  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "WizardGang · Software, systems &amp; integrations", "/version.json"]) {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
@@ -66,7 +66,7 @@ test("the static shell loads only the generated TypeScript browser module withou
   const browserBundle = await readDist(source.slice(1));
   assert.doesNotMatch(browserBundle, /react-dom|hydrateRoot|createRoot/);
 
-  for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200", "play-previews", "motion-setting-help"]) {
+  for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200"]) {
     assert.equal(startTags(html, "input").concat(startTags(html, "select"), startTags(html, "small")).some(({ attrs }) => attrs.get("id") === id), true, `missing browser-script control ${id}`);
   }
 

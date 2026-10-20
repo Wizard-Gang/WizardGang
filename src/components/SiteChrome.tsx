@@ -67,7 +67,7 @@ export function Preferences() {
           <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z" />
         </svg>
       </summary>
-      <section className="settings-toolbar" aria-label="Language, display, and motion preferences">
+      <section className="settings-toolbar" aria-label="Language and display preferences">
         <label className="setting-language">
           <span>Language</span>
           <select id="page-language" autoComplete="off">
@@ -85,9 +85,7 @@ export function Preferences() {
         <div className="setting-switches">
           <label className="setting-toggle"><input type="checkbox" id="reading-layout" defaultChecked /><span>Readable layout</span></label>
           <label className="setting-toggle"><input type="checkbox" id="text-size-200" /><span>200% text</span></label>
-          <label className="setting-toggle"><input type="checkbox" id="play-previews" aria-describedby="motion-setting-help" defaultChecked /><span>Play previews</span></label>
         </div>
-        <small className="sr-only" id="motion-setting-help">Previews play by default. Turn this off to pause them; reduced-motion preferences are always respected.</small>
       </section>
     </details>
   );
