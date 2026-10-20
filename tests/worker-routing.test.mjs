@@ -46,6 +46,7 @@ test("outward shortcut redirects exercise the Worker API with exact current dest
 test("retired and removed runtime routes fall through to ASSETS instead of redirecting or proxying", async (t) => {
   const retired = [
     "/work/", "/services/", "/contact/", "/glossary/", "/resume", "/professional",
+    "/solutions/", "/projects/", "/projects/hexframe/", "/about/",
     "/software/", "/software/projects/", "/software/sharktank/", "/software/integrations/",
     "/solutions/industries/", "/solutions/integrations/", "/solutions/deployments/",
     "/solutions/websites/", "/about/company/", "/about/team/", "/about/team/jacob/",
@@ -77,8 +78,8 @@ test("retired and removed runtime routes fall through to ASSETS instead of redir
   }
 });
 
-test("ordinary canonical pages and static assets fall through untouched to ASSETS", async () => {
-  for (const [url, method] of [[`${SITE}/about/?source=wg116`, "GET"], [`${SITE}/projects/`, "GET"], [`${SITE}/assets/styles.css?v=current`, "HEAD"]]) {
+test("the canonical root and static assets fall through untouched to ASSETS", async () => {
+  for (const [url, method] of [[`${SITE}/?source=wg135`, "GET"], [`${SITE}/assets/styles.css?v=current`, "HEAD"]]) {
     const calls = [];
     const env = assetEnv(calls);
     const request = new Request(url, { method, headers: { "x-fallback-proof": "1" } });

@@ -7,7 +7,7 @@ import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
-const SOCIAL_IMAGE_ALT = "WizardGang — software, systems, integrations, and inspectable engineering projects";
+const SOCIAL_IMAGE_ALT = "WizardGang — custom software, integrations, reporting and automation";
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;

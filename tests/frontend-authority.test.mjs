@@ -3,9 +3,6 @@ import { access, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { projectPath, projects } from "../src/data/projects.ts";
-import { professionalProjects, professionalRoles, professionalSkills } from "../src/data/professional.ts";
-import { deployments, professionalIntegrationEvidence, professionalSystemEvidence } from "../src/data/professional-systems.ts";
 import { CANONICAL_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -99,10 +96,6 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   for (const authority of [
     "HOME_PAGE",
-    "SOLUTIONS_PAGE",
-    "PROJECTS_PAGE",
-    "createCaseStudyPageDefinitions",
-    "ABOUT_PAGE",
     "NOT_FOUND_PAGE"
   ]) {
     assert.ok(registry.includes(authority), `typed page registry is missing ${authority}`);
@@ -123,14 +116,10 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   const expected = new Set([
     "index.html",
-    "solutions/index.html",
-    "projects/index.html",
-    "projects/hexframe/index.html",
-    "about/index.html",
     "404.html"
   ]);
-  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "WG-037 behavioral coverage and current typed route authority have drifted");
-  assert.equal(expected.size, 6, "five canonical pages plus the generated 404");
+  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "the typed route authority must only expose the root and noindex 404");
+  assert.equal(expected.size, 2, "one canonical page plus generated 404");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
@@ -151,10 +140,10 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/, "shared chrome must consume the typed navigation authority");
   assert.match(navigation, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
   assert.match(navigation, /navigationSectionForPath/, "current-section matching must remain centralized");
-  for (const label of ["Solutions", "Projects", "About"]) {
+  for (const label of ["Services", "Experience", "About", "Contact"]) {
     assert.ok(navigation.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
   }
-  for (const retiredLabel of ["Work", "Services", "Contact", "Software", "Glossary", "GitHub"]) {
+  for (const retiredLabel of ["Work", "Projects", "Solutions", "Software", "Glossary", "GitHub"]) {
     assert.ok(!navigation.includes(`label: "${retiredLabel}"`), `retired top-level navigation item restored: ${retiredLabel}`);
   }
   assert.match(browser, /initializeBrowserBehavior/);
@@ -192,33 +181,22 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   assert.doesNotMatch(bundle, /react-dom|hydrateRoot|createRoot/, "browser enhancement must not become whole-site React hydration");
 });
 
-test("typed data and styling authorities remain singular and internally valid", async () => {
-  const slugs = projects.map((project) => project.slug);
-  assert.equal(new Set(slugs).size, slugs.length, "project slugs must be unique");
-  const projectPaths = projects.map((project) => projectPath(project.slug));
-  assert.equal(new Set(projectPaths).size, projectPaths.length, "project paths must be unique");
-  for (const path of projectPaths) assert.match(path, /^\/projects\/[a-z]+\/$/, "a project is a page under /projects/");
-  for (const project of projects) {
-    assertHttpsUrl(project.sourceUrl, `${project.slug} sourceUrl`);
-    if (project.liveUrl) assertHttpsUrl(project.liveUrl, `${project.slug} liveUrl`);
-    if (project.operationsUrl) assertHttpsUrl(project.operationsUrl, `${project.slug} operationsUrl`);
+test("single-page content and styling authorities remain singular and valid", async () => {
+  const site = await readRoot("src/data/site.ts");
+  assert.match(site, /CONTACT_EMAIL/);
+  const home = await readRoot("src/pages/Home.tsx");
+  for (const section of ["services", "experience", "about", "contact"]) {
+    assert.ok(home.includes(`id="${section}"`), `missing section ${section}`);
   }
-
-  assert.ok(professionalRoles.length > 0);
-  assert.ok(professionalProjects.length > 0);
-  assert.ok(professionalSkills.length > 0);
-  assert.equal(new Set(professionalIntegrationEvidence.map((group) => group.title)).size, professionalIntegrationEvidence.length, "integration group titles must be unique");
-  assert.equal(new Set(professionalSystemEvidence.map((group) => group.title)).size, professionalSystemEvidence.length, "system group titles must be unique");
-  assert.deepEqual(
-    deployments.filter(({ url }) => !url).map(({ name }) => name),
-    ["Amware", "BuySeasons"],
-    "only deployments with dead public sites may be unlinked"
-  );
-  for (const deployment of deployments) {
-    if (deployment.url) assertHttpsUrl(deployment.url, `deployment ${deployment.name}`);
-  }
-  for (const group of professionalIntegrationEvidence) {
-    for (const item of group.items) if (item.url) assertHttpsUrl(item.url, `${group.title}: ${item.name}`);
+  assert.match(home, /prior professional roles, not WizardGang client engagements/);
+  for (const retired of [
+    "src/data/projects.ts", "src/data/solutions-menu.ts",
+    "src/data/professional.ts", "src/data/professional-systems.ts",
+    "src/components/ProjectSurfaces.tsx", "src/components/ProjectPreviews.tsx",
+    "src/pages/CaseStudy.tsx", "src/pages/Projects.tsx",
+    "src/pages/Solutions.tsx", "src/pages/About.tsx"
+  ]) {
+    await assertMissing(retired);
   }
 
   const cssFiles = sourceFiles.filter((path) => path.endsWith(".css"));

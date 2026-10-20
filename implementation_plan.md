@@ -2,14 +2,6 @@
 
 ## Open tasks
 
-### WG-135 — [REFACTOR] Make the root the only canonical company page
-
-- Dependency: WG-134 merged and resulting-main CI green.
-- Scope: Point the primary navigation at `/#services`, `/#experience`, `/#about` and `/#contact` (or same-page fragments), with a simple desktop and accessible mobile treatment; remove hover/focus dropdown submenus. Collapse `src/app/pageRegistry.ts` to `index.html` plus the ordinary noindex `404.html`, and derive a sitemap with only `/`.
-- Retire `/solutions/`, `/projects/`, `/projects/hexframe/`, and `/about/` from generated page inventory; return normal 404 for former pages, not an invented forwarding chain. Remove first-party links to those paths, the Hexframe case study/project catalog and live project preview UI, associated dead source/data/assets and any orphaned references to SharkTank/YarReader. Do not touch the actual external project repositories or independent app deployments.
-- Preserve necessary honest attribution and public company contact. Keep `/github`, `/compliance`, `/accessibility` and `/security` outward shortcuts only where their existing destination remains valid; preserve shared `wg-edge` behavior, host guard, `www` redirect, `/health.json`, `/version.json`, operator gate, CSP and secrets boundary.
-- Acceptance: Generated route inventory is exactly root + noindex 404; old paths are absent from sitemap and public navigation, tested as unsupported; both keyboard and touch navigation reach real fragment IDs; no dead imports/assets; update authoritative tests/docs with the new real state; `npm run check`, exact-head CI and post-merge CI pass. No release or deployment.
-
 ### WG-136 — [REFACTOR] Strip redundant presentation and client behavior
 
 - Dependency: WG-135 merged and resulting-main CI green.
