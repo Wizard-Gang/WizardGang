@@ -14,7 +14,7 @@ The site is expected to preserve:
 - early skip navigation and visible focus;
 - a real button-controlled mobile menu when JavaScript is active;
 - primary mobile navigation that remains usable when JavaScript is unavailable;
-- descriptive link/control names and current-section navigation state;
+- descriptive link/control names and stable section-fragment destinations;
 - dark/light display support and color-independent meaning;
 - 200% text support and responsive reflow;
 - reduced-motion handling, without any animated product previews in the generated site;

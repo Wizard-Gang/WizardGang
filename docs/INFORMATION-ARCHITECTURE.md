@@ -16,7 +16,7 @@ Independent products and `demo.wizardgang.ai` retain their own code, runtime and
 
 ## Presentation and accessibility
 
-`src/styles/tokens.css` declares only `:root` custom properties and `@font-face`. `src/styles/globals.css` consumes those tokens and is mobile-first. Instrument Sans and JetBrains Mono are self-hosted under the SIL Open Font License. Preferences currently support English/Spanish, dark/light theme, readable layout, 200% text and reduced motion. Enlarged text must produce zero horizontal overflow. Older unused preview styles and the motion preference are scheduled for controlled cleanup; there is no preview in generated site content.
+`src/styles/tokens.css` declares only `:root` custom properties and `@font-face`. `src/styles/globals.css` consumes those tokens and is mobile-first. Instrument Sans and JetBrains Mono are self-hosted under the SIL Open Font License. Preferences support English/Spanish, dark/light theme, readable layout and 200% text. Reduced-motion handling follows the system preference and no animated product previews are published. Enlarged text must produce zero horizontal overflow.
 
 The complete page, navigation, main heading, section anchors and contact links exist before JavaScript. The browser enhances menu controls and saved preferences only. There is no SPA router and no React hydration.
 

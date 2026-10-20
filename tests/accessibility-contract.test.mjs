@@ -184,7 +184,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
   }
 });
 
-test("language, theme, readable-layout, 200% text, and preview-motion controls remain available on every page", async (t) => {
+test("language, theme, readable layout and text enlargement remain on every page", async (t) => {
   for (const relative of await generatedHtmlFiles()) {
     await t.test(relative, async () => {
       const html = await readDist(relative);
@@ -192,7 +192,7 @@ test("language, theme, readable-layout, 200% text, and preview-motion controls r
       for (const tagName of ["input", "select", "small", "section"]) {
         for (const tag of startTags(html, tagName)) if (tag.attrs.get("id")) ids.set(tag.attrs.get("id"), tag);
       }
-      for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200", "play-previews", "motion-setting-help"]) {
+      for (const id of ["page-language", "theme-dark", "theme-light", "reading-layout", "text-size-200"]) {
         assert.ok(ids.has(id), `missing preference control ${id}`);
       }
       assert.match(html, />English</);
@@ -207,35 +207,18 @@ test("language, theme, readable-layout, 200% text, and preview-motion controls r
       assert.equal(ids.get("theme-light").attrs.get("type"), "radio");
       assert.equal(ids.get("reading-layout").attrs.get("type"), "checkbox");
       assert.equal(ids.get("text-size-200").attrs.get("type"), "checkbox");
-      assert.equal(ids.get("play-previews").attrs.get("type"), "checkbox");
-      assert.ok(ids.get("play-previews").attrs.has("checked"), "preview motion remains play-by-default");
-      assert.equal(ids.get("play-previews").attrs.get("aria-describedby"), "motion-setting-help");
-      assert.match(html, /Previews play by default\. Turn this off to pause them; reduced-motion preferences are always respected\./);
+
     });
   }
 });
 
-test("compact project actions keep destination-specific accessible names without depending on classes", async (t) => {
-  for (const relative of await generatedHtmlFiles()) {
-    await t.test(relative, async () => {
-      const html = await readDist(relative);
-      if (relative === "index.html" || relative.startsWith("software/projects/")) {
-        const main = tagBlocks(html, "main").find(({ attrs }) => attrs.get("id") === "main");
-        assert.ok(main, "project action checks require the primary main landmark");
-        for (const anchor of anchors(main.inner)) {
-          const visible = normalizedVisible(anchor).toLowerCase();
-          if (!["view project", "open live demo", "view case study", "view source", "explore evidence"].includes(visible)) continue;
-          const aria = anchor.attrs.get("aria-label") || "";
-          assert.ok(aria.length > visible.length + 4, `${visible} action must identify its destination`);
-          if (visible === "view project") assert.match(aria, /^View .+ project$/i);
-          if (visible === "open live demo") assert.match(aria, /^Open .+ live demo$/i);
-          if (visible === "view case study") assert.match(aria, /^View .+ case study$/i);
-          if (visible === "view source") assert.match(aria, /^View .+ source on GitHub$/i);
-          if (visible === "explore evidence") assert.match(aria, /^Explore .+ operating evidence$/i);
-        }
-      }
-    });
+test("contact action and one-page fragments retain accessible destinations", async () => {
+  const html = await readDist("index.html");
+  const main = tagBlocks(html, "main")[0]?.inner ?? "";
+  for (const id of ["services", "experience", "about", "contact"]) {
+    assert.match(main, new RegExp(`id="${id}"`));
   }
+  assert.ok(anchors(main).some(a => a.href === "mailto:jacob@wizardgang.ai"));
 });
 
 test("the single-page document includes no animated product preview", async () => {
@@ -248,12 +231,8 @@ test("the single-page document includes no animated product preview", async () =
 test("CSS exposes preference behavior, mobile open state, target sizing, and reduced motion", async () => {
   const styles = await readDist("assets/styles.css");
 
-  // These control-linked selectors are intentional seams: CSS itself implements the behavior,
-  // so checking the public control state is more durable than checking animation/keyframe names.
-  assert.match(styles, /\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*paused\s*!important(?:;|\})/s);
-  // Previews are paused by default and only run inside an opened disclosure.
-  assert.match(styles, /\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*paused\s*!important/s);
-  assert.match(styles, /body:has\(#play-previews:checked\)[^{]*details\[open\][^{]*\.project-visual\s*\*\s*\{[^}]*animation-play-state:\s*running\s*!important/s);
+  assert.doesNotMatch(styles, /\.project-visual|\.lab-playhead|\.nav-item-menu/,
+    "the single-page stylesheet must not contain removed preview and menu rules");
   assert.match(styles, /html:has\(#text-size-200:checked\)\s*\{[^}]*font-size:\s*200%/s);
   assert.match(styles, /body:has\(#theme-light:checked\)\s*\{/);
   assert.match(styles, /\.nav-toggle:not\(\[hidden\]\)\s*\{[^}]*display:\s*inline-flex/s);
@@ -264,8 +243,8 @@ test("CSS exposes preference behavior, mobile open state, target sizing, and red
 
   const reducedMotionMarkers = [...styles.matchAll(/@media\s*\(prefers-reduced-motion:\s*reduce\)/g)];
   assert.ok(reducedMotionMarkers.length >= 1, "reduced-motion behavior must remain present in the emitted stylesheet");
-  const previewReduced = styles.slice(reducedMotionMarkers[0].index);
-  assert.match(previewReduced, /\.lab-playhead[\s\S]*animation:\s*none/);
+  const reduced = styles.slice(reducedMotionMarkers[0].index);
+  assert.match(reduced, /scroll-behavior:\s*auto/);
 
 });
 
@@ -284,25 +263,22 @@ test("dark and light preference palettes retain readable text and visible focus 
   }
 });
 
-test("TypeScript browser source preserves language and persisted display/motion behavior", async () => {
-  const script = [await readRoot("src/browser/preferences.ts"), await readRoot("src/browser/navigation.ts"), await readRoot("src/browser/index.ts"), await readRoot("src/browser/translations.ts")].join("\n");
-  for (const signal of [
-    "wizardgang.preferences.v1",
-    "Español",
-    "Jugar",
-    "Caso de estudio",
-    "Accesibilidad",
-    "Informar de un problema"
-  ]) assert.match(script, new RegExp(signal.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
-
+test("browser preserves Spanish, saved display preferences and mobile interaction", async () => {
+  const script = [
+    await readRoot("src/browser/preferences.ts"),
+    await readRoot("src/browser/navigation.ts"),
+    await readRoot("src/browser/index.ts"),
+    await readRoot("src/browser/translations.ts")
+  ].join("\n");
+  for (const word of ["wizardgang.preferences.v1", "Español", "Servicios", "Experiencia", "Contacto"]) {
+    assert.ok(script.includes(word), `missing browser language/control contract ${word}`);
+  }
   assert.match(script, /storage\.getItem\(STORAGE_KEY\)/);
   assert.match(script, /storage\.setItem\(STORAGE_KEY/);
   assert.match(script, /documentRoot\.documentElement\.lang\s*=\s*locale/);
   assert.match(script, /shouldCloseForEscape\(event\.key, navigationIsOpen\(toggle\)\)/);
   assert.match(script, /isAnchorActivationTarget\(event\.target\)/);
-  assert.ok((script.match(/setNavigationOpen\(toggle, mobileNav, false\)/g) || []).length >= 3, "initialization, Escape, link activation, and resize must close mobile navigation");
-  for (const key of ["language", "theme", "reading", "text", "motion", "motionExplicit"]) assert.match(script, new RegExp(`\\b${key}\\b`));
-  assert.match(script, /controls\.motion\.addEventListener\(["']change["'][\s\S]*motionExplicit\s*=\s*true/);
+  assert.doesNotMatch(script, /controls\.motion|motionExplicit|#play-previews|Play previews/);
 });
 
 test("accessibility documentation describes current single-page navigation", async () => {
