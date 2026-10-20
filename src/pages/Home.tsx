@@ -1,111 +1,117 @@
 import type { ReactPageDefinition } from "../app/contracts";
-import { WorkRow } from "../components/ProjectSurfaces";
-import { PROJECTS_ROOT, projects } from "../data/projects";
-import { DEMO_FRAMEWORK_URL, GITHUB_ORG_URL } from "../data/site";
-import { SOLUTIONS_PATH, SOLUTION_SECTIONS } from "../data/solutions-menu";
-import {
-  professionalIntegrationEvidence,
-  professionalSystemEvidence
-} from "../data/professional-systems";
+import { CONTACT_EMAIL } from "../data/site";
 
-/* Software first: the projects lead, because they are the evidence the hero
-   promises. Professional categories follow, visible without a click. Project
-   rows remain disclosures because each holds a motion-controlled preview. */
+const services = [
+  {
+    title: "Custom software",
+    description: "Focused applications and internal tools that fit how your team actually works."
+  },
+  {
+    title: "System integrations",
+    description: "Connect ERP, warehouse, carrier, and business systems without repeated data entry."
+  },
+  {
+    title: "Data & reporting",
+    description: "Turn SQL data and operational records into clear reports people can use."
+  },
+  {
+    title: "Workflow automation",
+    description: "Reduce manual handoffs with reliable automation and tested processes."
+  }
+] as const;
 
-function SectionHead({ id, label, blurb, href, hrefLabel }: {
-  id: string; label: string; blurb: string; href?: string; hrefLabel?: string;
-}) {
-  return (
-    <div className="section-head">
-      <h2 className="section-label" id={id}>{label}</h2>
-      <p className="section-blurb">{blurb}</p>
-      {href && hrefLabel ? (
-        <a className="section-more" href={href}>{hrefLabel} <span aria-hidden="true">→</span></a>
-      ) : null}
-    </div>
-  );
-}
+const experience = [
+  {
+    title: "Warehouse & fulfillment",
+    description: "WMS/WCS operations, inventory controls, conveyor routing, and shipping integrations."
+  },
+  {
+    title: "Enterprise integrations",
+    description: "ERP, EDI, REST APIs, SQL Server, and reporting across connected systems."
+  },
+  {
+    title: "Public-sector applications",
+    description: "Case management, reporting, migrations, and production support for regulated workflows."
+  }
+] as const;
 
 export const HOME_PAGE: ReactPageDefinition = {
   relative: "index.html",
   metadata: {
-    title: "WizardGang — Software that ships",
-    description: "Software you can read, run, and keep. The industries it was delivered to, the systems it connects, and the open-source projects WizardGang builds and operates.",
+    title: "WizardGang — Custom software and integrations",
+    description: "Custom software, system integrations, reporting and automation for businesses with complex operations. Built with clear ownership and a practical handoff.",
     path: "/",
     socialImage: "/og.jpg"
   },
   body: (
     <main className="site-main" id="main" tabIndex={-1}>
-      <section className="home-hero">
-        <h1>Software that Ships</h1>
+      <section className="home-hero" aria-labelledby="home-title">
+        <h1 id="home-title">Software that works with your business.</h1>
         <p className="home-lede">
-          Most custom software arrives as a black box. Here you can inspect the source, read how
-          each project was built, and open the live applications where available &mdash; so you can
-          check the work before you pay for it, and keep what is built for you.
+          Custom applications, integrations, reporting, and automation built around the
+          systems your team already relies on.
         </p>
         <div className="hero-actions">
-          <a className="button button-primary" href="#home-projects-heading">
-            Browse the projects <span aria-hidden="true">↓</span>
+          <a className="button button-primary" href={`mailto:${CONTACT_EMAIL}`}>
+            Discuss a project <span aria-hidden="true">↗</span>
           </a>
-          <a className="button" href={GITHUB_ORG_URL}>
-            Source on GitHub <span aria-hidden="true">↗</span>
+          <a className="button" href="#services">
+            See services <span aria-hidden="true">↓</span>
           </a>
         </div>
       </section>
 
-      <section className="work" aria-labelledby="home-projects-heading">
-        <SectionHead
-          id="home-projects-heading"
-          label="Selected projects"
-          blurb="Open-source software WizardGang builds and operates."
-          href={PROJECTS_ROOT}
-          hrefLabel="All projects"
-        />
-        <div className="work-list">
-          {projects.map((project) => <WorkRow key={project.id} project={project} />)}
+      <section className="work" id="services" aria-labelledby="services-heading">
+        <div className="section-head">
+          <h2 className="section-label" id="services-heading">Services</h2>
+          <p className="section-blurb">Practical engineering for the work your team does every day.</p>
         </div>
-      </section>
-
-      <section className="work" aria-labelledby="home-industries-heading">
-        <SectionHead id="home-industries-heading" label="Industries" blurb={SOLUTION_SECTIONS[0].lede} />
-        <ul className="home-topic-grid home-topic-grid-industries">
-          {professionalSystemEvidence.map((group) => (
-            <li className="home-topic" key={group.title}>
-              <h3>{group.title}</h3>
-              <ul className="home-topic-examples" aria-label={`${group.title} examples`}>
-                {group.items.slice(0, 3).map((item) => <li key={item}>{item}</li>)}
-              </ul>
+        <ul className="home-topic-grid home-topic-grid-services">
+          {services.map(({ title, description }) => (
+            <li className="home-topic" key={title}>
+              <h3>{title}</h3>
+              <p>{description}</p>
             </li>
           ))}
         </ul>
       </section>
 
-      <section className="work" aria-labelledby="home-integrations-heading">
-        <SectionHead id="home-integrations-heading" label="Integrations" blurb={SOLUTION_SECTIONS[1].lede} />
-        <ul className="home-topic-grid home-topic-grid-integrations">
-          {professionalIntegrationEvidence.map((group) => (
-            <li className="home-topic" key={group.title}>
-              <h3>{group.title}</h3>
-              <ul className="home-topic-examples" aria-label={`${group.title} examples`}>
-                {group.items.slice(0, 3).map((item) => <li key={item.name}>{item.name}</li>)}
-              </ul>
+      <section className="work" id="experience" aria-labelledby="experience-heading">
+        <div className="section-head">
+          <h2 className="section-label" id="experience-heading">Experience</h2>
+          <p className="section-blurb">Enterprise systems where reliability matters.</p>
+        </div>
+        <ul className="home-experience-list">
+          {experience.map(({ title, description }) => (
+            <li key={title}>
+              <h3>{title}</h3>
+              <p>{description}</p>
             </li>
           ))}
         </ul>
-      </section>
-
-      <section className="home-outro" aria-labelledby="home-architecture-heading">
-        <h2 className="section-label" id="home-architecture-heading">Go deeper</h2>
-        <p className="section-blurb">
-          Explore WizardGang's live architecture examples, with source and supporting evidence
-          beside them.
+        <p className="home-experience-note" role="note">
+          This experience comes from prior professional roles, not WizardGang client engagements.
         </p>
+      </section>
+
+      <section className="work" id="about" aria-labelledby="about-heading">
+        <div className="section-head">
+          <h2 className="section-label" id="about-heading">About</h2>
+          <p className="section-blurb">Small practice. Clear ownership.</p>
+        </div>
+        <p className="home-about-copy">
+          WizardGang builds software for real operating needs. We focus on understanding the
+          workflow, connecting the right systems, testing what matters, and making the result
+          straightforward to maintain.
+        </p>
+      </section>
+
+      <section className="home-outro" id="contact" aria-labelledby="contact-heading">
+        <h2 className="section-label" id="contact-heading">Tell us what you're building.</h2>
+        <p className="section-blurb">A short email is enough to get started.</p>
         <div className="outro-actions">
-          <a className="button button-primary" href={DEMO_FRAMEWORK_URL}>
-            Explore the Architecture <span aria-hidden="true">↗</span>
-          </a>
-          <a className="button" href={SOLUTIONS_PATH}>
-            See the full record <span aria-hidden="true">→</span>
+          <a className="button button-primary" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL} <span aria-hidden="true">↗</span>
           </a>
         </div>
       </section>
