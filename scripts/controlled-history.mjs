@@ -19,9 +19,44 @@ const sourceAttestations = new Map([
   ],
 ]);
 
+// Owner-authorized, immutable WG-137 history attestation. GitHub's PR #119
+// validated head f45604963cf7938811a3eecf61b768649904fd91 and resulting
+// squash commit below share tree f01e51eec897520aaaf70d119212d1ba34cfc32b
+// and parent a366da30c60a0893a8963ccce5f3e4ee8e5f73e2.
+// GitHub created a shortened squash message without nine controlled sections.
+// Preserve that published commit and its failure record; do not waive fields
+// for any other SHA, parent, subject, body, or unrelated controlled record.
+const historicalMessageAttestations = new Map([
+  ["9db8d2c91c352c9b0cc8f8da74633d253fed405d", {
+    parent: "a366da30c60a0893a8963ccce5f3e4ee8e5f73e2",
+    subject: "[WG-137] [TEST] Verify the lean single-page public contract",
+    body: "Verified lean root-only public contract on exact-head CI, including pinned install/check, focused tests and deploy dry-run. Preserve WG-138; no release/version change/deployment.",
+    // Sections below are transcribed from the independently validated
+    // one-commit PR #119 head, not inferred from the abbreviated squash.
+    sections: new Map([
+      ["Change", "Add one-page fragment/content, attribution, contact, navigation, no-JS, accessible focus, 200% reflow, Spanish, 404, metadata, outbound, CSP and edge integration tests. Localized missing labels, removed retired cache paths, run focused tests and deploy dry-run after canonical check, and retire only WG-137."],
+      ["Reason", "An executable public contract is needed before the queued v1.4.0 release."],
+      ["Impact", "The static company page and pinned wg-edge service remain unchanged; Spanish accessibility labels and stale public cache rules are corrected."],
+      ["Risk", "Low to medium. Broader CI acceptance and dry-run could expose latent defects."],
+      ["Controls", "Replacement of closed failed PR #118 without rewriting published controlled history. Exactly one commit from verified protected main, exact-head checks then squash, post-merge CI, auto branch cleanup. Preserve WG-138."],
+      ["Validation", "Exact-head pinned npm ci, npm run check, focused accessibility/navigation/browser/frontend tests, npm run deploy:dry-run, patch/history integrity. Browser-only manual outcomes are not claimed."],
+      ["Evidence", "First candidate CI identified a documentation inventory conflict, authored-vs-minified CSS mismatch, and missing Spanish control label. Replacement omits extra docs, tests authored CSS, and translates the label."],
+      ["Source", "AGENTS.md, implementation_plan.md, README.md, docs/INFORMATION-ARCHITECTURE.md, docs/ACCESSIBILITY.md."],
+      ["Release/deployment effect", "None. No version/tag/release/deployment."],
+    ]),
+  }],
+]);
+
 export function hasRequiredSection(record, section) {
   if (new RegExp(`(?:^|\\n)${section}:\\s*\\S`, "m").test(record.body)) return true;
-  return section === "Source" && Boolean(sourceAttestations.get(record.sha)?.trim());
+  if (section === "Source" && sourceAttestations.get(record.sha)?.trim()) return true;
+  const attestation = historicalMessageAttestations.get(record.sha);
+  return Boolean(attestation
+    && record.parents?.length === 1
+    && record.parents[0] === attestation.parent
+    && record.subject === attestation.subject
+    && record.body.trim() === attestation.body
+    && attestation.sections.get(section)?.trim());
 }
 
 export function validateHistory(records, plan, pendingTask = null) {
