@@ -225,59 +225,38 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
   assert.ok(fills.has("#a489ff"));
 });
 
-test("the homepage leads with the work and states its offer once", async () => {
+test("the homepage presents a complete, service-first single-page offer", async () => {
   const home = await readDist("index.html");
-  requireText(home, [
-    "Software that Ships", "Industries", "Warehouse &amp; Fulfillment", "Logistics",
-    "Justice &amp; Court Systems", "Public-Sector Workflows", "Enterprise &amp; AI Infrastructure",
-    "Integrations", "ERP Integrations", "Commerce &amp; Fulfillment", "Warehouse Automation",
-    "Carrier Integrations", "EDI &amp; B2B", "Warehouse Hardware", "Development &amp; Workflow",
-    "Justice &amp; Legal", "Selected projects", "Hexframe",
-    "Explore the Architecture"
+  const main = tagBlocks(home, "main")[0]?.inner ?? "";
+  requireText(main, [
+    "Software that works with your business.",
+    "Services", "Custom software", "System integrations", "Data &amp; reporting",
+    "Workflow automation", "Experience", "Warehouse &amp; fulfillment",
+    "Enterprise integrations", "Public-sector applications", "About",
+    "This experience comes from prior professional roles, not WizardGang client engagements.",
+    "Tell us what"
   ], "homepage");
 
-  // Earlier homepages stacked a kicker, a display headline and a paragraph in every
-  // band, and carried the employer-attribution boundary in a section heading.
-  rejectText(home, [
-    "We build inspectable software.",
-    "We build software that ships",
-    "Build software.",
-    "Working systems with source and evidence.",
-    "Integration capability with clear attribution.",
-    "employer and customer evidence remains attributed",
-    "Software with clear ownership."
-  ], "homepage");
+  rejectText(main, ["Selected projects", "Hexframe", "SharkTank", "YarReader",
+    "Browse the projects", "Explore the Architecture"], "service-first homepage");
+  for (const id of ["services", "experience", "about", "contact"]) {
+    assert.ok(allIds(main).has(id), `missing one-page anchor #${id}`);
+  }
+  assert.ok(anchorWithHref(main, "mailto:jacob@wizardgang.ai"),
+    "new homepage must offer direct contact");
+  assert.ok(anchorWithHref(main, "#services"), "hero must link to on-page services");
 
-  // Industries and integrations stay visible. The project preview is a disclosure
-  // and remains closed so nothing animates on load.
-  const panels = tagBlocks(home, "details");
-  for (const panel of panels) assert.ok(!panel.attrs.has("open"), "a panel must start closed");
-
-  // Professional categories are visible without extra clicks or summary rows.
-  assert.equal(startTags(home, "ul").filter(({ attrs }) => (attrs.get("class") || "").includes("home-topic-grid")).length, 2);
-  rejectText(home, ["All industries", "All integrations", "5 domains", "8 groups"], "homepage category grids");
-
-  const named = panels.filter(({ attrs }) => attrs.get("name"));
-  assert.deepEqual([...new Set(named.map(({ attrs }) => attrs.get("name")))], ["work-list"]);
-
-  const projectRows = panels.filter(({ attrs }) => attrs.get("name") === "work-list");
-  assert.equal(projectRows.length, 1, "one disclosure per project");
-  assert.deepEqual([...new Set(projectRows.map(({ attrs }) => attrs.get("name")))], ["work-list"],
-    "project rows share one exclusive group so only one preview can run");
-
-  const headings = [...home.matchAll(/<h([1-3])\b/g)].map((match) => Number(match[1]));
-  assert.equal(headings.filter((level) => level === 1).length, 1, "one h1 per page");
+  assert.equal(tagBlocks(main, "h1").length, 1, "one h1 per page");
+  assert.equal(main.includes('name="work-list"'), false, "the homepage must not carry project disclosures");
 });
 
-test("each project has a page with its preview and outbound relationships", async () => {
+test("transitional legacy project pages keep their outbound relationships", async () => {
   const home = await readDist("index.html");
-  assert.doesNotMatch(home, /SharkTank|sharktank/, "home must not present the retired SharkTank project");
-  for (const label of ["Hexframe training mode"]) {
-    assert.ok(startTags(home, "div").some(({ attrs }) => (attrs.get("aria-label") || "").includes(label)), `home missing semantic preview: ${label}`);
-  }
+  const main = tagBlocks(home, "main")[0]?.inner ?? "";
+  assert.doesNotMatch(main, /Hexframe|SharkTank|YarReader/i, "retired personal portfolio must not be in homepage content");
+  assert.ok(!anchorWithHref(main, "/projects/hexframe/"), "new homepage content must not link to legacy projects");
 
   for (const [slug, relationships] of Object.entries(PROJECT_LINKS)) {
-    assert.ok(anchorWithHref(home, `/projects/${slug}/`), `home must route to the ${slug} page`);
     const page = await readDist(`projects/${slug}/index.html`);
     assert.ok(anchorWithHref(page, relationships.source), `${slug} must expose its source repository`);
     if (relationships.live) assert.ok(anchorWithHref(page, relationships.live), `${slug} must expose its live application`);

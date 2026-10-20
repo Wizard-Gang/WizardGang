@@ -2,16 +2,6 @@
 
 ## Open tasks
 
-### WG-134 — [FEAT] Replace the home page with a service-first single-page narrative
-
-- Dependency: WG-133 controlled plan-only queue change merged with green resulting-main CI.
-- Goal: Make `/` useful from top to bottom without requiring a second page, taking inspiration from phantom.im's direct small-agency presentation but retaining WizardGang's own identity and copy.
-- Scope: Rebuild the home content as five readable sections in order: (1) short, concrete hero, (2) four service offerings — custom software, system integrations, data and reporting, workflow automation — (3) concise enterprise experience, (4) brief about/approach, and (5) direct contact. Use stable fragment IDs `#services`, `#experience`, `#about`, and `#contact`. Each service gets a useful one-sentence outcome, not a product taxonomy, certification claim, or wall of logos. Feature one prominent `mailto:jacob@wizardgang.ai` action.
-- Content: Speak to prospective clients, not to employers or game players. Enterprise warehouse, WMS/WCS, ERP, logistics, reporting, public-sector applications and system-integration background may support capability claims, but experience performed while employed elsewhere must be explicitly distinguished from WizardGang client work. Do not invent clients, testimonials, credentials, certifications, results, revenue, or endorsements.
-- Exclusions: Do not feature, mention, preview, or link to Hexframe, SharkTank, YarReader, other personal games, or portfolio case studies on the new home page. No pricing table, form backend, animation-driven hero, social proof without permission, or multi-page call-to-action.
-- Transitional boundary: Existing legacy pages, navigation, and controls may remain temporarily functional until WG-135/WG-136. Keep existing public paths and tests valid for this scoped change; do not republish or deploy.
-- Acceptance: The generated homepage reads as one complete, coherent scroll; all four fragment targets and contact action exist; semantic headings and responsive layouts work without client JS; focused content, accessibility, navigation and link tests and canonical `npm run check` pass; exact-head `verify` and `change-id` pass; squash merge, resulting-main CI, branch cleanup. No release or production deployment.
-
 ### WG-135 — [REFACTOR] Make the root the only canonical company page
 
 - Dependency: WG-134 merged and resulting-main CI green.

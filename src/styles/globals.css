@@ -2329,3 +2329,33 @@ html:has(#text-size-200:checked) :where(.project-visual, .project-visual > *, .l
   .lab-take-a { animation: none; opacity: 1; }
   .lab-take-b { display: none; }
 }
+
+
+/* Compact service-first homepage. The legacy project presentation is removed in WG-135/136. */
+.home-topic-grid-services .home-topic p {
+  color: var(--muted);
+  font-size: var(--text-small);
+}
+
+.home-experience-list { display: grid; gap: 0; }
+
+.home-experience-list li {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-5) 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+.home-experience-list h3 { font-size: var(--text-h3); }
+.home-experience-list p,
+.home-experience-note,
+.home-about-copy { max-width: var(--measure); color: var(--muted); }
+
+.home-experience-list p { font-size: var(--text-small); }
+.home-experience-note { margin-top: var(--space-3); font-size: var(--text-small); }
+.home-about-copy { line-height: var(--leading-body); }
+
+@media (min-width: 40rem) {
+  .home-topic-grid-services { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-experience-list li { grid-template-columns: minmax(9rem, .4fr) minmax(0, 1fr); gap: var(--space-5); }
+}
