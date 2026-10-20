@@ -7,7 +7,7 @@ export interface BuildMetadata {
   builtAt: string;
 }
 
-export type PrimaryNavigationSection = "solutions" | "projects" | "about";
+export type PrimaryNavigationSection = "services" | "experience" | "about" | "contact";
 export type CurrentNavSection = PrimaryNavigationSection | "";
 
 export interface NavigationLink {
@@ -16,10 +16,8 @@ export interface NavigationLink {
   accessibleName?: string;
 }
 
-/** A primary item is either a direct link or a menu of links. */
 export interface NavigationItem extends NavigationLink {
   key: PrimaryNavigationSection;
-  items?: readonly NavigationLink[];
 }
 
 export interface PageMetadata {

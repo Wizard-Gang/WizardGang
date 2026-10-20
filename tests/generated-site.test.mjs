@@ -3,14 +3,10 @@ import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import test from "node:test";
-import { deployments } from "../src/data/professional-systems.ts";
-import { projects } from "../src/data/projects.ts";
 import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
 import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {
   CANONICAL_PAGES,
-  PROJECT_LINKS,
-  PROJECT_SLUGS,
   SITEMAP_ROUTES,
   anchors,
   dist,
@@ -70,7 +66,7 @@ test("generated HTML inventory is the explicit canonical contract", async () => 
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 6, "five canonical pages plus the generated 404");
+  assert.equal(actual.length, 2, "root page plus noindex 404");
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -80,15 +76,14 @@ test("all required public build artifacts and public records exist", async () =>
     "favicon.svg",
     "site.webmanifest",
     "sitemap.xml",
-    "og.jpg",
-    "hexframe-project.jpg"
+    "og.jpg"
   ];
   for (const file of artifacts) assert.equal(await exists(resolve(dist, file)), true, `missing build artifact ${file}`);
   for (const file of ["version.json", "robots.txt"]) {
     assert.equal(await exists(resolve(dist, file)), false, `the wg-edge shell serves /${file}; a static copy would never be reached`);
   }
   const topLevelJpgs = (await walk(dist)).map(relativeFromDist).filter((file) => !file.includes("/") && file.endsWith(".jpg")).sort();
-  assert.deepEqual(topLevelJpgs, ["hexframe-project.jpg", "og.jpg"], "top-level project media must match the current site");
+  assert.deepEqual(topLevelJpgs, ["og.jpg"], "retired portfolio images must not ship");
   assert.equal(await exists(resolve(dist, "sharktank-project.jpg")), false, "retired SharkTank image must not be emitted");
   assert.equal(await exists(resolve(dist, "projects/sharktank/index.html")), false, "retired SharkTank route must not be emitted");
   const browserAssets = (await walk(resolve(dist, "assets")))
@@ -250,150 +245,19 @@ test("the homepage presents a complete, service-first single-page offer", async 
   assert.equal(main.includes('name="work-list"'), false, "the homepage must not carry project disclosures");
 });
 
-test("transitional legacy project pages keep their outbound relationships", async () => {
-  const home = await readDist("index.html");
-  const main = tagBlocks(home, "main")[0]?.inner ?? "";
-  assert.doesNotMatch(main, /Hexframe|SharkTank|YarReader/i, "retired personal portfolio must not be in homepage content");
-  assert.ok(!anchorWithHref(main, "/projects/hexframe/"), "new homepage content must not link to legacy projects");
-
-  for (const [slug, relationships] of Object.entries(PROJECT_LINKS)) {
-    const page = await readDist(`projects/${slug}/index.html`);
-    assert.ok(anchorWithHref(page, relationships.source), `${slug} must expose its source repository`);
-    if (relationships.live) assert.ok(anchorWithHref(page, relationships.live), `${slug} must expose its live application`);
-    if (relationships.evidence) assert.ok(anchorWithHref(page, relationships.evidence), `${slug} must expose its operating evidence`);
-    if (!relationships.live) {
-      assert.ok(!anchors(page).some((anchor) => /^Open live demo\b/i.test(textContent(anchor.inner))), `${slug} must not invent a live URL`);
-    }
+test("retired company pages and media are absent from the generated site", async () => {
+  for (const relative of [
+    "solutions/index.html", "projects/index.html", "projects/hexframe/index.html",
+    "about/index.html", "hexframe-project.jpg"
+  ]) {
+    assert.equal(await exists(resolve(dist, relative)), false, `retired asset ${relative} must be gone`);
+  }
+  for (const relative of canonicalFiles) {
+    const html = await readDist(relative);
+    const main = tagBlocks(html, "main")[0]?.inner ?? "";
+    assert.doesNotMatch(main, /Hexframe|SharkTank|YarReader/i, `${relative} still shows a retired project`);
   }
 });
-
-test("canonical project data retains the source/live/evidence contract", () => {
-  const bySlug = new Map(projects.map((project) => [project.slug, project]));
-  for (const [slug, relationships] of Object.entries(PROJECT_LINKS)) {
-    const project = bySlug.get(slug);
-    assert.ok(project, `missing project data for ${slug}`);
-    assert.equal(project.sourceUrl, relationships.source);
-    assert.equal(project.liveUrl, relationships.live);
-    if (relationships.evidence) assert.equal(project.operationsUrl, relationships.evidence);
-    else assert.equal(project.operationsUrl, undefined);
-  }
-});
-
-test("project substance survived the move onto per-project pages", async () => {
-  const hexframe = await readDist("projects/hexframe/index.html");
-
-  requireText(hexframe, [
-    "The match, training screen, computer player, replay, saved game",
-    "A playable training stage with one fighter and one practice dummy",
-    "Freeze automatically when a hit connects"
-  ], "Hexframe");
-
-  for (const page of [hexframe]) {
-    for (const label of ["Problem", "Built", "Architecture", "Approach", "Result"]) {
-      assert.ok(page.includes(`>${label}<`), `a project page must keep the ${label} section`);
-    }
-  }
-});
-
-
-
-test("About argues for the practice and keeps the career record", async () => {
-  const about = await readDist("about/index.html");
-  requireText(about, [
-    "Jacob Yongue",
-    "University of Georgia",
-    "Background",
-    "Skills",
-    "The pitch",
-    "black box"
-  ], "about page");
-  assert.ok(startTags(about, "section").some(({ attrs }) => attrs.get("id") === "jacob"), "about must anchor the person");
-
-  // The compliance notice and the closing mail band are retired.
-  rejectText(about, [
-    "Attribution",
-    "employer and customer work is not WizardGang client work",
-    "Get in touch"
-  ], "about page");
-});
-
-test("Solutions projects the professional evidence authorities", async () => {
-  const solutions = await readDist("solutions/index.html");
-  requireText(solutions, [
-    "Industries", "Warehouse &amp; Fulfillment", "Case Management",
-    "Integrations", "ERP Integrations", "NetSuite", "https://www.netsuite.com/",
-    "Deployments", "SpartanNash", "https://www.spartannash.com/"
-  ], "solutions");
-
-  // The record is employment, and the page has to say so without a footnote.
-  requireText(solutions, ["not under WizardGang", "Supply Chain Technologies", "Fastfetch Corporation", "Warehouse Management System (CIMS)"], "solutions attribution");
-
-  for (const section of ["industries", "integrations", "deployments"]) {
-    assert.ok(startTags(solutions, "section").some(({ attrs }) => attrs.get("id") === section), `solutions must anchor ${section}`);
-  }
-  const wall = tagBlocks(solutions, "li").filter(({ inner }) => inner.includes("href=\"https://"));
-  assert.ok(wall.length >= 20, "the deployment wall must list every organization");
-});
-
-test("the deployment record carries the owner's corrections and reads by organization", async () => {
-  // Waytek Wire was Fastfetch order fulfillment, not CIMS; "Wanted" was never a deployment.
-  assert.deepEqual(deployments.find(({ name }) => name === "Waytek Wire"), {
-    name: "Waytek Wire",
-    url: "https://www.waytekwire.com/",
-    solution: "Order Fulfillment System",
-    employer: "Fastfetch Corporation"
-  });
-  assert.equal(deployments.some(({ name }) => /^wanted$/i.test(name)), false, "Wanted is not a deployment");
-
-  // By employer, then alphabetically by name within each.
-  const employers = ["Supply Chain Technologies", "Spartan Technology Solutions", "Fastfetch Corporation"];
-  const byName = (a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" });
-  const ordered = employers.flatMap((employer) => deployments.filter((deployment) => deployment.employer === employer).sort(byName));
-  assert.deepEqual(deployments.map(({ name }) => name), ordered.map(({ name }) => name), "deployments must read by employer, then by name");
-
-  const solutions = await readDist("solutions/index.html");
-  const wall = tagBlocks(solutions, "ul").find(({ attrs }) => attrs.get("class") === "deployment-wall");
-  assert.deepEqual(
-    tagBlocks(wall.inner, "li").map(({ inner }) => textContent(inner)),
-    deployments.map(({ name, url, solution, employer }) => `${name}${url ? " ↗" : ""} ${solution} ${employer}`),
-    "Solutions must list every deployment, with its solution and employer, in record order"
-  );
-
-  const deploymentHrefs = new Set(anchors(wall.inner).map(({ href }) => href.replaceAll("&amp;", "&")));
-  assert.equal(deploymentHrefs.has("https://www.amware.net/"), false, "Amware must not link to its dead site");
-  assert.equal(deploymentHrefs.has("https://www.buyseasons.com/"), false, "BuySeasons must not link to its dead site");
-  for (const deployment of deployments) {
-    if (deployment.url) assert.ok(deploymentHrefs.has(deployment.url), `${deployment.name} must keep its deployment link`);
-  }
-});
-
-test("Capabilities leads Solutions and links to every architecture demonstration", async () => {
-  const solutions = await readDist("solutions/index.html");
-  const sections = startTags(solutions, "section")
-    .map(({ attrs }) => attrs.get("id"))
-    .filter(Boolean);
-  assert.deepEqual(sections.slice(0, 4), ["capabilities", "industries", "integrations", "deployments"]);
-
-  const links = new Set(anchors(solutions).map(({ href }) => href));
-  assert.ok(links.has("https://demo.wizardgang.ai/demos"), "Capabilities must link to the full demo workbench");
-  for (const id of ["d1", "r2", "rest", "graphql", "webhooks", "identity", "mcp", "edge", "workers", "durable-objects", "accessibility", "i18n"]) {
-    assert.ok(links.has(`https://demo.wizardgang.ai/demos#${id}`), `Capabilities must link to the ${id} demo`);
-  }
-  assert.ok(links.has("https://demo.wizardgang.ai/assurance"));
-  assert.ok(links.has("https://demo.wizardgang.ai/security"));
-});
-
-test("the Projects index introduces each case study and its available live demo", async () => {
-  const index = await readDist("projects/index.html");
-  requireText(index, ["Projects", "Hexframe"], "projects index");
-  for (const slug of PROJECT_SLUGS) {
-    assert.ok(anchorWithHref(index, `/projects/${slug}/`), `Projects index must link to ${slug}`);
-  }
-  for (const { live } of Object.values(PROJECT_LINKS)) {
-    if (live) assert.ok(anchorWithHref(index, live), `Projects index must link to live demo ${live}`);
-  }
-});
-
 
 test("canonical pages never link through a redirect-only path", async () => {
   const redirectOnly = ["/resume", "/professional", "/software", "/services", "/work", "/contact", "/glossary", "/about/team", "/about/company"];
@@ -507,10 +371,10 @@ test("React frontend toolchain owns the shared production shell without becoming
 
   const registrySource = await readRoot("src/app/pageRegistry.ts");
   assert.match(registrySource, /createStaticPageRegistry/);
-  for (const authority of ["HOME_PAGE", "SOLUTIONS_PAGE", "createCaseStudyPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
+  for (const authority of ["HOME_PAGE", "NOT_FOUND_PAGE"]) {
     assert.ok(registrySource.includes(authority), `React page registry missing ${authority}`);
   }
-  assert.doesNotMatch(registrySource, /pages\/(?:Work|Services|Contact|Glossary|CompanyNavigation)/, "retired page modules must stay out of the React registry");
+  assert.doesNotMatch(registrySource, /SOLUTIONS_PAGE|PROJECTS_PAGE|ABOUT_PAGE|createCaseStudyPageDefinitions|pages\/(?:Work|Services|Contact|Glossary|CompanyNavigation)/, "retired page modules must stay out of the React registry");
 
   const vite = await readRoot("vite.config.ts");
   assert.match(vite, /ssr:\s*"src\/app\/Document\.tsx"/);

@@ -73,45 +73,29 @@ test("README documents the current entry points and acceptance gate", async () =
     "dist/_headers"
   ]) assert.ok(readme.includes(value), `README is missing current contract: ${value}`);
 
-  // The canonical pages, and nothing a retired structure left behind.
-  for (const route of [
-    "/solutions/",
-    "/projects/",
-    "/projects/hexframe/",
-    "/about/"
-  ]) {
-    assert.ok(readme.includes(route), `README must document the canonical route ${route}`);
+  for (const anchor of ["/#services", "/#experience", "/#about", "/#contact"]) {
+    assert.ok(readme.includes(anchor), `README must document current anchor ${anchor}`);
   }
-  for (const retired of ["/work/", "/services/", "/contact/", "/software/", "/solutions/websites/", "/glossary/"]) {
-    assert.ok(!readme.includes(`\n${retired}`), `README must not present the retired route ${retired} as canonical`);
-  }
+  assert.match(readme, /ordinary 404/);
+
 });
 
-test("information architecture documents current company ownership and static-first constraints", async () => {
+test("information architecture describes one canonical page and protected runtime", async () => {
   const ia = await source("docs/INFORMATION-ARCHITECTURE.md");
   for (const value of [
-    "Status: current-state authority",
-    "/solutions/",
-    "/about/",
-    "demo.wizardgang.ai",
-    "src/app/pageRegistry.ts",
-    "src/app/navigation.ts",
-    "src/styles/tokens.css",
-    "There is no SPA router",
-    "public/_headers",
-    "npm run check"
-  ]) assert.ok(ia.includes(value), `information architecture is missing current contract: ${value}`);
-
-  // Compatibility redirects are retired; the doc has to say the paths are dead.
-  assert.match(ia, /Compatibility redirects have been retired/, "the retirement decision must be documented");
-  assert.match(ia, /fall through to the ordinary 404/, "dead paths must be documented as dead");
-  assert.match(ia, /none of them were ever\npages on this site/, "the surviving redirects must be justified");
-  assert.match(ia, /sitemap\.xml` is a projection of it/, "the sitemap must be documented as derived, not maintained");
-  assert.match(ia, /only `:root` custom properties and `@font-face`/, "the token authority's limit must be documented");
-  assert.match(ia, /menus that open on hover or keyboard focus/, "the navigation behavior must be documented");
-  assert.match(ia, /at most one preview runs at a time/, "the preview motion contract must be documented");
-  assert.match(ia, /employment rather than WizardGang client work/, "the attribution boundary must be documented where the evidence lives");
-  assert.match(ia, /zero horizontal overflow/, "the 200% text contract must be documented");
+    "Status: current-state authority", "/#services", "/#experience", "/#about", "/#contact",
+    "src/app/pageRegistry.ts", "src/app/navigation.ts", "src/styles/tokens.css",
+    "There is no SPA router", "public/_headers", "npm run check"
+  ]) {
+    assert.ok(ia.includes(value), `information architecture is missing ${value}`);
+  }
+  assert.match(ia, /one canonical public document/i);
+  assert.match(ia, /ordinary 404/);
+  assert.match(ia, /sitemap.xml.*projection/);
+  assert.match(ia, /only `:root` custom properties and `@font-face`/);
+  assert.match(ia, /no dropdown submenus/i);
+  assert.match(ia, /not presented as WizardGang client engagements/);
+  assert.match(ia, /zero horizontal overflow/);
 });
 
 test("relative Markdown documentation links resolve", async () => {

@@ -1,37 +1,19 @@
 # Source and system ownership
 
-This repository owns the public `wizardgang.ai` company site. Product runtimes and their operating records remain separate systems with their own source authorities.
+This repository owns the single-page public `wizardgang.ai` company website, its typed content, generated static assets, canonical route registry, and stateless site Worker.
 
-| Surface | Canonical source | This repository's relationship |
-| --- | --- | --- |
-| `wizardgang.ai` | [`Wizard-Gang/WizardGang`](https://github.com/Wizard-Gang/WizardGang) | Owns company pages, typed site data, project metadata/presentation, static assets, canonical route generation, and the stateless compatibility Worker |
-| `hexframe.wizardgang.ai` | [`Wizard-Gang/Hexframe`](https://github.com/Wizard-Gang/Hexframe) | Main site describes and links to the product; Hexframe owns its runtime, simulation, content, tests, releases, and deployment |
-| `demo.wizardgang.ai` | external Demo Framework application | Main site explains the framework and links outward; the demo system owns its detailed architecture, executable demonstrations, assurance/security surfaces, and operational evidence |
+Independent software applications and `demo.wizardgang.ai` retain their own source, runtimes, operating records, and deployments. The company homepage neither advertises personal software projects nor republishes their code or evidence.
 
 ## Company and professional ownership
 
-WizardGang-owned projects, capabilities, and solutions are company content.
+The public home page describes WizardGang's services, but its Experience section reflects prior professional roles. Work completed for an employer or its customers is not a WizardGang client engagement. Preserve that distinction when changing marketing copy.
 
-Jacob Yongue's employer roles, employer/customer deployments, and professional outcomes are Team/professional content. They can support capability statements when attribution remains explicit, but they are not WizardGang client engagements unless a source establishes that relationship.
-
-The current public ownership model is documented in [`INFORMATION-ARCHITECTURE.md`](INFORMATION-ARCHITECTURE.md).
+The current public structure is described in [INFORMATION-ARCHITECTURE.md](INFORMATION-ARCHITECTURE.md).
 
 ## Data boundary
 
-Public Git history may contain source, configuration, documentation, synthetic fixtures, and reproducible tests.
-
-Do not commit:
-
-- production credentials or operator secrets;
-- private runtime state;
-- personal/private library metadata;
-- customer or publisher-owned confidential records;
-- copyrighted publication content that the project is not authorized to redistribute.
-
-Product-specific runtime state, backup/recovery procedures, and operating records stay with the product that owns them. WizardGang.ai links to those authorities rather than copying them into this repository.
+Public Git history may contain code, documentation, generated-safe synthetic examples, and reproducible tests. Do not commit production credentials, private runtime state, personal/private library data, customer confidential records, or unlicensed third-party content.
 
 ## Verification boundary
 
-Repository acceptance protects the ownership boundary by checking canonical project/source relationships, company-versus-professional content ownership, route authority, and absence of retired parallel presentation sources.
-
-`npm run check` is the authoritative gate before release work.
+`npm run check` protects the public route inventory, company/professional attribution, site assets, accessibility, no-hydration frontend authority, Worker and security boundaries. Independent project runtimes are not modified in this repository.

@@ -45,7 +45,7 @@ test("React owns shared chrome and every canonical page body", async () => {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
-  for (const authority of ["HOME_PAGE", "SOLUTIONS_PAGE", "PROJECTS_PAGE", "createCaseStudyPageDefinitions", "ABOUT_PAGE", "NOT_FOUND_PAGE"]) {
+  for (const authority of ["HOME_PAGE", "NOT_FOUND_PAGE"]) {
     assert.ok(registrySource.includes(authority), `React page registry is missing ${authority}`);
   }
 
@@ -72,11 +72,10 @@ test("the static shell loads only the generated TypeScript browser module withou
 
   const nav = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
   assert.ok(nav);
-  // Solutions and Projects link to their index pages and expose section links.
+  // The entire company site is one document with four section anchors.
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner).replace(/\s+/g, " ").trim()),
-    ["Solutions", "Capabilities", "Industries", "Integrations", "Deployments",
-     "Projects", "Hexframe", "About"]
+    ["Services", "Experience", "About", "Contact"]
   );
 });
 

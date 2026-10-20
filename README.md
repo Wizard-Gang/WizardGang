@@ -1,20 +1,15 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The home page leads with the software — projects, then industries and integrations — and every project opens in place.
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The public website is a single, scrollable document describing custom software, integrations, data and reporting, workflow automation, previous professional experience, and contact.
 
 ```text
-/                        selected projects, industries and integrations
-/solutions/              capabilities, then the professional record
-/projects/               project index
-/projects/hexframe/      case study
-/about/                  the pitch, the person, the career record
+/                       #services, #experience, #about, #contact
+404.html                generated noindex fallback; not a canonical route
 ```
 
-Navigation is Solutions, Projects, About. Solutions and Projects link to their index pages and open their menus on hover or keyboard focus; contact is in the footer. These five routes are the whole site: retired paths return the ordinary 404. The generated 404 is noindex and is not a sitemap entry.
+The navigation links directly to anchors on `/`. The retired `/solutions/`, `/projects/`, `/projects/hexframe/`, and `/about/` paths have no generated pages and fall through to the ordinary 404. No compatibility redirects are added. The Worker retains the outward shortcuts `/github`, `/compliance`, `/accessibility`, and `/security`. The `www` host redirects to the apex.
 
-The Worker keeps only what was never a page here — `/github`, `/compliance`, `/accessibility` and `/security` point outward. Everything else falls through to the site's assets and ordinary 404 behavior. `www.wizardgang.ai` redirects to the apex.
-
-**[Live site](https://wizardgang.ai)** · **[Solutions](https://wizardgang.ai/solutions/)** · **[Projects](https://wizardgang.ai/projects/)**
+**[Live site](https://wizardgang.ai)**
 
 ## Architecture
 
@@ -34,21 +29,20 @@ The site runs as the `wizardgang` Worker on baseline's shared `wg-edge` shell, v
 
 ## Presentation
 
-Two authored stylesheets, one job each:
+The site uses a mobile-first layout and two authored stylesheets:
 
-- `src/styles/tokens.css` — the design system: one zinc palette with a single lime accent, one type scale, one spacing scale, one radius scale, and the self-hosted faces. It may declare only `:root` custom properties and `@font-face`, which the acceptance gate enforces. The light preference re-points the same token names.
-- `src/styles/globals.css` — every rule, consuming those tokens. It is mobile first: rules outside a query are the phone layout, and `min-width` queries at 40, 48, 64 and 80rem add columns. Product previews are size containers, so each recreation adapts to its frame rather than the viewport.
+- `src/styles/tokens.css` — the zinc palette, lime accent, typography, spacing, radius and self-hosted fonts. It may declare only `:root` custom properties and `@font-face`.
+- `src/styles/globals.css` — layout and presentation consuming the tokens, including enlarged text, contrast, reduced motion, and mobile navigation. Legacy unused CSS is scheduled for removal in the next controlled cleanup.
 
-Every heading resolves to one of four scale tokens, so a page cannot invent its own display size. Instrument Sans is the one interface face; JetBrains Mono is kept for machine values — the build identifier and the product recreations. Both ship from `public/fonts/` as latin-subset variable WOFF2 under the SIL Open Font License; the production policy is `default-src 'none'` with `font-src 'self'`, so a font from another origin would not load.
+Instrument Sans is the primary typeface, with JetBrains Mono for machine-readable build information. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin.
 
 ## Content ownership
 
-- Home — the projects lead as expandable cards because each carries a preview; industry and integration categories follow in responsive grids. Project previews start closed and animate only while open.
-- Solutions — Capabilities first: each working example links to its architecture demo, with a link to the full demo workbench. The professional record follows in three sections, projected from `src/data/professional-systems.ts`, with every deployment carrying what was delivered and the employer it was delivered under.
-- Projects — an index of the work, then one case study per project: problem, what was built, architecture, approach, result.
-- About — the argument for the practice, the person, and the career record.
+- Home — concise company services, a clearly attributed summary of professional experience, about, and direct email contact, all in one document.
+- Navigation — links to `/#services`, `/#experience`, `/#about`, and `/#contact`.
+- Retired personal-project pages — not generated, listed or linked from company navigation. Independent project runtimes and their repositories are outside this site's deployment boundary.
 
-Typed domain data lives under `src/data/`. Industries, integrations and deployments are Jacob Yongue's employment record, not WizardGang client work, and Solutions states that boundary before the professional record.
+Professional experience is not represented as WizardGang client work. The website does not invent customer endorsements, certifications, or delivered company engagements.
 
 ## Run locally
 
@@ -117,36 +111,30 @@ npm run test:docs
 
 ```text
 src/
-  app/         document, contracts, navigation, canonical page registry
-  browser/     progressive enhancement
-  components/  shared presentation
-  data/        typed content authorities
-  pages/       canonical React page bodies
-  styles/      design tokens and production CSS
-  worker/      the site's handler inside the wg-edge shell
-platform/      baseline's shared Worker shell, conformance and deploy checks (vendored, never edited)
-scripts/       build, local development, verification, maintenance
+  app/         document metadata, typed navigation, page registry
+  browser/     progressive enhancement for display/language and mobile navigation
+  components/  shared header, preferences and footer
+  data/        company contact and outward links
+  pages/       Home and NotFound
+  styles/      tokens and CSS
+  worker/      redirects and asset handler
+platform/      pinned baseline wg-edge Worker shell; never edit it here
+scripts/       builds, local development and verification
 tests/         repository acceptance
-public/        deployable static assets, fonts, and production headers
-docs/          current operating and architecture documentation
+public/        static branding, fonts and security headers
+docs/          current architecture, ownership and accessibility records
 ```
 
 Key authorities:
 
-- `src/app/pageRegistry.ts` — generated page inventory.
-- `src/app/navigation.ts` — primary navigation and current-section model.
-- `src/data/projects.ts` — project facts, routes, tags, actions, and the Projects menu.
-- `src/data/capabilities.ts` — what WizardGang can demonstrate, and the demo fragment that proves each one.
-- `src/data/solutions-menu.ts` — the Solutions page sections and menu.
-- `src/data/professional-systems.ts` — the domains, systems and deployments Solutions projects.
-
-- `src/data/team.ts`, `src/data/professional.ts`, `src/data/professional-systems.ts` — people, career history, and attributed evidence.
-- `src/components/ProjectSurfaces.tsx` — shared project presentation contract.
-- `src/app/Document.tsx` — static document, metadata, and sitemap composition.
-- `src/worker/index.ts` — outward shortcuts, robots policy and asset fallback inside the shell.
-- `src/styles/tokens.css` — the design system.
+- `src/app/pageRegistry.ts` — the two generated HTML outputs (root and 404).
+- `src/app/navigation.ts` — root fragment navigation.
+- `src/pages/Home.tsx` — services, experience, about and contact.
+- `src/app/Document.tsx` — static document, metadata and derived sitemap.
+- `src/styles/tokens.css` and `src/styles/globals.css` — presentation.
+- `src/worker/index.ts` — outward shortcuts and asset fallback.
+- `public/_headers` — production security headers.
 - `vite.config.ts` — static build pipeline.
-- `wrangler.jsonc` — the one top-level `wizardgang` Worker config, checked against baseline's conformance rules.
 
 ## Documentation
 
