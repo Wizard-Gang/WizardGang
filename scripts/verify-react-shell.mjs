@@ -26,7 +26,7 @@ assert.match(chromeSource, /NAVIGATION_ITEMS/);
 assert.match(chromeSource, /Preferences/);
 assert.match(chromeSource, /WizardGang · Software, systems &amp; integrations/);
 
-for (const label of ["Services", "Experience", "About", "Contact"]) {
+for (const label of ["Services", "Integrations", "About"]) {
   assert.match(navigationSource, new RegExp(`label: "${label}"`));
 }
 assert.doesNotMatch(navigationSource, /PROJECT_MENU|SOLUTIONS_MENU|\/projects\//);
@@ -49,10 +49,11 @@ assert.match(home, /<html\b[^>]*lang="en"/i);
 assert.match(home, /<header\b[^>]*class="site-header"/i);
 assert.match(home, /<footer\b[^>]*class="site-footer"/i);
 assert.match(home, /<main\b[^>]*id="main"/i);
-for (const fragment of ["services", "experience", "about", "contact"]) {
+for (const fragment of ["services", "integrations", "about"]) {
   assert.ok(home.includes(`id="${fragment}"`), `missing #${fragment}`);
 }
 assert.doesNotMatch(home, /data-wizardgang-legacy-body|id="root"|react-dom\/client|hydrateRoot|createRoot/);
+assert.doesNotMatch(home, /href="mailto:/, "a portfolio cannot expose direct email links");
 
 const browserModule = home.match(/<script\b[^>]*type="module"[^>]*src="([^"]+)"/i)?.[1] ?? "";
 assert.match(browserModule, /^\/assets\/browser-[A-Za-z0-9_-]+\.js$/);

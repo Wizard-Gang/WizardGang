@@ -5,12 +5,11 @@ import { CANONICAL_PAGES, anchors, generatedHtmlFiles, readDist, readRoot, tagBl
 
 const expected = [
   ["Services", "/#services"],
-  ["Experience", "/#experience"],
-  ["About", "/#about"],
-  ["Contact", "/#contact"]
+  ["Integrations", "/#integrations"],
+  ["About", "/#about"]
 ];
 
-test("navigation has only four root fragment destinations", async () => {
+test("navigation has three root fragment destinations", async () => {
   assert.deepEqual(NAVIGATION_ITEMS.map(({ label, href }) => [label, href]), expected);
   for (const route of ["/", "/solutions/", "/projects/", "/projects/hexframe/", "/about/", "/404/"]) {
     assert.equal(navigationSectionForPath(route), "", `path ${route} cannot identify a scroll fragment`);
@@ -45,7 +44,7 @@ test("desktop and no-JS mobile navigation link to the same homepage sections", a
     }
     const links = anchors(html);
     assert.ok(links.some(a => a.href === "/" && a.attrs.get("aria-label") === "WizardGang home"));
-    assert.ok(links.some(a => a.href === "mailto:jacob@wizardgang.ai"));
+    assert.ok(!links.some(a => a.href.startsWith("mailto:")), "portfolio has no direct email links");
     assert.ok(links.some(a => a.href === "https://github.com/Wizard-Gang" && a.attrs.get("aria-label") === "Visit WizardGang on GitHub"));
   }
   assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "404.html"]);

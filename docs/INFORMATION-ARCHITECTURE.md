@@ -4,21 +4,21 @@ Status: current-state authority for the public site structure, content ownership
 
 ## Public hierarchy
 
-One canonical public document: `/`. The navigation targets `/#services`, `/#experience`, `/#about` and `/#contact` in that document. The only other generated HTML is the ordinary noindex `404.html`. Retired `/solutions/`, `/projects/`, `/projects/hexframe/` and `/about/` paths are not rendered and return the normal asset 404 without a compatibility redirect.
+One canonical public document: `/`. The navigation targets `/#services`, `/#integrations` and `/#about` in that document. The only other generated HTML is the ordinary noindex `404.html`. Retired `/solutions/`, `/projects/`, `/projects/hexframe/` and `/about/` paths are not rendered and return the normal asset 404 without a compatibility redirect.
 
 `src/app/pageRegistry.ts` is the generated-page inventory; `sitemap.xml` is a projection of it, with `/` as its sole entry. `src/app/navigation.ts` is the only primary navigation authority. Both desktop and mobile menus use real anchors; mobile is visible without JavaScript and becomes button-controlled when enhancement runs. There are no dropdown submenus.
 
 ## Content ownership
 
-`src/pages/Home.tsx` owns service descriptions and company positioning. Its Experience section summarizes prior professional work involving warehouse operations, enterprise integrations and public-sector software. That experience belongs to roles at previous employers and is explicitly not presented as WizardGang client engagements. The contact action is `mailto:jacob@wizardgang.ai`. There are no personal-project galleries, Hexframe case studies, software previews, or architecture-demo catalogs on this website.
+`src/pages/Home.tsx` owns the capability summary and five attributed integrations: compliant shipping and dock routing; enterprise ERP/WMS cutovers; carrier and fulfillment APIs; inventory reconciliation; and regulated case-management data. These were completed in previous professional roles and are not presented as WizardGang client engagements. There is no Contact section or public email CTA; GitHub, LinkedIn and official platform documentation are portfolio destinations. There are no personal-project galleries, Hexframe case studies, software previews, or architecture-demo catalogs on this website.
 
 Independent products and `demo.wizardgang.ai` retain their own code, runtime and operating evidence outside this repository. This site does not claim another organization's project as a WizardGang engagement.
 
 ## Presentation and accessibility
 
-`src/styles/tokens.css` declares only `:root` custom properties and `@font-face`. `src/styles/globals.css` consumes those tokens and is mobile-first. Instrument Sans and JetBrains Mono are self-hosted under the SIL Open Font License. Preferences support English/Spanish, dark/light theme, readable layout and 200% text. Reduced-motion handling follows the system preference and no animated product previews are published. Enlarged text must produce zero horizontal overflow.
+`src/styles/tokens.css` declares only `:root` custom properties and `@font-face`. `src/styles/globals.css` uses a restrained, type-led, light-default portfolio presentation with generous spacing inspired by Phantom Insights; no third-party assets or licensed fonts are copied. Instrument Sans and JetBrains Mono remain self-hosted under the SIL Open Font License. Preferences support English/Spanish, optional dark theme, readable layout and 200% text. Reduced motion follows the system preference; enlarged text must produce zero horizontal overflow.
 
-The complete page, navigation, main heading, section anchors and contact links exist before JavaScript. The browser enhances menu controls and saved preferences only. There is no SPA router and no React hydration.
+The complete page, navigation, main heading, integration examples, section anchors and portfolio links exist before JavaScript. The browser enhances menu controls and saved preferences only. There is no SPA router and no React hydration.
 
 ## Route policy
 

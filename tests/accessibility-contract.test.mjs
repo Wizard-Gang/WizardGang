@@ -14,9 +14,8 @@ import {
 // All navigation links move within the one canonical document.
 const navLinks = new Map([
   ["Services", "/#services"],
-  ["Experience", "/#experience"],
-  ["About", "/#about"],
-  ["Contact", "/#contact"]
+  ["Integrations", "/#integrations"],
+  ["About", "/#about"]
 ]);
 
 function normalizedVisible(anchor) {
@@ -167,7 +166,7 @@ test("shared shell is protected by semantics rather than serialized markup", asy
 
       const footer = tagBlocks(html, "footer");
       assert.equal(footer.length, 1, "page must expose one footer landmark");
-      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "mailto:jacob@wizardgang.ai" && /jacob@wizardgang\.ai/i.test(normalizedVisible(anchor))));
+      assert.ok(!pageAnchors.some((anchor) => anchor.href.startsWith("mailto:")), "portfolio has no direct email links");
       assert.ok(findAnchor(footer[0].inner, (anchor) => /linkedin\.com\/in\/jacob-yongue/i.test(anchor.href) && /LinkedIn/i.test(normalizedVisible(anchor))));
       assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang" && anchor.attrs.get("aria-label") === "Visit WizardGang on GitHub"));
       assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "/version.json" && /^Build /i.test(normalizedVisible(anchor))));
@@ -203,8 +202,9 @@ test("language, theme, readable layout and text enlargement remain on every page
       assert.match(gear.attrs.get("aria-label") || "", /preferences/i, "the gear needs an accessible name");
       assert.equal(textContent(gear.inner), "", "the gear is an icon, so its name comes from aria-label");
       assert.equal(ids.get("theme-dark").attrs.get("type"), "radio");
-      assert.ok(ids.get("theme-dark").attrs.has("checked"), "dark theme remains the default");
+      assert.equal(ids.get("theme-dark").attrs.has("checked"), false, "dark theme is opt-in");
       assert.equal(ids.get("theme-light").attrs.get("type"), "radio");
+      assert.ok(ids.get("theme-light").attrs.has("checked"), "light portfolio theme is default");
       assert.equal(ids.get("reading-layout").attrs.get("type"), "checkbox");
       assert.equal(ids.get("text-size-200").attrs.get("type"), "checkbox");
 
@@ -212,13 +212,14 @@ test("language, theme, readable layout and text enlargement remain on every page
   }
 });
 
-test("contact action and one-page fragments retain accessible destinations", async () => {
+test("portfolio fragments and non-email actions retain accessible destinations", async () => {
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0]?.inner ?? "";
-  for (const id of ["services", "experience", "about", "contact"]) {
+  for (const id of ["services", "integrations", "about"]) {
     assert.match(main, new RegExp(`id="${id}"`));
   }
-  assert.ok(anchors(main).some(a => a.href === "mailto:jacob@wizardgang.ai"));
+  assert.ok(anchors(main).some(a => a.href === "#integrations"));
+  assert.ok(!anchors(main).some(a => a.href.startsWith("mailto:")));
 });
 
 test("the single-page document includes no animated product preview", async () => {
@@ -234,7 +235,7 @@ test("CSS exposes preference behavior, mobile open state, target sizing, and red
   assert.doesNotMatch(styles, /\.project-visual|\.lab-playhead|\.nav-item-menu/,
     "the single-page stylesheet must not contain removed preview and menu rules");
   assert.match(styles, /html:has\(#text-size-200:checked\)\s*\{[^}]*font-size:\s*200%/s);
-  assert.match(styles, /body:has\(#theme-light:checked\)\s*\{/);
+  assert.match(styles, /body:has\(#theme-dark:checked\)\s*\{/);
   assert.match(styles, /\.nav-toggle:not\(\[hidden\]\)\s*\{[^}]*display:\s*inline-flex/s);
   assert.match(styles, /\.nav-disclosure\s+\.site-nav-mobile:not\(\[hidden\]\)\s*\{[^}]*display:\s*flex/s);
 
@@ -250,11 +251,11 @@ test("CSS exposes preference behavior, mobile open state, target sizing, and red
 
 test("dark and light preference palettes retain readable text and visible focus contrast", async () => {
   const styles = await readDist("assets/styles.css");
-  const darkBlock = styles.match(/:root\s*\{([\s\S]*?)\}/)?.[1] || "";
-  const lightBlock = styles.match(/body:has\(#theme-light:checked\)\s*\{([\s\S]*?)\}/)?.[1] || "";
-  const dark = cssVariables(darkBlock);
+  const lightBlock = styles.match(/:root\s*\{([\s\S]*?)\}/)?.[1] || "";
+  const darkBlock = styles.match(/body:has\(#theme-dark:checked\)\s*\{([\s\S]*?)\}/)?.[1] || "";
   const light = cssVariables(lightBlock);
-  for (const [name, palette] of [["dark", dark], ["light", light]]) {
+  const dark = cssVariables(darkBlock);
+  for (const [name, palette] of [["light", light], ["dark", dark]]) {
     const background = palette.get("ink");
     for (const token of ["paper", "muted"]) {
       assert.ok(contrast(palette.get(token), background) >= 4.5, `${name} ${token} text must retain at least 4.5:1 contrast`);
@@ -270,7 +271,7 @@ test("browser preserves Spanish, saved display preferences and mobile interactio
     await readRoot("src/browser/index.ts"),
     await readRoot("src/browser/translations.ts")
   ].join("\n");
-  for (const word of ["wizardgang.preferences.v1", "Español", "Servicios", "Experiencia", "Contacto"]) {
+  for (const word of ["wizardgang.preferences.v1", "Español", "Servicios", "Integraciones"]) {
     assert.ok(script.includes(word), `missing browser language/control contract ${word}`);
   }
   assert.match(script, /storage\.getItem\(STORAGE_KEY\)/);

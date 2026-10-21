@@ -9,12 +9,12 @@ import {
 } from "./helpers.mjs";
 
 const ORIGIN = "https://wizardgang.ai";
-const sections = ["services", "experience", "about", "contact"];
-const labels = ["Services", "Experience", "About", "Contact"];
+const sections = ["services", "integrations", "about"];
+const labels = ["Services", "Integrations", "About"];
 const retired = ["/solutions/", "/projects/", "/projects/hexframe/", "/about/",
   "/work/", "/services/", "/contact/", "/resume", "/professional"];
 
-test("WG-137: one static root contains all four ordered, labelled fragments", async () => {
+test("WG-141: one static root contains all three ordered, labelled fragments", async () => {
   assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html"]);
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0];
@@ -29,22 +29,28 @@ test("WG-137: one static root contains all four ordered, labelled fragments", as
     assert.equal(section.attrs.get("aria-labelledby"), id + "-heading");
     assert.equal(startTags(section.inner, "h2").length, 1);
   }
-  assert.ok(anchors(main.inner).some((a) => a.href === "#services"));
+  assert.ok(anchors(main.inner).some((a) => a.href === "#integrations"));
 });
 
-test("WG-137: services, employer attribution, and contact are not a personal-project portfolio", async () => {
+test("WG-141: substantial previous-role integration portfolio with no email CTA", async () => {
   const content = tagBlocks(await readDist("index.html"), "main")[0].inner;
   const visible = textContent(content);
-  for (const phrase of ["Custom software", "System integrations", "Data & reporting",
-    "Workflow automation", "Warehouse & fulfillment", "ERP", "EDI", "SQL Server",
-    "Public-sector applications", "regulated", "prior professional roles, not WizardGang client engagements"]) {
-    assert.ok(visible.toLowerCase().includes(phrase.toLowerCase()), "missing public copy: " + phrase);
+  for (const phrase of ["System integration", "Warehouse automation", "Data & reporting",
+    "Regulated applications", "Shipping compliance & dock routing", "Shipium", "lot",
+    "expiry", "ship-by", "PLCs", "Enterprise ERP and WMS cutovers", "NetSuite",
+    "Sage", "Carrier and fulfillment integrations", "UPS", "USPS", "FedEx",
+    "Inventory and financial reconciliation", "Regulated case management and reporting",
+    "SQL Server", "CJIS", "prior professional roles, not WizardGang client engagements"]) {
+    assert.ok(visible.toLowerCase().includes(phrase.toLowerCase()), "missing portfolio proof: " + phrase);
   }
-  for (const removed of ["Hexframe", "SharkTank", "YarReader", "Selected projects"]) {
-    assert.ok(!visible.includes(removed), "retired project content: " + removed);
+  for (const removed of ["Hexframe", "SharkTank", "YarReader", "Selected projects", "Tell us what"]) {
+    assert.ok(!visible.includes(removed), "retired content: " + removed);
   }
-  const contact = tagBlocks(content, "section").find((s) => s.attrs.get("id") === "contact");
-  assert.ok(anchors(contact.inner).some((a) => a.href === "mailto:jacob@wizardgang.ai"));
+  assert.equal(startTags(content, "section").filter(section => section.attrs.get("id") === "contact").length, 0);
+  for (const path of await generatedHtmlFiles()) {
+    assert.equal(anchors(await readDist(path)).filter(a => a.href.startsWith("mailto:")).length, 0,
+      path + ": a direct email link was reintroduced");
+  }
 });
 
 test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced motion", async () => {
@@ -76,10 +82,10 @@ test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced moti
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 
-test("WG-137: 200% text reflows the cards, links and navigation", async () => {
+test("WG-141: 200% text reflows integration cards, links and navigation", async () => {
   const css = await readRoot("src/styles/globals.css");
   assert.match(css, /html:has\(#text-size-200:checked\)\s*\{\s*font-size:\s*200%/);
-  assert.match(css, /html:has\(#text-size-200:checked\)\s+\.home-topic-grid-services,[\s\S]*?grid-template-columns:\s*1fr/);
+  assert.match(css, /html:has\(#text-size-200:checked\)\s+\.home-topic-grid-services,[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-desktop\s*\{\s*display:\s*none/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-mobile:not\(\[hidden\]\)\s*\{\s*display:\s*flex\s*!important/);
   assert.match(css, /\.site-main, \.site-header-bar, \.site-footer\s*\{[^}]*width:\s*min\(100%, var\(--shell\)\)/s);
@@ -88,9 +94,9 @@ test("WG-137: 200% text reflows the cards, links and navigation", async () => {
 });
 
 test("WG-137: Spanish has navigation, visible copy and assistive labels", async () => {
-  for (const phrase of ["Services", "Experience", "About", "Contact",
-    "Custom software", "System integrations", "Data & reporting", "Workflow automation",
-    "This experience comes from prior professional roles, not WizardGang client engagements.",
+  for (const phrase of ["Services", "Integrations", "About",
+    "System integration", "Warehouse automation", "Data & reporting", "Regulated applications",
+    "These implementations come from prior professional roles, not WizardGang client engagements.",
     "Skip to main content", "Display and language preferences", "WizardGang home",
     "Primary", "Primary mobile", "Menu", "Build", "Not Found — WizardGang"]) {
     assert.notEqual(translateDynamic(phrase), phrase, "Spanish phrase missing: " + phrase);
@@ -120,7 +126,7 @@ test("WG-137: root-only sitemap and 404-page routing do not redirect retired URL
   }
   const assetCalls = [];
   const worker = createSiteWorker(
-    { version: "1.3.1", commit: "0123456789abcdef0123456789abcdef01234567" },
+    { version: "1.4.0", commit: "0123456789abcdef0123456789abcdef01234567" },
     { logSink: () => {} }
   );
   const env = { WG_APP: "wizardgang", ASSETS: { async fetch(request) {
@@ -136,16 +142,21 @@ test("WG-137: root-only sitemap and 404-page routing do not redirect retired URL
 });
 
 test("WG-137: safe outbound inventory, metadata, CSP and wg-edge boundary", async () => {
-  const outbound = new Set(["https://github.com/Wizard-Gang", "https://www.linkedin.com/in/jacob-yongue"]);
+  const outbound = new Set([
+    "https://github.com/Wizard-Gang", "https://www.linkedin.com/in/jacob-yongue",
+    "https://docs.shipium.com/docs/apis-introduction", "https://www.netsuite.com/",
+    "https://www.sage.com/en-us/erp/", "https://www.ups.com/",
+    "https://www.usps.com/", "https://www.fedex.com/"
+  ]);
   for (const path of await generatedHtmlFiles()) {
     const html = await readDist(path);
     for (const link of anchors(html)) {
       if (link.href.startsWith("https://")) {
         assert.ok(outbound.has(link.href), path + ": unknown external link " + link.href);
       } else if (link.href.startsWith("mailto:")) {
-        assert.equal(link.href, "mailto:jacob@wizardgang.ai");
+        assert.fail(path + ": unexpected mailto link " + link.href);
       } else {
-        assert.ok(link.href.startsWith("/") || link.href === "#main" || link.href === "#services",
+        assert.ok(link.href.startsWith("/") || link.href === "#main" || link.href === "#integrations",
           path + ": unsafe link " + link.href);
         assert.ok(!link.href.startsWith("//"));
       }

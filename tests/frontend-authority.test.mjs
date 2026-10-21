@@ -140,7 +140,7 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   assert.match(chrome, /import \{ NAVIGATION_ITEMS \} from "\.\.\/app\/navigation"/, "shared chrome must consume the typed navigation authority");
   assert.match(navigation, /export const NAVIGATION_ITEMS/, "navigation must have one typed source");
   assert.match(navigation, /navigationSectionForPath/, "current-section matching must remain centralized");
-  for (const label of ["Services", "Experience", "About", "Contact"]) {
+  for (const label of ["Services", "Integrations", "About"]) {
     assert.ok(navigation.includes(`label: "${label}"`), `current navigation authority is missing ${label}`);
   }
   for (const retiredLabel of ["Work", "Projects", "Solutions", "Software", "Glossary", "GitHub"]) {
@@ -183,9 +183,9 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
 
 test("single-page content and styling authorities remain singular and valid", async () => {
   const site = await readRoot("src/data/site.ts");
-  assert.match(site, /CONTACT_EMAIL/);
+  assert.doesNotMatch(site, /CONTACT_EMAIL/, "public site data must not expose an email CTA");
   const home = await readRoot("src/pages/Home.tsx");
-  for (const section of ["services", "experience", "about", "contact"]) {
+  for (const section of ["services", "integrations", "about"]) {
     assert.ok(home.includes(`id="${section}"`), `missing section ${section}`);
   }
   assert.match(home, /prior professional roles, not WizardGang client engagements/);
