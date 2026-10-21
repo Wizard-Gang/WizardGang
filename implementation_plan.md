@@ -2,9 +2,8 @@
 
 ## Open tasks
 
-### WG-144 — [CONTENT] Restore the concise historical integrations inventory
+### WG-145 — [RELEASE] Publish the historical integrations correction as v1.5.1
 
-- Dependency: WG-143 merged and resulting-main CI green.
-- Source of truth: The retired /solutions/ integration record at `src/data/professional-systems.ts` in commit `e7944ff21609d24d09e08df110bdd6aa3ac0383d`. The WG-141 narrative cases are not an authorized replacement for that historical inventory.
-- Scope: Replace the lengthy invented case-study prose and outcome claims with a concise, scannable, category-and-platform inventory drawn from the actual old record. Explicitly preserve Shipium and other verifiable historic systems, employer-work attribution, root-only navigation, no-contact/email CTA, accessible mobile and 200% layouts, and Spanish. Retain the current typographic design; remove old cards/chips and unnecessary outbound product links.
-- Acceptance: Cite precise historical provenance in source; tests protect legacy entries, prohibit invented case studies and email CTAs, verify root/404, translations, visual CSS constraints and security. Pinned install, full `npm run check`, focused tests, deploy dry-run, exact-head `verify`/`change-id`, squash merge and green resulting-main CI. No version change, release, or deployment.
+- Dependency: WG-144 merged and resulting-main CI green, with the compact historical portfolio verified against the retired /solutions/ source.
+- Scope: Advance only package.json and package-lock.json to 1.5.1, remove the completed task from the permanent queue and publish the exact accepted commit through the canonical annotated v1.5.1 tag, non-draft GitHub Release and pinned baseline protected production workflow.
+- Acceptance: Exact-head verify/change-id and resulting-main CI green; annotated tag resolves to the merged release commit; published GitHub Release matches; protected production approval is independently recorded; Cloudflare traffic 100% on that release; live /version.json matches wizardgang 1.5.1 and the release commit; root presents historical integration rows, retired pages return 404, health/assets pass. No bypass, direct Wrangler publish, DNS or secrets/settings mutations. Stop on unapproved production gate or provider error.

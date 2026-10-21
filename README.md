@@ -32,14 +32,14 @@ The site runs as the `wizardgang` Worker on baseline's shared `wg-edge` shell, v
 The site uses a mobile-first, light-default portfolio layout with dark/light preferences and two authored stylesheets:
 
 - `src/styles/tokens.css` — the light/dark palette, blue interaction accent, display typography, spacing, radius and self-hosted fonts. It may declare only `:root` custom properties and `@font-face`.
-- `src/styles/globals.css` — spacious portfolio presentation consuming those tokens, including integration case studies, enlarged text, contrast, reduced motion, mobile navigation and display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
+- `src/styles/globals.css` — spacious portfolio presentation consuming those tokens, including compact historical integration rows, enlarged text, contrast, reduced motion, mobile navigation and display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
 
 Instrument Sans is the primary typeface, with JetBrains Mono for machine-readable build information. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin.
 
 ## Content ownership
 
-- Home — concise capabilities, substantive integrations from prior professional roles, and an about section, all in one document.
-- Navigation — links to `/#services`, `/#integrations`, and `/#about`. Non-email links lead to official platform sites or developer profiles.
+- Home — concise capabilities, historical integration platform rows from prior professional roles, and an about section, all in one document.
+- Navigation — links to `/#services`, `/#integrations`, and `/#about`. Non-email links lead to developer profiles.
 - Retired personal-project pages — not generated, listed or linked from company navigation. Independent project runtimes and their repositories are outside this site's deployment boundary.
 
 Integration examples are explicitly attributed to previous professional roles, not WizardGang client engagements. The website does not invent customer endorsements, certifications, or delivered company engagements.

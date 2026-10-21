@@ -10,7 +10,7 @@ One canonical public document: `/`. The navigation targets `/#services`, `/#inte
 
 ## Content ownership
 
-`src/pages/Home.tsx` owns the capability summary and five attributed integrations: compliant shipping and dock routing; enterprise ERP/WMS cutovers; carrier and fulfillment APIs; inventory reconciliation; and regulated case-management data. These were completed in previous professional roles and are not presented as WizardGang client engagements. There is no Contact section or public email CTA; GitHub, LinkedIn and official platform documentation are portfolio destinations. There are no personal-project galleries, Hexframe case studies, software previews, or architecture-demo catalogs on this website.
+`src/pages/Home.tsx` owns the capabilities and eight compact historical integration rows, grounded in the retired `src/data/professional-systems.ts` at commit `e7944ff21609d24d09e08df110bdd6aa3ac0383d`. ERP/WMS, commerce/fulfillment (including Shipium), automation, carriers, EDI, hardware, workflow and justice/legal platform names represent prior professional roles, not WizardGang client engagements or case studies. There is no Contact section, public email CTA or vendor-link wall. GitHub and LinkedIn are profile destinations; personal-project galleries, software previews and architecture demos are not published here.
 
 Independent products and `demo.wizardgang.ai` retain their own code, runtime and operating evidence outside this repository. This site does not claim another organization's project as a WizardGang engagement.
 
