@@ -32,24 +32,29 @@ test("WG-141: one static root contains all three ordered, labelled fragments", a
   assert.ok(anchors(main.inner).some((a) => a.href === "#integrations"));
 });
 
-test("WG-141: substantial previous-role integration portfolio with no email CTA", async () => {
+test("WG-144: precise historical integration inventory without case narratives or email", async () => {
   const content = tagBlocks(await readDist("index.html"), "main")[0].inner;
   const visible = textContent(content);
-  for (const phrase of ["System integration", "Warehouse automation", "Data & reporting",
-    "Regulated applications", "Shipping compliance & dock routing", "Shipium", "lot",
-    "expiry", "ship-by", "PLCs", "Enterprise ERP and WMS cutovers", "NetSuite",
-    "Sage", "Carrier and fulfillment integrations", "UPS", "USPS", "FedEx",
-    "Inventory and financial reconciliation", "Regulated case management and reporting",
-    "SQL Server", "CJIS", "prior professional roles, not WizardGang client engagements"]) {
-    assert.ok(visible.toLowerCase().includes(phrase.toLowerCase()), "missing portfolio proof: " + phrase);
-  }
-  for (const removed of ["Hexframe", "SharkTank", "YarReader", "Selected projects", "Tell us what"]) {
-    assert.ok(!visible.includes(removed), "retired content: " + removed);
-  }
+  const expected = [["ERP & WMS",["NetSuite","Microsoft Dynamics","Sage","Fishbowl","QuickBooks POS","RedPrairie","Blue Yonder","CIMS WMS","Canbar"]],["Commerce & fulfillment",["Shopify","Amazon Direct Fulfillment","ShipStation","Shipium","ProShip"]],["Warehouse automation",["A360","Locus","6 River Systems","AutoStore","Corvus","Pendant"]],["Carriers",["USPS","UPS","FedEx"]],["EDI & B2B",["EDI Orders","Acknowledgements","ASNs","Invoices","Inventory & Fulfillment Flows"]],["Warehouse hardware",["Zebra","Honeywell"]],["Development & workflow",["GitHub","Jira","Zapier"]],["Justice & legal",["Axon","LexisNexis"]]];
+  const rows = tagBlocks(content, "li").filter(item => item.attrs.get("class") === "integration-row");
+  assert.equal(rows.length, expected.length, "one compact row per historical category");
+  expected.forEach(([category, platforms], index) => {
+    const item = rows[index].inner;
+    assert.equal(textContent(tagBlocks(item, "h3")[0].inner), category);
+    const labels = textContent(tagBlocks(item, "p")[0].inner);
+    assert.equal(labels, platforms.join(" · "), "only historical brands and systems");
+    assert.equal(anchors(item).length, 0, "no vendor marketing-link wall");
+  });
+  assert.ok(visible.includes("These integrations come from prior professional roles, not WizardGang client engagements."));
+  for (const unsupported of [
+    "Shipping compliance & dock routing", "Enterprise ERP and WMS cutovers",
+    "Carrier and fulfillment integrations", "Inventory and financial reconciliation",
+    "Regulated case management and reporting", "more than $10 million",
+    "Hexframe", "SharkTank", "YarReader"
+  ]) assert.ok(!visible.includes(unsupported), "unsupported narrative: " + unsupported);
   assert.equal(startTags(content, "section").filter(section => section.attrs.get("id") === "contact").length, 0);
   for (const path of await generatedHtmlFiles()) {
-    assert.equal(anchors(await readDist(path)).filter(a => a.href.startsWith("mailto:")).length, 0,
-      path + ": a direct email link was reintroduced");
+    assert.equal(anchors(await readDist(path)).filter(a => a.href.startsWith("mailto:")).length, 0);
   }
 });
 
@@ -82,10 +87,10 @@ test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced moti
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 
-test("WG-141: 200% text reflows integration cards, links and navigation", async () => {
+test("WG-144: 200% text reflows integration rows and navigation", async () => {
   const css = await readRoot("src/styles/globals.css");
   assert.match(css, /html:has\(#text-size-200:checked\)\s*\{\s*font-size:\s*200%/);
-  assert.match(css, /html:has\(#text-size-200:checked\)\s+\.home-topic-grid-services,[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\)/);
+  assert.match(css, /html:has\(#text-size-200:checked\)\s+\.integration-row\s*\{\s*grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-desktop\s*\{\s*display:\s*none/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-mobile:not\(\[hidden\]\)\s*\{\s*display:\s*flex\s*!important/);
   assert.match(css, /\.site-main, \.site-header-bar, \.site-footer\s*\{[^}]*width:\s*min\(100%, var\(--shell\)\)/s);
@@ -96,7 +101,8 @@ test("WG-141: 200% text reflows integration cards, links and navigation", async 
 test("WG-137: Spanish has navigation, visible copy and assistive labels", async () => {
   for (const phrase of ["Services", "Integrations", "About",
     "System integration", "Warehouse automation", "Data & reporting", "Regulated applications",
-    "These implementations come from prior professional roles, not WizardGang client engagements.",
+    "ERP & WMS", "Commerce & fulfillment", "Carriers", "EDI & B2B",
+    "These integrations come from prior professional roles, not WizardGang client engagements.",
     "Skip to main content", "Display and language preferences", "WizardGang home",
     "Primary", "Primary mobile", "Menu", "Build", "Not Found — WizardGang"]) {
     assert.notEqual(translateDynamic(phrase), phrase, "Spanish phrase missing: " + phrase);
@@ -144,9 +150,7 @@ test("WG-137: root-only sitemap and 404-page routing do not redirect retired URL
 test("WG-137: safe outbound inventory, metadata, CSP and wg-edge boundary", async () => {
   const outbound = new Set([
     "https://github.com/Wizard-Gang", "https://www.linkedin.com/in/jacob-yongue",
-    "https://docs.shipium.com/docs/apis-introduction", "https://www.netsuite.com/",
-    "https://www.sage.com/en-us/erp/", "https://www.ups.com/",
-    "https://www.usps.com/", "https://www.fedex.com/"
+
   ]);
   for (const path of await generatedHtmlFiles()) {
     const html = await readDist(path);

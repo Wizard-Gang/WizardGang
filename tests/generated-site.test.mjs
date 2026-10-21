@@ -220,21 +220,22 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
   assert.ok(fills.has("#a489ff"));
 });
 
-test("the homepage presents a substantial attributed integrations portfolio without email CTAs", async () => {
+test("the homepage presents historical integration platforms without narrative claims or email CTAs", async () => {
   const home = await readDist("index.html");
   const main = tagBlocks(home, "main")[0]?.inner ?? "";
   const visible = textContent(main);
   for (const phrase of [
     "Making complex systems work together.", "Services", "System integration",
     "Warehouse automation", "Data & reporting", "Regulated applications",
-    "Integrations", "Shipping compliance & dock routing",
-    "Enterprise ERP and WMS cutovers", "Carrier and fulfillment integrations",
-    "Inventory and financial reconciliation", "Regulated case management and reporting",
-    "Shipium", "NetSuite", "Sage", "UPS", "USPS", "FedEx",
-    "prior professional roles, not WizardGang client engagements", "About"
-  ]) assert.ok(visible.includes(phrase), "portfolio missing substantive content: " + phrase);
-
+    "Integrations", "ERP & WMS", "NetSuite", "Microsoft Dynamics", "CIMS WMS",
+    "Commerce & fulfillment", "Shipium", "ShipStation", "ProShip",
+    "A360", "Locus", "AutoStore", "Carriers", "UPS", "USPS", "FedEx",
+    "EDI & B2B", "Warehouse hardware", "Zebra", "Justice & legal", "Axon",
+    "These integrations come from prior professional roles, not WizardGang client engagements.", "About"
+  ]) assert.ok(visible.includes(phrase), "missing historically documented platform: " + phrase);
   rejectText(main, ["Selected projects", "Hexframe", "SharkTank", "YarReader",
+    "Shipping compliance & dock routing", "Enterprise ERP and WMS cutovers",
+    "Inventory and financial reconciliation", "Regulated case management and reporting",
     "Browse the projects", "Explore the Architecture", "Tell us what", "Discuss a project"], "portfolio");
   for (const id of ["services", "integrations", "about"]) {
     assert.ok(allIds(main).has(id), `missing one-page anchor #${id}`);
@@ -242,9 +243,9 @@ test("the homepage presents a substantial attributed integrations portfolio with
   assert.equal(allIds(main).has("contact"), false, "obsolete contact section must not return");
   assert.equal(allIds(main).has("experience"), false, "generic Experience section must be replaced");
   assert.ok(anchorWithHref(main, "#integrations"), "hero must link to on-page integrations");
-  assert.equal(anchors(home).filter(a => a.href.startsWith("mailto:")).length, 0, "no visitor-facing direct email links");
-  assert.equal(tagBlocks(main, "h1").length, 1, "one h1 per page");
-  assert.equal(main.includes('name="work-list"'), false, "no old project disclosure UI");
+  assert.equal(anchors(home).filter(a => a.href.startsWith("mailto:")).length, 0);
+  assert.equal(tagBlocks(main, "h1").length, 1);
+  assert.equal(main.includes('name="work-list"'), false);
 });
 
 test("retired company pages and media are absent from the generated site", async () => {
