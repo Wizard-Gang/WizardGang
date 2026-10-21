@@ -7,7 +7,7 @@ import { navigationSectionForPath } from "./navigation";
 import type { BuildMetadata, PageMetadata, ReactPageDefinition } from "./contracts";
 
 const SITE_ORIGIN = "https://wizardgang.ai";
-const SOCIAL_IMAGE_ALT = "WizardGang — custom software, integrations, reporting and automation";
+const SOCIAL_IMAGE_ALT = "WizardGang — integration engineering portfolio";
 
 function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadata; build: BuildMetadata; browserAssetPath: string }) {
   const canonical = `${SITE_ORIGIN}${metadata.path}`;
@@ -18,7 +18,7 @@ function Metadata({ metadata, build, browserAssetPath }: { metadata: PageMetadat
     <head>
       <meta charSet="utf-8" />
       <meta name="viewport" content="width=device-width,initial-scale=1" />
-      <meta name="theme-color" content="#09090b" />
+      <meta name="theme-color" content="#f7f9fc" />
       <title>{metadata.title}</title>
       <meta name="description" content={metadata.description} />
       {metadata.noIndex ? (

@@ -41,11 +41,11 @@ test("stored preference parsing accepts current fields but drops retired motion 
 
 test("defaults, Spanish preference and saved layout remain stable", () => {
   assert.deepEqual(resolveInitialPreferences({}, "en-US"), {
-    language: "en", theme: "dark", reading: true, text: false
+    language: "en", theme: "light", reading: true, text: false
   });
   assert.equal(resolveInitialPreferences({}, "es-MX").language, "es");
   assert.deepEqual(resolveInitialPreferences({ reading: false, text: true }, "en"), {
-    language: "en", theme: "dark", reading: false, text: true
+    language: "en", theme: "light", reading: false, text: true
   });
 });
 
@@ -83,13 +83,13 @@ test("missing preference controls fail closed without throwing", () => {
   assert.equal(findPreferenceControls({ querySelector() { return null; } }), null);
 });
 
-test("Spanish language remains useful without the retired portfolio translations", () => {
+test("Spanish language translates the integrations-first portfolio", () => {
   assert.equal(translateDynamic("Services"), "Servicios");
-  assert.equal(translateDynamic("Experience"), "Experiencia");
+  assert.equal(translateDynamic("Integrations"), "Integraciones");
   assert.equal(translateDynamic("About"), "Acerca de");
-  assert.equal(translateDynamic("Contact"), "Contacto");
+  assert.equal(translateDynamic("Explore integrations"), "Ver integraciones");
   assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
-  assert.equal(translateDynamic("Custom software"), "Software a medida");
+  assert.equal(translateDynamic("Warehouse automation"), "Automatización de almacenes");
   assert.equal(translateText("  Services  ", "es"), "  Servicios  ");
   assert.equal(translateText("Services", "en"), "Services");
   assert.equal(translateText(null, "es"), null);

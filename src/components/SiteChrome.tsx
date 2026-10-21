@@ -1,6 +1,6 @@
 import type { BuildMetadata, CurrentNavSection } from "../app/contracts";
 import { NAVIGATION_ITEMS } from "../app/navigation";
-import { CONTACT_EMAIL, GITHUB_ORG_URL, LINKEDIN_URL } from "../data/site";
+import { GITHUB_ORG_URL, LINKEDIN_URL } from "../data/site";
 
 interface NavigationProps {
   current: CurrentNavSection;
@@ -78,8 +78,8 @@ export function Preferences() {
         <fieldset className="setting-theme">
           <legend>Theme</legend>
           <div className="setting-segments">
-            <label><input type="radio" name="page-theme" id="theme-dark" defaultChecked /> Dark</label>
-            <label><input type="radio" name="page-theme" id="theme-light" /> Light</label>
+            <label><input type="radio" name="page-theme" id="theme-dark" /> Dark</label>
+            <label><input type="radio" name="page-theme" id="theme-light" defaultChecked /> Light</label>
           </div>
         </fieldset>
         <div className="setting-switches">
@@ -97,7 +97,6 @@ export function SiteFooter({ build }: { build: BuildMetadata }) {
     <footer className="site-footer">
       <p className="footer-brand"><span className="wordmark-mark" aria-hidden="true"></span>WizardGang · Software, systems &amp; integrations</p>
       <p className="footer-contact">
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         <a href={LINKEDIN_URL}>LinkedIn <span aria-hidden="true">↗</span></a>
         <a href={GITHUB_ORG_URL} aria-label="Visit WizardGang on GitHub">GitHub <span aria-hidden="true">↗</span></a>
       </p>

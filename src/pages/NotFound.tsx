@@ -4,7 +4,7 @@ export const NOT_FOUND_PAGE: ReactPageDefinition = {
   relative: "404.html",
   metadata: {
     title: "Not Found — WizardGang",
-    description: "This WizardGang page does not exist. Return to the single-page site for services, experience and contact.",
+    description: "This WizardGang page does not exist. Return to the single-page portfolio for services, integrations and about.",
     path: "/404/",
     noIndex: true
   },
@@ -16,7 +16,7 @@ export const NOT_FOUND_PAGE: ReactPageDefinition = {
         <p>That route is no longer part of this site. Everything is on the home page.</p>
         <div className="button-row">
           <a className="button button-primary" href="/">Home <span aria-hidden="true">→</span></a>
-          <a className="button" href="/#contact">Contact <span aria-hidden="true">→</span></a>
+          <a className="button" href="/#integrations">Integrations <span aria-hidden="true">→</span></a>
         </div>
       </section>
     </main>
