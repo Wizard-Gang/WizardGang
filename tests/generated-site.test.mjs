@@ -220,29 +220,31 @@ test("favicon retains the current two-color WizardGang mark without freezing SVG
   assert.ok(fills.has("#a489ff"));
 });
 
-test("the homepage presents a complete, service-first single-page offer", async () => {
+test("the homepage presents a substantial attributed integrations portfolio without email CTAs", async () => {
   const home = await readDist("index.html");
   const main = tagBlocks(home, "main")[0]?.inner ?? "";
-  requireText(main, [
-    "Software that works with your business.",
-    "Services", "Custom software", "System integrations", "Data &amp; reporting",
-    "Workflow automation", "Experience", "Warehouse &amp; fulfillment",
-    "Enterprise integrations", "Public-sector applications", "About",
-    "This experience comes from prior professional roles, not WizardGang client engagements.",
-    "Tell us what"
-  ], "homepage");
+  const visible = textContent(main);
+  for (const phrase of [
+    "Making complex systems work together.", "Services", "System integration",
+    "Warehouse automation", "Data & reporting", "Regulated applications",
+    "Integrations", "Shipping compliance & dock routing",
+    "Enterprise ERP and WMS cutovers", "Carrier and fulfillment integrations",
+    "Inventory and financial reconciliation", "Regulated case management and reporting",
+    "Shipium", "NetSuite", "Sage", "UPS", "USPS", "FedEx",
+    "prior professional roles, not WizardGang client engagements", "About"
+  ]) assert.ok(visible.includes(phrase), "portfolio missing substantive content: " + phrase);
 
   rejectText(main, ["Selected projects", "Hexframe", "SharkTank", "YarReader",
-    "Browse the projects", "Explore the Architecture"], "service-first homepage");
-  for (const id of ["services", "experience", "about", "contact"]) {
+    "Browse the projects", "Explore the Architecture", "Tell us what", "Discuss a project"], "portfolio");
+  for (const id of ["services", "integrations", "about"]) {
     assert.ok(allIds(main).has(id), `missing one-page anchor #${id}`);
   }
-  assert.ok(anchorWithHref(main, "mailto:jacob@wizardgang.ai"),
-    "new homepage must offer direct contact");
-  assert.ok(anchorWithHref(main, "#services"), "hero must link to on-page services");
-
+  assert.equal(allIds(main).has("contact"), false, "obsolete contact section must not return");
+  assert.equal(allIds(main).has("experience"), false, "generic Experience section must be replaced");
+  assert.ok(anchorWithHref(main, "#integrations"), "hero must link to on-page integrations");
+  assert.equal(anchors(home).filter(a => a.href.startsWith("mailto:")).length, 0, "no visitor-facing direct email links");
   assert.equal(tagBlocks(main, "h1").length, 1, "one h1 per page");
-  assert.equal(main.includes('name="work-list"'), false, "the homepage must not carry project disclosures");
+  assert.equal(main.includes('name="work-list"'), false, "no old project disclosure UI");
 });
 
 test("retired company pages and media are absent from the generated site", async () => {

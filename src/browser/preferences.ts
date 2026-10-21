@@ -66,7 +66,7 @@ export function writePreferences(storage: WritableStorage | null, value: Browser
 export function resolveInitialPreferences(saved: StoredPreferences, navigatorLanguage = ""): BrowserPreferences {
   return {
     language: saved.language ?? (navigatorLanguage.toLowerCase().startsWith("es") ? "es" : "en"),
-    theme: saved.theme ?? "dark",
+    theme: saved.theme ?? "light",
     reading: saved.reading ?? true,
     text: saved.text ?? false
   };
