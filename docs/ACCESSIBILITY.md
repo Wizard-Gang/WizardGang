@@ -1,6 +1,6 @@
 # WizardGang accessibility
 
-Scope: the canonical single-page company site, generated 404, shared navigation, display preferences, and site content. Detailed architecture/assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
+Scope: the canonical integrations portfolio, generated 404, shared navigation, display preferences, and site content. Detailed architecture/assurance evidence is owned by [`demo.wizardgang.ai/assurance`](https://demo.wizardgang.ai/assurance).
 
 Target: WCAG 2.2 Level AA for scoped content. This is a design and testing target, not an accessibility certification or blanket conformance claim.
 
@@ -20,7 +20,8 @@ The site is expected to preserve:
 - reduced-motion handling, without any animated product previews in the generated site;
 - explicit image alternative-text semantics;
 - English/Spanish page-language behavior;
-- stable metadata, error-page, and canonical-route semantics.
+- stable metadata, error-page, and canonical-route semantics;
+- three real fragment destinations for services, integrations and about, without an email contact action.
 
 Run the deterministic accessibility acceptance directly with:
 

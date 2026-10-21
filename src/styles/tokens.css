@@ -1,21 +1,10 @@
 /*
- * WizardGang presentation tokens.
- *
- * One palette, one type scale, one spacing scale, one radius scale. Every rule
- * in globals.css derives from these; a page must not invent a second scale.
- *
- * The palette is a zinc ramp with a single accent. The accent is the lime of
- * the wordmark; the violet square in the mark is brand, not interface, so no
- * control or link uses it. The light preference re-points these same names in
- * globals.css rather than declaring a second vocabulary.
- *
- * One interface face. JetBrains Mono is kept for the build identifier only, not for labels or chrome.
- *
- * Self-hosted because the production CSP is `default-src 'none'` with
- * `font-src 'self'`: a font served from another origin is silently dead.
- * Both faces are SIL Open Font License 1.1 — see public/fonts/OFL.txt.
+ * WizardGang portfolio design tokens.
+ * Inspired by Phantom Insights' restrained, type-led services/portfolio layout,
+ * not a copy of its assets or typeface. All font files remain self-hosted and
+ * licensed under the SIL Open Font License 1.1 (public/fonts/OFL.txt).
+ * The default is a bright, readable canvas; an optional dark scheme remains.
  */
-
 @font-face {
   font-family: "Instrument Sans";
   src: url("/fonts/instrument-sans-var.woff2") format("woff2");
@@ -33,64 +22,53 @@
 }
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Surfaces: page, card, raised panel, pressed. Opaque, so a panel that
-     floats over content never lets the content show through. */
-  --ink: #09090b;
-  --surface-1: #111114;
-  --surface-2: #18181b;
-  --surface-3: #27272a;
+  --ink: #f7f9fc;
+  --surface-1: #ffffff;
+  --surface-2: #eaf0f6;
+  --surface-3: #dce6f0;
+  --paper: #15243a;
+  --muted: #435670;
+  --quiet: #53647b;
 
-  /* Text: three levels, each at least 4.5:1 on every surface above. */
-  --paper: #fafafa;
-  --muted: #a1a1aa;
-  --quiet: #8e8e98;
+  --line: rgb(21 36 58 / 15%);
+  --line-soft: rgb(21 36 58 / 9%);
+  --line-strong: rgb(21 36 58 / 28%);
+  --wash: rgb(21 36 58 / 4%);
+  --wash-strong: rgb(21 36 58 / 8%);
 
-  /* Hairlines sit on the surface instead of cutting across it; washes tint
-     chips and hovered controls without changing their surface. */
-  --line: rgb(255 255 255 / 10%);
-  --line-soft: rgb(255 255 255 / 6%);
-  --line-strong: rgb(255 255 255 / 20%);
-  --wash: rgb(255 255 255 / 4%);
-  --wash-strong: rgb(255 255 255 / 8%);
+  --brand: #235ca5;
+  --brand-hover: #174b91;
+  --on-brand: #ffffff;
+  --focus: #164e95;
 
-  /* The one accent, and the text that sits on it. */
-  --brand: #ccff2e;
-  --brand-hover: #dcff6b;
-  --on-brand: #09090b;
-  --focus: #ccff2e;
-
-  /* The two squares of the wordmark. Decorative only. */
   --mark-a: #ccff2e;
   --mark-b: #a98bff;
 
-  /* Remaining surface tokens support the small site; no animated backgrounds. */
-  --grid-line: rgb(255 255 255 / 4.5%);
-  --glow: rgb(204 255 46 / 7%);
-  --shadow-panel: 0 16px 48px -12px rgb(0 0 0 / 70%);
-  --header-bg: rgb(9 9 11 / 78%);
+  --grid-line: rgb(21 36 58 / 4%);
+  --glow: rgb(35 92 165 / 9%);
+  --shadow-panel: 0 16px 48px -16px rgb(21 36 58 / 25%);
+  --header-bg: rgb(247 249 252 / 94%);
 
   --font-sans: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Type scale. Four heading steps; every heading resolves to one of them. */
   --text-micro: .75rem;
   --text-small: .875rem;
   --text-body: 1rem;
-  --text-lede: clamp(1.0625rem, .98rem + .45vw, 1.25rem);
-  --text-h3: clamp(1.0625rem, 1rem + .3vw, 1.25rem);
-  --text-h2: clamp(1.625rem, 1.25rem + 1.6vw, 2.25rem);
-  --text-h1: clamp(2rem, 1.45rem + 2.4vw, 3rem);
-  --text-display: clamp(2.5rem, 1.7rem + 3.6vw, 4rem);
+  --text-lede: clamp(1.125rem, .98rem + .7vw, 1.5rem);
+  --text-h3: clamp(1.25rem, 1.12rem + .7vw, 1.65rem);
+  --text-h2: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
+  --text-h1: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
+  --text-display: clamp(3.25rem, 2.15rem + 5.5vw, 6.5rem);
 
-  --leading-display: 1.04;
-  --leading-heading: 1.15;
-  --leading-body: 1.65;
-  --tracking-display: -.04em;
-  --tracking-heading: -.025em;
+  --leading-display: 1.02;
+  --leading-heading: 1.12;
+  --leading-body: 1.7;
+  --tracking-display: -.058em;
+  --tracking-heading: -.035em;
 
-  /* Spacing: a 4px-based ramp. */
   --space-1: .25rem;
   --space-2: .5rem;
   --space-3: .75rem;
@@ -99,7 +77,7 @@
   --space-6: 2rem;
   --space-7: 3rem;
   --space-8: 4rem;
-  --section-y: clamp(3.5rem, 2.25rem + 4.5vw, 6rem);
+  --section-y: clamp(4.25rem, 2.75rem + 5vw, 7rem);
 
   --radius-sm: .375rem;
   --radius-md: .5rem;
@@ -107,7 +85,6 @@
   --radius-xl: 1rem;
   --radius-xxl: 1.5rem;
 
-  /* Layout. The gutter grows from 16px on a phone to 32px on a desktop. */
   --shell: 80rem;
   --gutter: clamp(1rem, .55rem + 2.2vw, 2rem);
   --header-h: 4rem;

@@ -72,10 +72,10 @@ test("the static shell loads only the generated TypeScript browser module withou
 
   const nav = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === "Primary");
   assert.ok(nav);
-  // The entire company site is one document with four section anchors.
+  // The portfolio is one document with three section anchors.
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner).replace(/\s+/g, " ").trim()),
-    ["Services", "Experience", "About", "Contact"]
+    ["Services", "Integrations", "About"]
   );
 });
 
