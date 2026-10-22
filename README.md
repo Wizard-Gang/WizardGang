@@ -157,3 +157,8 @@ Production has no checkout-owned deploy command. Canonical CI waits for the exac
 ## GitHub auto-merge
 
 The committed repository settings enable per-PR auto-merge. Enabling this repository capability does not enroll a PR: an authorized contributor chooses auto-merge for that PR. GitHub then waits for required reviews and exact-head checks and uses the repository's squash-only merge policy. Run `npm run verify:github-settings` for a read-only live check; `npm run apply:github-settings` applies the committed authority and independently verifies it.
+
+
+## Current public presentation
+
+The homepage visually presents a single self-hosted panda picture. Legacy portfolio sections and chrome remain in the static DOM temporarily for compatibility with the existing acceptance contracts, but are hidden from visual presentation. A follow-up governed cleanup should remove those retired sections and update acceptance tests together.

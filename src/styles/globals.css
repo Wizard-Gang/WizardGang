@@ -291,3 +291,7 @@ html:has(#text-size-200:checked) .settings-toolbar { width: calc(100% - 2rem); l
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Panda-only presentation: keep historical DOM contracts until the dedicated cleanup. */
+body:has(.panda-page) .site-header, body:has(.panda-page) .site-footer, body:has(.panda-page) .skip-link, .panda-page > :not(.panda-picture) { display: none !important; }
+.panda-page.site-main { width: 100%; max-width: none; margin: 0; }
