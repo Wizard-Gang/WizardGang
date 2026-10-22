@@ -6,7 +6,7 @@ Independent software applications and `demo.wizardgang.ai` retain their own sour
 
 ## Company and professional ownership
 
-The public home page is an integrations-first portfolio. Its Integrations section documents previous professional projects in shipping controls, ERP/WMS migrations, fulfillment APIs, reconciliation and regulated case management. Work completed for an employer or its customers is not a WizardGang client engagement. Preserve that distinction when changing marketing copy.
+The public home page presents WizardGang capabilities with live demonstrations, followed by industries, integrations and deployments from previous professional roles. The deployments are grouped by the employer responsible for each engagement. Work completed for an employer or its customers is not a WizardGang client engagement. Preserve that distinction when changing marketing copy.
 
 The current public structure is described in [INFORMATION-ARCHITECTURE.md](INFORMATION-ARCHITECTURE.md).
 

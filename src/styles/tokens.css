@@ -45,6 +45,9 @@
 
   --mark-a: #ccff2e;
   --mark-b: #a98bff;
+  --on-mark: #0d1a2d;
+  --stage: #0d1a2d;
+  --on-stage: #eef3fa;
 
   --grid-line: rgb(21 36 58 / 4%);
   --glow: rgb(35 92 165 / 9%);

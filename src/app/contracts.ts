@@ -7,7 +7,7 @@ export interface BuildMetadata {
   builtAt: string;
 }
 
-export type PrimaryNavigationSection = "services" | "integrations" | "about";
+export type PrimaryNavigationSection = "capabilities" | "integrations" | "about";
 export type CurrentNavSection = PrimaryNavigationSection | "";
 
 export interface NavigationLink {

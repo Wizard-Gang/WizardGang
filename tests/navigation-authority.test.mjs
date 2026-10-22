@@ -4,7 +4,7 @@ import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigatio
 import { CANONICAL_PAGES, anchors, generatedHtmlFiles, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expected = [
-  ["Services", "/#services"],
+  ["Capabilities", "/#capabilities"],
   ["Integrations", "/#integrations"],
   ["About", "/#about"]
 ];
@@ -45,7 +45,9 @@ test("desktop and no-JS mobile navigation link to the same homepage sections", a
     const links = anchors(html);
     assert.ok(links.some(a => a.href === "/" && a.attrs.get("aria-label") === "WizardGang home"));
     assert.ok(!links.some(a => a.href.startsWith("mailto:")), "portfolio has no direct email links");
-    assert.ok(links.some(a => a.href === "https://github.com/Wizard-Gang" && a.attrs.get("aria-label") === "Visit WizardGang on GitHub"));
+    assert.ok(links.some(a => a.href === "https://github.com/Wizard-Gang/wizardgang-architecture-demo" && a.attrs.get("aria-label") === "Demo source on GitHub"));
+    assert.ok(links.some(a => a.href === "https://demo.wizardgang.ai" && a.attrs.get("aria-label") === "Architecture demo"));
+    assert.ok(!links.some(a => a.href === "https://github.com/Wizard-Gang"), "the organization profile is no longer linked from pages");
   }
   assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "404.html"]);
 });

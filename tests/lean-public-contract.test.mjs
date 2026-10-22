@@ -9,43 +9,54 @@ import {
 } from "./helpers.mjs";
 
 const ORIGIN = "https://wizardgang.ai";
-const sections = ["services", "integrations", "about"];
-const labels = ["Services", "Integrations", "About"];
+const sections = ["capabilities", "integrations", "about"];
+const labels = ["Capabilities", "Integrations", "About"];
+const allSections = ["capabilities", "industries", "integrations", "delivery", "about"];
 const retired = ["/solutions/", "/projects/", "/projects/hexframe/", "/about/",
   "/work/", "/services/", "/contact/", "/resume", "/professional"];
 
-test("WG-141: one static root contains all three ordered, labelled fragments", async () => {
+test("WG-152: one static root contains every ordered, labelled fragment", async () => {
   assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html"]);
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0];
   assert.ok(main);
   assert.equal(main.attrs.get("id"), "main");
   assert.equal(tagBlocks(main.inner, "h1").length, 1);
-  const named = startTags(main.inner, "section").map((tag) => tag.attrs.get("id")).filter((id) => sections.includes(id));
-  assert.deepEqual(named, sections);
-  for (const id of sections) {
+  const named = startTags(main.inner, "section").map((tag) => tag.attrs.get("id")).filter((id) => allSections.includes(id));
+  assert.deepEqual(named, allSections);
+  for (const id of allSections) {
     const section = tagBlocks(main.inner, "section").find((tag) => tag.attrs.get("id") === id);
     assert.ok(section);
     assert.equal(section.attrs.get("aria-labelledby"), id + "-heading");
     assert.equal(startTags(section.inner, "h2").length, 1);
   }
-  assert.ok(anchors(main.inner).some((a) => a.href === "#integrations"));
+  assert.ok(anchors(main.inner).some((a) => a.href === "#delivery"));
 });
 
-test("WG-144: precise historical integration inventory without case narratives or email", async () => {
+test("WG-152: precise historical integration inventory and attributed deployments without email", async () => {
   const content = tagBlocks(await readDist("index.html"), "main")[0].inner;
   const visible = textContent(content);
-  const expected = [["ERP & WMS",["NetSuite","Microsoft Dynamics","Sage","Fishbowl","QuickBooks POS","RedPrairie","Blue Yonder","CIMS WMS","Canbar"]],["Commerce & fulfillment",["Shopify","Amazon Direct Fulfillment","ShipStation","Shipium","ProShip"]],["Warehouse automation",["A360","Locus","6 River Systems","AutoStore","Corvus","Pendant"]],["Carriers",["USPS","UPS","FedEx"]],["EDI & B2B",["EDI Orders","Acknowledgements","ASNs","Invoices","Inventory & Fulfillment Flows"]],["Warehouse hardware",["Zebra","Honeywell"]],["Development & workflow",["GitHub","Jira","Zapier"]],["Justice & legal",["Axon","LexisNexis"]]];
-  const rows = tagBlocks(content, "li").filter(item => item.attrs.get("class") === "integration-row");
+  const expected = [["ERP & warehouse systems",["NetSuite","Microsoft Dynamics","Sage","Fishbowl","QuickBooks POS","RedPrairie","Blue Yonder","CIMS WMS","Canbar"]],["Commerce & fulfillment",["Shopify","Amazon Direct Fulfillment","ShipStation","Shipium","ProShip"]],["Warehouse automation",["A360","Locus","6 River Systems","AutoStore","Corvus","Pendant"]],["Carriers",["USPS","UPS","FedEx"]],["EDI & B2B",["Orders","Acknowledgements","ASNs","Invoices","Inventory & fulfillment flows"]],["Warehouse hardware",["Zebra","Honeywell"]],["Development & workflow",["GitHub","Jira","Zapier"]],["Justice & legal",["Axon","LexisNexis"]]];
+  // Rows nest platform lists, so each row is read up to the end of its own list.
+  const rows = content.split('<li class="integration-row">').slice(1).map(chunk => chunk.split("</ul></li>")[0]);
   assert.equal(rows.length, expected.length, "one compact row per historical category");
   expected.forEach(([category, platforms], index) => {
-    const item = rows[index].inner;
+    const item = rows[index];
     assert.equal(textContent(tagBlocks(item, "h3")[0].inner), category);
-    const labels = textContent(tagBlocks(item, "p")[0].inner);
-    assert.equal(labels, platforms.join(" · "), "only historical brands and systems");
+    const names = tagBlocks(item, "li").filter(entry => entry.attrs.get("class") === "platform").map(entry => textContent(entry.inner));
+    assert.deepEqual(names, platforms, "only historical brands and systems");
     assert.equal(anchors(item).length, 0, "no vendor marketing-link wall");
+    for (const image of startTags(item, "img")) {
+      assert.equal(image.attrs.get("alt"), "", "vendor marks are decorative beside their names");
+      assert.match(image.attrs.get("src") || "", /^\/logos\/vendors\/[a-z0-9-]+\.(?:png|svg|ico)$/, "vendor marks are self-hosted");
+    }
   });
   assert.ok(visible.includes("These integrations come from prior professional roles, not WizardGang client engagements."));
+  const employers = tagBlocks(content, "details").filter(item => item.attrs.get("class") === "employer");
+  assert.deepEqual(employers.map(item => textContent(tagBlocks(item.inner, "h3")[0].inner)),
+    ["Supply Chain Technologies", "Spartan Technology Solutions", "Fastfetch Corporation"], "deployments stay attributed to their employers");
+  assert.deepEqual(employers.map(item => tagBlocks(item.inner, "li").length), [11, 7, 15], "the documented deployment inventory is complete");
+  for (const item of employers) assert.equal(item.attrs.has("open"), false, "deployment lists start collapsed");
   for (const unsupported of [
     "Shipping compliance & dock routing", "Enterprise ERP and WMS cutovers",
     "Carrier and fulfillment integrations", "Inventory and financial reconciliation",
@@ -87,10 +98,11 @@ test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced moti
   assert.match(css, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 
-test("WG-144: 200% text reflows integration rows and navigation", async () => {
+test("WG-152: 200% text reflows cards, integration rows and navigation", async () => {
   const css = await readRoot("src/styles/globals.css");
   assert.match(css, /html:has\(#text-size-200:checked\)\s*\{\s*font-size:\s*200%/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.integration-row\s*\{\s*grid-template-columns:\s*minmax\(0, 1fr\)/);
+  assert.match(css, /html:has\(#text-size-200:checked\)\s+:is\(\.card-grid, \.industry-grid\)\s*\{\s*grid-template-columns:\s*minmax\(0, 1fr\)/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-desktop\s*\{\s*display:\s*none/);
   assert.match(css, /html:has\(#text-size-200:checked\)\s+\.site-nav-mobile:not\(\[hidden\]\)\s*\{\s*display:\s*flex\s*!important/);
   assert.match(css, /\.site-main, \.site-header-bar, \.site-footer\s*\{[^}]*width:\s*min\(100%, var\(--shell\)\)/s);
@@ -99,16 +111,18 @@ test("WG-144: 200% text reflows integration rows and navigation", async () => {
 });
 
 test("WG-137: Spanish has navigation, visible copy and assistive labels", async () => {
-  for (const phrase of ["Services", "Integrations", "About",
-    "System integration", "Warehouse automation", "Data & reporting", "Regulated applications",
-    "ERP & WMS", "Commerce & fulfillment", "Carriers", "EDI & B2B",
+  for (const phrase of ["Capabilities", "Integrations", "About",
+    "Software that ships.", "See where it's shipped", "APIs & Integrations", "Industries",
+    "Delivery experience", "deployments", "Hi, I'm Jacob.", "Say hi on LinkedIn",
+    "ERP & warehouse systems", "Commerce & fulfillment", "Carriers", "EDI & B2B",
+    "Architecture demo", "Demo source on GitHub", "Build commit",
     "These integrations come from prior professional roles, not WizardGang client engagements.",
     "Skip to main content", "Display and language preferences", "WizardGang home",
-    "Primary", "Primary mobile", "Menu", "Build", "Not Found — WizardGang"]) {
+    "Primary", "Primary mobile", "Menu", "Not Found — WizardGang"]) {
     assert.notEqual(translateDynamic(phrase), phrase, "Spanish phrase missing: " + phrase);
   }
-  assert.equal(translateText("  Services  ", "es"), "  Servicios  ");
-  assert.equal(translateText("Services", "en"), "Services");
+  assert.equal(translateText("  Capabilities  ", "es"), "  Capacidades  ");
+  assert.equal(translateText("Capabilities", "en"), "Capabilities");
   const browser = await readRoot("src/browser/index.ts");
   assert.match(browser, /documentRoot\.documentElement\.lang\s*=\s*locale/);
   assert.match(browser, /documentRoot\.title\s*=\s*locale/);
@@ -149,18 +163,34 @@ test("WG-137: root-only sitemap and 404-page routing do not redirect retired URL
 
 test("WG-137: safe outbound inventory, metadata, CSP and wg-edge boundary", async () => {
   const outbound = new Set([
-    "https://github.com/Wizard-Gang", "https://www.linkedin.com/in/jacob-yongue",
-
+    "https://www.linkedin.com/in/jacob-yongue", "https://demo.wizardgang.ai",
+    "https://github.com/Wizard-Gang/wizardgang-architecture-demo"
   ]);
+  const deploymentSites = new Set([
+    "www.bamkousa.com", "www.brixton.com", "www.cidresources.com", "www.fambrands.com", "www.gnc.com",
+    "hybridapparel.com", "www.jerryleigh.com", "www.mbwswim.com", "obermeyer.com", "www.sclogistics.com",
+    "www.solutions2go.ca", "www.abeka.com", "www.bulkreefsupply.com", "www.dotfoods.com", "www.ipsy.com",
+    "plexusworldwide.com", "www.rockybrands.com", "www.salonservicegroup.com", "seedsnsuch.com",
+    "www.snapon.com", "www.spartannash.com", "www.torqueking.com", "www.waytekwire.com", "www.youniqueproducts.com"
+  ]);
+  const knownExternal = (raw) => {
+    const href = raw.replaceAll("&#x27;", "'").replaceAll("&amp;", "&");
+    if (outbound.has(href)) return true;
+    const url = new URL(href);
+    if (url.host === "demo.wizardgang.ai") return /^\/(?:demos|assurance|security)$/.test(url.pathname);
+    if (url.host === "github.com") return /^\/Wizard-Gang\/WizardGang\/(?:commit\/[0-9a-f]{40}|releases\/tag\/v\d+\.\d+\.\d+)$/.test(url.pathname);
+    if (url.host === "www.google.com") return url.pathname === "/maps/search/" && /^(?:.+ (?:Probate Court|State Attorney's Office))$/.test(url.searchParams.get("query") ?? "");
+    return url.pathname === "/" && !url.search && deploymentSites.has(url.host);
+  };
   for (const path of await generatedHtmlFiles()) {
     const html = await readDist(path);
     for (const link of anchors(html)) {
       if (link.href.startsWith("https://")) {
-        assert.ok(outbound.has(link.href), path + ": unknown external link " + link.href);
+        assert.ok(knownExternal(link.href), path + ": unknown external link " + link.href);
       } else if (link.href.startsWith("mailto:")) {
         assert.fail(path + ": unexpected mailto link " + link.href);
       } else {
-        assert.ok(link.href.startsWith("/") || link.href === "#main" || link.href === "#integrations",
+        assert.ok(link.href.startsWith("/") || link.href === "#main" || link.href === "#delivery",
           path + ": unsafe link " + link.href);
         assert.ok(!link.href.startsWith("//"));
       }

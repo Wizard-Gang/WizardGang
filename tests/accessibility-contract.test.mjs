@@ -13,7 +13,7 @@ import {
 
 // All navigation links move within the one canonical document.
 const navLinks = new Map([
-  ["Services", "/#services"],
+  ["Capabilities", "/#capabilities"],
   ["Integrations", "/#integrations"],
   ["About", "/#about"]
 ]);
@@ -167,9 +167,13 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       const footer = tagBlocks(html, "footer");
       assert.equal(footer.length, 1, "page must expose one footer landmark");
       assert.ok(!pageAnchors.some((anchor) => anchor.href.startsWith("mailto:")), "portfolio has no direct email links");
-      assert.ok(findAnchor(footer[0].inner, (anchor) => /linkedin\.com\/in\/jacob-yongue/i.test(anchor.href) && /LinkedIn/i.test(normalizedVisible(anchor))));
-      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang" && anchor.attrs.get("aria-label") === "Visit WizardGang on GitHub"));
-      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "/version.json" && /^Build /i.test(normalizedVisible(anchor))));
+      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang/wizardgang-architecture-demo" && normalizedVisible(anchor) === "Demo source"));
+      assert.ok(findAnchor(footer[0].inner, (anchor) => /^https:\/\/github\.com\/Wizard-Gang\/WizardGang\/commit\/[0-9a-f]{40}$/.test(anchor.href) && anchor.attrs.get("title") === "Build commit"));
+      for (const [href, name] of [["https://demo.wizardgang.ai", "Architecture demo"], ["https://github.com/Wizard-Gang/wizardgang-architecture-demo", "Demo source on GitHub"]]) {
+        const icon = pageAnchors.find((anchor) => anchor.href === href && anchor.attrs.get("aria-label") === name);
+        assert.ok(icon, `header icon link ${name} must carry an accessible name`);
+        assert.equal(textContent(icon.inner), "", `${name} is an icon, so its name comes from aria-label`);
+      }
 
       for (const retired of ["Website services", "Compliance", "Glossary"]) {
         assert.ok(!anchors(footer[0].inner).some((anchor) => normalizedVisible(anchor) === retired), `footer must not restore retired ${retired} link`);
@@ -215,10 +219,14 @@ test("language, theme, readable layout and text enlargement remain on every page
 test("portfolio fragments and non-email actions retain accessible destinations", async () => {
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0]?.inner ?? "";
-  for (const id of ["services", "integrations", "about"]) {
+  for (const id of ["capabilities", "industries", "integrations", "delivery", "about"]) {
     assert.match(main, new RegExp(`id="${id}"`));
   }
-  assert.ok(anchors(main).some(a => a.href === "#integrations"));
+  assert.ok(anchors(main).some(a => a.href === "#delivery"));
+  assert.ok(anchors(main).some(a => a.href === "https://www.linkedin.com/in/jacob-yongue"));
+  for (const summary of tagBlocks(main, "summary")) {
+    assert.equal(tagBlocks(summary.inner, "h3").length, 1, "each collapsible employer group is named by its heading");
+  }
   assert.ok(!anchors(main).some(a => a.href.startsWith("mailto:")));
 });
 
@@ -271,7 +279,7 @@ test("browser preserves Spanish, saved display preferences and mobile interactio
     await readRoot("src/browser/index.ts"),
     await readRoot("src/browser/translations.ts")
   ].join("\n");
-  for (const word of ["wizardgang.preferences.v1", "Español", "Servicios", "Integraciones"]) {
+  for (const word of ["wizardgang.preferences.v1", "Español", "Capacidades", "Integraciones"]) {
     assert.ok(script.includes(word), `missing browser language/control contract ${word}`);
   }
   assert.match(script, /storage\.getItem\(STORAGE_KEY\)/);

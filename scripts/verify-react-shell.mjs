@@ -24,9 +24,9 @@ assert.match(chromeSource, /Skip to main content/);
 assert.match(chromeSource, /Primary mobile/);
 assert.match(chromeSource, /NAVIGATION_ITEMS/);
 assert.match(chromeSource, /Preferences/);
-assert.match(chromeSource, /WizardGang · Software, systems &amp; integrations/);
+assert.match(chromeSource, /Demo source on GitHub/);
 
-for (const label of ["Services", "Integrations", "About"]) {
+for (const label of ["Capabilities", "Integrations", "About"]) {
   assert.match(navigationSource, new RegExp(`label: "${label}"`));
 }
 assert.doesNotMatch(navigationSource, /PROJECT_MENU|SOLUTIONS_MENU|\/projects\//);
@@ -49,7 +49,7 @@ assert.match(home, /<html\b[^>]*lang="en"/i);
 assert.match(home, /<header\b[^>]*class="site-header"/i);
 assert.match(home, /<footer\b[^>]*class="site-footer"/i);
 assert.match(home, /<main\b[^>]*id="main"/i);
-for (const fragment of ["services", "integrations", "about"]) {
+for (const fragment of ["capabilities", "industries", "integrations", "delivery", "about"]) {
   assert.ok(home.includes(`id="${fragment}"`), `missing #${fragment}`);
 }
 assert.doesNotMatch(home, /data-wizardgang-legacy-body|id="root"|react-dom\/client|hydrateRoot|createRoot/);

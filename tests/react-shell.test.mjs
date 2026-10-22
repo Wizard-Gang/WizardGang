@@ -41,7 +41,7 @@ test("React owns shared chrome and every canonical page body", async () => {
   assert.match(documentSource, /renderToStaticMarkup/);
   assert.match(documentSource, /createStaticPageRegistry/);
 
-  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "WizardGang · Software, systems &amp; integrations", "/version.json"]) {
+  for (const signal of ["WizardGang home", "Primary mobile", "Preferences", "page-language", "theme-dark", "text-size-200", "Architecture demo", "Demo source on GitHub", "Build commit", "/commit/"]) {
     assert.ok(chromeSource.includes(signal), `React shell is missing shared contract: ${signal}`);
   }
 
@@ -75,18 +75,18 @@ test("the static shell loads only the generated TypeScript browser module withou
   // The portfolio is one document with three section anchors.
   assert.deepEqual(
     anchors(nav.inner).map((anchor) => textContent(anchor.inner).replace(/\s+/g, " ").trim()),
-    ["Services", "Integrations", "About"]
+    ["Capabilities", "Integrations", "About"]
   );
 });
 
-test("build metadata remains visible in the React footer and links the shell's version record", async () => {
+test("build metadata remains visible in the React footer and links the build commit", async () => {
   const html = await readDist("index.html");
   const head = execFileSync("git", ["rev-parse", "HEAD"], { encoding: "utf8" }).trim();
   const footer = tagBlocks(html, "footer")[0];
   assert.ok(footer);
-  const buildLink = anchors(footer.inner).find((anchor) => anchor.href === "/version.json");
-  assert.ok(buildLink);
-  assert.equal(textContent(buildLink.inner), `Build ${head.slice(0, 12)}`);
+  const commitLink = anchors(footer.inner).find((anchor) => anchor.href === `https://github.com/Wizard-Gang/WizardGang/commit/${head}`);
+  assert.ok(commitLink);
+  assert.equal(textContent(commitLink.inner), head.slice(0, 7));
 });
 
 test("the static React document has no legacy body injection seam", async () => {
