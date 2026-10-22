@@ -21,7 +21,8 @@ The site is expected to preserve:
 - explicit image alternative-text semantics;
 - English/Spanish page-language behavior;
 - stable metadata, error-page, and canonical-route semantics;
-- three real fragment destinations for services, integrations and about, without an email contact action.
+- real fragment destinations for capabilities, integrations and about, without an email contact action;
+- deployment groups that collapse with native disclosure controls, named by their employer heading.
 
 Run the deterministic accessibility acceptance directly with:
 

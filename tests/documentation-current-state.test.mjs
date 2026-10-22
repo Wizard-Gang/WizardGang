@@ -73,7 +73,7 @@ test("README documents the current entry points and acceptance gate", async () =
     "dist/_headers"
   ]) assert.ok(readme.includes(value), `README is missing current contract: ${value}`);
 
-  for (const anchor of ["/#services", "/#integrations", "/#about"]) {
+  for (const anchor of ["/#capabilities", "/#integrations", "/#about"]) {
     assert.ok(readme.includes(anchor), `README must document current anchor ${anchor}`);
   }
   assert.match(readme, /ordinary 404/);
@@ -83,7 +83,7 @@ test("README documents the current entry points and acceptance gate", async () =
 test("information architecture describes one canonical page and protected runtime", async () => {
   const ia = await source("docs/INFORMATION-ARCHITECTURE.md");
   for (const value of [
-    "Status: current-state authority", "/#services", "/#integrations", "/#about",
+    "Status: current-state authority", "/#capabilities", "/#integrations", "/#about",
     "src/app/pageRegistry.ts", "src/app/navigation.ts", "src/styles/tokens.css",
     "There is no SPA router", "public/_headers", "npm run check"
   ]) {

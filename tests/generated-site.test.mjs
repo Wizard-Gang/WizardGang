@@ -201,13 +201,16 @@ test("social preview behavior remains page-appropriate", async () => {
   }
 });
 
-test("every page's build label names the checked-out commit and links the shell's /version.json", async () => {
+test("every page's footer names the checked-out commit and links it on GitHub", async () => {
   const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   for (const relative of canonicalFiles) {
     const html = await readDist(relative);
-    const buildLink = anchorWithHref(html, "/version.json");
-    assert.ok(buildLink, `${relative}: missing version evidence link`);
-    assert.equal(textContent(buildLink.inner), `Build ${head.slice(0, 12)}`);
+    const footer = tagBlocks(html, "footer")[0]?.inner ?? "";
+    const commitLink = anchorWithHref(footer, `https://github.com/Wizard-Gang/WizardGang/commit/${head}`);
+    assert.ok(commitLink, `${relative}: missing build commit link`);
+    assert.equal(textContent(commitLink.inner), head.slice(0, 7));
+    assert.ok(!anchorWithHref(footer, "/version.json"), `${relative}: the footer links the commit, not the shell record`);
+    assert.match(textContent(footer), /v0\.0\.0-dev|v\d+\.\d+\.\d+/, `${relative}: footer must name the release`);
   }
 });
 
@@ -225,9 +228,12 @@ test("the homepage presents historical integration platforms without narrative c
   const main = tagBlocks(home, "main")[0]?.inner ?? "";
   const visible = textContent(main);
   for (const phrase of [
-    "Making complex systems work together.", "Services", "System integration",
-    "Warehouse automation", "Data & reporting", "Regulated applications",
-    "Integrations", "ERP & WMS", "NetSuite", "Microsoft Dynamics", "CIMS WMS",
+    "Software that ships.", "Capabilities", "APIs & Integrations", "Data & Infrastructure",
+    "Identity & Access", "AI & MCP", "Accessible Interfaces", "Assurance & Security",
+    "Industries", "Warehouse & Fulfillment", "Justice & Courts", "Public Sector",
+    "Warehouse automation", "Delivery experience", "Supply Chain Technologies",
+    "Spartan Technology Solutions", "Fastfetch Corporation", "Saddle Creek Logistics Services",
+    "Integrations", "ERP & warehouse systems", "NetSuite", "Microsoft Dynamics", "CIMS WMS",
     "Commerce & fulfillment", "Shipium", "ShipStation", "ProShip",
     "A360", "Locus", "AutoStore", "Carriers", "UPS", "USPS", "FedEx",
     "EDI & B2B", "Warehouse hardware", "Zebra", "Justice & legal", "Axon",
@@ -237,12 +243,12 @@ test("the homepage presents historical integration platforms without narrative c
     "Shipping compliance & dock routing", "Enterprise ERP and WMS cutovers",
     "Inventory and financial reconciliation", "Regulated case management and reporting",
     "Browse the projects", "Explore the Architecture", "Tell us what", "Discuss a project"], "portfolio");
-  for (const id of ["services", "integrations", "about"]) {
+  for (const id of ["capabilities", "industries", "integrations", "delivery", "about"]) {
     assert.ok(allIds(main).has(id), `missing one-page anchor #${id}`);
   }
   assert.equal(allIds(main).has("contact"), false, "obsolete contact section must not return");
   assert.equal(allIds(main).has("experience"), false, "generic Experience section must be replaced");
-  assert.ok(anchorWithHref(main, "#integrations"), "hero must link to on-page integrations");
+  assert.ok(anchorWithHref(main, "#delivery"), "hero must link to on-page delivery experience");
   assert.equal(anchors(home).filter(a => a.href.startsWith("mailto:")).length, 0);
   assert.equal(tagBlocks(main, "h1").length, 1);
   assert.equal(main.includes('name="work-list"'), false);

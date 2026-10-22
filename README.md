@@ -1,9 +1,9 @@
 # WizardGang
 
-[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The public website is a single, scrollable engineering portfolio featuring selected integrations delivered in prior professional roles. It has no email solicitation or contact form.
+[WizardGang.ai](https://wizardgang.ai) is the company site for WizardGang. The public website is a single, scrollable page: WizardGang capabilities with live demonstrations, and the industries, integrations and deployments behind them from prior professional roles. It has no email solicitation or contact form.
 
 ```text
-/                       #services, #integrations, #about
+/                       #capabilities, #industries, #integrations, #delivery, #about
 404.html                generated noindex fallback; not a canonical route
 ```
 
@@ -32,14 +32,14 @@ The site runs as the `wizardgang` Worker on baseline's shared `wg-edge` shell, v
 The site uses a mobile-first, light-default portfolio layout with dark/light preferences and two authored stylesheets:
 
 - `src/styles/tokens.css` — the light/dark palette, blue interaction accent, display typography, spacing, radius and self-hosted fonts. It may declare only `:root` custom properties and `@font-face`.
-- `src/styles/globals.css` — spacious portfolio presentation consuming those tokens, including compact historical integration rows, enlarged text, contrast, reduced motion, mobile navigation and display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
+- `src/styles/globals.css` — spacious single-page presentation consuming those tokens, including capability and industry cards, integration rows with vendor marks, collapsible deployment groups, enlarged text, contrast, reduced motion, mobile navigation and display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
 
-Instrument Sans is the primary typeface, with JetBrains Mono for machine-readable build information. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin.
+Instrument Sans is the primary typeface, with JetBrains Mono for section indexes and machine-readable labels. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin.
 
 ## Content ownership
 
-- Home — concise capabilities, historical integration platform rows from prior professional roles, and an about section, all in one document.
-- Navigation — links to `/#services`, `/#integrations`, and `/#about`. Non-email links lead to developer profiles.
+- Home — capabilities linked to their live demonstrations on `demo.wizardgang.ai`, industries, historical integration rows with self-hosted vendor marks, deployments grouped by employer, and an about section, all in one document. `src/data/portfolio.ts` holds that content.
+- Navigation — links to `/#capabilities`, `/#integrations`, and `/#about`. The header also links the architecture demo and its source repository; the footer links the release and build commit. Non-email links lead to the demo, profiles and the deployed organizations.
 - Retired personal-project pages — not generated, listed or linked from company navigation. Independent project runtimes and their repositories are outside this site's deployment boundary.
 
 Integration examples are explicitly attributed to previous professional roles, not WizardGang client engagements. The website does not invent customer endorsements, certifications, or delivered company engagements.
@@ -129,7 +129,8 @@ Key authorities:
 
 - `src/app/pageRegistry.ts` — the two generated HTML outputs (root and 404).
 - `src/app/navigation.ts` — root fragment navigation.
-- `src/pages/Home.tsx` — services, selected integrations and about; no public mailto links.
+- `src/pages/Home.tsx` — capabilities, industries, integrations, delivery experience and about; no public mailto links.
+- `src/data/portfolio.ts` — capability demos, industries, integration platforms and attributed deployments.
 - `src/app/Document.tsx` — static document, metadata and derived sitemap.
 - `src/styles/tokens.css` and `src/styles/globals.css` — presentation.
 - `src/worker/index.ts` — outward shortcuts and asset fallback.
@@ -161,4 +162,4 @@ The committed repository settings enable per-PR auto-merge. Enabling this reposi
 
 ## Current public presentation
 
-The homepage visually presents a single self-hosted panda picture. Legacy portfolio sections and chrome remain in the static DOM temporarily for compatibility with the existing acceptance contracts, but are hidden from visual presentation. A follow-up governed cleanup should remove those retired sections and update acceptance tests together.
+The homepage presents, in order, the introduction, Capabilities, Industries, Integrations, Delivery experience and About. Vendor and employer marks are self-hosted under `public/logos/`; the WizardGang mark stands in where no vendor mark exists. Integrations, industries and deployments stay attributed to prior professional roles.

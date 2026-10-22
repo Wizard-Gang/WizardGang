@@ -83,15 +83,15 @@ test("missing preference controls fail closed without throwing", () => {
   assert.equal(findPreferenceControls({ querySelector() { return null; } }), null);
 });
 
-test("Spanish language translates the integrations-first portfolio", () => {
-  assert.equal(translateDynamic("Services"), "Servicios");
+test("Spanish language translates the one-page homepage", () => {
+  assert.equal(translateDynamic("Capabilities"), "Capacidades");
   assert.equal(translateDynamic("Integrations"), "Integraciones");
   assert.equal(translateDynamic("About"), "Acerca de");
-  assert.equal(translateDynamic("Explore integrations"), "Ver integraciones");
-  assert.equal(translateDynamic("Visit WizardGang on GitHub"), "Visitar WizardGang en GitHub");
+  assert.equal(translateDynamic("See where it's shipped"), "Ver dónde se ha entregado");
+  assert.equal(translateDynamic("Demo source on GitHub"), "Código de la demostración en GitHub");
   assert.equal(translateDynamic("Warehouse automation"), "Automatización de almacenes");
-  assert.equal(translateText("  Services  ", "es"), "  Servicios  ");
-  assert.equal(translateText("Services", "en"), "Services");
+  assert.equal(translateText("  Capabilities  ", "es"), "  Capacidades  ");
+  assert.equal(translateText("Capabilities", "en"), "Capabilities");
   assert.equal(translateText(null, "es"), null);
 });
 

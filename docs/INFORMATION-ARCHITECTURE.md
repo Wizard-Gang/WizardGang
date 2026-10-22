@@ -4,13 +4,13 @@ Status: current-state authority for the public site structure, content ownership
 
 ## Public hierarchy
 
-One canonical public document: `/`. The navigation targets `/#services`, `/#integrations` and `/#about` in that document. The only other generated HTML is the ordinary noindex `404.html`. Retired `/solutions/`, `/projects/`, `/projects/hexframe/` and `/about/` paths are not rendered and return the normal asset 404 without a compatibility redirect.
+One canonical public document: `/`. The navigation targets `/#capabilities`, `/#integrations` and `/#about` in that document; Industries (`#industries`) and Delivery experience (`#delivery`) sit between them on the same page. The only other generated HTML is the ordinary noindex `404.html`. Retired `/solutions/`, `/projects/`, `/projects/hexframe/` and `/about/` paths are not rendered and return the normal asset 404 without a compatibility redirect.
 
 `src/app/pageRegistry.ts` is the generated-page inventory; `sitemap.xml` is a projection of it, with `/` as its sole entry. `src/app/navigation.ts` is the only primary navigation authority. Both desktop and mobile menus use real anchors; mobile is visible without JavaScript and becomes button-controlled when enhancement runs. There are no dropdown submenus.
 
 ## Content ownership
 
-`src/pages/Home.tsx` owns the capabilities and eight compact historical integration rows, grounded in the retired `src/data/professional-systems.ts` at commit `e7944ff21609d24d09e08df110bdd6aa3ac0383d`. ERP/WMS, commerce/fulfillment (including Shipium), automation, carriers, EDI, hardware, workflow and justice/legal platform names represent prior professional roles. This work is not presented as WizardGang client engagements or as case studies. There is no Contact section, public email CTA or vendor-link wall. GitHub and LinkedIn are profile destinations; personal-project galleries, software previews and architecture demos are not published here.
+`src/pages/Home.tsx` renders the page from `src/data/portfolio.ts`. Capabilities are WizardGang's own and link to their live demonstrations on `demo.wizardgang.ai`. Industries, the eight compact historical integration rows and the deployments grouped by employer (Supply Chain Technologies, Spartan Technology Solutions and Fastfetch Corporation) are grounded in the retired `src/data/professional-systems.ts` at commit `e7944ff21609d24d09e08df110bdd6aa3ac0383d` and represent prior professional roles. This work is not presented as WizardGang client engagements or as case studies. Deployed organizations link to their own websites, and courts to a map search; vendor marks are not links. There is no Contact section or public email CTA. The header links the architecture demo and its source repository, About links LinkedIn, and the footer links the release and build commit on GitHub; personal-project galleries and software previews are not published here.
 
 Independent products and `demo.wizardgang.ai` retain their own code, runtime and operating evidence outside this repository. This site does not claim another organization's project as a WizardGang engagement.
 
