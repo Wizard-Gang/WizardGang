@@ -147,3 +147,16 @@ test("root governance contract retains the permanent queue and product boundarie
     assert.ok(readme.includes(value), `README must retain WizardGang-specific authority: ${value}`);
   }
 });
+
+test("hot-fix protocol reaches the protected approval without approving it", async () => {
+  const agents = await source("AGENTS.md");
+  const readme = await source("README.md");
+
+  assert.match(agents, /`hot fix <feature>`/, "automation contract must define the hot-fix instruction");
+  assert.match(agents, /not authorization to approve the protected environment/, "hot fix must leave production approval with the owner");
+  assert.match(agents, /actions\/runs\/<actual-run-id>/, "hot fix must hand back the exact pending run URL");
+  assert.match(agents, /Never substitute a workflow-list URL/, "hot fix must not hand back a generic Actions link");
+  assert.match(agents, /existing published tag, use `workflow_dispatch`/, "hot fix must distinguish a redeploy from a new release");
+  assert.match(agents, /Never fabricate a run, approval, deployment or ETA/, "hot fix must not fabricate progress");
+  assert.match(readme, /`hot fix <feature>`[\s\S]*AGENTS\.md[\s\S]*owner still approves/, "README must point release work to the hot-fix protocol");
+});

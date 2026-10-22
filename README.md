@@ -78,7 +78,7 @@ Production security policy remains in `public/_headers`. Local development remov
 
 Use `WG-NNN` controlled IDs, branches named `wg-nnn-short-kebab-summary`, and `[WG-NNN] [TYPE] Imperative summary` for the commit and pull request. The required exact-head checks are `verify` and `change-id`. [Ownership](docs/OWNERSHIP.md), [information architecture](docs/INFORMATION-ARCHITECTURE.md), and the source authorities below govern site-specific changes. The first-parent history and committed queue checks run inside `npm run check`.
 
-Normal merges do not create releases. Production is Cloudflare-only and is reached only from an accepted immutable release tag after GitHub Release publication and the protected `production` environment. The exact release and production identity path is documented below; ordinary process work does not publish or deploy.
+Normal merges do not create releases. Production is Cloudflare-only and is reached only from an accepted immutable release tag after GitHub Release publication and the protected `production` environment. The exact release and production identity path is documented below; ordinary process work does not publish or deploy. An owner's `hot fix <feature>` instruction follows the hot-fix protocol in [AGENTS.md](AGENTS.md): it carries that one feature through a versioned release to the pending `production` approval and hands back that exact run URL; the owner still approves the deployment.
 
 ## Build and verify
 
