@@ -2,6 +2,6 @@
 
 ## Open tasks
 
-### WG-148 — [RELEASE] Release and deploy panda homepage
+The queue is empty. Select no implementation task.
 
-Publish a governed immutable release and deploy using protected production approval. Verify live version and traffic.
+The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current `main`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
