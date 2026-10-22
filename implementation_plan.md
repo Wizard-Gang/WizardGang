@@ -2,6 +2,10 @@
 
 ## Open tasks
 
-The queue is empty. Select no implementation task.
+### WG-146 — [FEAT] Replace public homepage with a panda picture
 
-The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current `main`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
+Replace the visible homepage at `/` with one accessible panda image, without navigation, portfolio copy, or other visible UI. Keep responsive layout, semantic alternative text, no external image dependencies, and existing security headers, 404 behavior, redirects, and wg-edge operational routes. Update frontend tests and current documentation to reflect the new public contract. Validate using canonical checks and a deployment dry-run; deliver through an exact-head verified squash merge.
+
+### WG-147 — [RELEASE] Release and deploy panda homepage
+
+After WG-146 is merged and resulting-main CI is green, follow the repository's immutable release identity and protected production deployment process. Update the version only as required by the release authority, create the governed release commit/tag and published GitHub Release, obtain required protected production approval, deploy, and verify 100% traffic and public `/version.json` at the released commit. Do not bypass required checks or environment approval.
