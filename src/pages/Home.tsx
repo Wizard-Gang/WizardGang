@@ -32,7 +32,8 @@ export const HOME_PAGE: ReactPageDefinition = {
     socialImage: "/og.jpg"
   },
   body: (
-    <main className="site-main" id="main" tabIndex={-1}>
+    <main className="site-main panda-page" id="main" tabIndex={-1}>
+      <img className="panda-picture" src="/panda.svg" alt="A smiling black-and-white panda" />
       <section className="home-hero" aria-labelledby="home-title">
         <p className="hero-kicker">INTEGRATION ENGINEERING / SELECTED WORK</p>
         <h1 id="home-title">Making complex systems work together.</h1>
