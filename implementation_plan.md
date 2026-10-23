@@ -2,6 +2,6 @@
 
 ## Open tasks
 
-### WG-156 — [RELEASE] Release the Sri Lanka page as v1.7.0
+The queue is empty. Select no implementation task.
 
-Bump `package.json` and `package-lock.json` to 1.7.0 and publish through the governed release-tag, GitHub Release and protected `production` approval path. Hand back the exact pending run URL; the owner approves the deployment. Verify the live version, `/sl/` and a media object after approval.
+The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current `main`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
