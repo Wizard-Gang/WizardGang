@@ -7,8 +7,12 @@ export const dist = resolve(root, "dist");
 
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
+  ["sl/index.html", "/sl/"],
   ["404.html", null]
 ]);
+
+// The /sl travel page is public but kept out of search and the sitemap, like the 404.
+export const NOINDEX_PAGES = new Set(["sl/index.html", "404.html"]);
 
 export const SITEMAP_ROUTES = ["/"];
 

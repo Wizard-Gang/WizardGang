@@ -16,7 +16,7 @@ const retired = ["/solutions/", "/projects/", "/projects/hexframe/", "/about/",
   "/work/", "/services/", "/contact/", "/resume", "/professional"];
 
 test("WG-152: one static root contains every ordered, labelled fragment", async () => {
-  assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html"]);
+  assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html", "sl/index.html"]);
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0];
   assert.ok(main);

@@ -116,10 +116,11 @@ test("canonical page inventory remains owned by the typed React registry", async
 
   const expected = new Set([
     "index.html",
+    "sl/index.html",
     "404.html"
   ]);
-  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "the typed route authority must only expose the root and noindex 404");
-  assert.equal(expected.size, 2, "one canonical page plus generated 404");
+  assert.deepEqual(new Set(CANONICAL_PAGES.keys()), expected, "the typed route authority must only expose the root, the noindex /sl travel page and the noindex 404");
+  assert.equal(expected.size, 3, "one canonical page, the /sl travel page and the generated 404");
 
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
@@ -202,8 +203,8 @@ test("single-page content and styling authorities remain singular and valid", as
   const cssFiles = sourceFiles.filter((path) => path.endsWith(".css"));
   assert.deepEqual(
     cssFiles,
-    ["src/styles/globals.css", "src/styles/tokens.css"],
-    "authored production CSS is exactly the token authority and the presentation authority"
+    ["src/styles/globals.css", "src/styles/sl.css", "src/styles/tokens.css"],
+    "authored production CSS is exactly the token authority, the presentation authority and the /sl deck styles it imports"
   );
 
   // tokens.css owns the design system; it must not grow into a second place
@@ -221,6 +222,7 @@ test("single-page content and styling authorities remain singular and valid", as
 
   const globals = await readRoot("src/styles/globals.css");
   assert.match(globals, /@import "\.\/tokens\.css";/, "the presentation authority must consume the token authority");
+  assert.match(globals, /@import "\.\/sl\.css";/, "the presentation authority must own the /sl deck styles");
 
   const document = await readRoot("src/app/Document.tsx");
   const vite = await readRoot("vite.config.ts");
