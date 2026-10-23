@@ -2,6 +2,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "./tokens.css";
+@import "./sl.css";
 
 /* WizardGang: one static document, one small CSS vocabulary. */
 *, *::before, *::after { box-sizing: border-box; }

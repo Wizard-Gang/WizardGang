@@ -8,5 +8,19 @@ JetBrains Mono — SIL Open Font License 1.1
   Copyright 2020 The JetBrains Mono Project Authors
   https://github.com/JetBrains/JetBrainsMono
 
-Both faces are redistributed here as latin-subset variable WOFF2 under the
-terms of the OFL. Full licence text: https://openfontlicense.org
+DM Sans — SIL Open Font License 1.1
+  Copyright 2014 The DM Sans Project Authors
+  https://github.com/googlefonts/dm-fonts
+
+DM Serif Display — SIL Open Font License 1.1
+  Copyright 2014 The DM Serif Project Authors
+  https://github.com/googlefonts/dm-fonts
+
+Noto Sans Sinhala and Noto Sans Tamil — SIL Open Font License 1.1
+  Copyright 2022 The Noto Project Authors
+  https://github.com/notofonts
+
+Instrument Sans, JetBrains Mono and DM Sans are redistributed here as latin-subset
+variable WOFF2, DM Serif Display as a latin-subset WOFF2, and the two Noto faces as
+script-subset variable WOFF2, under the terms of the OFL. Full licence text:
+https://openfontlicense.org

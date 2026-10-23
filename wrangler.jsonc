@@ -25,6 +25,8 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
+  // The shared bucket; the site reads only its sl/ prefix (the /sl page's photos).
+  "r2_buckets": [{ "binding": "WG_R2", "bucket_name": "wizardgang" }],
   // The shared operator token and session key from default_secrets_store (runbook step 3.5).
   "secrets_store_secrets": [
     { "binding": "WG_OPS_TOKEN", "store_id": "e63e666172544d5c8c4a656ff28ac32a", "secret_name": "WG_OPS_TOKEN" },

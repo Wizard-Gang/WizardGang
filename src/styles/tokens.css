@@ -21,6 +21,42 @@
   font-display: swap;
 }
 
+
+/* The Sri Lanka page (/sl) keeps its deck's faces. */
+@font-face {
+  font-family: "DM Sans";
+  src: url("/fonts/dm-sans-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("/fonts/dm-serif-display.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Noto Sans Sinhala";
+  src: url("/fonts/noto-sans-sinhala-var.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0D81-0DF4, U+1CF2, U+200C-200D, U+25CC, U+111E1-111F4;
+}
+
+@font-face {
+  font-family: "Noto Sans Tamil";
+  src: url("/fonts/noto-sans-tamil-var.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0964-0965, U+0B82-0BFA, U+200C-200D, U+20B9, U+25CC;
+}
+
 :root {
   color-scheme: light;
 

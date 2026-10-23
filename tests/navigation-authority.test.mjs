@@ -49,5 +49,5 @@ test("desktop and no-JS mobile navigation link to the same homepage sections", a
     assert.ok(links.some(a => a.href === "https://demo.wizardgang.ai" && a.attrs.get("aria-label") === "Architecture demo"));
     assert.ok(!links.some(a => a.href === "https://github.com/Wizard-Gang"), "the organization profile is no longer linked from pages");
   }
-  assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "404.html"]);
+  assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "sl/index.html", "404.html"]);
 });

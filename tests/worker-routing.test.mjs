@@ -152,3 +152,57 @@ test("site responses carry the shell's security headers", async () => {
   assert.equal(response.headers.get("x-frame-options"), "DENY");
   assert.equal(response.headers.get("x-content-type-options"), "nosniff");
 });
+
+function mediaEnv(objects = {}, gets = [], calls = []) {
+  return {
+    ...assetEnv(calls),
+    WG_R2: {
+      get: async (key) => {
+        gets.push(key);
+        return key in objects ? { body: new Blob([objects[key]]).stream(), httpEtag: '"e1"' } : null;
+      }
+    }
+  };
+}
+
+test("WG-155: /sl photos come from R2 under sl/ with immutable caching", async () => {
+  const gets = [];
+  const calls = [];
+  const env = mediaEnv({ "sl/773061ae.webp": "webp-bytes" }, gets, calls);
+  const response = await fetchWorker("/sl/media/773061ae.webp", {}, env);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("content-type"), "image/webp");
+  assert.equal(response.headers.get("cache-control"), "public, max-age=31536000, immutable");
+  assert.equal(response.headers.get("etag"), '"e1"');
+  assert.equal(await response.text(), "webp-bytes");
+  assert.deepEqual(gets, ["sl/773061ae.webp"]);
+  assert.equal(calls.length, 0, "photos never fall through to the static assets");
+
+  const head = await fetchWorker("/sl/media/773061ae.webp", { method: "HEAD" }, env);
+  assert.equal(head.status, 200);
+});
+
+test("WG-155: anything else under /sl/media/ is a 404 that never reaches R2 or the assets", async (t) => {
+  for (const path of ["/sl/media/0000000a.webp", "/sl/media/773061AE.webp", "/sl/media/773061ae.jpg",
+    "/sl/media/773061ae.webp.bak", "/sl/media/", "/sl/media/sub/773061ae.webp", "/sl/media/773061ae.webp/"]) {
+    await t.test(path, async () => {
+      const gets = [];
+      const calls = [];
+      const response = await fetchWorker(path, {}, mediaEnv({}, gets, calls));
+      assert.equal(response.status, 404);
+      assert.equal(calls.length, 0);
+      if (path !== "/sl/media/0000000a.webp") assert.deepEqual(gets, [], "malformed names never reach the bucket");
+    });
+  }
+  const gets = [];
+  const post = await fetchWorker("/sl/media/773061ae.webp", { method: "POST" }, mediaEnv({ "sl/773061ae.webp": "x" }, gets));
+  assert.equal(post.status, 404);
+  assert.deepEqual(gets, []);
+});
+
+test("WG-155: the /sl page itself is a static asset", async () => {
+  const calls = [];
+  const response = await fetchWorker("/sl/", {}, mediaEnv({}, [], calls));
+  assert.equal(response.status, 200);
+  assert.equal(calls.length, 1);
+});
