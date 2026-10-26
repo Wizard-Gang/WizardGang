@@ -2,6 +2,6 @@
 
 ## Open tasks
 
-### WG-168 — [RELEASE] Release the updated /sl page as v1.7.3
+The queue is empty. Select no implementation task.
 
-Bump `package.json` and `package-lock.json` from 1.7.2 to 1.7.3 so WG-166 and WG-167 reach wizardgang.ai through the protected `production` approval. Before merging, confirm that `https://wizardgang.ai/sl/media/<name>.webp` returns 200 for all 32 new photos. The release must not ship slides whose photos are missing from R2.
+The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current `main`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
