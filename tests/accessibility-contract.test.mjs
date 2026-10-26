@@ -171,7 +171,8 @@ test("shared shell is protected by semantics rather than serialized markup", asy
       const footer = tagBlocks(html, "footer");
       assert.equal(footer.length, 1, "page must expose one footer landmark");
       assert.ok(!pageAnchors.some((anchor) => anchor.href.startsWith("mailto:")), "portfolio has no direct email links");
-      assert.ok(findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang/wizardgang-architecture-demo" && normalizedVisible(anchor) === "Demo source"));
+      assert.ok(!findAnchor(footer[0].inner, (anchor) => anchor.href === "https://github.com/Wizard-Gang/wizardgang-architecture-demo"), "footer must not repeat the header's demo-source link");
+      assert.doesNotMatch(footer[0].inner, />vv/, "footer version must carry one v");
       assert.ok(findAnchor(footer[0].inner, (anchor) => /^https:\/\/github\.com\/Wizard-Gang\/WizardGang\/commit\/[0-9a-f]{40}$/.test(anchor.href) && anchor.attrs.get("title") === "Build commit"));
       for (const [href, name] of [["https://demo.wizardgang.ai", "Architecture demo"], ["https://github.com/Wizard-Gang/wizardgang-architecture-demo", "Demo source on GitHub"]]) {
         const icon = pageAnchors.find((anchor) => anchor.href === href && anchor.attrs.get("aria-label") === name);

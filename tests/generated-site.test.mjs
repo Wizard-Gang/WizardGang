@@ -216,7 +216,7 @@ test("every page's footer names the checked-out commit and links it on GitHub", 
     assert.ok(commitLink, `${relative}: missing build commit link`);
     assert.equal(textContent(commitLink.inner), head.slice(0, 7));
     assert.ok(!anchorWithHref(footer, "/version.json"), `${relative}: the footer links the commit, not the shell record`);
-    assert.match(textContent(footer), /v0\.0\.0-dev|v\d+\.\d+\.\d+/, `${relative}: footer must name the release`);
+    assert.match(textContent(footer), /\b(?:0\.0\.0-dev|v\d+\.\d+\.\d+)/, `${relative}: footer must name the release with one v`);
   }
 });
 

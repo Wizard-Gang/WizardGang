@@ -101,26 +101,24 @@ export function Preferences() {
   );
 }
 
-/* Only a release build carries a published semantic version, and only a Git
+/* Only a release build carries a published vX.Y.Z tag, and only a Git
    checkout carries a commit; otherwise the footer shows the labels alone. */
 export function SiteFooter({ build }: { build: BuildMetadata }) {
-  const published = /^\d+\.\d+\.\d+$/.test(build.release);
+  const published = /^v\d+\.\d+\.\d+$/.test(build.release);
   const committed = /^[0-9a-f]{40}$/.test(build.commit);
-  const version = `v${build.release}`;
   const shortCommit = committed ? build.commit.slice(0, 7) : build.commit;
   const year = new Date(build.builtAt).getUTCFullYear();
   return (
     <footer className="site-footer">
       <p className="footer-brand"><span className="wordmark-mark" aria-hidden="true"></span>WizardGang</p>
       <p className="footer-links">
-        <a href={DEMO_SOURCE_URL}>Demo source <span aria-hidden="true">↗</span></a>
         <a href={`${DEMO_URL}/demos#accessibility`}>Accessibility <span aria-hidden="true">↗</span></a>
         <a href={`${DEMO_URL}/security`}>Security <span aria-hidden="true">↗</span></a>
       </p>
       <p className="footer-build">
         <span>© {year} WizardGang</span>
         <span aria-hidden="true">·</span>
-        {published ? <a href={`${SITE_SOURCE_URL}/releases/tag/${version}`} title="Release">{version}</a> : <span>{version}</span>}
+        {published ? <a href={`${SITE_SOURCE_URL}/releases/tag/${build.release}`} title="Release">{build.release}</a> : <span>{build.release}</span>}
         <span aria-hidden="true">·</span>
         {committed ? <a className="footer-hash" href={`${SITE_SOURCE_URL}/commit/${build.commit}`} title="Build commit">{shortCommit}</a> : <span className="footer-hash">{shortCommit}</span>}
       </p>

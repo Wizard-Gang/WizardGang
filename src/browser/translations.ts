@@ -101,7 +101,6 @@ export const SPANISH_TRANSLATIONS = new Map<string, string>([
   ["Hi, I'm Jacob.", "Hola, soy Jacob."],
   ["WizardGang is my software shop. I've spent years building warehouse, fulfillment and court systems, and I like leaving them in good hands, with the code and the docs to keep them running.", "WizardGang es mi taller de software. Llevo años creando sistemas de almacenes, preparación de pedidos y tribunales, y me gusta dejarlos en buenas manos, con el código y la documentación para que sigan funcionando."],
   ["Say hi on LinkedIn", "Saludar en LinkedIn"],
-  ["Demo source", "Código de la demostración"],
   ["Security", "Seguridad"],
   ["Release", "Versión publicada"],
   ["Build commit", "Commit de compilación"],
