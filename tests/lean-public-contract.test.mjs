@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createSiteWorker } from "../src/worker/index.ts";
 import { translateDynamic, translateText } from "../src/browser/translations.ts";
 import {
-  anchors, exists, generatedHtmlFiles, linkByRel, metaContent,
+  HEADERLESS_PAGES, anchors, exists, generatedHtmlFiles, linkByRel, metaContent,
   readDist, readRoot, root, startTags, tagBlocks, textContent
 } from "./helpers.mjs";
 
@@ -72,6 +72,7 @@ test("WG-152: precise historical integration inventory and attributed deployment
 test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced motion", async () => {
   const css = await readRoot("src/styles/globals.css");
   for (const path of await generatedHtmlFiles()) {
+    if (HEADERLESS_PAGES.has(path)) continue;
     const html = await readDist(path);
     const navs = tagBlocks(html, "nav");
     for (const name of ["Primary", "Primary mobile"]) {

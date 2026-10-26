@@ -37,4 +37,6 @@ export interface ReactPageDefinition {
   relative: string;
   metadata: PageMetadata;
   body: ReactElement;
+  /* A standalone page (the /sl deck) renders without the site header and its skip link. */
+  hideSiteHeader?: boolean;
 }

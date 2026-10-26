@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import { relative, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { CANONICAL_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
+import { CANONICAL_PAGES, HEADERLESS_PAGES, readDist, startTags, tagBlocks, walk } from "./helpers.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const readRoot = (path) => readFile(resolve(root, path), "utf8");
@@ -157,11 +157,15 @@ test("shared shell, metadata, navigation, browser enhancement, and CSP-safe outp
   const browserAssets = new Set();
   for (const [file] of CANONICAL_PAGES) {
     const html = await readDist(file);
-    assert.equal(startTags(html, "header").filter(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("site-header")).length, 1, `${file} must use the shared Header`);
-    assert.ok(tagBlocks(html, "nav").length >= 2, `${file} must contain shared desktop and mobile navigation`);
+    if (HEADERLESS_PAGES.has(file)) {
+      assert.equal(startTags(html, "header").filter(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("site-header")).length, 0, `${file} must render without the site Header`);
+    } else {
+      assert.equal(startTags(html, "header").filter(({ attrs }) => (attrs.get("class") || "").split(/\s+/).includes("site-header")).length, 1, `${file} must use the shared Header`);
+      assert.ok(tagBlocks(html, "nav").length >= 2, `${file} must contain shared desktop and mobile navigation`);
+      assert.match(html, /class="skip-link"[^>]*href="#main"/, `${file} must preserve the skip link`);
+      assert.match(html, /aria-label="Display and language preferences"/, `${file} must preserve the shared preferences control`);
+    }
     assert.equal(tagBlocks(html, "footer").length, 1, `${file} must use the shared Footer`);
-    assert.match(html, /class="skip-link"[^>]*href="#main"/, `${file} must preserve the skip link`);
-    assert.match(html, /aria-label="Display and language preferences"/, `${file} must preserve the shared preferences control`);
 
     const scripts = startTags(html, "script");
     assert.equal(scripts.length, 1, `${file} must load exactly one browser module`);

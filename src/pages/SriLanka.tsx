@@ -12,6 +12,7 @@ export const SRI_LANKA_PAGE: ReactPageDefinition = {
     noIndex: true,
     socialImage: "/og.jpg"
   },
+  hideSiteHeader: true,
   body: (
     <main className="site-main sl-deck" id="main" tabIndex={-1} data-sl-deck="">
       <SriLankaSlides />
