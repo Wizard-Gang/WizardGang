@@ -1,6 +1,7 @@
 /* Fits the /sl deck's slides to the viewport width. Slides are designed at 1920px and
-   reflow at 1000px below the narrow breakpoint; without script the stylesheet's stepped
-   zoom applies instead. */
+   reflow at 1000px in narrow upright viewports; without script the stylesheet's stepped
+   zoom applies instead. Both zooms follow every resize, including a phone's rotation, so
+   the stylesheet can switch between the reflow and the composition as it turns. */
 const DESIGN_WIDTH = 1920;
 const NARROW_WIDTH = 1000;
 

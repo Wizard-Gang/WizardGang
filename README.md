@@ -34,7 +34,7 @@ The site uses a mobile-first, light-default portfolio layout with dark/light pre
 
 - `src/styles/tokens.css` — the light/dark palette, blue interaction accent, display typography, spacing, radius and self-hosted fonts. It may declare only `:root` custom properties and `@font-face`.
 - `src/styles/globals.css` — spacious single-page presentation consuming those tokens, including capability and industry cards, integration rows with vendor marks, collapsible deployment groups, enlarged text, contrast, reduced motion, mobile navigation and display preferences. The stylesheet contains only components used by the single-page site and the generated 404.
-- `src/styles/sl.css` — the `/sl` travel page's slide classes, generated with `src/pages/SriLankaSlides.tsx` from the owner's deck and imported by `globals.css`. Each slide keeps its 1920×1080 composition zoomed to the viewport width, and reflows below 900px.
+- `src/styles/sl.css` — the `/sl` travel page's slide classes, generated with `src/pages/SriLankaSlides.tsx` from the owner's deck and imported by `globals.css`. Each slide keeps its 1920×1080 composition zoomed to the viewport width, and reflows below 900px only in upright viewports no wider than 4:3, so a phone turned sideways keeps the composition.
 
 Instrument Sans is the primary typeface, with JetBrains Mono for section indexes and machine-readable labels. Both remain self-hosted under the SIL Open Font License because the production CSP allows fonts only from the site origin. The `/sl` page also self-hosts DM Sans, DM Serif Display, Noto Sans Sinhala and Noto Sans Tamil.
 

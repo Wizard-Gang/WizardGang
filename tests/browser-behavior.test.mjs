@@ -13,6 +13,7 @@ import {
   setNavigationOpen, shouldCloseForEscape
 } from "../src/browser/navigation.ts";
 import { translateDynamic, translateText } from "../src/browser/translations.ts";
+import { initializeDeck } from "../src/browser/deck.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 function controls() {
@@ -183,4 +184,65 @@ test("reduced motion remains the CSS accessibility boundary", async () => {
   assert.match(styles, /@media\s*\(prefers-reduced-motion:\s*reduce\)/);
   assert.match(styles, /scroll-behavior:\s*auto/);
   assert.doesNotMatch(styles, /\.project-visual|\.lab-playhead|\.work-row/);
+});
+
+function deckFixture(width) {
+  const properties = new Map();
+  const listeners = new Map();
+  const deck = { style: { setProperty: (name, value) => properties.set(name, value) } };
+  const documentRoot = {
+    documentElement: { clientWidth: width },
+    querySelector: (selector) => selector === "[data-sl-deck]" ? deck : null
+  };
+  const browserWindow = { innerWidth: width, addEventListener: (type, listener) => listeners.set(type, listener) };
+  return { properties, listeners, documentRoot, browserWindow };
+}
+
+test("WG-167: the /sl deck refits both zooms on every resize, including a phone's rotation", () => {
+  const { properties, listeners, documentRoot, browserWindow } = deckFixture(390);
+  assert.equal(initializeDeck(documentRoot, browserWindow), true);
+  assert.equal(properties.get("--sl-zoom"), String(390 / 1920));
+  assert.equal(properties.get("--sl-zoom-narrow"), String(390 / 1000));
+
+  documentRoot.documentElement.clientWidth = 844;
+  listeners.get("resize")();
+  assert.equal(properties.get("--sl-zoom"), String(844 / 1920), "turned sideways, the composition fits the new width");
+  assert.equal(properties.get("--sl-zoom-narrow"), String(844 / 1000));
+
+  documentRoot.documentElement.clientWidth = 390;
+  listeners.get("resize")();
+  assert.equal(properties.get("--sl-zoom-narrow"), String(390 / 1000), "turned back upright, the reflow fits again");
+
+  documentRoot.documentElement.clientWidth = 2560;
+  listeners.get("resize")();
+  assert.equal(properties.get("--sl-zoom"), "1", "slides never grow past their 1920px design");
+});
+
+test("WG-167: pages without the deck are left alone", () => {
+  const { listeners, documentRoot, browserWindow } = deckFixture(390);
+  documentRoot.querySelector = () => null;
+  assert.equal(initializeDeck(documentRoot, browserWindow), false);
+  assert.equal(listeners.size, 0);
+});
+
+test("WG-167: the /sl stylesheet reflows only upright narrow viewports and paints slides in deck order", async () => {
+  const css = await readFile(resolve(root, "src/styles/sl.css"), "utf8");
+  const reflow = [...css.matchAll(/@media ([^{]*max-width[^{]*)\{/g)].map((match) => match[1].trim());
+  assert.deepEqual(reflow, ["(max-width: 899px) and (max-aspect-ratio: 4/3)"], "landscape phones keep the 16:9 composition");
+
+  const paintOrder = css.indexOf(".sl-slide > * { position: relative; }");
+  assert.ok(paintOrder > 0 && paintOrder < css.indexOf(".sl-c0{"),
+    "in-flow children paint in document order, and the generated classes that pin photos come later and win");
+  for (const slide of ["basics", "sigiriya2", "close"]) {
+    assert.match(css, new RegExp(`\\.sl-deck \\.sl-s-${slide}[^{]*\\{ min-height: 900px; \\}`),
+      `the ${slide} photo stays inside its slide in the reflow`);
+  }
+
+  const base = Number(/\.sl-slide \{[^}]*zoom: var\(--sl-zoom, ([\d.]+)\);/.exec(css)[1]);
+  const steps = [[568, base], ...[...css.matchAll(/@media \(min-width: (\d+)px\) \{ \.sl-slide \{ zoom: var\(--sl-zoom, ([\d.]+)\); \} \}/g)]
+    .map((match) => [Number(match[1]), Number(match[2])])];
+  assert.ok(steps.length >= 6);
+  for (const [width, zoom] of steps) {
+    assert.ok(zoom * 1920 <= width, `without script, slides fit a ${width}px viewport`);
+  }
 });
