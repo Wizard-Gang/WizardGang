@@ -2,6 +2,6 @@
 
 ## Open tasks
 
-The queue is empty. Select no implementation task.
+### WG-164 — [RELEASE] Release the footer fix as v1.7.2
 
-The next instruction must fill this queue through a controlled, plan-only change before implementation begins. Fetch current `main`, inspect open pull requests and reservations, and use the repository's next valid unassigned controlled ID. Keep this file tracked; do not delete it when the queue is empty.
+Bump `package.json` and both `package-lock.json` version fields from 1.7.1 to 1.7.2 so WG-162 reaches wizardgang.ai: the footer shows `v1.7.2` linked to its GitHub Release instead of `vv1.7.1`, and no longer repeats the header's demo-source link. The main push tags v1.7.2, publishes the Release and requests the protected `production` deployment, which the owner approves; v1.7.1 remains the rollback. No other change.
