@@ -1,7 +1,8 @@
 /* The Sri Lanka travel page at /sl: the owner's deck as one continuous scroll.
    Each slide keeps its 1920x1080 composition and is zoomed to the viewport width;
-   below 900px wide the rows reflow at a 1000px design width. Slide classes below are
-   generated from the deck. */
+   below 900px wide and no wider than 4:3 (a phone held upright) the rows reflow at a
+   1000px design width, so a phone turned sideways keeps the composition. Slide classes
+   below are generated from the deck. */
 /* Full-bleed even under the reading-layout preference, which caps .site-main. */
 .site-main.sl-deck { width: 100%; max-width: none !important; padding-inline: 0; }
 .sl-deck { display: flex; flex-direction: column; align-items: center; background: #10241C; overflow-x: clip; }
@@ -10,8 +11,12 @@
   width: 1920px;
   height: 1080px;
   overflow: hidden;
-  zoom: var(--sl-zoom, 0.5);
+  zoom: var(--sl-zoom, 0.29);
 }
+/* Without script, the widest zoom that fits each width step. */
+@media (min-width: 640px) { .sl-slide { zoom: var(--sl-zoom, 0.33); } }
+@media (min-width: 800px) { .sl-slide { zoom: var(--sl-zoom, 0.41); } }
+@media (min-width: 900px) { .sl-slide { zoom: var(--sl-zoom, 0.46); } }
 @media (min-width: 1100px) { .sl-slide { zoom: var(--sl-zoom, 0.57); } }
 @media (min-width: 1400px) { .sl-slide { zoom: var(--sl-zoom, 0.72); } }
 @media (min-width: 1700px) { .sl-slide { zoom: var(--sl-zoom, 0.88); } }
@@ -21,6 +26,9 @@
 .sl-slide table { border-collapse: collapse; width: 100%; }
 .sl-slide td, .sl-slide th { padding: .35em .6em; border-bottom: 1px solid rgba(128,128,128,.4); text-align: left; }
 .sl-slide svg { display: block; }
+/* As in the deck, later children paint over earlier ones, so a heading shows over the
+   full-bleed photo before it. The generated position:absolute classes below still win. */
+.sl-slide > * { position: relative; }
 .sl-c0{background:#10241C;color:#F5EFE3;font-family:'DM Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px}
 .sl-c1{position:absolute;left:1100px;top:0;width:820px;height:1080px;object-fit:cover}
 .sl-c2{width:860px;display:flex;flex-direction:column;gap:40px}
@@ -259,7 +267,7 @@
 .sl-c235{width:408px;height:302px;object-fit:cover;border-radius:12px;object-position:50% 30%}
 .sl-c236{width:644px;height:671px;object-fit:cover;border-radius:12px}
 .sl-c237{width:316px;height:671px;object-fit:cover;border-radius:12px}
-@media (max-width: 899px) {
+@media (max-width: 899px) and (max-aspect-ratio: 4/3) {
   .sl-deck .sl-c4{flex-wrap:wrap}
   .sl-deck .sl-c5{flex:1 1 360px}
   .sl-deck .sl-c10{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))}
@@ -321,7 +329,9 @@
   .sl-deck .sl-slide > div { flex-basis: 100%; }
   .sl-deck .sl-s-cover img { position: static !important; width: 100% !important; height: 640px !important; }
   .sl-deck .sl-s-cover > div { width: auto !important; }
-  .sl-deck .sl-s-basics, .sl-deck .sl-s-sigiriya2 { min-height: 900px; }
+  /* Full-bleed photo slides keep a height, so the photo stays inside its slide. */
+  .sl-deck .sl-s-basics, .sl-deck .sl-s-sigiriya2, .sl-deck .sl-s-close { min-height: 900px; }
   .sl-deck .sl-s-basics img, .sl-deck .sl-s-basics > div,
-  .sl-deck .sl-s-sigiriya2 img, .sl-deck .sl-s-sigiriya2 > div { width: 100% !important; height: 100% !important; }
+  .sl-deck .sl-s-sigiriya2 img, .sl-deck .sl-s-sigiriya2 > div,
+  .sl-deck .sl-s-close img, .sl-deck .sl-s-close > div { width: 100% !important; height: 100% !important; }
 }
