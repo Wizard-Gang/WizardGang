@@ -39,4 +39,6 @@ export interface ReactPageDefinition {
   body: ReactElement;
   /* A standalone page (the /sl deck) renders without the site header and its skip link. */
   hideSiteHeader?: boolean;
+  /* A standalone page (the /sl deck) also renders without the site footer and its version line. */
+  hideSiteFooter?: boolean;
 }
