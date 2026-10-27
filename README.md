@@ -4,7 +4,7 @@
 
 ```text
 /                       #capabilities, #industries, #integrations, #delivery, #about
-/sl/                    noindex "What to Do in Sri Lanka" travel page, without the site header; photos at /sl/media/ from R2
+/sl/                    noindex "What to Do in Sri Lanka" travel page, without the site header or footer; photos at /sl/media/ from R2
 404.html                generated noindex fallback; not a canonical route
 ```
 
@@ -130,7 +130,7 @@ docs/          current architecture, ownership and accessibility records
 Key authorities:
 
 - `src/app/pageRegistry.ts` — the three generated HTML outputs (root, the noindex `/sl/` travel page and 404).
-- `src/pages/SriLanka.tsx` and the generated `src/pages/SriLankaSlides.tsx` — the `/sl` page, which sets `hideSiteHeader` so the deck renders without the site header and skip link (the footer stays). Its 217 photos (57 slides) live in the `wizardgang` R2 bucket under `sl/`, not in this repository; the Worker serves `GET /sl/media/<8 hex>.webp` from that prefix only.
+- `src/pages/SriLanka.tsx` and the generated `src/pages/SriLankaSlides.tsx` — the `/sl` page, which sets `hideSiteHeader` and `hideSiteFooter` so the deck renders without the site header, skip link or footer. Its 212 photos (58 slides) live in the `wizardgang` R2 bucket under `sl/`, not in this repository; the Worker serves `GET /sl/media/<8 hex>.webp` from that prefix only.
 - `src/app/navigation.ts` — root fragment navigation.
 - `src/pages/Home.tsx` — capabilities, industries, integrations, delivery experience and about; no public mailto links.
 - `src/data/portfolio.ts` — capability demos, industries, integration platforms and attributed deployments.

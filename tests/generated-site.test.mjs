@@ -7,6 +7,7 @@ import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
 import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {
   CANONICAL_PAGES,
+  FOOTERLESS_PAGES,
   NOINDEX_PAGES,
   SITEMAP_ROUTES,
   anchors,
@@ -210,6 +211,10 @@ test("social preview behavior remains page-appropriate", async () => {
 test("every page's footer names the checked-out commit and links it on GitHub", async () => {
   const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   for (const relative of canonicalFiles) {
+    if (FOOTERLESS_PAGES.has(relative)) {
+      assert.equal(tagBlocks(await readDist(relative), "footer").length, 0, `${relative}: a standalone deck renders without the footer`);
+      continue;
+    }
     const html = await readDist(relative);
     const footer = tagBlocks(html, "footer")[0]?.inner ?? "";
     const commitLink = anchorWithHref(footer, `https://github.com/Wizard-Gang/WizardGang/commit/${head}`);
