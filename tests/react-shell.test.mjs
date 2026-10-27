@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import test from "node:test";
 import {
   CANONICAL_PAGES,
+  FOOTERLESS_PAGES,
   HEADERLESS_PAGES,
   anchors,
   readDist,
@@ -21,7 +22,7 @@ test("every canonical page is complete static HTML composed through the React sh
       assert.equal(tagBlocks(html, "head").length, 1);
       assert.equal(tagBlocks(html, "body").length, 1);
       assert.equal(startTags(html, "header").filter(({ attrs }) => attrs.get("class") === "site-header").length, HEADERLESS_PAGES.has(relative) ? 0 : 1);
-      assert.equal(startTags(html, "footer").filter(({ attrs }) => attrs.get("class") === "site-footer").length, 1);
+      assert.equal(startTags(html, "footer").filter(({ attrs }) => attrs.get("class") === "site-footer").length, FOOTERLESS_PAGES.has(relative) ? 0 : 1);
       assert.equal(startTags(html, "main").filter(({ attrs }) => attrs.get("id") === "main").length, 1);
       assert.doesNotMatch(html, /data-wizardgang-legacy-body/);
       assert.doesNotMatch(html, /id=["']root["']|react-dom\/client|hydrateRoot|createRoot/);
