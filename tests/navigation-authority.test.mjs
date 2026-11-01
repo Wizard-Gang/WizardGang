@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { NAVIGATION_ITEMS, navigationSectionForPath } from "../src/app/navigation.ts";
-import { CANONICAL_PAGES, HEADERLESS_PAGES, anchors, generatedHtmlFiles, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
+import { CANONICAL_PAGES, anchors, generatedHtmlFiles, readDist, readRoot, tagBlocks, textContent } from "./helpers.mjs";
 
 const expected = [
   ["Capabilities", "/#capabilities"],
@@ -35,7 +35,6 @@ test("shared header uses direct anchors rather than hover menus", async () => {
 
 test("desktop and no-JS mobile navigation link to the same homepage sections", async () => {
   for (const relative of await generatedHtmlFiles()) {
-    if (HEADERLESS_PAGES.has(relative)) continue;
     const html = await readDist(relative);
     for (const label of ["Primary", "Primary mobile"]) {
       const nav = tagBlocks(html, "nav").find(({ attrs }) => attrs.get("aria-label") === label);
@@ -50,5 +49,5 @@ test("desktop and no-JS mobile navigation link to the same homepage sections", a
     assert.ok(links.some(a => a.href === "https://demo.wizardgang.ai" && a.attrs.get("aria-label") === "Architecture demo"));
     assert.ok(!links.some(a => a.href === "https://github.com/Wizard-Gang"), "the organization profile is no longer linked from pages");
   }
-  assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "sl/index.html", "404.html"]);
+  assert.deepEqual([...CANONICAL_PAGES.keys()], ["index.html", "404.html"]);
 });

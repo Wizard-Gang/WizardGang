@@ -1,4 +1,3 @@
-import { initializeDeck } from "./deck";
 import { initializeNavigation } from "./navigation";
 import {
   applyPreferenceControls,
@@ -111,7 +110,6 @@ export function initializeBrowserBehavior(documentRoot: Document, browserWindow:
       : undefined
   );
   initializePreferences(documentRoot, browserWindow);
-  initializeDeck(documentRoot, browserWindow);
 }
 
 if (typeof document !== "undefined" && typeof window !== "undefined") {

@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { createSiteWorker } from "../src/worker/index.ts";
 import { translateDynamic, translateText } from "../src/browser/translations.ts";
 import {
-  HEADERLESS_PAGES, anchors, exists, generatedHtmlFiles, linkByRel, metaContent,
+  anchors, exists, generatedHtmlFiles, linkByRel, metaContent,
   readDist, readRoot, root, startTags, tagBlocks, textContent
 } from "./helpers.mjs";
 
@@ -13,10 +13,10 @@ const sections = ["capabilities", "integrations", "about"];
 const labels = ["Capabilities", "Integrations", "About"];
 const allSections = ["capabilities", "industries", "integrations", "delivery", "about"];
 const retired = ["/solutions/", "/projects/", "/projects/hexframe/", "/about/",
-  "/work/", "/services/", "/contact/", "/resume", "/professional"];
+  "/work/", "/services/", "/contact/", "/resume", "/professional", "/sl/"];
 
 test("WG-152: one static root contains every ordered, labelled fragment", async () => {
-  assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html", "sl/index.html"]);
+  assert.deepEqual(await generatedHtmlFiles(), ["404.html", "index.html"]);
   const html = await readDist("index.html");
   const main = tagBlocks(html, "main")[0];
   assert.ok(main);
@@ -72,7 +72,6 @@ test("WG-152: precise historical integration inventory and attributed deployment
 test("WG-137: desktop and no-JS mobile navigation, skip, focus, and reduced motion", async () => {
   const css = await readRoot("src/styles/globals.css");
   for (const path of await generatedHtmlFiles()) {
-    if (HEADERLESS_PAGES.has(path)) continue;
     const html = await readDist(path);
     const navs = tagBlocks(html, "nav");
     for (const name of ["Primary", "Primary mobile"]) {

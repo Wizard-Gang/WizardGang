@@ -7,18 +7,8 @@ export const dist = resolve(root, "dist");
 
 export const CANONICAL_PAGES = new Map([
   ["index.html", "/"],
-  ["sl/index.html", "/sl/"],
   ["404.html", null]
 ]);
-
-// The /sl travel page is public but kept out of search and the sitemap, like the 404.
-export const NOINDEX_PAGES = new Set(["sl/index.html", "404.html"]);
-
-// The /sl travel page is a standalone deck: it renders without the site header and its skip link.
-export const HEADERLESS_PAGES = new Set(["sl/index.html"]);
-
-// ...and without the site footer and its version line.
-export const FOOTERLESS_PAGES = new Set(["sl/index.html"]);
 
 export const SITEMAP_ROUTES = ["/"];
 

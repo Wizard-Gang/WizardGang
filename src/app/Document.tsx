@@ -64,7 +64,7 @@ export function Document({
   browserAssetPath,
   children
 }: {
-  page: Pick<ReactPageDefinition, "metadata" | "hideSiteHeader" | "hideSiteFooter">;
+  page: Pick<ReactPageDefinition, "metadata">;
   build: BuildMetadata;
   browserAssetPath: string;
   children: ReactNode;
@@ -73,16 +73,16 @@ export function Document({
     <html lang="en">
       <Metadata metadata={page.metadata} build={build} browserAssetPath={browserAssetPath} />
       <body>
-        {page.hideSiteHeader ? null : <SiteHeader current={navigationSectionForPath(page.metadata.path)} />}
+        <SiteHeader current={navigationSectionForPath(page.metadata.path)} />
         {children}
-        {page.hideSiteFooter ? null : <SiteFooter build={build} />}
+        <SiteFooter build={build} />
       </body>
     </html>
   );
 }
 
 function renderStaticDocument(
-  page: Pick<ReactPageDefinition, "metadata" | "hideSiteHeader" | "hideSiteFooter">,
+  page: Pick<ReactPageDefinition, "metadata">,
   body: ReactNode,
   build: BuildMetadata,
   browserAssetPath: string

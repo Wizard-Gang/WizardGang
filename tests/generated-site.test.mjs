@@ -7,8 +7,6 @@ import { sanitizeLocalHeadersText } from "../scripts/dev.mjs";
 import { PERMANENT_REDIRECTS } from "../src/worker/index.ts";
 import {
   CANONICAL_PAGES,
-  FOOTERLESS_PAGES,
-  NOINDEX_PAGES,
   SITEMAP_ROUTES,
   anchors,
   dist,
@@ -68,7 +66,7 @@ test("generated HTML inventory is the explicit canonical contract", async () => 
     .map(relativeFromDist)
     .sort();
   assert.deepEqual(actual, [...canonicalFiles].sort());
-  assert.equal(actual.length, 3, "root page, the noindex /sl travel page and the noindex 404");
+  assert.equal(actual.length, 2, "root page plus noindex 404");
 });
 
 test("all required public build artifacts and public records exist", async () => {
@@ -116,7 +114,7 @@ test("every canonical page preserves document, metadata, link, and local-asset b
       assert.equal(metaContent(html, "name", "twitter:title"), textContent(title[0].inner));
       assert.equal(metaContent(html, "name", "twitter:description"), description);
 
-      if (NOINDEX_PAGES.has(relative)) {
+      if (relative === "404.html") {
         assert.match(metaContent(html, "name", "robots") || "", /(?:^|,)\s*noindex\b/i);
         assert.equal(linkByRel(html, "canonical"), null);
         assert.equal(metaContent(html, "property", "og:url"), null);
@@ -174,11 +172,6 @@ test("every canonical page preserves document, metadata, link, and local-asset b
         for (const tag of startTags(html, tagName)) {
           const reference = tag.attrs.get("src") || tag.attrs.get("href") || "";
           if (!reference.startsWith("/") || reference.startsWith("//")) continue;
-          if (reference.startsWith("/sl/media/")) {
-            // The Worker serves these from R2, not from the static assets.
-            assert.match(reference, /^\/sl\/media\/[0-9a-f]{8}\.webp$/, `unservable /sl photo ${reference}`);
-            continue;
-          }
           const target = internalTarget(reference, relative);
           if (!target || !extname(new URL(reference, ORIGIN).pathname)) continue;
           assert.equal(await exists(resolve(dist, target.relative)), true, `missing referenced local asset ${reference}`);
@@ -211,10 +204,6 @@ test("social preview behavior remains page-appropriate", async () => {
 test("every page's footer names the checked-out commit and links it on GitHub", async () => {
   const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: root, encoding: "utf8" }).trim();
   for (const relative of canonicalFiles) {
-    if (FOOTERLESS_PAGES.has(relative)) {
-      assert.equal(tagBlocks(await readDist(relative), "footer").length, 0, `${relative}: a standalone deck renders without the footer`);
-      continue;
-    }
     const html = await readDist(relative);
     const footer = tagBlocks(html, "footer")[0]?.inner ?? "";
     const commitLink = anchorWithHref(footer, `https://github.com/Wizard-Gang/WizardGang/commit/${head}`);
@@ -333,10 +322,7 @@ test("site boundary remains static and retired compliance application routes sta
   assert.equal(await exists(resolve(dist, "compliance/index.html")), false);
   assert.equal(await exists(resolve(dist, "security/index.html")), false);
   const worker = await readRoot("src/worker/index.ts");
-  assert.doesNotMatch(worker, /DurableObject|\bD1\b|authentication|OPS_TOKEN/);
-  // R2 is read only, and only for the /sl page's photos under sl/.
-  assert.match(worker, /WG_R2\.get\(`sl\/\$\{name\}\.webp`\)/);
-  assert.doesNotMatch(worker, /WG_R2\.(?:put|delete|list|head)\b/);
+  assert.doesNotMatch(worker, /DurableObject|\bD1\b|\bR2\b|authentication|OPS_TOKEN/);
   assert.equal(await exists(resolve(root, "src/site.mjs")), false);
   const home = await readDist("index.html");
   assert.doesNotMatch(await readDist(browserModulePath(home)), /Compliance — WizardGang|class=["']compliance-/);
