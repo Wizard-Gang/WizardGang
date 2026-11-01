@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  HEADERLESS_PAGES,
   anchors,
   generatedHtmlFiles,
   findAnchor,
@@ -81,10 +80,8 @@ test("every generated page receives baseline structural accessibility checks", a
       assert.equal(new Set(ids).size, ids.length, "duplicate document ids are not allowed");
       const idSet = new Set(ids);
 
-      if (!HEADERLESS_PAGES.has(relative)) {
-        const skipIndex = html.indexOf('class="skip-link"');
-        assert.ok(skipIndex >= 0 && skipIndex < html.indexOf("<header") && skipIndex < html.indexOf("<main"), "skip link must appear before header/main content");
-      }
+      const skipIndex = html.indexOf('class="skip-link"');
+      assert.ok(skipIndex >= 0 && skipIndex < html.indexOf("<header") && skipIndex < html.indexOf("<main"), "skip link must appear before header/main content");
 
       for (const match of html.matchAll(/\stabindex=(?:"(-?\d+)"|'(-?\d+)')/gi)) {
         assert.ok(Number(match[1] ?? match[2]) <= 0, "positive tabindex is not allowed");
@@ -124,7 +121,6 @@ test("every generated page receives baseline structural accessibility checks", a
 
 test("shared shell is protected by semantics rather than serialized markup", async (t) => {
   for (const relative of await generatedHtmlFiles()) {
-    if (HEADERLESS_PAGES.has(relative)) continue;
     await t.test(relative, async () => {
       const html = await readDist(relative);
       const pageAnchors = anchors(html);
@@ -192,9 +188,8 @@ test("shared shell is protected by semantics rather than serialized markup", asy
   }
 });
 
-test("language, theme, readable layout and text enlargement remain on every page with the site header", async (t) => {
+test("language, theme, readable layout and text enlargement remain on every page", async (t) => {
   for (const relative of await generatedHtmlFiles()) {
-    if (HEADERLESS_PAGES.has(relative)) continue;
     await t.test(relative, async () => {
       const html = await readDist(relative);
       const ids = new Map();
