@@ -1,6 +1,6 @@
 import type { ReactPageDefinition } from "../app/contracts";
 import { CAPABILITIES, EMPLOYERS, INDUSTRIES, INTEGRATION_GROUPS } from "../data/portfolio";
-import { LINKEDIN_URL } from "../data/site";
+import { LINKEDIN_URL, TWITCH_CHANNEL, TWITCH_URL } from "../data/site";
 
 const index = (position: number) => String(position + 1).padStart(2, "0");
 
@@ -41,6 +41,27 @@ export const HOME_PAGE: ReactPageDefinition = {
         <div className="hero-actions">
           <a className="button button-primary" href="#delivery">
             See where it's shipped <span aria-hidden="true">↘</span>
+          </a>
+        </div>
+      </section>
+
+      {/* Hidden until the browser's Twitch player reports the channel live. */}
+      <section
+        className="work live-section"
+        id="live"
+        aria-labelledby="live-heading"
+        data-twitch-channel={TWITCH_CHANNEL}
+        data-player-title="Live on Twitch"
+        hidden
+      >
+        <div className="section-head">
+          <p className="section-eyebrow"><span className="live-dot" aria-hidden="true"></span><span>Live now</span></p>
+          <h2 className="section-label" id="live-heading">Live on Twitch</h2>
+        </div>
+        <div className="live-frame"></div>
+        <div className="hero-actions">
+          <a className="button" href={TWITCH_URL}>
+            Watch on Twitch <span aria-hidden="true">↗</span>
           </a>
         </div>
       </section>

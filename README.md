@@ -112,7 +112,7 @@ npm run test:docs
 ```text
 src/
   app/         document metadata, typed navigation, page registry
-  browser/     progressive enhancement for display/language and mobile navigation
+  browser/     progressive enhancement for display/language, mobile navigation and the live stream
   components/  shared header, preferences and footer
   data/        company contact and outward links
   pages/       Home and NotFound
@@ -129,7 +129,7 @@ Key authorities:
 
 - `src/app/pageRegistry.ts` — the two generated HTML outputs (root and 404).
 - `src/app/navigation.ts` — root fragment navigation.
-- `src/pages/Home.tsx` — capabilities, industries, integrations, delivery experience and about; no public mailto links.
+- `src/pages/Home.tsx` — the hidden live Twitch section, capabilities, industries, integrations, delivery experience and about; no public mailto links.
 - `src/data/portfolio.ts` — capability demos, industries, integration platforms and attributed deployments.
 - `src/app/Document.tsx` — static document, metadata and derived sitemap.
 - `src/styles/tokens.css` and `src/styles/globals.css` — presentation.

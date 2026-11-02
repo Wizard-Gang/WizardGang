@@ -20,6 +20,8 @@ WizardGang.ai serves generated static HTML, CSS, a first-party browser module, p
 
 The browser architecture does not require inline application scripts or React hydration. First-party browser behavior is emitted as a Vite module from `src/browser/`.
 
+The only framed origin is `https://player.twitch.tv` (`frame-src`), for the live section on `/`. No Twitch script is loaded: `src/browser/liveStream.ts` creates the sandboxed player iframe and accepts only `twitch-embed` online/offline messages whose origin is the player and whose source is that iframe.
+
 Automated checks, source review, dry-run validation, versioned source, and rollback options reduce risk but do not guarantee that defects or incidents cannot occur.
 
 `npm run check` scans tracked files and reachable Git history for credential

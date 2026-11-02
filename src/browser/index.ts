@@ -1,3 +1,4 @@
+import { initializeLiveStream } from "./liveStream";
 import { initializeNavigation } from "./navigation";
 import {
   applyPreferenceControls,
@@ -109,6 +110,8 @@ export function initializeBrowserBehavior(documentRoot: Document, browserWindow:
       ? browserWindow.matchMedia.bind(browserWindow)
       : undefined
   );
+  // The player title must exist before preferences capture translatable attributes.
+  initializeLiveStream(documentRoot, browserWindow);
   initializePreferences(documentRoot, browserWindow);
 }
 
