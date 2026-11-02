@@ -12,6 +12,7 @@ import {
   initializeNavigation, isAnchorActivationTarget,
   setNavigationOpen, shouldCloseForEscape
 } from "../src/browser/navigation.ts";
+import { initializeLiveStream, liveStateFromMessage, twitchPlayerUrl } from "../src/browser/liveStream.ts";
 import { translateDynamic, translateText } from "../src/browser/translations.ts";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
@@ -176,6 +177,38 @@ test("navigation enhancement upgrades the visible no-JavaScript fallback to a bu
   mobileListeners.get("click")({ target: { closest: (selector) => selector === "a" ? {} : null } });
   assert.equal(attributes.get("aria-expanded"), "false");
   assert.equal(mobileNav.hidden, true);
+});
+
+test("live stream reads only the player's online and offline events", () => {
+  assert.equal(twitchPlayerUrl("jacobleeyo", "wizardgang.ai"),
+    "https://player.twitch.tv/?channel=jacobleeyo&parent=wizardgang.ai&autoplay=true&muted=true");
+  assert.equal(liveStateFromMessage({ namespace: "twitch-embed", eventName: "online" }), "online");
+  assert.equal(liveStateFromMessage({ namespace: "twitch-embed", eventName: "offline" }), "offline");
+  assert.equal(liveStateFromMessage({ namespace: "twitch-embed", eventName: "ready" }), null);
+  assert.equal(liveStateFromMessage({ namespace: "other", eventName: "online" }), null);
+  assert.equal(liveStateFromMessage("online"), null);
+});
+
+test("live stream reveals its section only for messages from its own player", () => {
+  let listener = null;
+  const appended = [];
+  const frame = { append: (node) => appended.push(node) };
+  const section = { hidden: true, dataset: { twitchChannel: "jacobleeyo", playerTitle: "Live on Twitch" }, querySelector: () => frame };
+  const player = { contentWindow: {}, setAttribute(name, value) { this[name] = value; } };
+  const documentRoot = { querySelector: () => section, createElement: () => player };
+  const browserWindow = { location: { hostname: "localhost" }, addEventListener: (type, fn) => { if (type === "message") listener = fn; } };
+  assert.equal(initializeLiveStream(documentRoot, browserWindow), true);
+  assert.deepEqual(appended, [player]);
+  assert.match(player.src, /parent=localhost/);
+  const origin = "https://player.twitch.tv";
+  listener({ origin: "https://evil.example", source: player.contentWindow, data: { namespace: "twitch-embed", eventName: "online" } });
+  listener({ origin, source: {}, data: { namespace: "twitch-embed", eventName: "online" } });
+  assert.equal(section.hidden, true);
+  listener({ origin, source: player.contentWindow, data: { namespace: "twitch-embed", eventName: "online" } });
+  assert.equal(section.hidden, false);
+  listener({ origin, source: player.contentWindow, data: { namespace: "twitch-embed", eventName: "offline" } });
+  assert.equal(section.hidden, true);
+  assert.equal(initializeLiveStream({ querySelector: () => null }, browserWindow), false);
 });
 
 test("reduced motion remains the CSS accessibility boundary", async () => {

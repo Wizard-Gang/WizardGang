@@ -33,6 +33,17 @@ test("WG-152: one static root contains every ordered, labelled fragment", async 
   assert.ok(anchors(main.inner).some((a) => a.href === "#delivery"));
 });
 
+test("WG-174: the live Twitch section ships hidden with no player before JavaScript", async () => {
+  const main = tagBlocks(await readDist("index.html"), "main")[0].inner;
+  const ids = startTags(main, "section").map((tag) => tag.attrs.get("id"));
+  assert.deepEqual(ids.slice(0, 3), [undefined, "live", "capabilities"], "the live section sits between the hero and Capabilities");
+  const live = tagBlocks(main, "section").find((tag) => tag.attrs.get("id") === "live");
+  assert.ok(live.attrs.has("hidden"), "offline and no-JS visitors never see an empty player");
+  assert.equal(live.attrs.get("data-twitch-channel"), "jacobleeyo");
+  assert.equal(startTags(live.inner, "iframe").length, 0, "only the browser module creates the player");
+  assert.ok(anchors(live.inner).some((a) => a.href === "https://www.twitch.tv/jacobleeyo"));
+});
+
 test("WG-152: precise historical integration inventory and attributed deployments without email", async () => {
   const content = tagBlocks(await readDist("index.html"), "main")[0].inner;
   const visible = textContent(content);
@@ -118,7 +129,8 @@ test("WG-137: Spanish has navigation, visible copy and assistive labels", async 
     "Architecture demo", "Demo source on GitHub", "Build commit",
     "These integrations come from prior professional roles, not WizardGang client engagements.",
     "Skip to main content", "Display and language preferences", "WizardGang home",
-    "Primary", "Primary mobile", "Menu", "Not Found — WizardGang"]) {
+    "Primary", "Primary mobile", "Menu", "Not Found — WizardGang",
+    "Live now", "Live on Twitch", "Watch on Twitch"]) {
     assert.notEqual(translateDynamic(phrase), phrase, "Spanish phrase missing: " + phrase);
   }
   assert.equal(translateText("  Capabilities  ", "es"), "  Capacidades  ");
@@ -164,7 +176,7 @@ test("WG-137: root-only sitemap and 404-page routing do not redirect retired URL
 test("WG-137: safe outbound inventory, metadata, CSP and wg-edge boundary", async () => {
   const outbound = new Set([
     "https://www.linkedin.com/in/jacob-yongue", "https://demo.wizardgang.ai",
-    "https://github.com/Wizard-Gang/wizardgang-architecture-demo"
+    "https://github.com/Wizard-Gang/wizardgang-architecture-demo", "https://www.twitch.tv/jacobleeyo"
   ]);
   const deploymentSites = new Set([
     "www.bamkousa.com", "www.brixton.com", "www.cidresources.com", "www.fambrands.com", "www.gnc.com",
@@ -204,7 +216,7 @@ test("WG-137: safe outbound inventory, metadata, CSP and wg-edge boundary", asyn
   const csp = headers.match(/^  Content-Security-Policy: (.*)$/m)?.[1];
   assert.ok(csp);
   for (const directive of ["default-src 'none'", "script-src 'self' https://static.cloudflareinsights.com",
-    "style-src 'self'", "font-src 'self'", "img-src 'self' data:",
+    "style-src 'self'", "font-src 'self'", "img-src 'self' data:", "frame-src https://player.twitch.tv",
     "object-src 'none'", "base-uri 'none'", "frame-ancestors 'none'",
     "form-action 'none'", "upgrade-insecure-requests"]) {
     assert.ok(csp.includes(directive), "missing CSP directive " + directive);
